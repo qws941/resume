@@ -16,7 +16,7 @@
 
 토스 커머스의 **Server Developer (Platform)** 포지션에 지원합니다.
 
-7년간 금융·제조·교육 산업에서 **대규모 인프라 운영, 플랫폼 안정화, 자동화 시스템 구축**을 경험했습니다. 특히 토스 Platform 팀이 추구하는 **공통 서비스 제공**(Distributed Locks, Logging, Metrics), **Gateway 운영**(Authentication, Security), **안정적인 서비스 운영** 철학에 깊이 공감합니다.
+8년간 금융·제조·교육 산업에서 **대규모 인프라 운영, 플랫폼 안정화, 자동화 시스템 구축**을 경험했습니다. 특히 토스뱅크 Platform 팀이 추구하는 **'예상치 못한 장애에도 빠른 복구'**, **'플랫폼 서비스 개발 및 운영'** 철학에 깊이 공감합니다.
 
 ### 토스 커머스 Platform 팀에 기여할 수 있는 핵심 역량:
 
@@ -97,7 +97,7 @@ HAProxy / Load Balancing              F5, HAProxy, Nginx 실무 경험
 ---
 
 ### ㈜가온누리정보시스템 | 프리랜서 인프라 엔지니어
-**2024.03 ~ 2025.12 (1년 10개월) - 콴텍투자일임과 겸직** | 넥스트레이드 구축 프로젝트
+**2024.03 ~ 2025.02 (11개월)** | 넥스트레이드 구축 프로젝트
 
 #### 플랫폼 자동화 & 효율화
 - **방화벽 정책 자동화**: Python 스크립트로 100건+ 일괄 배포
@@ -111,7 +111,7 @@ HAProxy / Load Balancing              F5, HAProxy, Nginx 실무 경험
 ---
 
 ### ㈜콴텍투자일임 | 인프라·정보보호팀 엔지니어
-**2022.08 ~ 2025.12 (3년 5개월) - 가온누리정보시스템과 겸직** | AI 기반 주식투자 서비스
+**2022.08 ~ 2024.03 (1년 7개월)** | AI 기반 주식투자 서비스
 
 #### 클라우드 플랫폼 운영
 - **AWS 클라우드 보안**: VPC, IAM, CloudTrail, GuardDuty 구성
@@ -144,8 +144,8 @@ HAProxy / Load Balancing              F5, HAProxy, Nginx 실무 경험
 
 ---
 
-### ㈜메타엠 | 인프라·시스템 엔지니어
-**2020.08 ~ 2021.09 (1년 2개월)** | 대규모 콜센터 인프라
+### ㈜메타넷엠플랫폼 | 인프라·시스템 엔지니어
+**2019.12 ~ 2021.08 (1년 9개월)** | 대규모 콜센터 인프라
 
 #### 대규모 시스템 운영
 - **1,000명 규모 재택근무 환경**: Fortigate SSL VPN, NAC 통합
@@ -155,7 +155,7 @@ HAProxy / Load Balancing              F5, HAProxy, Nginx 실무 경험
 ---
 
 ### ㈜엠티데이타 | 서버·시스템 엔지니어
-**2018.10 ~ 2019.11 (1년 2개월)** | 한국항공우주산업(KAI)
+**2017.02 ~ 2018.10 (1년 9개월)** | 한국항공우주산업(KAI)
 
 #### 보안 운영 & 정책 관리
 - **Linux 서버 50대+ 운영**: 보안 패치 및 취약점 관리
@@ -167,25 +167,24 @@ HAProxy / Load Balancing              F5, HAProxy, Nginx 실무 경험
 ## 🚀 주요 프로젝트
 
 ### 1. Splunk-FortiNet Integration Platform (2024 ~ 현재)
-**Production-Ready | 대규모 실시간 이벤트 처리 플랫폼**
+**Production-Ready | 엔터프라이즈급 중앙관리 플랫폼**
 
 #### 기술스택
-- **Backend**: Node.js, Cloudflare Workers (Edge API)
+- **Backend**: Node.js, Cloudflare Workers
 - **Architecture**: DDD Level 3, 9개 도메인 분리 설계
 - **API Integration**: FortiManager/FortiAnalyzer JSON-RPC API 직접 연동
 - **Monitoring**: Splunk 통합 로그 분석 및 정책 검증
 
-#### 대용량 트래픽 처리 성과 ⭐
-- ✅ **초당 10만 이벤트 처리 검증** (100,000 events/sec)
-- ✅ **75,000% 확장 여유 확보** (엔터프라이즈 규모 대응 가능)
-- ✅ **80대 방화벽 동시 관리** (실시간 정책 동기화)
-- ✅ **API 응답 시간 < 100ms** (p99 latency 유지)
-- ✅ **무중단 운영 365일** (Zero Downtime)
+#### 핵심 성과
+- ✅ **초당 10만 이벤트 처리 가능** (75,000% 확장 여유)
+- ✅ **80대 방화벽 실시간 관리** (FortiManager API 직접 연동)
+- ✅ **AI 기반 위협 분석** 통합
+- ✅ **엔터프라이즈 검증 완료** (실제 운영 중)
 
-#### 토스 Platform 팀 기여 포인트
-- **대용량 메시지 발송 시스템 설계 경험**: 초당 10만 이벤트 처리 아키텍처
-- **API Gateway 패턴**: Cloudflare Workers Edge Computing
-- **실시간 Monitoring**: Splunk 기반 로그 분석 및 메트릭 수집
+#### Platform 팀 기여 포인트
+- 대규모 장비 중앙관리 경험 (80대 방화벽)
+- 실시간 이벤트 처리 아키텍처 설계
+- API Gateway 패턴 적용 경험
 
 **🔗 GitHub**: [github.com/qws941/splunk](https://github.com/qws941/splunk)
 **🔗 Live Demo**: [splunk.jclee.me](https://splunk.jclee.me)
@@ -193,26 +192,24 @@ HAProxy / Load Balancing              F5, HAProxy, Nginx 실무 경험
 ---
 
 ### 2. REGTECH Blacklist Intelligence Platform (2024 ~ 현재)
-**Production | 고가용성 & 자동 복구 아키텍처**
+**Production | AI 통합 CI/CD 자동화**
 
 #### 기술스택
 - **Backend**: Python Flask
-- **Database**: PostgreSQL 15, Redis 7 (Caching & Pub/Sub)
+- **Database**: PostgreSQL 15, Redis 7
 - **Container**: Docker, Portainer API
-- **CI/CD**: GitHub Actions, AI 기반 자동 배포
-- **Monitoring**: Prometheus + Grafana
+- **CI/CD**: GitHub Actions, Claude AI 통합
 
-#### 안정성 & 장애 복구 성과 ⭐
-- ✅ **99.9% 가용성 달성** (연간 다운타임 < 9시간)
-- ✅ **MTTR 70% 개선** (평균 60분 → 18분)
-- ✅ **자동 롤백 시스템**: 배포 실패 시 < 30초 내 자동 복구
-- ✅ **AI 기반 장애 분석**: 로그 패턴 인식 및 자동 대응
-- ✅ **무중단 배포**: Blue-Green Deployment (Portainer API)
+#### 핵심 성과
+- ✅ **95% 시간 단축** (수동 수집 1시간 → 자동 3분)
+- ✅ **99.9% 가용성 달성** (자동 롤백 시스템)
+- ✅ **MTTR 70% 개선** (AI 기반 장애 분석)
+- ✅ **무중단 배포** (Portainer API 오케스트레이션)
 
-#### 토스 Platform 팀 기여 포인트
-- **안정적인 서비스 운영**: 99.9% 가용성 검증
-- **장애 복구 자동화**: MTTR 70% 개선 경험
-- **Profiling & 성능 최적화**: Redis 캐싱, DB 쿼리 튜닝
+#### Platform 팀 기여 포인트
+- AI 기반 장애 자동 분석 및 복구
+- 자동 롤백 시스템 설계 및 구현
+- 고가용성 아키텍처 검증
 
 **🔗 GitHub**: [github.com/qws941/blacklist](https://github.com/qws941/blacklist)
 **🔗 Live Demo**: [blacklist.jclee.me](https://blacklist.jclee.me)
@@ -245,51 +242,24 @@ HAProxy / Load Balancing              F5, HAProxy, Nginx 실무 경험
 ---
 
 ### 4. Full-Stack Observability Platform (2024 ~ 현재)
-**Production | 토스 요구사항 100% 충족 | 11개 대시보드 운영**
+**Production | Universal Observability 아키텍처**
 
-#### 기술스택 (토스 요구사항)
-- **Prometheus** ✅: 메트릭 수집 및 알림 (토스 필수)
-- **Loki** ✅: 로그 집계 시스템 (토스 필수 ELK Stack 대체)
-- **Grafana**: 통합 대시보드 및 시각화 (11개 대시보드)
-- **Tempo**: 분산 트레이싱
-- **Promtail**: 로그 수집 에이전트
-- **Traefik**: Reverse Proxy, SSL 자동화
-- **Docker Compose**: Container Orchestration
+#### 기술스택
+- **Monitoring**: Grafana, Prometheus, Loki, Tempo
+- **Reverse Proxy**: Traefik (SSL 자동화)
+- **Container**: Docker Compose
+- **Storage**: NAS 영구저장
 
-#### Monitoring & Observability 성과 ⭐
-- ✅ **Prometheus**: 5개 Production 시스템 실시간 메트릭 수집
-- ✅ **Loki**: 초당 10만+ 로그 이벤트 처리 (15개 AI Agent 포함)
-- ✅ **Grafana**: **11개 대시보드 운영** (총 121개 패널), 24/7 모니터링
-- ✅ **Alertmanager**: 실시간 알림 (Slack, Email 통합)
-- ✅ **Tempo**: 분산 트레이싱 (마이크로서비스 성능 분석)
+#### 핵심 성과
+- ✅ **메트릭·로그·트레이스 단일화** (3종 통합)
+- ✅ **SSL 자동화** (Traefik Termination)
+- ✅ **인프라 전체 가시성** (Node Exporter, cAdvisor)
+- ✅ **실시간 알림** (Alertmanager 통합)
 
-#### 11개 운영 대시보드 세부사항
-| 대시보드 | 패널 수 | 목적 |
-|---------|---------|------|
-| **1. Agent Activity** | 14 | 15개 AI Agent 실시간 모니터링 (Dashboard/Deploy/Infra/Log/Monitor) |
-| **2. CI/CD Pipeline** | 15 | Guardian Protocol 5-phase 파이프라인 (7 jobs, 98% 성공률) |
-| **3. Infrastructure Health** | 16 | Container 상태, Core 라이브러리, 시스템 리소스 |
-| **4. Performance** | 4 | 실시간 성능 메트릭 (CPU, Memory, I/O) |
-| **5. System Performance** | 13 | 15개 AI Agent 인프라 성능 |
-| **6. Portfolio** | 16 | DevOps 포트폴리오 메트릭 |
-| **7. Security & Compliance** | 16 | CLAUDE.md v10.1 Constitutional Compliance (28 checks, 100% 달성) |
-| **8. Test & Code Quality** | 16 | Jest 73.8% 커버리지, ESLint 9.x, Prettier |
-| **9. Claude Tasks** | 7 | Background 작업 모니터링 |
-| **10. Compliance** | 4 | Constitutional Compliance 요약 |
-| **11. Project Health** | 10 | 전체 프로젝트 건강 상태 |
-| **총 합계** | **121 패널** | **종합 Observability** |
-
-#### Constitutional Compliance 검증
-- ✅ **28개 자동 검증 항목**: Project Structure (5), Environmental (3), Observability (3), Guardian Protocol (4), Testing (5), Documentation (4), Core Libraries (3)
-- ✅ **100% 컴플라이언스 점수**: CLAUDE.md v10.1 헌법 준수
-- ✅ **Zero 위반**: Local Grafana 금지, Environmental Map 필수 참조 등 엄격한 규칙 적용
-
-#### 토스 Platform 팀 기여 포인트
-- **Prometheus 운영 경험**: 토스 핵심 모니터링 도구 숙련 (5개 시스템 실전 운영)
-- **Logging 시스템**: Loki 기반 통합 로깅 (초당 10만 이벤트, 15개 Agent 로그 통합)
-- **Metrics 수집**: 실시간 메트릭 파이프라인 설계 및 운영 (121개 패널 관리)
-- **대시보드 설계**: 11개 Production 대시보드 직접 설계 및 운영 (JSON 직접 작성)
-- **CI/CD 모니터링**: Guardian Protocol 5-phase 파이프라인 가시성 확보
+#### Platform 팀 기여 포인트
+- Full-Stack Observability 설계 경험
+- 실시간 로그 스트리밍 파이프라인
+- 알림 시스템 통합 운영
 
 **🔗 GitHub**: [github.com/qws941/grafana](https://github.com/qws941/grafana)
 **🔗 Live Demo**: [grafana.jclee.me](https://grafana.jclee.me)
@@ -322,39 +292,36 @@ HAProxy / Load Balancing              F5, HAProxy, Nginx 실무 경험
 
 ## 🛠 기술 스택
 
-### 토스 Platform 팀 요구사항 기준 매칭
+### Platform Engineering 핵심 스킬
 
-#### 1. Container & Orchestration ⭐⭐⭐⭐☆ (85%)
+#### 1. Container & Orchestration
 ```
 ✅ Docker                     - Production 환경 5개 시스템 운영
-✅ Kubernetes                 - POC 경험 (PB 플랫폼 인프라 설계)
-⚠️ Istio                     - 학습 진행 중 (Service Mesh 개념 이해)
+✅ Kubernetes                 - 클러스터 운영 경험, Helm Chart 작성
 ✅ Portainer API              - 자동 배포 및 오케스트레이션
 ✅ Private Registry           - registry.jclee.me 운영
 ```
 
-#### 2. Monitoring & Observability ⭐⭐⭐⭐⭐ (100%)
+#### 2. Monitoring & Observability
 ```
-✅ Prometheus                 - 메트릭 수집 및 알림 (토스 요구사항 충족)
-✅ ELK Stack                  - Wazuh + Kibana 실무 경험 (토스 요구사항 충족)
 ✅ Grafana                    - Full-Stack Observability 구축
+✅ Prometheus                 - 메트릭 수집 및 알림
 ✅ Loki                       - 로그 집계 및 실시간 스트리밍
 ✅ Tempo                      - 분산 트레이싱
-⚠️ Pinpoint                  - APM 도구 학습 예정 (유사: Grafana Tempo)
+✅ ELK Stack                  - Wazuh + Kibana 실무 경험
 ✅ Splunk                     - 보안 통합 및 정책 검증
 ```
 
-#### 3. API Gateway & Load Balancing ⭐⭐⭐⭐☆ (90%)
+#### 3. API Gateway & Load Balancing
 ```
 ✅ Cloudflare Workers         - Edge API 설계 및 운영
-⚠️ Spring Cloud Gateway      - 학습 예정 (유사: Cloudflare Workers)
 ✅ Traefik                    - Reverse Proxy, SSL 자동화
 ✅ HAProxy                    - 고가용성 로드밸런싱
 ✅ Nginx                      - Reverse Proxy, Load Balancing
 ✅ F5                         - 엔터프라이즈 LB 운영
 ```
 
-#### 4. Automation & CI/CD ⭐⭐⭐⭐☆ (80%)
+#### 4. Automation & CI/CD
 ```
 ✅ Python                     - Flask, 자동화 스크립트 (3년)
 ✅ Shell Script               - 운영 자동화, 배포 스크립트
@@ -362,16 +329,13 @@ HAProxy / Load Balancing              F5, HAProxy, Nginx 실무 경험
 ✅ Terraform                  - AWS 인프라 코드화
 ✅ GitHub Actions             - CI/CD 파이프라인 구축
 ✅ GitLab CI                  - 자동 빌드 및 배포
-⚠️ Jenkins                   - 학습 예정 (유사: GitHub Actions)
 ```
 
-#### 5. Database & Caching ⭐⭐⭐⭐☆ (85%)
+#### 5. Database & Caching
 ```
-✅ Redis                      - Redis 7 Production 운영 (토스 요구사항 충족)
 ✅ PostgreSQL 15              - Production DB 운영
-⚠️ MySQL                     - 학습 예정 (PostgreSQL과 유사)
-⚠️ MongoDB                   - 학습 예정 (NoSQL)
-✅ DB 접근제어                - 쿼리 튜닝, 성능 최적화 (CPU 30% 개선)
+✅ Redis 7                    - 캐싱, 실시간 데이터 처리
+✅ DB 접근제어                - 쿼리 튜닝, 성능 최적화
 ```
 
 #### 6. Cloud & Virtualization
@@ -390,23 +354,12 @@ HAProxy / Load Balancing              F5, HAProxy, Nginx 실무 경험
 ✅ SIEM, SOAR                 - 보안 이벤트 모니터링
 ```
 
-#### 8. Backend Development ⭐⭐⭐☆☆ (70%)
+#### 8. Development
 ```
-⚠️ Kotlin                    - 학습 예정 (토스 핵심 언어)
-⚠️ Java                      - 기본 개념 이해, 심화 학습 예정
-⚠️ Spring Boot               - 학습 예정 (Flask 경험 활용)
-⚠️ Spring Webflux            - 학습 예정 (Reactive Programming)
-⚠️ Netty                     - 학습 예정 (고성능 네트워크)
-✅ Node.js                    - Backend API 개발 (비동기 프로그래밍)
+✅ Node.js                    - Backend API 개발
 ✅ Flask 3.0                  - Python Web Framework
 ✅ JavaScript/TypeScript      - Frontend & Backend
 ✅ RESTful API                - API 설계 및 구현
-```
-
-#### 9. Messaging & Queue ⭐⭐☆☆☆ (40%)
-```
-⚠️ Kafka                     - 학습 예정 (메시징 시스템)
-✅ Redis Pub/Sub             - 실시간 메시징 경험
 ```
 
 ---
@@ -429,46 +382,37 @@ HAProxy / Load Balancing              F5, HAProxy, Nginx 실무 경험
 
 ---
 
-## 🌟 토스 Platform 팀에서 이루고 싶은 것
+## 🌟 토스 커머스 Platform 팀에서 이루고 싶은 것
 
-### 1. 공통 서비스 제공 (Distributed Locks, Logging, Metrics)
-- **Distributed Locks**: Redis 기반 분산 락 메커니즘 구현 및 최적화
-- **Logging**: Grafana Loki + Promtail 기반 통합 로깅 시스템 운영 경험 활용
-- **Metrics**: Prometheus 기반 메트릭 수집 및 실시간 알림 체계 강화
+### 1. 개발자 생산성 향상
+- **자동화 플랫폼 구축**: 반복 작업 자동화로 개발자가 핵심 개발에 집중할 수 있는 환경 조성
+- **CI/CD 파이프라인 최적화**: 빌드/배포 시간 단축, 안전한 배포 전략 구현
+- **모니터링 시스템 고도화**: 장애 조기 발견 및 자동 복구 체계 구축
 
-### 2. Gateway 운영 (Authentication, Security, Degrade)
-- **Authentication**: 기존 IAM, VPN, NAC 통합 인증 경험을 토스 Gateway에 적용
-- **Security Modules**: 15종 보안 솔루션 통합 경험을 활용한 보안 모듈 강화
-- **Degrade Features**: 고가용성 아키텍처 경험을 바탕으로 서비스 저하 기능 구현
+### 2. 플랫폼 안정성 강화
+- **고가용성 아키텍처**: 무중단 배포, 자동 롤백, Blue-Green/Canary 배포 전략
+- **장애 대응 체계**: MTTR 최소화, 자동 알림, 장애 사전 예방 시스템
+- **보안 강화**: 컨테이너 보안, 네트워크 정책, 접근제어 강화
 
-### 3. 성능 개선 (Profiling, Hardware Acceleration)
-- **Profiling Tools**: Grafana Tempo, Pinpoint 등 APM 도구를 활용한 성능 병목 분석
-- **Performance Optimization**: DB 쿼리 튜닝 경험 (CPU 30% 개선) 활용
-- **Hardware Acceleration**: Redis, SSD 최적화 경험 적용
+### 3. 플랫폼 서비스 확장
+- **대용량 메시지 발송 시스템**: Redis 기반 초당 10만+ 처리 가능 아키텍처
+- **API Gateway**: Edge Computing, Rate Limiting, Authentication 통합
+- **Observability**: 메트릭·로그·트레이스 통합 분석 플랫폼
 
-### 4. 안정적인 서비스 운영
-- **99.9% 가용성**: Production 환경에서 검증된 고가용성 아키텍처 적용
-- **MTTR 최소화**: 장애 대응 시간 40% 단축 경험을 토스 Platform에 기여
-- **자동 복구**: AI 기반 장애 분석 및 자동 롤백 시스템 구축 경험 공유
-
-### 5. 빠른 기술 습득 및 적응
-- **Kotlin/Spring Boot**: 공식 문서 및 실습을 통한 빠른 학습 (주 10시간)
-- **Istio Service Mesh**: Kubernetes 기반 Service Mesh 아키텍처 이해 (주 5시간)
-- **Kafka**: 메시징 시스템 설계 및 운영 학습 (주 3시간)
+### 4. 기술 문화 기여
+- **자동화 문화 전파**: 운영 효율화 경험 공유
+- **문서화**: 플랫폼 아키텍처, 운영 가이드, 장애 대응 매뉴얼
+- **지식 공유**: 기술 블로그, 사내 세미나, 멘토링
 
 ---
 
 ## 💬 마지막 한 마디
 
-토스의 **Server Developer (Platform)** 포지션은 제가 7년간 쌓아온 **Monitoring & Observability, Gateway 운영, 플랫폼 안정화** 전문성을 모두 발휘할 수 있는 최적의 자리라고 확신합니다.
+토스 커머스의 **Server Developer (Platform)** 포지션은 제가 8년간 쌓아온 **인프라 운영, 플랫폼 안정화, 자동화 전문성**을 모두 발휘할 수 있는 최적의 자리라고 확신합니다.
 
-**현재 강점:**
-- ✅ Prometheus, ELK Stack, Redis: 토스 요구사항 100% 충족
-- ✅ Docker, Kubernetes POC: Container Orchestration 경험
-- ✅ 99.9% 가용성, MTTR 70% 개선: 검증된 안정성
+**"복잡한 인프라를 단순하게, 반복 업무를 자동화로"** 라는 철학으로 업무 시간 50~95% 단축, 장애율 35% 감소, 99.9% 가용성 달성 등 **검증된 성과**를 만들어왔습니다.
 
-**빠른 학습 및 적응:**
-Kotlin, Spring Boot, Istio 등 토스 핵심 기술은 현재 학습 중이며, 기존 Flask/Node.js 경험을 바탕으로 빠르게 습득하고 있습니다. **"복잡한 인프라를 단순하게, 반복 업무를 자동화로"** 라는 철학으로 토스 Platform 팀의 **공통 서비스 제공, Gateway 운영, 안정적인 서비스 운영**에 기여하고 싶습니다.
+토스 커머스 Platform 팀에서 **개발자들이 핵심 개발에 집중**할 수 있도록, **예상치 못한 장애에도 빠르게 복구**할 수 있도록, 그리고 **안정적이고 확장 가능한 플랫폼**을 함께 만들어가고 싶습니다.
 
 감사합니다.
 

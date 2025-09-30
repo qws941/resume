@@ -48,7 +48,13 @@ toss/
 cat toss_commerce_server_developer_platform_resume.md
 ```
 
-### 2. PDF conversion
+### 2. Latest PDF (v3.0 - 2025.09.30 19:19)
+```bash
+lee_jaecheol_toss_platform_resume_final_v3.pdf  # 165KB
+# 11개 Grafana 대시보드 정보 현행화 완료
+```
+
+### 3. PDF conversion
 ```bash
 # Online converter (fastest)
 # https://www.markdowntopdf.com/
@@ -57,12 +63,12 @@ cat toss_commerce_server_developer_platform_resume.md
 ./pdf-convert.sh
 ```
 
-### 3. Interview preparation
+### 4. Interview preparation
 ```bash
 cat toss_commerce_interview_qa.md
 ```
 
-### 4. Check action plan
+### 5. Check action plan
 ```bash
 cat toss_commerce_action_plan.md
 ```
@@ -96,7 +102,8 @@ cat toss_commerce_action_plan.md
 ## 🔗 중요 링크
 
 ### 제출 자료
-- **최종 이력서 PDF**: lee_jaecheol_toss_platform_resume_final_v2.pdf (158KB)
+- **최종 이력서 PDF**: lee_jaecheol_toss_platform_resume_final_v3.pdf (165KB) ⬆️ **NEW**
+- **이전 버전 PDF**: lee_jaecheol_toss_platform_resume_final_v2.pdf (158KB)
 - **Wanted 자기소개서**: wanted_complete_application.md
 - **매칭도 분석**: toss_platform_requirements_analysis_2025.md
 
