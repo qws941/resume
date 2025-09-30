@@ -50,12 +50,17 @@ resume/
 
 ## 📊 경력 요약
 
-- **총 경력**: 7년 8개월 (2017.02 ~ 현재)
+- **총 경력**: 8년 7개월 (2017.02 ~ 현재)
+- **현재 직무**: ㈜아이티센 CTS 정보보안 운영 엔지니어
 - **핵심 분야**: 인프라·보안 엔지니어
+- **주요 성과**:
+  - 15종 이상 보안 솔루션 통합 운영
+  - 업무 자동화로 50~95% 시간 단축
+  - 프로덕션 시스템 99.9% 가용성 달성
 - **주요 기술**:
-  - 보안 솔루션 (NAC, DLP, EDR, APT 등)
-  - 클라우드 (AWS, Kubernetes)
-  - 자동화 (Python, Ansible)
+  - 보안 솔루션 (DDoS, IPS, WAF, NAC, DLP, EDR, APT)
+  - 클라우드 & 컨테이너 (AWS, Docker, Kubernetes, Portainer API)
+  - 자동화 (Python, Ansible, CI/CD)
 
 ## 🎯 사용 방법
 
@@ -79,6 +84,12 @@ python scripts/generate_company_resume.py --company="회사명"
 
 ## 🔄 업데이트 이력
 
+- **2025.09.30**: 이력서 전면 현행화 및 고도화
+  - 최신 경력 추가 (아이티센 CTS, 2025.03~)
+  - GitHub 프로젝트 3종 추가 (Blacklist, FortiGate, Splunk)
+  - 모든 성과를 정량적 지표로 강화 (Before/After 수치 명시)
+  - 기술 스택 현행화 (Portainer API, 컨테이너 오케스트레이션)
+  - 웹 포트폴리오 콘텐츠 동기화
 - **2024.09.30**: 프로젝트 구조 고도화 (web, data, archive 세분화)
 - **2024.09.26**: 마스터 이력서 통합본 생성
 - **2024.09.26**: 폴더 구조 재정비
