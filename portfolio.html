@@ -12,149 +12,158 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'SF Pro Display', 'Segoe UI', sans-serif;
-            line-height: 1.7;
-            color: #1a1a1a;
-            background: #fafafa;
+            font-family: -apple-system, BlinkMacSystemFont, 'Pretendard', 'Inter', 'SF Pro Display', sans-serif;
+            line-height: 1.6;
+            color: #1f2937;
+            background: #f9fafb;
             min-height: 100vh;
             font-weight: 400;
             letter-spacing: -0.01em;
         }
 
         .container {
-            max-width: 900px;
+            max-width: 1000px;
             margin: 0 auto;
-            padding: 60px 20px;
+            padding: 40px 24px;
         }
 
         .header {
             background: #ffffff;
-            border-radius: 16px;
-            padding: 60px 40px;
-            margin-bottom: 40px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 8px 32px rgba(0,0,0,0.06);
-            text-align: center;
-            border: 1px solid rgba(0,0,0,0.05);
+            border-radius: 8px;
+            padding: 48px 40px;
+            margin-bottom: 32px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+            border: 1px solid #e5e7eb;
         }
 
         .profile-img {
-            width: 120px;
-            height: 120px;
+            width: 80px;
+            height: 80px;
             border-radius: 50%;
-            margin: 0 auto 32px;
-            background: #2563eb;
+            margin-bottom: 24px;
+            background: #111827;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 36px;
+            font-size: 28px;
             color: white;
-            font-weight: 600;
+            font-weight: 700;
             letter-spacing: -0.02em;
         }
 
         .name {
-            font-size: 2.25rem;
+            font-size: 2rem;
             font-weight: 700;
             color: #111827;
-            margin-bottom: 12px;
-            letter-spacing: -0.025em;
+            margin-bottom: 8px;
+            letter-spacing: -0.03em;
         }
 
         .title {
-            font-size: 1.125rem;
+            font-size: 1rem;
             color: #6b7280;
-            margin-bottom: 32px;
+            margin-bottom: 24px;
             font-weight: 500;
         }
 
         .intro {
-            font-size: 1rem;
-            line-height: 1.8;
-            color: #374151;
-            max-width: 600px;
-            margin: 0 auto;
-            font-weight: 400;
+            font-size: 0.95rem;
+            line-height: 1.7;
+            color: #4b5563;
+            max-width: 700px;
         }
 
         .section {
             background: #ffffff;
-            border-radius: 16px;
-            padding: 48px 40px;
-            margin-bottom: 32px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 8px 32px rgba(0,0,0,0.06);
-            border: 1px solid rgba(0,0,0,0.05);
+            border-radius: 8px;
+            padding: 40px;
+            margin-bottom: 24px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+            border: 1px solid #e5e7eb;
         }
 
         .section-title {
-            font-size: 1.75rem;
+            font-size: 1.5rem;
             font-weight: 700;
             color: #111827;
-            margin-bottom: 36px;
-            text-align: left;
+            margin-bottom: 32px;
             letter-spacing: -0.025em;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #111827;
         }
 
         .experience-item {
-            margin-bottom: 48px;
+            margin-bottom: 40px;
+            padding-left: 20px;
             border-left: 2px solid #e5e7eb;
-            padding-left: 24px;
             position: relative;
         }
 
         .experience-item::before {
             content: '';
             position: absolute;
-            left: -5px;
-            top: 6px;
-            width: 8px;
-            height: 8px;
-            background: #2563eb;
+            left: -6px;
+            top: 4px;
+            width: 10px;
+            height: 10px;
+            background: #111827;
             border-radius: 50%;
         }
 
+        .experience-item:last-child {
+            margin-bottom: 0;
+        }
+
         .company {
-            font-size: 1.125rem;
+            font-size: 1.05rem;
             font-weight: 600;
             color: #111827;
-            margin-bottom: 6px;
+            margin-bottom: 4px;
             letter-spacing: -0.01em;
         }
 
         .period {
             color: #6b7280;
-            margin-bottom: 16px;
+            margin-bottom: 12px;
             font-weight: 400;
-            font-size: 0.875rem;
+            font-size: 0.85rem;
+        }
+
+        .experience-item > p {
+            font-size: 0.9rem;
+            color: #4b5563;
+            margin-bottom: 12px;
+            line-height: 1.6;
         }
 
         .achievement {
             background: #f9fafb;
-            padding: 20px;
-            border-radius: 12px;
-            margin: 16px 0;
-            border-left: 3px solid #10b981;
-            font-size: 0.9rem;
+            padding: 16px;
+            border-radius: 6px;
+            margin: 12px 0;
+            border-left: 3px solid #111827;
+            font-size: 0.875rem;
             line-height: 1.6;
+            color: #4b5563;
         }
 
         .skills-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 24px;
-            margin-top: 24px;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
         }
 
         .skill-category {
-            background: #f9fafb;
-            padding: 28px;
-            border-radius: 12px;
-            border: 1px solid #f3f4f6;
+            background: #fafafa;
+            padding: 24px;
+            border-radius: 6px;
+            border: 1px solid #e5e7eb;
         }
 
         .skill-category h3 {
             color: #111827;
-            margin-bottom: 20px;
-            font-size: 1.125rem;
+            margin-bottom: 16px;
+            font-size: 1rem;
             font-weight: 600;
             letter-spacing: -0.01em;
         }
@@ -166,115 +175,129 @@
         }
 
         .skill-tag {
-            background: #e5e7eb;
-            color: #374151;
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-size: 0.875rem;
+            background: #ffffff;
+            color: #4b5563;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 0.8rem;
             font-weight: 500;
             border: 1px solid #d1d5db;
-            transition: all 0.2s ease;
+            transition: all 0.15s ease;
         }
 
         .skill-tag:hover {
-            background: #2563eb;
+            background: #111827;
             color: white;
-            border-color: #2563eb;
+            border-color: #111827;
         }
 
         .project-card {
-            background: #f9fafb;
-            border-radius: 12px;
-            padding: 32px;
-            margin-bottom: 24px;
-            border: 1px solid #f3f4f6;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            background: #fafafa;
+            border-radius: 6px;
+            padding: 28px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e7eb;
+            transition: all 0.15s ease;
         }
 
         .project-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            border-color: #111827;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .project-card:last-child {
+            margin-bottom: 0;
         }
 
         .project-title {
-            font-size: 1.25rem;
+            font-size: 1.15rem;
             font-weight: 600;
             color: #111827;
-            margin-bottom: 16px;
+            margin-bottom: 12px;
             letter-spacing: -0.01em;
+        }
+
+        .project-card > p {
+            font-size: 0.875rem;
+            line-height: 1.6;
+            color: #4b5563;
+            margin-bottom: 8px;
         }
 
         .project-url {
             display: inline-block;
-            background: #2563eb;
+            background: #111827;
             color: white;
-            padding: 12px 24px;
-            border-radius: 8px;
+            padding: 10px 20px;
+            border-radius: 4px;
             text-decoration: none;
-            margin-top: 20px;
-            font-size: 0.9rem;
+            margin-top: 16px;
+            font-size: 0.85rem;
             font-weight: 500;
-            transition: background 0.2s ease;
+            transition: background 0.15s ease;
         }
 
         .project-url:hover {
-            background: #1d4ed8;
+            background: #374151;
         }
 
         .contact {
             text-align: center;
-            margin-top: 40px;
-            padding: 40px;
-            background: #f9fafb;
-            border-radius: 12px;
-            border: 1px solid #f3f4f6;
+            margin-top: 32px;
+            padding: 32px;
+            background: #fafafa;
+            border-radius: 6px;
+            border: 1px solid #e5e7eb;
         }
 
         .contact-item {
             display: inline-block;
-            margin: 8px 12px;
-            padding: 12px 20px;
+            margin: 6px 8px;
+            padding: 10px 18px;
             background: #ffffff;
-            border-radius: 8px;
-            color: #374151;
+            border-radius: 4px;
+            color: #4b5563;
             text-decoration: none;
-            transition: all 0.2s ease;
-            border: 1px solid #e5e7eb;
-            font-size: 0.9rem;
+            transition: all 0.15s ease;
+            border: 1px solid #d1d5db;
+            font-size: 0.85rem;
             font-weight: 500;
         }
 
         .contact-item:hover {
-            background: #2563eb;
+            background: #111827;
             color: white;
-            border-color: #2563eb;
-            transform: translateY(-1px);
+            border-color: #111827;
         }
 
         .goals {
-            background: #2563eb;
-            color: white;
-            text-align: center;
-            font-size: 1rem;
+            background: #111827;
+            color: #e5e7eb;
+            text-align: left;
+            font-size: 0.95rem;
             line-height: 1.7;
         }
 
         .goals .section-title {
             color: white;
-            text-align: center;
+            border-bottom-color: white;
         }
 
         @media (max-width: 768px) {
             .container {
-                padding: 20px 16px;
+                padding: 24px 16px;
             }
 
             .header, .section {
-                padding: 32px 24px;
+                padding: 28px 24px;
             }
 
             .name {
-                font-size: 2rem;
+                font-size: 1.75rem;
+            }
+
+            .section-title {
+                font-size: 1.25rem;
             }
 
             .skills-grid {
@@ -283,16 +306,16 @@
             }
 
             .contact {
-                padding: 32px 24px;
+                padding: 28px 20px;
             }
 
             .contact-item {
                 display: block;
-                margin: 8px 0;
+                margin: 6px 0;
             }
 
             .experience-item {
-                margin-bottom: 36px;
+                margin-bottom: 32px;
             }
         }
     </style>
@@ -301,12 +324,11 @@
     <div class="container">
         <!-- Header -->
         <div class="header">
-            <div class="profile-img">이재철</div>
-            <h1 class="name">이재철</h1>
-            <p class="title">인프라·보안 엔지니어 · 7년차</p>
+            <div class="profile-img">JC</div>
+            <h1 class="name">이재철 Jaecheol Lee</h1>
+            <p class="title">Infrastructure & Security Engineer · 7 Years Experience</p>
             <p class="intro">
-                금융·교육·제조업에서 인프라 보안을 담당하며 복잡한 시스템 문제를 단순하게 해결해왔습니다.
-                반복 작업의 Python 자동화를 통해 팀 효율성을 높이고, 동료들이 핵심 업무에 집중할 수 있는 환경을 만드는 것을 추구합니다.
+                금융·교육·제조업 인프라 보안 전문가. 복잡한 시스템 문제를 단순하게 해결하고, Python 자동화를 통해 팀 생산성을 향상시킵니다.
             </p>
         </div>
 
