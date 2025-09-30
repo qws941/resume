@@ -154,27 +154,28 @@
         /* Project Cards */
         .projects-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
-            gap: 48px;
+            grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+            gap: 32px;
         }
 
         .project-card {
-            background: #fafafa;
-            border-radius: 12px;
+            background: #ffffff;
+            border-radius: 16px;
             overflow: hidden;
             transition: all 0.3s ease;
             border: 1px solid #e5e7eb;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
         }
 
         .project-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-            border-color: #111827;
+            transform: translateY(-4px);
+            box-shadow: 0 12px 32px rgba(0,0,0,0.12);
+            border-color: #3b82f6;
         }
 
         .project-image {
-            height: 240px;
-            background: linear-gradient(135deg, #111827 0%, #374151 100%);
+            height: 180px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -190,18 +191,19 @@
             right: 0;
             bottom: 0;
             background:
-                radial-gradient(circle at 30% 50%, rgba(59, 130, 246, 0.2) 0%, transparent 50%),
-                radial-gradient(circle at 70% 80%, rgba(139, 92, 246, 0.2) 0%, transparent 50%);
+                radial-gradient(circle at 30% 40%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 70% 70%, rgba(255, 255, 255, 0.05) 0%, transparent 50%);
         }
 
         .project-icon {
-            font-size: 4rem;
-            color: rgba(255, 255, 255, 0.9);
+            font-size: 3.5rem;
+            color: rgba(255, 255, 255, 1);
             z-index: 1;
+            filter: drop-shadow(0 4px 12px rgba(0,0,0,0.2));
         }
 
         .project-content {
-            padding: 32px;
+            padding: 28px;
         }
 
         .project-header {
@@ -209,78 +211,80 @@
         }
 
         .project-title {
-            font-size: 1.5rem;
+            font-size: 1.4rem;
             font-weight: 700;
             color: #111827;
-            margin-bottom: 8px;
-            letter-spacing: -0.01em;
+            margin-bottom: 10px;
+            letter-spacing: -0.02em;
         }
 
         .project-tech {
-            font-size: 0.875rem;
-            color: #6b7280;
-            font-weight: 500;
+            font-size: 0.85rem;
+            color: #3b82f6;
+            font-weight: 600;
+            letter-spacing: 0.02em;
         }
 
         .project-description {
-            font-size: 1rem;
+            font-size: 0.95rem;
             color: #4b5563;
             line-height: 1.7;
-            margin-bottom: 24px;
+            margin-bottom: 20px;
         }
 
         .project-features {
-            margin-bottom: 24px;
+            margin-bottom: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
         }
 
         .feature-item {
-            font-size: 0.875rem;
-            color: #6b7280;
-            margin-bottom: 8px;
-            padding-left: 20px;
-            position: relative;
-        }
-
-        .feature-item::before {
-            content: '→';
-            position: absolute;
-            left: 0;
-            color: #111827;
-            font-weight: 600;
+            font-size: 0.8rem;
+            color: #1f2937;
+            background: #f3f4f6;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-weight: 500;
         }
 
         .project-links {
             display: flex;
-            gap: 12px;
+            gap: 10px;
         }
 
         .project-link {
-            padding: 10px 20px;
-            border-radius: 6px;
+            padding: 11px 24px;
+            border-radius: 8px;
             font-size: 0.875rem;
             font-weight: 600;
             text-decoration: none;
             transition: all 0.2s ease;
+            flex: 1;
+            text-align: center;
         }
 
         .link-primary {
-            background: #111827;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: #ffffff;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
         }
 
         .link-primary:hover {
-            background: #000000;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
         }
 
         .link-secondary {
-            background: transparent;
-            color: #111827;
-            border: 1px solid #d1d5db;
+            background: #f9fafb;
+            color: #4b5563;
+            border: 1px solid #e5e7eb;
         }
 
         .link-secondary:hover {
-            background: #f9fafb;
-            border-color: #111827;
+            background: #ffffff;
+            border-color: #d1d5db;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
         }
 
         /* Footer */
@@ -460,9 +464,9 @@
                             Enterprise-grade security event processing system. FortiManager/FortiAnalyzer 직접 API 연동을 통한 80+ FortiGate 장비 중앙 관리 및 실시간 보안 이벤트 처리.
                         </p>
                         <div class="project-features">
-                            <div class="feature-item">100,000+ 이벤트/초 처리 능력</div>
-                            <div class="feature-item">AI 기반 위협 분석 시스템</div>
-                            <div class="feature-item">Domain-Driven Design Level 3</div>
+                            <span class="feature-item">100K+ 이벤트/초</span>
+                            <span class="feature-item">AI 위협 분석</span>
+                            <span class="feature-item">DDD Level 3</span>
                         </div>
                         <div class="project-links">
                             <a href="https://splunk.jclee.me" target="_blank" class="project-link link-primary">Live Demo</a>
@@ -485,9 +489,9 @@
                             산업보건 관리 시스템. 종이 기반 근골격계 설문조사의 디지털 전환을 통한 업무 효율성 개선 및 다수 중소기업 운영 중.
                         </p>
                         <div class="project-features">
-                            <div class="feature-item">익명성 보장 설문조사 시스템</div>
-                            <div class="feature-item">실시간 통계 분석 대시보드</div>
-                            <div class="feature-item">집계 오류 제거 자동화</div>
+                            <span class="feature-item">익명성 보장</span>
+                            <span class="feature-item">실시간 통계</span>
+                            <span class="feature-item">자동 집계</span>
                         </div>
                         <div class="project-links">
                             <a href="https://safework.jclee.me" target="_blank" class="project-link link-primary">Live Demo</a>
@@ -510,9 +514,9 @@
                             위협 인텔리전스 통합 관리 플랫폼. 다중 소스 위협 정보 자동 수집 및 일일 2시간 소요 업무 완전 자동화로 보안팀 분석 역량 집중.
                         </p>
                         <div class="project-features">
-                            <div class="feature-item">다중 소스 위협 정보 통합</div>
-                            <div class="feature-item">실시간 자동 수집 시스템</div>
-                            <div class="feature-item">소스별 통합 관리 대시보드</div>
+                            <span class="feature-item">다중 소스 통합</span>
+                            <span class="feature-item">실시간 수집</span>
+                            <span class="feature-item">통합 대시보드</span>
                         </div>
                         <div class="project-links">
                             <a href="https://blacklist.jclee.me" target="_blank" class="project-link link-primary">Live Demo</a>
@@ -535,9 +539,9 @@
                             방화벽 정책 배포 자동화 시스템. FortiManager API 연동을 통한 일일 3시간 소요 방화벽 정책 배포 작업 완전 자동화.
                         </p>
                         <div class="project-features">
-                            <div class="feature-item">FortiManager JSON-RPC API 연동</div>
-                            <div class="feature-item">실시간 정책 검증 시스템</div>
-                            <div class="feature-item">자동 롤백 기능</div>
+                            <span class="feature-item">JSON-RPC API</span>
+                            <span class="feature-item">실시간 검증</span>
+                            <span class="feature-item">자동 롤백</span>
                         </div>
                         <div class="project-links">
                             <a href="https://fortinet.jclee.me" target="_blank" class="project-link link-primary">Live Demo</a>
@@ -560,9 +564,9 @@
                             통합 관측성 플랫폼. Prometheus 메트릭, Loki 로그, Tempo 트레이싱을 통한 full-stack 모니터링 및 실시간 알림 시스템.
                         </p>
                         <div class="project-features">
-                            <div class="feature-item">통합 메트릭, 로그, 트레이싱</div>
-                            <div class="feature-item">실시간 알림 및 대시보드</div>
-                            <div class="feature-item">서비스 헬스 모니터링</div>
+                            <span class="feature-item">통합 관측성</span>
+                            <span class="feature-item">실시간 알림</span>
+                            <span class="feature-item">헬스 모니터링</span>
                         </div>
                         <div class="project-links">
                             <a href="https://grafana.jclee.me" target="_blank" class="project-link link-primary">Live Demo</a>
