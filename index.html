@@ -26,7 +26,7 @@
             align-items: center;
             justify-content: center;
             padding: 80px 24px;
-            background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
+            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
             position: relative;
             overflow: hidden;
         }
@@ -92,29 +92,32 @@
         }
 
         .cta-primary {
-            background: #ffffff;
-            color: #000000;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #ffffff;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
         }
 
         .cta-primary:hover {
-            background: #e5e7eb;
             transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
         }
 
         .cta-secondary {
-            background: transparent;
+            background: rgba(255, 255, 255, 0.1);
             color: #ffffff;
-            border: 2px solid #374151;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(10px);
         }
 
         .cta-secondary:hover {
-            border-color: #ffffff;
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.5);
         }
 
         /* Projects Section */
         .projects-section {
             padding: 120px 24px;
-            background: #ffffff;
+            background: linear-gradient(to bottom, #ffffff 0%, #f9fafb 100%);
         }
 
         .container {
@@ -137,11 +140,15 @@
         }
 
         .section-title {
-            font-size: 3rem;
+            font-size: 2.75rem;
             font-weight: 800;
             color: #111827;
             margin-bottom: 16px;
             letter-spacing: -0.03em;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         .section-description {
@@ -175,12 +182,31 @@
 
         .project-image {
             height: 180px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             display: flex;
             align-items: center;
             justify-content: center;
             position: relative;
             overflow: hidden;
+        }
+
+        .project-card:nth-child(1) .project-image {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .project-card:nth-child(2) .project-image {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        .project-card:nth-child(3) .project-image {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+
+        .project-card:nth-child(4) .project-image {
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+        }
+
+        .project-card:nth-child(5) .project-image {
+            background: linear-gradient(135deg, #30cfd0 0%, #330867 100%);
         }
 
         .project-image::before {
@@ -290,7 +316,7 @@
         /* Footer */
         .footer {
             padding: 80px 24px;
-            background: #111827;
+            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
             text-align: center;
         }
 
@@ -461,12 +487,12 @@
                             <p class="project-tech">Node.js · Cloudflare Workers · DDD Architecture</p>
                         </div>
                         <p class="project-description">
-                            Enterprise-grade security event processing system. FortiManager/FortiAnalyzer 직접 API 연동을 통한 80+ FortiGate 장비 중앙 관리 및 실시간 보안 이벤트 처리.
+                            80+ FortiGate 장비 중앙 관리 및 보안 이벤트 처리. FortiManager/FortiAnalyzer API 직접 연동, DDD 아키텍처 기반 엔터프라이즈급 시스템.
                         </p>
                         <div class="project-features">
                             <span class="feature-item">100K+ 이벤트/초</span>
                             <span class="feature-item">AI 위협 분석</span>
-                            <span class="feature-item">DDD Level 3</span>
+                            <span class="feature-item">80+ 장비 관리</span>
                         </div>
                         <div class="project-links">
                             <a href="https://splunk.jclee.me" target="_blank" class="project-link link-primary">Live Demo</a>
@@ -486,12 +512,12 @@
                             <p class="project-tech">Flask · PostgreSQL · Redis · Bootstrap</p>
                         </div>
                         <p class="project-description">
-                            산업보건 관리 시스템. 종이 기반 근골격계 설문조사의 디지털 전환을 통한 업무 효율성 개선 및 다수 중소기업 운영 중.
+                            근골격계 설문조사 디지털 전환. 종이 기반 프로세스를 완전 자동화하여 집계 오류 제거 및 업무 효율성 극대화. 다수 중소기업 실운영.
                         </p>
                         <div class="project-features">
                             <span class="feature-item">익명성 보장</span>
-                            <span class="feature-item">실시간 통계</span>
-                            <span class="feature-item">자동 집계</span>
+                            <span class="feature-item">즉시 분석</span>
+                            <span class="feature-item">오류 제로</span>
                         </div>
                         <div class="project-links">
                             <a href="https://safework.jclee.me" target="_blank" class="project-link link-primary">Live Demo</a>
@@ -511,12 +537,12 @@
                             <p class="project-tech">Python · Flask · PostgreSQL · Docker</p>
                         </div>
                         <p class="project-description">
-                            위협 인텔리전스 통합 관리 플랫폼. 다중 소스 위협 정보 자동 수집 및 일일 2시간 소요 업무 완전 자동화로 보안팀 분석 역량 집중.
+                            위협 인텔리전스 자동화 플랫폼. 다중 소스에서 위협 정보를 자동 수집·분석하여 일일 2시간 업무를 완전 자동화. 보안팀 분석 역량 집중.
                         </p>
                         <div class="project-features">
-                            <span class="feature-item">다중 소스 통합</span>
-                            <span class="feature-item">실시간 수집</span>
-                            <span class="feature-item">통합 대시보드</span>
+                            <span class="feature-item">다중 소스</span>
+                            <span class="feature-item">자동 수집</span>
+                            <span class="feature-item">2시간 절감</span>
                         </div>
                         <div class="project-links">
                             <a href="https://blacklist.jclee.me" target="_blank" class="project-link link-primary">Live Demo</a>
@@ -536,11 +562,11 @@
                             <p class="project-tech">Python · Flask · FortiManager API</p>
                         </div>
                         <p class="project-description">
-                            방화벽 정책 배포 자동화 시스템. FortiManager API 연동을 통한 일일 3시간 소요 방화벽 정책 배포 작업 완전 자동화.
+                            방화벽 정책 배포 자동화. FortiManager JSON-RPC API 연동으로 일일 3시간 소요 작업 완전 자동화. 정책 검증 및 롤백 기능 내장.
                         </p>
                         <div class="project-features">
-                            <span class="feature-item">JSON-RPC API</span>
-                            <span class="feature-item">실시간 검증</span>
+                            <span class="feature-item">3시간 절감</span>
+                            <span class="feature-item">즉시 검증</span>
                             <span class="feature-item">자동 롤백</span>
                         </div>
                         <div class="project-links">
@@ -561,12 +587,12 @@
                             <p class="project-tech">Grafana · Prometheus · Loki · Tempo</p>
                         </div>
                         <p class="project-description">
-                            통합 관측성 플랫폼. Prometheus 메트릭, Loki 로그, Tempo 트레이싱을 통한 full-stack 모니터링 및 실시간 알림 시스템.
+                            Full-stack 관측성 플랫폼. Prometheus 메트릭, Loki 로그, Tempo 트레이싱 통합. 서비스 헬스 체크 및 알림 자동화.
                         </p>
                         <div class="project-features">
-                            <span class="feature-item">통합 관측성</span>
-                            <span class="feature-item">실시간 알림</span>
-                            <span class="feature-item">헬스 모니터링</span>
+                            <span class="feature-item">메트릭·로그·트레이스</span>
+                            <span class="feature-item">알림 자동화</span>
+                            <span class="feature-item">헬스 체크</span>
                         </div>
                         <div class="project-links">
                             <a href="https://grafana.jclee.me" target="_blank" class="project-link link-primary">Live Demo</a>
