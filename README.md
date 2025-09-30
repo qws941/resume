@@ -7,11 +7,27 @@ resume/
 ├── master/                   # 마스터 이력서 (최신 통합본)
 │   └── 이재철_이력서_마스터.md
 ├── company-specific/         # 회사별 맞춤 이력서
-├── archive/                  # 이전 버전 아카이브
-│   ├── *.docx               # 기존 DOCX 파일들
-│   └── *.pdf                # 기존 PDF 파일들
+├── archive/                  # 회사별 이전 버전 아카이브
+│   ├── 11번가/
+│   ├── Coupangpay/
+│   ├── Toss/
+│   ├── 스마일게이트/
+│   ├── 현대오토에버/
+│   ├── 배민/
+│   ├── 당근/
+│   ├── 프리랜서/
+│   └── 기타/
+├── web/                      # 웹 포트폴리오
+│   ├── index.html           # 메인 포트폴리오 페이지
+│   ├── resume.html          # 이력서 HTML 버전
+│   └── worker.js            # 웹 워커 스크립트
+├── data/                     # 데이터 파일
+│   ├── extracted/           # 추출된 이력서 데이터 (JSON)
+│   └── templates/           # 이력서 템플릿
 ├── assets/                   # 이미지, 로고 등 리소스
 └── scripts/                  # 자동화 스크립트
+    ├── generators/          # 이력서 생성 스크립트
+    └── *.py                 # Python 유틸리티
 ```
 
 ## 🚀 주요 기능
@@ -63,6 +79,7 @@ python scripts/generate_company_resume.py --company="회사명"
 
 ## 🔄 업데이트 이력
 
+- **2024.09.30**: 프로젝트 구조 고도화 (web, data, archive 세분화)
 - **2024.09.26**: 마스터 이력서 통합본 생성
 - **2024.09.26**: 폴더 구조 재정비
 - **2024.09.26**: GitHub 프로필 정보 연동
