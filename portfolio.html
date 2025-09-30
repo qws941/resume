@@ -336,16 +336,30 @@
         @media (max-width: 1024px) {
             .projects-grid {
                 grid-template-columns: 1fr;
+                gap: 32px;
+            }
+
+            .project-card {
+                max-width: 600px;
+                margin: 0 auto;
             }
         }
 
         @media (max-width: 768px) {
+            .hero {
+                padding: 60px 24px;
+            }
+
             .hero-title {
                 font-size: 2.5rem;
             }
 
             .hero-subtitle {
                 font-size: 1.25rem;
+            }
+
+            .hero-description {
+                font-size: 1rem;
             }
 
             .section-title {
@@ -357,6 +371,45 @@
             }
 
             .cta-button {
+                width: 100%;
+                text-align: center;
+            }
+
+            .projects-section {
+                padding: 80px 24px;
+            }
+
+            .section-header {
+                margin-bottom: 48px;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .hero-title {
+                font-size: 2rem;
+            }
+
+            .hero-subtitle {
+                font-size: 1.1rem;
+            }
+
+            .section-title {
+                font-size: 1.75rem;
+            }
+
+            .project-content {
+                padding: 24px;
+            }
+
+            .project-title {
+                font-size: 1.25rem;
+            }
+
+            .project-links {
+                flex-direction: column;
+            }
+
+            .project-link {
                 width: 100%;
                 text-align: center;
             }
@@ -489,6 +542,31 @@
                         <div class="project-links">
                             <a href="https://fortinet.jclee.me" target="_blank" class="project-link link-primary">Live Demo</a>
                             <a href="https://github.com/qws941/fortinet" target="_blank" class="project-link link-secondary">GitHub</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Grafana Project -->
+                <div class="project-card">
+                    <div class="project-image">
+                        <div class="project-icon">📊</div>
+                    </div>
+                    <div class="project-content">
+                        <div class="project-header">
+                            <h3 class="project-title">Grafana Monitoring Platform</h3>
+                            <p class="project-tech">Grafana · Prometheus · Loki · Tempo</p>
+                        </div>
+                        <p class="project-description">
+                            통합 관측성 플랫폼. Prometheus 메트릭, Loki 로그, Tempo 트레이싱을 통한 full-stack 모니터링 및 실시간 알림 시스템.
+                        </p>
+                        <div class="project-features">
+                            <div class="feature-item">통합 메트릭, 로그, 트레이싱</div>
+                            <div class="feature-item">실시간 알림 및 대시보드</div>
+                            <div class="feature-item">서비스 헬스 모니터링</div>
+                        </div>
+                        <div class="project-links">
+                            <a href="https://grafana.jclee.me" target="_blank" class="project-link link-primary">Live Demo</a>
+                            <a href="https://github.com/qws941/grafana" target="_blank" class="project-link link-secondary">GitHub</a>
                         </div>
                     </div>
                 </div>

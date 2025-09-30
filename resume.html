@@ -280,6 +280,30 @@
             .approach-grid {
                 grid-template-columns: 1fr;
             }
+
+            .projects-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .main-content {
+                padding: 24px 16px;
+            }
+
+            .section-title {
+                font-size: 1.5rem;
+            }
+
+            .achievement {
+                padding: 12px 16px;
+                font-size: 0.85rem;
+            }
+
+            .skill-tag {
+                font-size: 0.7rem;
+                padding: 5px 10px;
+            }
         }
 
         @media print {
@@ -445,6 +469,13 @@
                         <p><strong>Tech:</strong> Python, FortiManager API</p>
                         <p>방화벽 정책 배포 자동화, 실시간 검증 및 롤백</p>
                         <a href="https://fortinet.jclee.me" target="_blank" class="project-link">View Project →</a>
+                    </div>
+
+                    <div class="project-card">
+                        <h3 class="project-title">Grafana Monitoring Platform</h3>
+                        <p><strong>Tech:</strong> Grafana, Prometheus, Loki</p>
+                        <p>통합 모니터링 플랫폼, 실시간 메트릭 및 로그 분석</p>
+                        <a href="https://grafana.jclee.me" target="_blank" class="project-link">View Project →</a>
                     </div>
                 </div>
             </section>
