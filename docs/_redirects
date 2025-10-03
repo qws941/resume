@@ -1,8 +1,0 @@
-# 기본 경로를 index.html로 (현재 포트폴리오)
-/    /index.html    200
-
-# 각 이력서 별도 접근
-/resume    /resume.html    200
-/platform    /platform-engineer.html    200
-/toss    /toss.html    200
-/nol    /nol-universe-resume.html    200
