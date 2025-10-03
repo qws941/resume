@@ -1,3 +1,14 @@
 name = "resume-jclee-me"
 compatibility_date = "2024-01-01"
 pages_build_output_dir = "docs"
+
+[env.production]
+compatibility_flags = ["nodejs_compat"]
+
+# Static HTML 설정 (SPA 모드 비활성화)
+[build]
+command = ""
+cwd = ""
+
+[site]
+bucket = "./docs"
