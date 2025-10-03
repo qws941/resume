@@ -272,10 +272,36 @@
             .print-button {
                 display: none;
             }
+
+            .back-button {
+                display: none;
+            }
+        }
+
+        .back-button {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #0064ff;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 700;
+            transition: all 0.2s ease;
+            z-index: 1000;
+            box-shadow: 0 2px 8px rgba(0,100,255,0.2);
+        }
+
+        .back-button:hover {
+            background: #0052cc;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,100,255,0.3);
         }
     </style>
 </head>
 <body>
+    <a href="index.html" class="back-button">← Back to Main</a>
     <div class="container">
         <header>
             <h1>이재철 | Server Developer</h1>
