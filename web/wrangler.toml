@@ -1,0 +1,11 @@
+name = "resume-portfolio"
+main = "worker.js"
+compatibility_date = "2024-10-03"
+
+# Route configuration
+routes = [
+  { pattern = "resume.jclee.me/*", zone_name = "jclee.me" }
+]
+
+# Workers configuration
+workers_dev = true
