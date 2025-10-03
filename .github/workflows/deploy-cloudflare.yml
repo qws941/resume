@@ -18,11 +18,8 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Deploy to Cloudflare Pages
-        uses: cloudflare/pages-action@v1
+        uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: a8d9c67f586acdd15eebcc65ca3aa5bb
-          projectName: resume-jclee-me
-          directory: docs
-          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
-          branch: main
+          command: pages deploy docs --project-name=resume-jclee-me --branch=main
