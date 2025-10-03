@@ -22,4 +22,4 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: a8d9c67f586acdd15eebcc65ca3aa5bb
-          command: pages deploy docs --project-name=resume-jclee-me --branch=main
+          command: pages deploy docs --project-name=resume-jclee-me --branch=main --commit-dirty=true
