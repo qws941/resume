@@ -12,10 +12,10 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Pretendard', 'Inter', sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Pretendard', sans-serif;
             line-height: 1.6;
-            color: #1f2937;
-            background: #ffffff;
+            color: #0f172a;
+            background: #f8fafc;
             min-height: 100vh;
         }
 
@@ -23,14 +23,16 @@
             max-width: 1200px;
             margin: 0 auto;
             display: grid;
-            grid-template-columns: 300px 1fr;
+            grid-template-columns: 280px 1fr;
             min-height: 100vh;
+            box-shadow: 0 0 40px rgba(0, 0, 0, 0.08);
+            background: white;
         }
 
         /* Sidebar */
         .sidebar {
-            background: #111827;
-            color: #e5e7eb;
+            background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+            color: #e2e8f0;
             padding: 48px 32px;
         }
 
@@ -41,30 +43,19 @@
             border-bottom: 1px solid #374151;
         }
 
-        .profile-img {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            background: #374151;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 32px;
-            color: white;
-            font-weight: 700;
-            margin: 0 auto 20px;
-        }
-
         .profile-name {
-            font-size: 1.5rem;
+            font-size: 1.75rem;
             font-weight: 700;
             color: #ffffff;
             margin-bottom: 8px;
+            letter-spacing: -0.02em;
         }
 
         .profile-title {
-            font-size: 0.9rem;
-            color: #9ca3af;
+            font-size: 0.95rem;
+            color: #d1d5db;
+            font-weight: 500;
+            line-height: 1.5;
         }
 
         .sidebar-section {
@@ -412,7 +403,6 @@
         <!-- Sidebar -->
         <aside class="sidebar">
             <div class="profile-section">
-                <div class="profile-img">JC</div>
                 <h1 class="profile-name">이재철</h1>
                 <p class="profile-title">Infrastructure & Security Engineer</p>
             </div>
