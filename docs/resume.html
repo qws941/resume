@@ -123,6 +123,29 @@
             color: #9ca3af;
         }
 
+        .pdf-button {
+            width: 100%;
+            padding: 12px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        .pdf-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
+        }
+
+        .pdf-button:active {
+            transform: translateY(0);
+        }
+
         /* Main Content */
         .main-content {
             padding: 48px 56px;
@@ -328,22 +351,57 @@
         }
 
         @media print {
+            @page {
+                size: A4;
+                margin: 10mm;
+            }
+
             body {
                 background: white;
+                margin: 0;
+                padding: 0;
             }
 
             .resume-container {
                 max-width: 100%;
+                display: grid;
+                grid-template-columns: 250px 1fr;
             }
 
             .sidebar {
-                background: #1a1a1a;
+                background: #1a1a1a !important;
                 -webkit-print-color-adjust: exact;
                 print-color-adjust: exact;
+                color-adjust: exact;
+                page-break-inside: avoid;
             }
 
-            .back-button {
-                display: none;
+            .main-content {
+                background: white !important;
+                padding: 20px 30px;
+            }
+
+            .back-button,
+            .pdf-button {
+                display: none !important;
+            }
+
+            .section {
+                page-break-inside: avoid;
+                margin-bottom: 24px;
+            }
+
+            .experience-item {
+                page-break-inside: avoid;
+            }
+
+            a {
+                color: #111827;
+                text-decoration: none;
+            }
+
+            a[href^="http"]:after {
+                content: none;
             }
         }
     </style>
@@ -368,10 +426,16 @@
                     <a href="tel:010-5757-9592">010-5757-9592</a>
                 </div>
                 <div class="contact-item">
+                    경기 시흥시 능곡동
+                </div>
+                <div class="contact-item">
                     <a href="https://github.com/qws941" target="_blank">github.com/qws941</a>
                 </div>
                 <div class="contact-item">
                     <a href="https://resume.jclee.me" target="_blank">resume.jclee.me</a>
+                </div>
+                <div class="contact-item">
+                    <button onclick="window.print()" class="pdf-button">📄 PDF 다운로드</button>
                 </div>
             </div>
 
