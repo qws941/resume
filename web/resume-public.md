@@ -2,7 +2,7 @@
 
 **Platform Engineer | DevOps Engineer | Infrastructure & Security**
 
-📱 010-5757-9592 | 📧 qws941@kakao.com | 🏠 경기도 부천시 원미구
+📱 010-5757-9592 | 📧 qws941@kakao.com | 🏠 경기도 시흥시 장현천로61, 307동 1301호
 💻 GitHub: [github.com/qws941](https://github.com/qws941) | 🌐 Portfolio: [resume.jclee.me](https://resume.jclee.me)
 
 ---
