@@ -26,6 +26,7 @@ jobs:
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           projectName: resume
           directory: docs
+          buildCommand: ''
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}
           branch: master
           wranglerVersion: '3'
