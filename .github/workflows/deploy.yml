@@ -6,28 +6,6 @@ on:
       - master
 
 jobs:
-  deploy-pages:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      deployments: write
-    name: Deploy to Cloudflare Pages
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Install Wrangler
-        run: npm install -g wrangler
-
-      - name: Publish to Cloudflare Pages
-        uses: cloudflare/wrangler-action@v3
-        with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          projectName: resume
-          directory: docs
-          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
-
   deploy-worker:
     runs-on: ubuntu-latest
     name: Deploy Cloudflare Worker
@@ -42,4 +20,4 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           command: deploy
-          workingDirectory: web
+          workingDirectory: .
