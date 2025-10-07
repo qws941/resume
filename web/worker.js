@@ -1,15 +1,36 @@
-// Cloudflare Worker for Resume Portfolio
-const HTML_CONTENT = `<!DOCTYPE html>
+// Cloudflare Worker - Auto-generated
+const INDEX_HTML = `<!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>이재철 - 인프라·보안 엔지니어 포트폴리오</title>
-    <meta name="description" content="7년차 인프라·보안 엔지니어 이재철의 포트폴리오. 금융/클라우드 전문, Python 자동화, AWS, Docker, Kubernetes 전문가">
-    <meta property="og:title" content="이재철 - 인프라·보안 엔지니어 포트폴리오">
-    <meta property="og:description" content="복잡한 시스템 문제를 단순하게 해결하는 인프라 엔지니어">
+    <title>이재철 - Infrastructure & Security Engineer | 8년 경력 포트폴리오</title>
+
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="8년 경력 인프라·보안 엔지니어 이재철의 포트폴리오. 15종 이상 보안 솔루션 운영, 업무 자동화 50~95% 시간 단축, 프로덕션 시스템 99.9% 가용성 달성.">
+    <meta name="keywords" content="인프라 엔지니어, 보안 엔지니어, DevOps, 클라우드, Docker, Kubernetes, Python, 자동화, 포트폴리오">
+    <meta name="author" content="이재철 (Jaecheol Lee)">
+    <meta name="robots" content="index, follow">
+
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="이재철 - Infrastructure & Security Engineer">
+    <meta property="og:description" content="8년 경력 인프라·보안 엔지니어. 복잡한 인프라를 단순하게, 반복 업무를 자동화로.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://resume.jclee.me">
+    <meta property="og:site_name" content="이재철 포트폴리오">
+    <meta property="og:locale" content="ko_KR">
+
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="이재철 - Infrastructure & Security Engineer">
+    <meta name="twitter:description" content="8년 경력 인프라·보안 엔지니어 포트폴리오">
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://resume.jclee.me">
+
+    <!-- Preconnect for performance -->
+    <link rel="preconnect" href="https://github.com">
+
     <style>
         * {
             margin: 0;
@@ -17,464 +38,1053 @@ const HTML_CONTENT = `<!DOCTYPE html>
             box-sizing: border-box;
         }
 
+        :root {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f9fafb;
+            --bg-hero: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+            --bg-footer: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+            --text-primary: #1f2937;
+            --text-secondary: #4b5563;
+            --text-tertiary: #6b7280;
+            --text-hero: #ffffff;
+            --text-hero-sub: #9ca3af;
+            --text-hero-desc: #d1d5db;
+            --border-color: #e5e7eb;
+            --card-bg: #ffffff;
+            --card-hover-shadow: rgba(0,0,0,0.12);
+            --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: #111827;
+            --bg-secondary: #1f2937;
+            --bg-hero: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+            --bg-footer: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+            --text-primary: #f9fafb;
+            --text-secondary: #d1d5db;
+            --text-tertiary: #9ca3af;
+            --text-hero: #ffffff;
+            --text-hero-sub: #d1d5db;
+            --text-hero-desc: #e5e7eb;
+            --border-color: #374151;
+            --card-bg: #1f2937;
+            --card-hover-shadow: rgba(0,0,0,0.3);
+        }
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Pretendard', 'Inter', sans-serif;
             line-height: 1.6;
-            color: #333;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: var(--text-primary);
+            background: var(--bg-primary);
             min-height: 100vh;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* Dark Mode Toggle */
+        .theme-toggle {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            z-index: 1000;
+            background: var(--card-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 50%;
+            width: 52px;
+            height: 52px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        .theme-toggle-icon {
+            font-size: 1.5rem;
+            transition: transform 0.3s ease;
+        }
+
+        .theme-toggle:hover .theme-toggle-icon {
+            transform: rotate(20deg);
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 80px 24px;
+            background: var(--bg-hero);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background:
+                radial-gradient(circle at 20% 50%, rgba(59, 130, 246, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(139, 92, 246, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .hero-content {
+            max-width: 1000px;
+            width: 100%;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-title {
+            font-size: 4rem;
+            font-weight: 800;
+            color: var(--text-hero);
+            margin-bottom: 16px;
+            letter-spacing: -0.04em;
+            line-height: 1.1;
+        }
+
+        .hero-subtitle {
+            font-size: 1.5rem;
+            color: var(--text-hero-sub);
+            margin-bottom: 32px;
+            font-weight: 400;
+        }
+
+        .hero-description {
+            font-size: 1.125rem;
+            color: var(--text-hero-desc);
+            line-height: 1.8;
+            max-width: 700px;
+            margin-bottom: 48px;
+        }
+
+        .hero-cta {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .cta-button {
+            padding: 14px 32px;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            display: inline-block;
+        }
+
+        .cta-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #ffffff;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .cta-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        .cta-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        .cta-secondary:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        /* Projects Section */
+        .projects-section {
+            padding: 120px 24px;
+            background: var(--bg-secondary);
         }
 
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 20px;
         }
 
-        .header {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 40px;
-            margin-bottom: 30px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        .section-header {
             text-align: center;
+            margin-bottom: 80px;
         }
 
-        .profile-img {
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            margin: 0 auto 20px;
-            background: linear-gradient(45deg, #667eea, #764ba2);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 48px;
-            color: white;
-            font-weight: bold;
-        }
-
-        .name {
-            font-size: 2.5em;
-            font-weight: 700;
-            color: #2c3e50;
-            margin-bottom: 10px;
-        }
-
-        .title {
-            font-size: 1.3em;
-            color: #7f8c8d;
-            margin-bottom: 20px;
-        }
-
-        .intro {
-            font-size: 1.1em;
-            line-height: 1.8;
-            color: #34495e;
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        .section {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 40px;
-            margin-bottom: 30px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        .section-label {
+            font-size: 0.875rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-tertiary);
+            margin-bottom: 16px;
         }
 
         .section-title {
-            font-size: 2em;
-            font-weight: 700;
-            color: #2c3e50;
-            margin-bottom: 30px;
-            text-align: center;
+            font-size: 2.75rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-bottom: 16px;
+            letter-spacing: -0.03em;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .section-description {
+            font-size: 1.125rem;
+            color: var(--text-tertiary);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Project Cards */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+            gap: 32px;
+        }
+
+        .project-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+
+        .project-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 32px var(--card-hover-shadow);
+            border-color: #3b82f6;
+        }
+
+        .project-image {
+            height: 180px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             position: relative;
+            overflow: hidden;
         }
 
-        .section-title::after {
-            content: '';
-            display: block;
-            width: 50px;
-            height: 4px;
-            background: linear-gradient(45deg, #667eea, #764ba2);
-            margin: 10px auto;
-            border-radius: 2px;
+        .project-card:nth-child(1) .project-image {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         }
 
-        .experience-item {
-            margin-bottom: 40px;
-            border-left: 4px solid #667eea;
-            padding-left: 20px;
-            position: relative;
+        .project-card:nth-child(2) .project-image {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
         }
 
-        .experience-item::before {
+        .project-card:nth-child(3) .project-image {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+
+        .project-card:nth-child(4) .project-image {
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+        }
+
+        .project-card:nth-child(5) .project-image {
+            background: linear-gradient(135deg, #30cfd0 0%, #330867 100%);
+        }
+
+        .project-image::before {
             content: '';
             position: absolute;
-            left: -8px;
             top: 0;
-            width: 12px;
-            height: 12px;
-            background: #667eea;
-            border-radius: 50%;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background:
+                radial-gradient(circle at 30% 40%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 70% 70%, rgba(255, 255, 255, 0.05) 0%, transparent 50%);
         }
 
-        .company {
-            font-size: 1.4em;
+        .project-icon {
+            font-size: 3.5rem;
+            color: rgba(255, 255, 255, 1);
+            z-index: 1;
+            filter: drop-shadow(0 4px 12px rgba(0,0,0,0.2));
+        }
+
+        .project-content {
+            padding: 28px;
+        }
+
+        .project-header {
+            margin-bottom: 16px;
+        }
+
+        .project-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 10px;
+            letter-spacing: -0.02em;
+        }
+
+        .project-tech {
+            font-size: 0.85rem;
+            color: #3b82f6;
             font-weight: 600;
-            color: #2c3e50;
-            margin-bottom: 5px;
+            letter-spacing: 0.02em;
         }
 
-        .period {
-            color: #7f8c8d;
-            margin-bottom: 15px;
+        .project-description {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            line-height: 1.7;
+            margin-bottom: 20px;
+        }
+
+        .project-features {
+            margin-bottom: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .feature-item {
+            font-size: 0.8rem;
+            color: var(--text-primary);
+            background: var(--bg-secondary);
+            padding: 6px 14px;
+            border-radius: 20px;
             font-weight: 500;
         }
 
-        .achievement {
-            background: #f8f9fa;
-            padding: 15px;
-            border-radius: 10px;
-            margin: 10px 0;
-            border-left: 4px solid #27ae60;
+        .project-links {
+            display: flex;
+            gap: 10px;
+        }
+
+        .project-link {
+            padding: 11px 24px;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            flex: 1;
+            text-align: center;
+        }
+
+        .link-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #ffffff;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+        }
+
+        .link-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .link-secondary {
+            background: var(--bg-secondary);
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
+        }
+
+        .link-secondary:hover {
+            background: var(--card-bg);
+            border-color: var(--text-tertiary);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        /* Skills Section */
+        .skills-section {
+            padding: 100px 24px;
+            background: var(--bg-primary);
         }
 
         .skills-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-            margin-top: 30px;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 32px;
+            max-width: 1200px;
+            margin: 0 auto;
         }
 
         .skill-category {
-            background: #f8f9fa;
-            padding: 25px;
-            border-radius: 15px;
-            border-top: 4px solid #667eea;
+            background: var(--card-bg);
+            padding: 32px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
         }
 
-        .skill-category h3 {
-            color: #2c3e50;
-            margin-bottom: 15px;
-            font-size: 1.2em;
+        .skill-category:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px var(--card-hover-shadow);
         }
 
-        .skill-tags {
+        .skill-category-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .skill-category-icon {
+            font-size: 1.5rem;
+        }
+
+        .skill-list {
             display: flex;
             flex-wrap: wrap;
             gap: 10px;
         }
 
         .skill-tag {
-            background: linear-gradient(45deg, #667eea, #764ba2);
-            color: white;
-            padding: 8px 15px;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            background: var(--bg-secondary);
+            padding: 8px 16px;
             border-radius: 20px;
-            font-size: 0.9em;
             font-weight: 500;
+            transition: all 0.2s ease;
         }
 
-        .project-card {
-            background: #f8f9fa;
-            border-radius: 15px;
-            padding: 30px;
-            margin-bottom: 30px;
-            border-top: 4px solid #27ae60;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .project-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
-        }
-
-        .project-title {
-            font-size: 1.4em;
-            font-weight: 600;
-            color: #2c3e50;
-            margin-bottom: 15px;
-        }
-
-        .project-url {
-            display: inline-block;
-            background: linear-gradient(45deg, #667eea, #764ba2);
-            color: white;
-            padding: 10px 20px;
-            border-radius: 25px;
-            text-decoration: none;
-            margin-top: 15px;
-            transition: transform 0.3s ease;
-        }
-
-        .project-url:hover {
+        .skill-tag:hover {
+            background: var(--gradient-primary);
+            color: #ffffff;
             transform: scale(1.05);
         }
 
-        .contact {
+        /* Footer */
+        .footer {
+            padding: 80px 24px;
+            background: var(--bg-footer);
             text-align: center;
-            margin-top: 30px;
         }
 
-        .contact-item {
-            display: inline-block;
-            margin: 10px 20px;
-            padding: 15px 25px;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 25px;
-            color: white;
+        .footer-content {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .footer-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 16px;
+        }
+
+        .footer-text {
+            font-size: 1.125rem;
+            color: #9ca3af;
+            margin-bottom: 32px;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 24px;
+            justify-content: center;
+            margin-bottom: 32px;
+        }
+
+        .footer-link {
+            color: #d1d5db;
             text-decoration: none;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(10px);
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: color 0.2s ease;
         }
 
-        .contact-item:hover {
-            background: rgba(255, 255, 255, 0.3);
-            transform: translateY(-3px);
+        .footer-link:hover {
+            color: #ffffff;
         }
 
-        .goals {
-            background: linear-gradient(45deg, #667eea, #764ba2);
-            color: white;
-            text-align: center;
-            font-size: 1.1em;
-            line-height: 1.8;
+        .footer-copyright {
+            font-size: 0.875rem;
+            color: #6b7280;
         }
 
-        .goals .section-title {
-            color: white;
+        /* Smooth scrolling */
+        html {
+            scroll-behavior: smooth;
         }
 
-        .goals .section-title::after {
-            background: rgba(255, 255, 255, 0.3);
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .projects-grid {
+                grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+                gap: 28px;
+            }
+        }
+
+        @media (max-width: 1024px) {
+            .hero-title {
+                font-size: 3.5rem;
+            }
+
+            .projects-grid {
+                grid-template-columns: 1fr;
+                gap: 32px;
+            }
+
+            .project-card {
+                max-width: 600px;
+                margin: 0 auto;
+            }
         }
 
         @media (max-width: 768px) {
-            .container {
-                padding: 10px;
+            .hero {
+                padding: 60px 20px;
+                min-height: 90vh;
             }
 
-            .header, .section {
+            .hero-title {
+                font-size: 2.5rem;
+                margin-bottom: 12px;
+            }
+
+            .hero-subtitle {
+                font-size: 1.25rem;
+                margin-bottom: 24px;
+            }
+
+            .hero-description {
+                font-size: 1rem;
+                line-height: 1.7;
+                margin-bottom: 40px;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .section-description {
+                font-size: 1rem;
+            }
+
+            .hero-cta {
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .cta-button {
+                width: 100%;
+                text-align: center;
+                padding: 16px 32px;
+            }
+
+            .projects-section {
+                padding: 80px 20px;
+            }
+
+            .section-header {
+                margin-bottom: 48px;
+            }
+
+            .project-image {
+                height: 160px;
+            }
+
+            .project-icon {
+                font-size: 3rem;
+            }
+
+            .footer {
+                padding: 60px 20px;
+            }
+
+            .footer-links {
+                flex-direction: column;
+                gap: 16px;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .hero {
+                padding: 50px 16px;
+            }
+
+            .hero-title {
+                font-size: 2rem;
+                letter-spacing: -0.03em;
+            }
+
+            .hero-subtitle {
+                font-size: 1.1rem;
+            }
+
+            .hero-description {
+                font-size: 0.95rem;
+                line-height: 1.6;
+            }
+
+            .section-title {
+                font-size: 1.75rem;
+            }
+
+            .section-label {
+                font-size: 0.8rem;
+            }
+
+            .projects-section {
+                padding: 60px 16px;
+            }
+
+            .project-content {
                 padding: 20px;
             }
 
-            .name {
-                font-size: 2em;
+            .project-title {
+                font-size: 1.2rem;
             }
 
-            .skills-grid {
-                grid-template-columns: 1fr;
+            .project-tech {
+                font-size: 0.8rem;
             }
 
-            .contact-item {
-                display: block;
-                margin: 10px 0;
+            .project-description {
+                font-size: 0.9rem;
+                line-height: 1.6;
+            }
+
+            .feature-item {
+                font-size: 0.75rem;
+                padding: 5px 12px;
+            }
+
+            .project-links {
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .project-link {
+                width: 100%;
+                text-align: center;
+                padding: 12px 20px;
+                font-size: 0.85rem;
+            }
+
+            .footer {
+                padding: 50px 16px;
+            }
+
+            .footer-title {
+                font-size: 1.5rem;
+            }
+
+            .footer-text {
+                font-size: 1rem;
+            }
+        }
+
+        @media (max-width: 375px) {
+            .hero-title {
+                font-size: 1.75rem;
+            }
+
+            .hero-subtitle {
+                font-size: 1rem;
+            }
+
+            .section-title {
+                font-size: 1.5rem;
+            }
+
+            .project-image {
+                height: 140px;
+            }
+
+            .project-icon {
+                font-size: 2.5rem;
+            }
+        }
+
+        /* Touch device optimizations */
+        @media (hover: none) and (pointer: coarse) {
+            .cta-button,
+            .project-link,
+            .footer-link {
+                min-height: 44px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .project-card:hover {
+                transform: none;
+            }
+
+            .project-card:active {
+                transform: scale(0.98);
+                transition: transform 0.1s ease;
+            }
+        }
+
+        /* Print styles */
+        @media print {
+            .hero,
+            .footer {
+                background: white;
+                color: black;
+            }
+
+            .cta-button,
+            .project-link {
+                border: 1px solid #333;
+                color: #333;
+                background: white;
             }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <!-- Header -->
-        <div class="header">
-            <div class="profile-img">이재철</div>
-            <h1 class="name">이재철</h1>
-            <p class="title">인프라·보안 엔지니어 | 7년차 | 금융/클라우드 전문</p>
-            <p class="intro">
-                복잡한 시스템 문제를 단순하게 해결하는 것을 좋아합니다.
-                7년간 금융, 교육, 제조업에서 인프라 보안을 담당하면서
-                "어떻게 하면 동료들이 더 편하게 일할 수 있을까?"를 항상 고민해왔습니다.
-                특히 반복되는 수작업을 Python으로 자동화해서 팀 전체의 업무 효율을 높이는 일에 보람을 느낍니다.
+    <!-- Dark Mode Toggle -->
+    <button class="theme-toggle" id="themeToggle" aria-label="다크모드 토글">
+        <span class="theme-toggle-icon" id="themeIcon">🌙</span>
+    </button>
+
+    <!-- Hero Section -->
+    <section class="hero" aria-label="소개">
+        <div class="hero-content">
+            <h1 class="hero-title">Infrastructure<br>& Security Engineer</h1>
+            <p class="hero-subtitle">Jaecheol Lee · 8+ Years Experience</p>
+            <p class="hero-description">
+                복잡한 인프라를 단순하게, 반복 업무를 자동화로. 8년간 금융·교육·제조 산업에서 업무 시간 50~95% 단축 달성,
+                15종 이상 보안 솔루션 통합 운영 및 프로덕션 시스템 99.9% 가용성 유지.
             </p>
+            <nav class="hero-cta" aria-label="주요 링크">
+                <a href="resume.html" class="cta-button cta-primary" aria-label="이력서 보기">View Resume</a>
+                <a href="../master/resume_final.md" download="이재철_이력서.md" class="cta-button cta-secondary" aria-label="이력서 PDF 다운로드">📄 Download Resume</a>
+                <a href="https://github.com/qws941" target="_blank" rel="noopener noreferrer" class="cta-button cta-secondary" aria-label="GitHub 프로필 방문">GitHub</a>
+                <a href="mailto:qws941@kakao.com" class="cta-button cta-secondary" aria-label="이메일 연락하기">Contact</a>
+            </nav>
         </div>
+    </section>
 
-        <!-- 주요 경력 -->
-        <div class="section">
-            <h2 class="section-title">주요 경력</h2>
+    <!-- Projects Section -->
+    <section class="projects-section" aria-label="프로젝트">
+        <div class="container">
+            <header class="section-header">
+                <p class="section-label">Featured Work</p>
+                <h2 class="section-title">Production Systems</h2>
+                <p class="section-description">
+                    실제 운영 중인 프로덕션 시스템 · 검증된 성과와 비즈니스 임팩트
+                </p>
+            </header>
 
-            <div class="experience-item">
-                <h3 class="company">가온누리정보시스템 | 인프라 엔지니어 (프리랜서)</h3>
-                <p class="period">2024.03 - 현재</p>
-                <p>ATS(다자간매매체결회사) 금융위원회 본인가 대비 보안 인프라 구축</p>
-                <div class="achievement">
-                    💡 매일 3시간씩 걸리던 방화벽 정책 배포를 Python으로 자동화해서 담당자가 다른 중요한 업무에 집중할 수 있게 함
-                </div>
-                <div class="achievement">
-                    🔧 직원들이 "컴퓨터가 자꾸 꺼져요"라고 하소연하던 EPP/DLP 충돌 문제를 근본 원인부터 분석해서 해결
-                </div>
-            </div>
-
-            <div class="experience-item">
-                <h3 class="company">콴텍투자일임 | 인프라·정보보호팀 인프라 엔지니어</h3>
-                <p class="period">2022.08 - 2024.03</p>
-                <p>금융보안데이터센터(FSDC) 내 서버 150대 운영 및 AWS 클라우드 보안 아키텍처 설계</p>
-                <div class="achievement">
-                    🚀 서버가 자주 느려진다는 개발팀 불만을 듣고 DB 접근제어 정책을 전면 재검토해서 개발 환경이 훨씬 쾌적해짐
-                </div>
-                <div class="achievement">
-                    🌙 야간 시스템 오류 알림 때문에 잠 못 자던 운영팀을 위해 Python 모니터링 스크립트로 장애 예방 체계 구축
-                </div>
-            </div>
-
-            <div class="experience-item">
-                <h3 class="company">메타넷엠플랫폼 | 인프라·시스템 엔지니어</h3>
-                <p class="period">2019.12 - 2021.08</p>
-                <p>1,000명 규모 콜센터 재택근무 인프라 긴급 구축</p>
-                <div class="achievement">
-                    🏠 코로나19라는 긴급상황에서 "내일부터 재택근무 해야 하는데 어떻게 하죠?"라는 상황에 2주 만에 1,000명이 안전하게 접속할 수 있는 환경 구축
-                </div>
-                <div class="achievement">
-                    ⚡ Python으로 네트워크 점검을 자동화해서 담당자가 오전 8시에 출근해서 바로 핵심 업무부터 시작할 수 있게 개선
-                </div>
-            </div>
-        </div>
-
-        <!-- 개인 프로젝트 -->
-        <div class="section">
-            <h2 class="section-title">개인 프로젝트</h2>
-
-            <div class="project-card">
-                <h3 class="project-title">SafeWork 산업보건 관리 시스템</h3>
-                <p>회사에서 매년 종이로 하던 근골격계 설문조사를 보면서 "이걸 왜 아직도 수기로 하지?"라는 생각에 만든 시스템입니다.</p>
-                <p><strong>해결한 문제:</strong> 종이 설문지로 인한 집계 오류, 개인정보 노출 우려, 시간 낭비</p>
-                <p><strong>실제 효과:</strong> 익명성을 보장하면서도 즉시 통계 분석이 가능해져서 실제 몇 개 중소기업에서 사용 중</p>
-                <p><strong>기술 스택:</strong> Flask 3.0+, PostgreSQL 15+, Redis 7.0, Bootstrap</p>
-                <a href="https://safework.jclee.me" class="project-url" target="_blank">🔗 프로젝트 보기</a>
-            </div>
-
-            <div class="project-card">
-                <h3 class="project-title">Blacklist Management System (위협 인텔리전스 플랫폼)</h3>
-                <p>보안 담당자들이 매일 여러 사이트에서 IP 차단 목록을 일일이 확인하고 수집하는 걸 보고 만든 자동화 시스템입니다.</p>
-                <p><strong>해결한 문제:</strong> 수동 수집으로 인한 누락, 실시간성 부족, 여러 소스 통합의 어려움</p>
-                <p><strong>실제 가치:</strong> 하루 2시간씩 걸리던 위협 정보 수집이 완전 자동화되어 보안팀이 분석과 대응에 집중 가능</p>
-                <p><strong>기술 스택:</strong> Python 3.11+, Flask, PostgreSQL 15, Redis 7, Docker</p>
-                <a href="https://blacklist.jclee.me" class="project-url" target="_blank">🔗 프로젝트 보기</a>
-            </div>
-        </div>
-
-        <!-- 기술 스킬 -->
-        <div class="section">
-            <h2 class="section-title">기술 스킬</h2>
-            <div class="skills-grid">
-                <div class="skill-category">
-                    <h3>🔐 보안</h3>
-                    <div class="skill-tags">
-                        <span class="skill-tag">NAC</span>
-                        <span class="skill-tag">DLP</span>
-                        <span class="skill-tag">EDR</span>
-                        <span class="skill-tag">APT</span>
-                        <span class="skill-tag">Fortigate</span>
-                        <span class="skill-tag">Palo Alto</span>
-                        <span class="skill-tag">IPS/IDS</span>
-                        <span class="skill-tag">망분리</span>
-                        <span class="skill-tag">SSL VPN</span>
+            <div class="projects-grid" role="list">
+                <!-- Splunk Project -->
+                <article class="project-card" role="listitem">
+                    <div class="project-image" role="img" aria-label="Splunk-FortiNet Integration 프로젝트 아이콘">
+                        <div class="project-icon" aria-hidden="true">🛡️</div>
+                    </div>
+                    <div class="project-content">
+                        <div class="project-header">
+                            <h3 class="project-title">Splunk-FortiNet Integration</h3>
+                            <p class="project-tech">Node.js · Cloudflare Workers · Domain-Driven Design</p>
+                        </div>
+                        <p class="project-description">
+                            80대 방화벽 실시간 중앙관리 플랫폼. DDD Level 3로 9개 도메인 분리 설계, FortiManager/FortiAnalyzer 직접 API 연동. 초당 10만 이벤트 처리 가능, 75,000% 확장 여유로 엔터프라이즈 검증 완료.
+                        </p>
+                        <div class="project-features">
+                            <span class="feature-item">100K+ Events/Sec</span>
+                            <span class="feature-item">AI Threat Analysis</span>
+                            <span class="feature-item">80+ Device Management</span>
+                            <span class="feature-item">9 Domain Architecture</span>
+                        </div>
+                        <div class="project-links">
+                            <a href="https://splunk.jclee.me" target="_blank" class="project-link link-primary">Live Demo</a>
+                            <a href="https://github.com/qws941/splunk" target="_blank" class="project-link link-secondary">GitHub</a>
+                        </div>
                     </div>
                 </div>
 
+                <!-- SafeWork Project -->
+                <div class="project-card">
+                    <div class="project-image">
+                        <div class="project-icon">🏥</div>
+                    </div>
+                    <div class="project-content">
+                        <div class="project-header">
+                            <h3 class="project-title">SafeWork Industrial Health Platform</h3>
+                            <p class="project-tech">Flask 3.0 · PostgreSQL 15 · Redis 7 · Cloudflare Workers</p>
+                        </div>
+                        <p class="project-description">
+                            산업보건 설문조사 SaaS 플랫폼. Cloudflare Workers Edge API로 전국 동시 접속 처리, Flask 3.0 하이브리드 아키텍처. 종이 설문 디지털 전환으로 집계 오류 100% 제거, 다수 중소기업 실운영 중.
+                        </p>
+                        <div class="project-features">
+                            <span class="feature-item">Hybrid Architecture</span>
+                            <span class="feature-item">Edge Processing</span>
+                            <span class="feature-item">Zero Error Rate</span>
+                            <span class="feature-item">Real-time Analytics</span>
+                        </div>
+                        <div class="project-links">
+                            <a href="https://safework.jclee.me" target="_blank" class="project-link link-primary">Live Demo</a>
+                            <a href="https://github.com/qws941/safework" target="_blank" class="project-link link-secondary">GitHub</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Blacklist Project -->
+                <div class="project-card">
+                    <div class="project-image">
+                        <div class="project-icon">🔒</div>
+                    </div>
+                    <div class="project-content">
+                        <div class="project-header">
+                            <h3 class="project-title">REGTECH Threat Intelligence</h3>
+                            <p class="project-tech">Flask · PostgreSQL 15 · Redis 7 · Portainer API</p>
+                        </div>
+                        <p class="project-description">
+                            금융보안원 IP 블랙리스트 자동수집·관리 시스템. Claude AI 통합 CI/CD로 배포 자동화, Portainer API 기반 무중단 배포 및 자동 롤백. 수동 수집 대비 95% 시간 단축 (1시간 → 3분), 99.9% 가용성 달성.
+                        </p>
+                        <div class="project-features">
+                            <span class="feature-item">95% Time Reduction</span>
+                            <span class="feature-item">Auto-Rollback</span>
+                            <span class="feature-item">99.9% Uptime</span>
+                            <span class="feature-item">AI CI/CD</span>
+                        </div>
+                        <div class="project-links">
+                            <a href="https://blacklist.jclee.me" target="_blank" class="project-link link-primary">Live Demo</a>
+                            <a href="https://github.com/qws941/blacklist" target="_blank" class="project-link link-secondary">GitHub</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Fortinet Project -->
+                <div class="project-card">
+                    <div class="project-image">
+                        <div class="project-icon">🔥</div>
+                    </div>
+                    <div class="project-content">
+                        <div class="project-header">
+                            <h3 class="project-title">FortiGate Policy Orchestration</h3>
+                            <p class="project-tech">Flask · FortiManager JSON-RPC · Portainer · GitHub Actions</p>
+                        </div>
+                        <p class="project-description">
+                            FortiGate 방화벽 정책 통합 모니터링 및 자동배포. 3-Port 배포 전략(7777/7778/7779)으로 고가용성 보장, FortiManager API 직접 연동. 정책 검증 시간 80% 단축, 서비스 중단 0건 달성.
+                        </p>
+                        <div class="project-features">
+                            <span class="feature-item">3-Port HA</span>
+                            <span class="feature-item">80% Time Saved</span>
+                            <span class="feature-item">Zero Downtime</span>
+                            <span class="feature-item">API Integration</span>
+                        </div>
+                        <div class="project-links">
+                            <a href="https://fortinet.jclee.me" target="_blank" class="project-link link-primary">Live Demo</a>
+                            <a href="https://github.com/qws941/fortinet" target="_blank" class="project-link link-secondary">GitHub</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Grafana Project -->
+                <div class="project-card">
+                    <div class="project-image">
+                        <div class="project-icon">📊</div>
+                    </div>
+                    <div class="project-content">
+                        <div class="project-header">
+                            <h3 class="project-title">Full-Stack Observability Platform</h3>
+                            <p class="project-tech">Grafana · Prometheus · Loki · Tempo · Traefik · Docker</p>
+                        </div>
+                        <p class="project-description">
+                            Full-Stack 관측성 플랫폼. Prometheus·Loki·Tempo 3종 통합으로 메트릭·로그·트레이스 단일화. Traefik SSL 자동화, NAS 영구저장, Node Exporter·cAdvisor로 인프라 전체 가시성 확보.
+                        </p>
+                        <div class="project-features">
+                            <span class="feature-item">Metrics·Logs·Traces</span>
+                            <span class="feature-item">SSL Termination</span>
+                            <span class="feature-item">Persistent Storage</span>
+                            <span class="feature-item">Auto Alerting</span>
+                        </div>
+                        <div class="project-links">
+                            <a href="https://grafana.jclee.me" target="_blank" class="project-link link-primary">Live Demo</a>
+                            <a href="https://github.com/qws941/grafana" target="_blank" class="project-link link-secondary">GitHub</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Skills Section -->
+    <section class="skills-section" aria-label="기술 스택">
+        <div class="container">
+            <header class="section-header">
+                <p class="section-label">Tech Stack</p>
+                <h2 class="section-title">Core Skills</h2>
+                <p class="section-description">
+                    8년간 축적한 인프라·보안 기술 스택
+                </p>
+            </header>
+
+            <div class="skills-grid">
+                <!-- Security Solutions -->
                 <div class="skill-category">
-                    <h3>☁️ 클라우드/인프라</h3>
-                    <div class="skill-tags">
+                    <h3 class="skill-category-title">
+                        <span class="skill-category-icon">🛡️</span>
+                        Security Solutions
+                    </h3>
+                    <div class="skill-list">
+                        <span class="skill-tag">Fortigate</span>
+                        <span class="skill-tag">Palo Alto</span>
+                        <span class="skill-tag">NAC</span>
+                        <span class="skill-tag">DLP</span>
+                        <span class="skill-tag">EDR/EPP</span>
+                        <span class="skill-tag">APT</span>
+                        <span class="skill-tag">WAF</span>
+                        <span class="skill-tag">IPS/IDS</span>
+                        <span class="skill-tag">SIEM</span>
+                        <span class="skill-tag">Splunk</span>
+                    </div>
+                </div>
+
+                <!-- Cloud & Virtualization -->
+                <div class="skill-category">
+                    <h3 class="skill-category-title">
+                        <span class="skill-category-icon">☁️</span>
+                        Cloud & Virtualization
+                    </h3>
+                    <div class="skill-list">
                         <span class="skill-tag">AWS</span>
                         <span class="skill-tag">Docker</span>
                         <span class="skill-tag">Kubernetes</span>
-                        <span class="skill-tag">VMware</span>
+                        <span class="skill-tag">VMware vSphere</span>
                         <span class="skill-tag">NSX-T</span>
-                        <span class="skill-tag">Terraform</span>
-                        <span class="skill-tag">Ansible</span>
+                        <span class="skill-tag">Portainer</span>
                     </div>
                 </div>
 
+                <!-- Automation & Development -->
                 <div class="skill-category">
-                    <h3>💻 개발/자동화</h3>
-                    <div class="skill-tags">
+                    <h3 class="skill-category-title">
+                        <span class="skill-category-icon">⚙️</span>
+                        Automation & Development
+                    </h3>
+                    <div class="skill-list">
                         <span class="skill-tag">Python</span>
-                        <span class="skill-tag">Flask</span>
+                        <span class="skill-tag">Node.js</span>
                         <span class="skill-tag">Shell Script</span>
-                        <span class="skill-tag">Jenkins</span>
+                        <span class="skill-tag">Ansible</span>
+                        <span class="skill-tag">Terraform</span>
                         <span class="skill-tag">GitHub Actions</span>
-                        <span class="skill-tag">GitOps</span>
+                        <span class="skill-tag">GitLab CI</span>
                     </div>
                 </div>
 
+                <!-- Monitoring & Observability -->
                 <div class="skill-category">
-                    <h3>🗄️ 데이터베이스</h3>
-                    <div class="skill-tags">
-                        <span class="skill-tag">PostgreSQL</span>
-                        <span class="skill-tag">MySQL</span>
-                        <span class="skill-tag">Redis</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- 개인 성향 -->
-        <div class="section">
-            <h2 class="section-title">개인 성향 & 업무 철학</h2>
-            <div class="skills-grid">
-                <div class="skill-category">
-                    <h3>🔍 문제 발견과 해결</h3>
-                    <p>동료들의 불편함을 발견하면 그냥 넘어가지 못하는 성격으로, 작은 불편함이라도 자동화로 해결하려고 노력합니다.</p>
-                </div>
-
-                <div class="skill-category">
-                    <h3>📚 실무 중심 학습</h3>
-                    <p>새로운 기술을 배울 때도 항상 "현재 업무에서 어떻게 활용할 수 있을까?"를 먼저 고민합니다.</p>
-                </div>
-
-                <div class="skill-category">
-                    <h3>🔄 지속적인 운영</h3>
-                    <p>만들어놓고 끝이 아니라, 실제 서비스로 운영하면서 사용자 피드백을 받고 개선하는 과정을 즐깁니다.</p>
-                </div>
-
-                <div class="skill-category">
-                    <h3>🤝 협업 지향</h3>
-                    <p>혼자 잘하는 것보다 팀 전체의 효율을 높이는 것에서 더 큰 만족감을 느낍니다.</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- 자격증 -->
-        <div class="section">
-            <h2 class="section-title">자격증</h2>
-            <div class="skills-grid">
-                <div class="skill-category">
-                    <h3>📜 주요 자격증</h3>
-                    <div class="skill-tags">
-                        <span class="skill-tag">CCNP (2020.08)</span>
-                        <span class="skill-tag">RHCSA (2019.01)</span>
-                        <span class="skill-tag">CompTIA Linux+ (2019.02)</span>
-                        <span class="skill-tag">LPIC Level 1 (2019.02)</span>
-                        <span class="skill-tag">사무자동화산업기사 (2019.12)</span>
+                    <h3 class="skill-category-title">
+                        <span class="skill-category-icon">📊</span>
+                        Monitoring & Observability
+                    </h3>
+                    <div class="skill-list">
+                        <span class="skill-tag">Grafana</span>
+                        <span class="skill-tag">Prometheus</span>
+                        <span class="skill-tag">Loki</span>
+                        <span class="skill-tag">Tempo</span>
+                        <span class="skill-tag">ELK Stack</span>
+                        <span class="skill-tag">Wazuh</span>
                     </div>
                 </div>
             </div>
         </div>
+    </section>
 
-        <!-- 미래 목표 -->
-        <div class="section goals">
-            <h2 class="section-title">앞으로의 목표</h2>
-            <p>
-                클라우드와 보안이 더욱 중요해지는 시대에 맞춰, 단순히 시스템을 관리하는 것을 넘어서
-                비즈니스 가치를 창출하는 인프라 엔지니어로 성장하고 싶습니다.
-                특히 팀원들이 "덕분에 일하기 편해졌어요"라고 말해주는 순간들이 가장 보람차며,
-                앞으로도 기술을 통해 사람들의 업무 환경을 개선하는 일을 계속하고 싶습니다.
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <h2 class="footer-title">Let's Build Something Great</h2>
+            <p class="footer-text">
+                복잡한 인프라 문제를 자동화로 해결하고, 팀의 생산성을 극대화합니다.
+            </p>
+            <div class="footer-links">
+                <a href="mailto:qws941@kakao.com" class="footer-link">Email</a>
+                <a href="https://github.com/qws941" target="_blank" class="footer-link">GitHub</a>
+                <a href="tel:010-5757-9592" class="footer-link">Phone</a>
+            </div>
+            <p class="footer-copyright">
+                © 2024 Jaecheol Lee. All rights reserved.
             </p>
         </div>
+    </footer>
 
-        <!-- 연락처 -->
-        <div class="contact">
-            <a href="mailto:qws941@kakao.com" class="contact-item">📧 qws941@kakao.com</a>
-            <a href="tel:010-5757-9592" class="contact-item">📱 010-5757-9592</a>
-            <a href="https://github.com/qws941" target="_blank" class="contact-item">🔗 GitHub</a>
-        </div>
-    </div>
+    <script>
+        // Dark Mode Toggle
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIcon = document.getElementById('themeIcon');
+        const html = document.documentElement;
+
+        // Check for saved theme preference or default to 'light' mode
+        const currentTheme = localStorage.getItem('theme') || 'light';
+        html.setAttribute('data-theme', currentTheme);
+        themeIcon.textContent = currentTheme === 'dark' ? '☀️' : '🌙';
+
+        // Theme toggle function
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            themeIcon.textContent = newTheme === 'dark' ? '☀️' : '🌙';
+        });
+
+        // Smooth scroll for internal links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Fade-in animation on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // Observe all project cards
+        document.querySelectorAll('.project-card').forEach((card, index) => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+            card.style.transition = `opacity 0.6s ease ${index * 0.1}s, transform 0.6s ease ${index * 0.1}s`;
+            observer.observe(card);
+        });
+    </script>
 </body>
 </html>`;
-
-const RESUME_HTML_CONTENT = `<!DOCTYPE html>
+const RESUME_HTML = `<!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
@@ -1010,30 +1620,23 @@ const RESUME_HTML_CONTENT = `<!DOCTYPE html>
 </html>`;
 
 export default {
-  async fetch(request, env, ctx) {
+  async fetch(request) {
     const url = new URL(request.url);
-
-    // Handle /resume path
+    
     if (url.pathname === '/resume') {
-      return new Response(RESUME_HTML_CONTENT, {
+      return new Response(RESUME_HTML, {
         headers: {
           'Content-Type': 'text/html;charset=UTF-8',
           'Cache-Control': 'public, max-age=3600',
         },
       });
     }
-
-    // Handle root path
-    if (url.pathname === '/') {
-      return new Response(HTML_CONTENT, {
-        headers: {
-          'Content-Type': 'text/html;charset=UTF-8',
-          'Cache-Control': 'public, max-age=3600',
-        },
-      });
-    }
-
-    // 404 for other paths
-    return new Response('Not Found', { status: 404 });
+    
+    return new Response(INDEX_HTML, {
+      headers: {
+        'Content-Type': 'text/html;charset=UTF-8',
+        'Cache-Control': 'public, max-age=3600',
+      },
+    });
   },
 };
