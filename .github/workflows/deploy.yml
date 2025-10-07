@@ -20,16 +20,13 @@ jobs:
         run: npm install -g wrangler
 
       - name: Publish to Cloudflare Pages
-        uses: cloudflare/pages-action@v1
+        uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           projectName: resume
-          directory: docs
-          buildCommand: ''
+          command: pages deploy docs --project-name=resume --branch=master --commit-dirty=true
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}
-          branch: master
-          wranglerVersion: '3'
 
   deploy-worker:
     runs-on: ubuntu-latest
