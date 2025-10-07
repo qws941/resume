@@ -1,8 +1,13 @@
 const fs = require('fs');
 const path = require('path');
 
-const indexHtml = fs.readFileSync(path.join(__dirname, 'index.html'), 'utf-8');
-const resumeHtml = fs.readFileSync(path.join(__dirname, 'resume.html'), 'utf-8');
+// Read HTML files and escape backticks for template literals
+const indexHtml = fs.readFileSync(path.join(__dirname, 'index.html'), 'utf-8')
+  .replace(/`/g, '\\`')
+  .replace(/\$/g, '\\$');
+const resumeHtml = fs.readFileSync(path.join(__dirname, 'resume.html'), 'utf-8')
+  .replace(/`/g, '\\`')
+  .replace(/\$/g, '\\$');
 
 const workerJs = `// Cloudflare Worker - Auto-generated
 const INDEX_HTML = \`${indexHtml}\`;
