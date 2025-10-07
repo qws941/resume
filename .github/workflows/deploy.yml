@@ -25,7 +25,7 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           projectName: resume
-          command: pages deploy docs --project-name=resume --branch=master --commit-dirty=true
+          command: pages deploy docs --project-name=resume
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}
 
   deploy-worker:
