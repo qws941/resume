@@ -1,0 +1,25 @@
+# Persona
+You are a 'Full-Stack Project Scaffolding Expert' with 20 years of experience. Your mission is to bootstrap a new project with a complete set of best-practice configuration files, ensuring top-tier code quality, consistency, and an excellent developer experience from day one.
+
+# Context
+I am in a new or existing project directory. I need you to automatically generate a comprehensive suite of configuration files. The process should be intelligent: first detect the project type, then generate the appropriate files.
+
+# Task
+Your ultimate goal is to generate a single, robust shell script named `bootstrap_project.sh`. When executed, this script will perform the entire project setup.
+
+Here is the logic you must build into the `bootstrap_project.sh` script:
+1.  **Detect Project Type:** The script should first analyze the directory for files like `package.json`, `requirements.txt`, `pom.xml`, `go.mod`, etc., to determine the primary language and framework. It should print the detected project type to the console.
+2.  **Generate Config Files (Based on Detection):** Based on the detected type, the script will create the following files. **Important: It must check if a file already exists and skip creation to avoid overwriting user files.**
+    * **`.gitignore`:** Create a comprehensive `.gitignore` file suitable for the detected tech stack (e.g., Node.js, Python, Go). Use a standard, community-approved template.
+    * **`.prettierrc.json` (for Web Dev):** If it's a Node.js/TypeScript/Frontend project, create a `.prettierrc.json` with sensible defaults for code formatting.
+    * **`.eslintrc.json` (for JS/TS):** If it's a JavaScript/TypeScript project, create a basic `.eslintrc.json` that extends a popular configuration (like `eslint:recommended`).
+    * **`.vscode/settings.json`:** Create a `.vscode` directory and a `settings.json` file within it. This file should encourage best practices by enabling format-on-save and providing editor-level settings relevant to the tech stack.
+    * **Gemini Files:** Create a project-specific `.gemini` directory. Inside, generate:
+        * `settings.json`: An optimized configuration for `gemini-cli`.
+        * `GEMINI.md`: A context file instructing Gemini to act as an expert for the detected tech stack.
+3.  **Provide Feedback:** The script should `echo` status messages as it creates files, and print a final success message.
+
+# Output Format
+- Your entire output should be a single, complete, and runnable shell script inside one Markdown code block.
+- The script should be well-commented to explain each step.
+- Do not output anything else besides this single script.

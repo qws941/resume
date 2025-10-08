@@ -21,5 +21,48 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: wrangler deploy web/worker.js
+          command: wrangler deploy
           wranglerConfigFile: web/wrangler.toml
+
+  generate-deployment-notes:
+    runs-on: ubuntu-latest
+    name: Generate Deployment Notes
+    needs: deploy-worker
+    if: success()
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Get latest commit message
+        id: get_commit_message
+        run: echo "commit_message=$(git log -1 --pretty=%B)" >> $GITHUB_OUTPUT
+
+      - name: Generate summary with Gemini
+        id: gemini_summary
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          API_RESPONSE=$(curl -s -H 'Content-Type: application/json' \
+            -d '{"contents":[{"parts":[{"text":"Please summarize the following commit message for a deployment log, focusing on the key changes. Keep it concise (1-2 sentences): \n\n${{ steps.get_commit_message.outputs.commit_message }}"}]}]}' \
+            "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${GEMINI_API_KEY}")
+          
+          echo "API Response: $API_RESPONSE"
+          
+          if echo "$API_RESPONSE" | jq -e '.candidates[0].content.parts[0].text' > /dev/null; then
+            GENERATED_TEXT=$(echo "$API_RESPONSE" | jq -r '.candidates[0].content.parts[0].text')
+          else
+            GENERATED_TEXT="Could not generate summary. API response did not contain valid text."
+            echo "Error: Invalid API response."
+          fi
+          
+          echo "summary<<EOF" >> $GITHUB_OUTPUT
+          echo "$GENERATED_TEXT" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Print deployment summary
+        run: |
+          echo "🚀 Deployment Summary"
+          echo "---------------------"
+          echo "${{ steps.gemini_summary.outputs.summary }}"

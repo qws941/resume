@@ -1,13 +1,4 @@
 name = "resume"
-main = "web/worker.js"
+main = "web/src/index.js"
 compatibility_date = "2024-10-03"
 type = "javascript"
-account_id = "a8d9c67f586acdd15eebcc65ca3aa5bb"
-
-# Route configuration
-routes = [
-  { pattern = "resume.jclee.me/*", zone_name = "jclee.me" }
-]
-
-# Workers configuration
-workers_dev = true

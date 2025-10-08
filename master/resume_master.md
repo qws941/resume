@@ -21,13 +21,13 @@
 
 총 경력: 8년 7개월 (2017.02 ~ 현재)
 
-### 핵심 역량
-- **보안 솔루션 운영**: 15종 이상 통합 관제 (DDoS, IPS, WAF, NAC, DLP, EDR, APT 등)
-- **클라우드 & 컨테이너**: AWS, Docker, Kubernetes, Portainer API, Private Registry
-- **금융권 규제 대응**: 금융감독원 감사 0건 지적, ISMS-P, ISO27001 준수
-- **대규모 인프라**: 단말 1,000대+, 서버 150대+ 운영 경험
-- **운영 자동화**: Python/Shell 자동화로 업무 시간 50~95% 단축, MTTR 70% 개선
-- **프로덕션 배포**: 무중단 배포, 자동 롤백, 99.9% 가용성 달성
+### 핵심 역량 (Technical & Domain Expertise)
+- **보안 솔루션 통합 운영**: DDoS, IPS, WAF, NAC, DLP, EDR, APT 등 15종 이상 보안 솔루션 설계, 구축 및 통합 관제
+- **클라우드 & 컨테이너 인프라**: AWS 기반 클라우드 환경 설계 및 운영, Docker, Kubernetes, Portainer API를 활용한 컨테이너 오케스트레이션 및 Private Registry 관리
+- **금융권 보안 규제 준수**: 금융감독원 감사 0건 지적, ISMS-P, ISO27001 등 국내외 정보보호 인증 및 규제 준수 체계 구축 및 운영
+- **대규모 시스템 운영**: 단말 1,000대 이상, 서버 150대 이상 규모의 대규모 인프라 운영 및 안정화 경험
+- **운영 자동화 및 효율화**: Python/Shell 스크립트 기반 업무 자동화 시스템 개발, 반복 업무 시간 50~95% 단축, 평균 장애 복구 시간(MTTR) 70% 개선
+- **무중단 프로덕션 배포**: CI/CD 파이프라인 구축 및 운영, 무중단 배포, 자동 롤백 시스템을 통한 99.9% 서비스 가용성 달성
 
 ---
 
@@ -153,41 +153,31 @@
 
 **GitHub**: [github.com/qws941](https://github.com/qws941)
 
-#### Blacklist Intelligence Platform
-- **목적**: 금융보안원 IP 블랙리스트 자동 수집·관리·배포 시스템
-- **기술스택**: Python Flask, PostgreSQL 15, Redis 7, Docker, Portainer API, GitHub Actions
-- **아키텍처**: 독립 컨테이너 기반 마이크로서비스 (registry.jclee.me)
-- **핵심기능**:
-  - 금융보안원 REGTECH 포털 자동 로그인 및 데이터 수집
-  - 실시간 블랙리스트 API 제공 (RESTful + Web Dashboard)
-  - Portainer API 기반 컨테이너 오케스트레이션
-  - Claude AI 통합 CI/CD 파이프라인 (자동 이슈 분석 및 해결)
-- **운영성과**:
-  - 수동 수집 대비 95% 시간 단축 (1시간 → 3분)
-  - 배포 실패 시 자동 롤백으로 99.9% 가용성 달성
-  - AI 기반 장애 분석으로 MTTR 70% 감소
-
-#### FortiGate Nextrade Platform
-- **목적**: FortiGate 방화벽 정책 통합 모니터링 및 ITSM 연동
-- **기술스택**: Python, FortiManager API, Portainer, Multi-Port 배포 (7777/7778/7779)
-- **아키텍처**: 폐쇄망 지원 모놀리식 + 마이크로서비스 하이브리드
-- **핵심기능**:
-  - FortiManager 직접 연동을 통한 실시간 정책 조회 및 검증
-  - 3-Port 배포 전략 (Production/Backup/Development 동시 운영)
-  - Portainer API 기반 무중단 배포 및 헬스체크
-  - 방화벽 정책 변경 이력 추적 및 규정 준수 검증
-- **운영성과**:
-  - 정책 검증 시간 80% 단축 (수동 검토 불필요)
-  - 고가용성 3중 배포로 서비스 중단 0건
-  - 정책 변경 추적으로 감사 대응 시간 90% 절감
-
-#### Splunk Policy Verification System
-- **목적**: Splunk 중심 보안 통합 및 FortiManager/FortiAnalyzer 직접 연동
-- **기술스택**: JavaScript, Splunk API, FortiOS API, Real-time Policy Verification
+#### Splunk-FortiNet Integration
+- **목적**: 80대 방화벽 실시간 중앙관리 플랫폼 및 Splunk 중심 보안 통합
+- **기술스택**: Node.js, Cloudflare Workers, JavaScript, Splunk API, FortiManager/FortiOS API
+- **아키텍처**: DDD Level 3로 9개 도메인 분리 설계, FortiManager/FortiAnalyzer 직접 API 연동
 - **핵심기능**:
   - Splunk를 통한 중앙 집중식 로그 분석 및 정책 검증
-  - FortiManager/FortiAnalyzer 실시간 데이터 수집
-  - 정책 위반 자동 탐지 및 알림
+  - FortiManager/FortiAnalyzer 실시간 데이터 수집 및 정책 위반 자동 탐지
+  - 초당 10만 이벤트 처리 및 75,000% 확장 여유로 엔터프라이즈 검증 완료
+- **운영성과**:
+  - 80대 방화벽 정책 실시간 중앙 관리 및 모니터링
+  - 정책 검증 시간 80% 단축 (수동 검토 불필요)
+  - AI 기반 위협 분석 및 자동 알림 시스템 구축
+
+#### SafeWork Industrial Health Platform
+- **목적**: 산업보건 설문조사 SaaS 플랫폼
+- **기술스택**: Flask 3.0, PostgreSQL 15, Redis 7, Cloudflare Workers
+- **아키텍처**: Cloudflare Workers Edge API 기반 전국 동시 접속 처리, Flask 3.0 하이브리드 아키텍처
+- **핵심기능**:
+  - 종이 설문 디지털 전환 및 집계 자동화
+  - 실시간 데이터 분석 및 리포팅
+  - Edge API를 통한 고성능 및 저지연 서비스 제공
+- **운영성과**:
+  - 종이 설문 대비 집계 오류 100% 제거
+  - 전국 동시 접속 환경에서 안정적인 서비스 제공
+  - 다수 중소기업에 성공적으로 도입 및 운영 중
 
 ### 넥스트레이드 금융 인프라 구축 및 운영
 가온누리정보시스템 + 아이티센 CTS | 2024.03 ~ 현재
@@ -217,19 +207,26 @@
 기술: AWS (VPC, IAM, GuardDuty), Python, Terraform
 성과: 실시간 이상징후 탐지 시스템 구축, 인프라 비용 20% 절감
 
-### AI 기반 인프라 자동화 플랫폼
-2024.09 ~ 현재 | 개인 프로젝트
+### AI 기반 인프라 자동화 플랫폼 (2024.09 ~ 현재)
+**개인 프로젝트 | AI-Powered Infrastructure Automation Platform**
 
-역할: 설계 및 구현 총괄
-기술: Claude Code, MCP Protocol, Node.js, Python, Docker, Grafana Stack
-성과:
-- 150+ 자동화 명령어 체계 구축 (SlashCommand 시스템)
-- Universal Observability 달성 (Grafana/Loki/Prometheus 통합)
-- MCP(Model Context Protocol) 도구 생태계 구축 (14개 서버, 70+ 도구)
-- AI 어시스턴트 통합으로 운영 효율 80% 향상
-- Git 기반 배포 파이프라인 완전 자동화 (CI/CD with Watchtower)
-- 실시간 로그 스트리밍 파이프라인 구축 (Promtail → Loki → Grafana)
-- Docker Compose 기반 마이크로서비스 오케스트레이션
+**GitHub**: [github.com/qws941](https://github.com/qws941)
+
+- **목적**: AI 기반의 지능형 인프라 운영 자동화 및 관측성(Observability) 플랫폼 구축
+- **기술스택**: Claude Code, MCP Protocol, Node.js, Python, Docker, Grafana Stack (Prometheus, Loki, Tempo), Traefik, Watchtower
+- **아키텍처**: Docker Compose 기반 마이크로서비스 오케스트레이션, Git 기반 CI/CD 파이프라인
+- **핵심기능**:
+  - 150개 이상의 자동화 명령어 체계(SlashCommand 시스템) 구축 및 통합
+  - Universal Observability 아키텍처 구현 (메트릭, 로그, 트레이스 통합 모니터링)
+  - MCP(Model Context Protocol) 도구 생태계 구축 (14개 서버, 70개 이상 도구 연동)
+  - AI 어시스턴트(Claude Code, GitHub Copilot, ChatGPT API) 통합을 통한 운영 효율 극대화
+  - 실시간 로그 스트리밍 파이프라인(Promtail → Loki → Grafana) 구축
+  - Watchtower 기반 Docker 컨테이너 자동 업데이트 및 무중단 배포
+- **운영성과**:
+  - AI 기반 자동화로 인프라 운영 효율 80% 향상 및 수동 작업 시간 대폭 단축
+  - 통합 관측성 확보로 장애 발생 시 평균 복구 시간(MTTR) 70% 감소
+  - Git 기반 완전 자동화 CI/CD 파이프라인 구축으로 배포 안정성 및 속도 향상
+  - 14개 서버에 걸친 70개 이상의 도구를 통합 관리하여 복잡성 감소 및 가시성 증대
 
 ---
 
@@ -284,27 +281,27 @@
 
 ---
 
-## 핵심 강점
+## 핵심 강점 (Soft Skills & Work Ethic)
 
-### 종합적인 보안 전문성
-- 7년간 금융, 교육, 제조, IT 서비스 등 다양한 산업군 경험
-- 15종 이상 보안 솔루션 도입 및 운영 경험
-- Zero Trust 보안 모델 설계 및 구현
+### 종합적인 보안 및 인프라 전문성
+- 7년간 금융, 교육, 제조, IT 서비스 등 다양한 산업군에서 보안 및 인프라 운영 경험
+- 15종 이상 보안 솔루션 도입, 운영 및 최적화 경험을 통한 폭넓은 전문성
+- Zero Trust 보안 모델 및 최신 보안 트렌드에 대한 깊은 이해와 적용 능력
 
-### 검증된 문제 해결 능력
-- Root Cause Analysis 기반 체계적 접근
-- 평균 장애 해결 시간 40~50% 단축
-- 예방적 보안 체계 구축으로 사고 예방
+### 검증된 문제 해결 및 위기 대응 능력
+- Root Cause Analysis(RCA) 기반의 체계적인 문제 분석 및 해결 접근 방식
+- 평균 장애 해결 시간(MTTR) 40~50% 단축을 통한 신속한 위기 대응 능력
+- 예방적 보안 체계 구축 및 선제적 대응을 통한 침해 사고 발생률 최소화
 
-### 자동화 주도 효율성
-- Python/Shell 스크립팅으로 반복 업무 자동화
-- 운영 효율 50~70% 개선 실적
-- IaC 기반 인프라 표준화
+### 자동화 주도 혁신 및 효율성 추구
+- Python/Shell 스크립팅을 활용한 반복 업무 자동화 및 운영 프로세스 개선
+- 자동화를 통한 운영 효율 50~70% 개선 실적 및 비용 절감 기여
+- Infrastructure as Code(IaC) 기반의 인프라 표준화 및 관리 효율 증대
 
-### 규제 준수 전문성
-- 금융감독원, 금융보안원 규제 대응
-- ISMS-P, ISO27001 인증 획득 경험
-- 컴플라이언스 문서화 및 감사 대응
+### 강력한 규제 준수 및 컴플라이언스 역량
+- 금융감독원, 금융보안원 등 엄격한 국내외 정보보호 규제 및 감사 대응 경험
+- ISMS-P, ISO27001 등 주요 정보보호 인증 획득 및 유지 관리 경험
+- 컴플라이언스 문서화 및 내부 감사 대응을 통한 조직의 정보보호 수준 향상 기여
 
 ---
 
