@@ -59,10 +59,13 @@ resume/
 - 각 회사의 요구사항에 맞춘 커스터마이징
 - 마스터에서 필요한 부분만 추출하여 구성
 
-### 4. 자동화 기능
-- PDF 변환
-- 버전 관리
-- 키워드 최적화
+### 4. 자동화 및 CI/CD
+- **PDF 변환**: `pandoc`을 사용하여 Markdown 이력서를 PDF로 자동 변환합니다.
+- **버전 관리**: Git을 통해 모든 문서의 변경 이력을 체계적으로 관리합니다.
+- **CI/CD (GitHub Actions)**:
+  - `master` 브랜치에 변경 사항이 푸시되면, GitHub Actions가 자동으로 Cloudflare Worker에 웹 포트폴리오를 배포합니다.
+  - 배포가 완료되면, **Gemini API**를 호출하여 최신 커밋 메시지를 바탕으로 배포 요약 노트를 생성하고 워크플로우 로그에 기록하여 변경 사항 추적을 용이하게 합니다.
+- **키워드 최적화**: 주요 기술 및 성과에 대한 키워드를 분석하고 최적화합니다.
 
 ## 📊 경력 요약
 
@@ -137,4 +140,4 @@ python scripts/generate_company_resume.py --company="회사명"
 
 - **이메일**: qws941@kakao.com
 - **전화**: 010-5757-9592
-- **GitHub**: [github.com/qws941](https://github.com/qws941)
+- **GitHub**: [github.com/qws941](https://github.com/qws941)\n# CI/CD Workflow Test
