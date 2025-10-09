@@ -198,14 +198,14 @@ const INDEX_HTML = `<!DOCTYPE html>
 
         .hero-title {
             font-family: 'Playfair Display', serif;
-            font-size: 4.5rem;
+            font-size: 4.8rem;
             font-weight: 700;
             color: var(--text-hero);
-            margin-bottom: 24px;
-            letter-spacing: -0.02em;
-            line-height: 1.15;
-            text-shadow: 0 4px 20px rgba(0,0,0,0.3);
-            background: linear-gradient(135deg, #ffffff 0%, #e0e0e0 100%);
+            margin-bottom: 28px;
+            letter-spacing: -0.025em;
+            line-height: 1.12;
+            text-shadow: 0 6px 25px rgba(0,0,0,0.35);
+            background: linear-gradient(135deg, #ffffff 0%, #e5e5e5 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -237,12 +237,12 @@ const INDEX_HTML = `<!DOCTYPE html>
         }
 
         .cta-button {
-            padding: 14px 32px;
-            border-radius: 6px;
+            padding: 16px 36px;
+            border-radius: 8px;
             font-size: 1rem;
             font-weight: 600;
             text-decoration: none;
-            transition: all 0.2s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             display: inline-block;
         }
 
@@ -309,7 +309,7 @@ const INDEX_HTML = `<!DOCTYPE html>
 
         /* Projects Section */
         .projects-section {
-            padding: 120px 24px;
+            padding: 140px 24px;
             background: var(--bg-secondary);
         }
 
@@ -320,25 +320,25 @@ const INDEX_HTML = `<!DOCTYPE html>
 
         .section-header {
             text-align: center;
-            margin-bottom: 80px;
+            margin-bottom: 96px;
         }
 
         .section-label {
             font-size: 0.875rem;
-            font-weight: 600;
+            font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 0.1em;
+            letter-spacing: 0.15em;
             color: var(--text-tertiary);
-            margin-bottom: 16px;
+            margin-bottom: 20px;
         }
 
         .section-title {
             font-family: 'Playfair Display', serif;
-            font-size: 3rem;
+            font-size: 3.2rem;
             font-weight: 700;
             color: var(--text-primary);
-            margin-bottom: 20px;
-            letter-spacing: -0.015em;
+            margin-bottom: 24px;
+            letter-spacing: -0.02em;
             background: var(--gradient-primary);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -375,11 +375,11 @@ const INDEX_HTML = `<!DOCTYPE html>
 
         .project-card {
             background: var(--card-bg);
-            border-radius: 20px;
+            border-radius: 24px;
             overflow: hidden;
-            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
             border: 1px solid var(--border-color);
-            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+            box-shadow: 0 6px 24px rgba(0,0,0,0.08);
             backdrop-filter: blur(10px);
             position: relative;
         }
@@ -403,9 +403,9 @@ const INDEX_HTML = `<!DOCTYPE html>
         }
 
         .project-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 20px 60px rgba(0,0,0,0.15), 0 0 0 1px rgba(124, 58, 237, 0.25);
-            border-color: rgba(124, 58, 237, 0.35);
+            transform: translateY(-12px) scale(1.02);
+            box-shadow: 0 24px 72px rgba(124, 58, 237, 0.2), 0 0 0 1px rgba(124, 58, 237, 0.3);
+            border-color: rgba(124, 58, 237, 0.4);
         }
 
         .project-image {
@@ -508,12 +508,12 @@ const INDEX_HTML = `<!DOCTYPE html>
         }
 
         .project-link {
-            padding: 11px 24px;
-            border-radius: 8px;
+            padding: 13px 28px;
+            border-radius: 10px;
             font-size: 0.875rem;
             font-weight: 600;
             text-decoration: none;
-            transition: all 0.2s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             flex: 1;
             text-align: center;
         }
@@ -543,7 +543,7 @@ const INDEX_HTML = `<!DOCTYPE html>
 
         /* Skills Section */
         .skills-section {
-            padding: 100px 24px;
+            padding: 120px 24px;
             background: var(--bg-primary);
         }
 
@@ -618,8 +618,8 @@ const INDEX_HTML = `<!DOCTYPE html>
             font-size: 0.875rem;
             color: var(--text-secondary);
             background: var(--bg-secondary);
-            padding: 10px 20px;
-            border-radius: 24px;
+            padding: 11px 22px;
+            border-radius: 28px;
             font-weight: 500;
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             border: 1px solid transparent;
@@ -631,14 +631,14 @@ const INDEX_HTML = `<!DOCTYPE html>
         .skill-tag:hover {
             background: var(--gradient-primary);
             color: #ffffff;
-            transform: translateY(-2px) scale(1.05);
-            box-shadow: 0 8px 20px rgba(124, 58, 237, 0.35);
-            border-color: rgba(124, 58, 237, 0.25);
+            transform: translateY(-3px) scale(1.06);
+            box-shadow: 0 10px 24px rgba(124, 58, 237, 0.4);
+            border-color: rgba(124, 58, 237, 0.3);
         }
 
         /* Footer */
         .footer {
-            padding: 80px 24px;
+            padding: 100px 24px;
             background: var(--bg-footer);
             text-align: center;
         }
@@ -711,7 +711,7 @@ const INDEX_HTML = `<!DOCTYPE html>
 
         /* Stats Section */
         .stats-section {
-            padding: 80px 24px;
+            padding: 100px 24px;
             background: var(--bg-primary);
             position: relative;
             overflow: hidden;
@@ -837,7 +837,7 @@ const INDEX_HTML = `<!DOCTYPE html>
 
         /* Contact Section */
         .contact-section {
-            padding: 100px 24px;
+            padding: 120px 24px;
             background: var(--bg-secondary);
         }
 
