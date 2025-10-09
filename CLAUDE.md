@@ -21,18 +21,16 @@ resume/
 ├── web/                # Web portfolio (Cloudflare Workers deployment)
 │   ├── index.html          # Main portfolio (1-column minimal design)
 │   ├── resume.html         # Resume HTML version
-│   ├── worker.js           # Cloudflare Workers handler
+│   ├── worker.js           # Generated Cloudflare Worker (deployed)
+│   ├── generate-worker.js  # Worker generator script
 │   └── wrangler.toml       # Cloudflare Workers config
 ├── demo/               # Demo resources (as per constitution: all projects need /demo/)
 ├── data/               # Data processing
 │   ├── extracted/          # Extracted resume data (JSON)
 │   └── analysis/          # Content analysis reports
-├── scripts/            # Automation scripts
-│   ├── generate_pdf.py     # Markdown → PDF converter
-│   └── generate_html.py    # HTML generator
 ├── archive/            # Historical versions by company
 ├── DEPLOYMENT_STATUS.md # Service deployment status report
-└── wrangler.toml       # Root Cloudflare Pages config
+└── ENVIRONMENTAL_MAP.md # Environment configuration (topology, dependencies, workflow)
 ```
 
 ## Key Commands
@@ -45,6 +43,11 @@ cd web
 python3 -m http.server 8000
 # → http://localhost:8000/index.html
 
+# Generate worker.js from HTML files (MUST run after editing index.html or resume.html)
+cd web
+node generate-worker.js
+# → Creates web/worker.js with embedded HTML
+
 # Cloudflare Workers deployment
 cd web
 wrangler deploy
@@ -53,16 +56,16 @@ wrangler deploy
 # Check deployment status
 wrangler deployments list
 
-# Generate PDF from markdown (all formats)
-python3 scripts/generate_pdf.py
-
-# Convert specific markdown to PDF (Pandoc)
+# Generate PDF from markdown (Pandoc method)
 cd toss
 ./pdf-convert.sh
+# → Creates lee_jaecheol_toss_commerce_resume.pdf
+# Requires: pandoc, texlive-xetex, texlive-lang-korean
 
 # Extract content from DOCX files
 cd data/extracted
 python3 extract_resume.py
+# → Creates extracted_content.json
 ```
 
 ### Content Management
@@ -84,24 +87,37 @@ cp master/resume_master.md master/resume_final.md
 - All versions must maintain consistency in career dates, quantitative metrics
 
 ### Web Portfolio Features
-- **Modern Minimal Design**: 1-column layout with clean typography
+- **Modern Minimal Design**: 1-column layout with clean typography (commit ee4fbee, 2025-10-04)
 - **Responsive Design**: 5 breakpoints (1200px/1024px/768px/640px/375px)
 - **SEO**: Meta tags, Open Graph, Twitter Card, canonical URL
 - **Accessibility**: ARIA labels, semantic HTML, 44px minimum touch targets
 - **Performance**: Cloudflare Workers edge deployment, preconnect, smooth scrolling
-- **Dark Mode**: CSS variables with theme toggle
 - **Deployment**: Cloudflare Workers with custom domain (resume.jclee.me)
 
-### PDF Generation Strategy
-1. **Python Script** (`scripts/generate_pdf.py`): Uses WeasyPrint for Korean font support
-   - Requires: `markdown`, `weasyprint`, `beautifulsoup4`
-   - Auto-installs dependencies if missing
-   - Applies custom CSS for professional layout
+### Worker Code Generation
+- **Critical Step**: After editing `web/index.html` or `web/resume.html`, MUST run `node generate-worker.js`
+- **Purpose**: Embeds HTML files into `web/worker.js` as template literals
+- **Escaping**: Handles backticks and dollar signs for template literal compatibility
+- **Routing**:
+  - `/` → serves index.html (portfolio)
+  - `/resume` → serves resume.html (resume)
+- **Deployment**: `worker.js` is what gets deployed to Cloudflare, not the HTML files directly
 
-2. **Pandoc Script** (`toss/pdf-convert.sh`): XeLaTeX engine for precise typography
-   - Requires: `pandoc`, `texlive-xetex`, `texlive-lang-korean`
-   - Uses Noto Serif CJK KR font
-   - Geometry: 2cm margins, 11pt font, 1.3 line stretch
+### CI/CD Pipeline
+- **Trigger**: Push to `master` branch
+- **Workflow**: `.github/workflows/deploy.yml`
+- **Jobs**:
+  1. `deploy-worker`: Deploys to Cloudflare Workers using `wrangler-action@v3`
+  2. `generate-deployment-notes`: Uses Gemini API to summarize commit changes
+- **Secrets Required**: `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`, `GEMINI_API_KEY`
+- **Verification**: GitHub Actions automatically deploys, verify with `curl https://resume.jclee.me`
+
+### PDF Generation Strategy
+**Pandoc Method** (`toss/pdf-convert.sh`):
+- Engine: XeLaTeX for precise typography
+- Font: Noto Serif CJK KR for Korean support
+- Geometry: 2cm margins, 11pt font, 1.3 line stretch
+- Auto-checks for dependencies and provides fallback instructions
 
 ### Data Extraction Pipeline
 - DOCX files → `data/extracted/extract_resume.py` → JSON
@@ -136,13 +152,9 @@ All achievements must include before/after metrics:
 
 ### Web Portfolio Deployment
 - Primary URL: `https://resume.jclee.me` (canonical)
-- GitHub Pages compatible
+- Dev URL: `resume-portfolio.jclee.workers.dev`
+- **Critical**: Must run `node generate-worker.js` before deployment if HTML changed
 - All external links verified (5 production projects)
-
-### PDF Generation Dependencies
-If PDF generation fails, scripts provide fallback instructions for:
-1. Manual package installation commands
-2. Online converter URLs (https://www.markdowntopdf.com/)
 
 ### Contact Information
 - Email: qws941@kakao.com
@@ -153,28 +165,25 @@ If PDF generation fails, scripts provide fallback instructions for:
 ### Deployment Infrastructure
 - **Platform**: Cloudflare Workers (Serverless)
 - **Primary Domain**: resume.jclee.me
-- **Dev URL**: resume-portfolio.jclee.workers.dev
 - **Deploy Command**: `wrangler deploy` (from /web directory)
 - **Config File**: web/wrangler.toml
-- **Last Deploy**: 2025-10-03 15:07:45 UTC (auto via wrangler)
+- **Last Deploy**: 2025-10-09 (auto via GitHub Actions)
 - **Status Dashboard**: See DEPLOYMENT_STATUS.md for full service status
 
-## Recent Updates (2025-10-04)
+## Recent Updates (2025-10-09)
 
-### Design Overhaul
+### Infrastructure
+- Added ENVIRONMENTAL_MAP.md for environment configuration (commit c504fc8)
+- Fixed Cloudflare Worker to serve actual portfolio HTML (commit 39a0093)
+- Worker generation workflow now properly embeds index.html and resume.html
+
+### Design (2025-10-04)
 - **Commit ee4fbee**: Completely new minimal 1-column design
   - Simplified layout with focus on content
   - Removed profile image
   - Modern typography and spacing
 
 ### Content Updates
-- **Commit 85c91e6**: All resume files updated
-- **Commit ac03403**: Grafana project description modernized
-  - Concrete metrics added: 13 services, 30-day retention, 15 targets
-- **Commit 95ea9cd**: Career years updated to 8+
-- **Commit d911f6c**: Address updated to 경기도 시흥시 장현천로61, 307동 1301호
-
-### Infrastructure
-- Cloudflare Workers deployment active
-- Multiple company-specific resumes: Toss, Kakaobank, DayOne, Furiosa
-- Deployment status monitoring system (DEPLOYMENT_STATUS.md)
+- Career years updated to 8+ (commit 95ea9cd)
+- Address updated to 경기도 시흥시 장현천로61, 307동 1301호 (commit d911f6c)
+- Grafana project modernized with concrete metrics (commit ac03403)
