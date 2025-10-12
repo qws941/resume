@@ -1,2 +1,16 @@
 .gemini/
 gha-creds-*.json
+.env
+
+# Dependencies
+node_modules/
+
+# Test artifacts
+coverage/
+playwright-report/
+test-results/
+.serena/
+
+# OS files
+.DS_Store
+Thumbs.db

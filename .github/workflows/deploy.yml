@@ -16,6 +16,8 @@ jobs:
           node-version: '20'
       - name: Install Wrangler
         run: npm install -g wrangler
+      - name: Generate Worker
+        run: cd web && node generate-worker.js
       - name: Publish Worker
         uses: cloudflare/wrangler-action@v3
         with:

@@ -1,0 +1,118 @@
+const fs = require('fs');
+const path = require('path');
+
+describe('Worker Generator', () => {
+  const webDir = path.join(__dirname, '../../web');
+  const workerPath = path.join(webDir, 'worker.js');
+
+  beforeAll(() => {
+    // Run generate-worker.js before tests
+    require('../../web/generate-worker.js');
+  });
+
+  describe('worker.js generation', () => {
+    test('worker.js should be created', () => {
+      expect(fs.existsSync(workerPath)).toBe(true);
+    });
+
+    test('worker.js should contain INDEX_HTML constant', () => {
+      const workerContent = fs.readFileSync(workerPath, 'utf-8');
+      expect(workerContent).toContain('const INDEX_HTML');
+    });
+
+    test('worker.js should contain RESUME_HTML constant', () => {
+      const workerContent = fs.readFileSync(workerPath, 'utf-8');
+      expect(workerContent).toContain('const RESUME_HTML');
+    });
+
+    test('worker.js should have security headers', () => {
+      const workerContent = fs.readFileSync(workerPath, 'utf-8');
+      expect(workerContent).toContain('SECURITY_HEADERS');
+      expect(workerContent).toContain('X-Content-Type-Options');
+      expect(workerContent).toContain('X-Frame-Options');
+      expect(workerContent).toContain('Content-Security-Policy');
+    });
+
+    test('worker.js should have routing logic', () => {
+      const workerContent = fs.readFileSync(workerPath, 'utf-8');
+      expect(workerContent).toContain('/resume');
+      expect(workerContent).toContain('RESUME_HTML');
+      expect(workerContent).toContain('INDEX_HTML');
+    });
+  });
+
+  describe('HTML escaping', () => {
+    test('backticks should be escaped in embedded HTML', () => {
+      const workerContent = fs.readFileSync(workerPath, 'utf-8');
+
+      // Should not contain unescaped backticks within template literals
+      // This is a simplified check - actual implementation may vary
+      const templateLiteralMatches = workerContent.match(/const (INDEX|RESUME)_HTML = `[\s\S]*?`;/g);
+
+      if (templateLiteralMatches) {
+        templateLiteralMatches.forEach(match => {
+          // Count unescaped backticks (not preceded by backslash)
+          const unescapedBackticks = (match.match(/[^\\]`/g) || []).length;
+          // Should have exactly 2 (opening and closing of template literal)
+          expect(unescapedBackticks).toBeLessThanOrEqual(2);
+        });
+      }
+    });
+
+    test('dollar signs should be escaped in embedded HTML', () => {
+      const workerContent = fs.readFileSync(workerPath, 'utf-8');
+
+      // Should contain escaped dollar signs if any
+      // Note: This depends on source HTML content
+      if (workerContent.includes('$')) {
+        // If there are dollar signs, check if they're properly escaped
+        const hasProperEscaping = workerContent.includes('\\$');
+        expect(hasProperEscaping || !workerContent.match(/\$\{/)).toBeTruthy();
+      }
+    });
+  });
+
+  describe('Worker export', () => {
+    test('should export default object with fetch method', () => {
+      const workerContent = fs.readFileSync(workerPath, 'utf-8');
+      expect(workerContent).toContain('export default');
+      expect(workerContent).toContain('async fetch(request)');
+    });
+
+    test('should use new Response with proper headers', () => {
+      const workerContent = fs.readFileSync(workerPath, 'utf-8');
+      expect(workerContent).toContain('new Response');
+      expect(workerContent).toContain('headers:');
+    });
+  });
+
+  describe('Security', () => {
+    test('should include all required security headers', () => {
+      const workerContent = fs.readFileSync(workerPath, 'utf-8');
+
+      const requiredHeaders = [
+        'Content-Type',
+        'Cache-Control',
+        'X-Content-Type-Options',
+        'X-Frame-Options',
+        'X-XSS-Protection',
+        'Referrer-Policy',
+        'Content-Security-Policy'
+      ];
+
+      requiredHeaders.forEach(header => {
+        expect(workerContent).toContain(header);
+      });
+    });
+
+    test('X-Frame-Options should be DENY', () => {
+      const workerContent = fs.readFileSync(workerPath, 'utf-8');
+      expect(workerContent).toContain("'X-Frame-Options': 'DENY'");
+    });
+
+    test('X-Content-Type-Options should be nosniff', () => {
+      const workerContent = fs.readFileSync(workerPath, 'utf-8');
+      expect(workerContent).toContain("'X-Content-Type-Options': 'nosniff'");
+    });
+  });
+});
