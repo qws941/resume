@@ -113,7 +113,7 @@ const INDEX_HTML = `<!DOCTYPE html>
             --border-color: #e8e8e8;
             --card-bg: #ffffff;
             --card-hover-shadow: rgba(0,0,0,0.15);
-            --gradient-primary: linear-gradient(135deg, #7c3aed 0%, #5b21b6 50%, #2563eb 100%);
+            --gradient-primary: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 50%, #3b82f6 100%);
             --gradient-gold: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
             --gradient-premium: linear-gradient(135deg, rgba(124, 58, 237, 0.1) 0%, rgba(91, 33, 182, 0.1) 100%);
 
@@ -544,7 +544,7 @@ const INDEX_HTML = `<!DOCTYPE html>
 
         .project-tech {
             font-size: 0.85rem;
-            color: #2563eb;
+            color: #3b82f6;
             font-weight: 700;
             letter-spacing: 0.02em;
         }
@@ -2355,9 +2355,6 @@ const RESUME_HTML = `<!DOCTYPE html>
                     <p class="period">2025.03 - 현재</p>
                     <p>넥스트레이드 운영SM (정보보안팀)</p>
                     <div class="achievement">
-                        장애율 35% 감소 (월 8건 → 5건)
-                    </div>
-                    <div class="achievement">
                         보안 이벤트 대응시간 40% 단축 (45분 → 27분)
                     </div>
                     <div class="achievement">
@@ -2388,9 +2385,6 @@ const RESUME_HTML = `<!DOCTYPE html>
                     <p class="period">2022.08 - 2024.03</p>
                     <p>AI 기반 주식투자 서비스 - FSDC 운영</p>
                     <div class="achievement">
-                        Python 자동화로 장애율 40% 감소 (월 10건 → 6건)
-                    </div>
-                    <div class="achievement">
                         금융감독원 감사 통과, 개인정보 유출사고 0건 (19개월)
                     </div>
                     <div class="achievement">
@@ -2406,9 +2400,6 @@ const RESUME_HTML = `<!DOCTYPE html>
                         Python 스위치 점검 자동화, 주당 75% 단축 (8시간 → 2시간)
                     </div>
                     <div class="achievement">
-                        백신-VPN 충돌 해결, 장애 문의 40% 감소 (주 20건 → 12건)
-                    </div>
-                    <div class="achievement">
                         Ansible NAC 정책 자동배포, 처리시간 90% 단축 (30분 → 3분)
                     </div>
                 </div>
@@ -2422,6 +2413,7 @@ const RESUME_HTML = `<!DOCTYPE html>
                         <p><strong>Tech:</strong> Node.js, Cloudflare Workers, DDD</p>
                         <p>80대 방화벽 중앙관리, 초당 10만 이벤트 처리</p>
                         <a href="https://splunk.jclee.me" target="_blank" class="project-link">View Project →</a>
+                        <a href="https://github.com/qws941/splunk" target="_blank" class="project-link" style="margin-left: 12px;">GitHub →</a>
                     </div>
 
                     <div class="project-card">
@@ -2429,6 +2421,7 @@ const RESUME_HTML = `<!DOCTYPE html>
                         <p><strong>Tech:</strong> Flask, PostgreSQL, Cloudflare Workers</p>
                         <p>산업보건 SaaS, Edge API 전국 동시접속</p>
                         <a href="https://safework.jclee.me" target="_blank" class="project-link">View Project →</a>
+                        <a href="https://github.com/qws941/safework" target="_blank" class="project-link" style="margin-left: 12px;">GitHub →</a>
                     </div>
 
                     <div class="project-card">
@@ -2436,6 +2429,7 @@ const RESUME_HTML = `<!DOCTYPE html>
                         <p><strong>Tech:</strong> Flask, PostgreSQL, Portainer, Claude AI</p>
                         <p>금융보안원 위협정보 자동수집, AI 워크플로우 5개</p>
                         <a href="https://blacklist.jclee.me" target="_blank" class="project-link">View Project →</a>
+                        <a href="https://github.com/qws941/blacklist" target="_blank" class="project-link" style="margin-left: 12px;">GitHub →</a>
                     </div>
 
                     <div class="project-card">
@@ -2443,6 +2437,7 @@ const RESUME_HTML = `<!DOCTYPE html>
                         <p><strong>Tech:</strong> Flask, FortiManager API, GitHub Actions</p>
                         <p>방화벽 정책 자동배포, 3-tier HA 무중단</p>
                         <a href="https://fortinet.jclee.me" target="_blank" class="project-link">View Project →</a>
+                        <a href="https://github.com/qws941/fortinet" target="_blank" class="project-link" style="margin-left: 12px;">GitHub →</a>
                     </div>
 
                     <div class="project-card">
@@ -2450,6 +2445,7 @@ const RESUME_HTML = `<!DOCTYPE html>
                         <p><strong>Tech:</strong> Grafana, Prometheus, Loki, Tempo</p>
                         <p>13개 서비스 통합, 30일 보관, 15개 타겟 수집</p>
                         <a href="https://grafana.jclee.me" target="_blank" class="project-link">View Project →</a>
+                        <a href="https://github.com/qws941/grafana" target="_blank" class="project-link" style="margin-left: 12px;">GitHub →</a>
                     </div>
                 </div>
             </section>
