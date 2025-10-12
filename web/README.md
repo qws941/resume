@@ -76,7 +76,7 @@ git push origin master
 
 ### 5. Splunk-FortiNet Integration Platform
 - **URL**: https://splunk.jclee.me
-- **GitHub**: https://github.com/qws941/splunk-fortinet
+- **GitHub**: https://github.com/qws941/splunk
 - **기술**: Python, Splunk API, FortiManager API, Redis
 
 ---

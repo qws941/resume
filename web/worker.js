@@ -42,6 +42,7 @@ const INDEX_HTML = `<!DOCTYPE html>
         }
 
         :root {
+            /* Colors */
             --bg-primary: #fafafa;
             --bg-secondary: #f5f5f7;
             --bg-hero: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 40%, #2d2d44 100%);
@@ -58,6 +59,18 @@ const INDEX_HTML = `<!DOCTYPE html>
             --gradient-primary: linear-gradient(135deg, #7c3aed 0%, #5b21b6 50%, #2563eb 100%);
             --gradient-gold: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
             --gradient-premium: linear-gradient(135deg, rgba(124, 58, 237, 0.1) 0%, rgba(91, 33, 182, 0.1) 100%);
+
+            /* Transitions */
+            --transition-fast: all 0.3s ease;
+            --transition-standard: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-slow: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-smooth: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+
+            /* Shadows */
+            --shadow-sm: 0 2px 8px rgba(0,0,0,0.1);
+            --shadow-md: 0 4px 20px rgba(0,0,0,0.06);
+            --shadow-lg: 0 8px 32px rgba(0,0,0,0.08);
+            --shadow-primary: 0 8px 30px rgba(124, 58, 237, 0.4);
         }
 
         [data-theme="dark"] {
@@ -104,8 +117,8 @@ const INDEX_HTML = `<!DOCTYPE html>
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: var(--transition-fast);
+            box-shadow: var(--shadow-sm);
         }
 
         .theme-toggle:hover {
@@ -139,7 +152,7 @@ const INDEX_HTML = `<!DOCTYPE html>
             cursor: pointer;
             opacity: 0;
             visibility: hidden;
-            transition: all 0.3s ease;
+            transition: var(--transition-fast);
             box-shadow: 0 4px 15px rgba(124, 58, 237, 0.45);
         }
 
@@ -242,14 +255,14 @@ const INDEX_HTML = `<!DOCTYPE html>
             font-size: 1rem;
             font-weight: 600;
             text-decoration: none;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: var(--transition-standard);
             display: inline-block;
         }
 
         .cta-primary {
             background: var(--gradient-primary);
             color: #ffffff;
-            box-shadow: 0 8px 30px rgba(124, 58, 237, 0.4);
+            box-shadow: var(--shadow-primary);
             position: relative;
             overflow: hidden;
         }
@@ -377,7 +390,7 @@ const INDEX_HTML = `<!DOCTYPE html>
             background: var(--card-bg);
             border-radius: 24px;
             overflow: hidden;
-            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: var(--transition-smooth);
             border: 1px solid var(--border-color);
             box-shadow: 0 6px 24px rgba(0,0,0,0.08);
             backdrop-filter: blur(10px);
@@ -513,7 +526,7 @@ const INDEX_HTML = `<!DOCTYPE html>
             font-size: 0.875rem;
             font-weight: 600;
             text-decoration: none;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: var(--transition-standard);
             flex: 1;
             text-align: center;
         }
@@ -560,11 +573,11 @@ const INDEX_HTML = `<!DOCTYPE html>
             padding: 40px;
             border-radius: 20px;
             border: 1px solid var(--border-color);
-            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: var(--transition-slow);
             position: relative;
             overflow: hidden;
             backdrop-filter: blur(10px);
-            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+            box-shadow: var(--shadow-md);
         }
 
         .skill-category::before {
@@ -621,7 +634,7 @@ const INDEX_HTML = `<!DOCTYPE html>
             padding: 11px 22px;
             border-radius: 28px;
             font-weight: 500;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: var(--transition-standard);
             border: 1px solid transparent;
             position: relative;
             z-index: 1;
@@ -679,7 +692,7 @@ const INDEX_HTML = `<!DOCTYPE html>
             text-decoration: none;
             font-size: 0.95rem;
             font-weight: 500;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: var(--transition-standard);
             position: relative;
             padding-bottom: 4px;
         }
@@ -746,11 +759,11 @@ const INDEX_HTML = `<!DOCTYPE html>
             border-radius: 24px;
             text-align: center;
             border: 1px solid var(--border-color);
-            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: var(--transition-slow);
             position: relative;
             overflow: hidden;
             backdrop-filter: blur(10px);
-            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+            box-shadow: var(--shadow-md);
         }
 
         .stat-card::before {
@@ -796,7 +809,7 @@ const INDEX_HTML = `<!DOCTYPE html>
             font-size: 3.5rem;
             margin-bottom: 20px;
             filter: grayscale(0.2);
-            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: var(--transition-slow);
             position: relative;
             z-index: 1;
             text-shadow: 0 4px 12px rgba(0,0,0,0.1);
@@ -863,11 +876,11 @@ const INDEX_HTML = `<!DOCTYPE html>
             display: flex;
             align-items: center;
             gap: 20px;
-            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: var(--transition-slow);
             position: relative;
             overflow: hidden;
             backdrop-filter: blur(10px);
-            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+            box-shadow: var(--shadow-md);
         }
 
         .contact-item::before {
@@ -906,7 +919,7 @@ const INDEX_HTML = `<!DOCTYPE html>
             position: relative;
             z-index: 1;
             box-shadow: 0 8px 24px rgba(124, 58, 237, 0.35);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: var(--transition-standard);
         }
 
         .contact-item:hover .contact-item-icon {
@@ -945,7 +958,7 @@ const INDEX_HTML = `<!DOCTYPE html>
             padding: 48px;
             border-radius: 24px;
             border: 1px solid var(--border-color);
-            box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+            box-shadow: var(--shadow-lg);
             backdrop-filter: blur(10px);
             position: relative;
             overflow: hidden;
@@ -985,7 +998,7 @@ const INDEX_HTML = `<!DOCTYPE html>
             font-size: 1rem;
             color: var(--text-primary);
             font-family: inherit;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: var(--transition-standard);
         }
 
         .form-input:focus,
@@ -1012,8 +1025,8 @@ const INDEX_HTML = `<!DOCTYPE html>
             font-size: 1.05rem;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 8px 30px rgba(124, 58, 237, 0.4);
+            transition: var(--transition-standard);
+            box-shadow: var(--shadow-primary);
             position: relative;
             overflow: hidden;
         }
@@ -1743,15 +1756,17 @@ const INDEX_HTML = `<!DOCTYPE html>
             themeIcon.textContent = newTheme === 'dark' ? '☀️' : '🌙';
         });
 
-        // Smooth scroll for internal links
+        // Smooth scroll for internal links (with offset for fixed header)
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
                 const target = document.querySelector(this.getAttribute('href'));
                 if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
+                    const offset = 80;
+                    const targetPosition = target.getBoundingClientRect().top + window.pageYOffset - offset;
+                    window.scrollTo({
+                        top: targetPosition,
+                        behavior: 'smooth'
                     });
                 }
             });
@@ -1845,22 +1860,6 @@ const INDEX_HTML = `<!DOCTYPE html>
                 alert('Thank you for your message! Your default email client will open.');
             });
         }
-
-        // Add smooth scroll offset for fixed header
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    const offset = 80; // Adjust based on header height
-                    const targetPosition = target.getBoundingClientRect().top + window.pageYOffset - offset;
-                    window.scrollTo({
-                        top: targetPosition,
-                        behavior: 'smooth'
-                    });
-                }
-            });
-        });
 
         // Scroll to Top Button
         const scrollToTopButton = document.getElementById('scrollToTop');
@@ -2236,7 +2235,7 @@ const RESUME_HTML = `<!DOCTYPE html>
                     <a href="https://github.com/qws941" target="_blank">github.com/qws941</a>
                 </div>
                 <div class="contact-item">
-                    <a href="https://qws941.github.io/resume" target="_blank">Portfolio</a>
+                    <a href="https://resume.jclee.me" target="_blank">Portfolio</a>
                 </div>
             </div>
 
