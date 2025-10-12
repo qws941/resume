@@ -49,19 +49,25 @@ jobs:
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: |
+          # Use jq to safely construct JSON payload with proper escaping
+          COMMIT_MSG='${{ steps.get_commit_message.outputs.commit_message }}'
+          JSON_PAYLOAD=$(jq -n \
+            --arg msg "Please summarize the following commit message for a deployment log, focusing on the key changes. Keep it concise (1-2 sentences): \n\n${COMMIT_MSG}" \
+            '{"contents":[{"parts":[{"text":$msg}]}]}')
+
           API_RESPONSE=$(curl -s -H 'Content-Type: application/json' \
-            -d '{"contents":[{"parts":[{"text":"Please summarize the following commit message for a deployment log, focusing on the key changes. Keep it concise (1-2 sentences): \n\n${{ steps.get_commit_message.outputs.commit_message }}"}]}]}' \
+            -d "$JSON_PAYLOAD" \
             "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${GEMINI_API_KEY}")
-          
+
           echo "API Response: $API_RESPONSE"
-          
+
           if echo "$API_RESPONSE" | jq -e '.candidates[0].content.parts[0].text' > /dev/null; then
             GENERATED_TEXT=$(echo "$API_RESPONSE" | jq -r '.candidates[0].content.parts[0].text')
           else
             GENERATED_TEXT="Could not generate summary. API response did not contain valid text."
             echo "Error: Invalid API response."
           fi
-          
+
           echo "summary<<EOF" >> $GITHUB_OUTPUT
           echo "$GENERATED_TEXT" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
