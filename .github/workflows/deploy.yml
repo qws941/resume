@@ -39,7 +39,10 @@ jobs:
 
       - name: Get latest commit message
         id: get_commit_message
-        run: echo "commit_message=$(git log -1 --pretty=%B)" >> $GITHUB_OUTPUT
+        run: |
+          echo "commit_message<<EOF" >> $GITHUB_OUTPUT
+          git log -1 --pretty=%B >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
 
       - name: Generate summary with Gemini
         id: gemini_summary
