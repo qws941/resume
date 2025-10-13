@@ -791,6 +791,314 @@ const INDEX_HTML = `<!DOCTYPE html>
             transform: scale(1.02);
         }
 
+        /* Tech Stack Section */
+        .tech-categories {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: var(--space-8);
+        }
+
+        .tech-category {
+            background: var(--bg-primary);
+            border: 1px solid var(--color-gray-200);
+            border-radius: var(--radius-2xl);
+            padding: var(--space-8);
+            transition: all var(--transition-slow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tech-category::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient-primary);
+            transform: scaleX(0);
+            transition: transform var(--transition-slow);
+        }
+
+        .tech-category:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-2xl);
+            border-color: var(--color-primary-200);
+        }
+
+        .tech-category:hover::before {
+            transform: scaleX(1);
+        }
+
+        .tech-category-header {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            margin-bottom: var(--space-6);
+        }
+
+        .tech-category-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: var(--radius-xl);
+            background: var(--gradient-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: var(--text-3xl);
+        }
+
+        .tech-category-title {
+            font-size: var(--text-xl);
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .tech-items {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--space-2);
+        }
+
+        .tech-item {
+            padding: var(--space-2) var(--space-4);
+            background: var(--color-gray-100);
+            border-radius: var(--radius-lg);
+            font-size: var(--text-sm);
+            font-weight: 600;
+            color: var(--text-primary);
+            transition: all var(--transition-fast);
+        }
+
+        .tech-item:hover {
+            background: var(--gradient-primary);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        /* Experience Timeline */
+        .timeline {
+            position: relative;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: var(--space-8) 0;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: var(--gradient-primary);
+            transform: translateX(-50%);
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: var(--space-12);
+            animation: fadeInUp 0.6s ease-out both;
+        }
+
+        .timeline-item:nth-child(odd) {
+            padding-right: calc(50% + var(--space-8));
+        }
+
+        .timeline-item:nth-child(even) {
+            padding-left: calc(50% + var(--space-8));
+        }
+
+        .timeline-marker {
+            position: absolute;
+            left: 50%;
+            top: 0;
+            width: 20px;
+            height: 20px;
+            border-radius: var(--radius-full);
+            background: var(--gradient-primary);
+            transform: translateX(-50%);
+            box-shadow: 0 0 0 6px var(--bg-primary), var(--shadow-primary);
+            z-index: 2;
+        }
+
+        .timeline-card {
+            background: var(--bg-primary);
+            border: 1px solid var(--color-gray-200);
+            border-radius: var(--radius-2xl);
+            padding: var(--space-8);
+            transition: all var(--transition-slow);
+            position: relative;
+        }
+
+        .timeline-card::before {
+            content: '';
+            position: absolute;
+            top: 12px;
+            width: 0;
+            height: 0;
+            border: 12px solid transparent;
+        }
+
+        .timeline-item:nth-child(odd) .timeline-card::before {
+            right: -24px;
+            border-left-color: var(--color-gray-200);
+        }
+
+        .timeline-item:nth-child(even) .timeline-card::before {
+            left: -24px;
+            border-right-color: var(--color-gray-200);
+        }
+
+        .timeline-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-2xl);
+            border-color: var(--color-primary-200);
+        }
+
+        .timeline-period {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-2);
+            padding: var(--space-2) var(--space-3);
+            background: var(--gradient-gold);
+            color: white;
+            border-radius: var(--radius-full);
+            font-size: var(--text-xs);
+            font-weight: 700;
+            margin-bottom: var(--space-4);
+        }
+
+        .timeline-company {
+            font-size: var(--text-2xl);
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: var(--space-2);
+        }
+
+        .timeline-position {
+            font-size: var(--text-base);
+            font-weight: 600;
+            color: var(--color-primary-600);
+            margin-bottom: var(--space-4);
+        }
+
+        .timeline-description {
+            font-size: var(--text-sm);
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        @media (max-width: 768px) {
+            .timeline::before {
+                left: 20px;
+            }
+
+            .timeline-marker {
+                left: 20px;
+            }
+
+            .timeline-item:nth-child(odd),
+            .timeline-item:nth-child(even) {
+                padding-right: 0;
+                padding-left: calc(20px + var(--space-8) + var(--space-4));
+            }
+
+            .timeline-card::before {
+                display: none;
+            }
+        }
+
+        /* Certifications Section */
+        .certifications-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: var(--space-6);
+        }
+
+        .cert-card {
+            background: var(--bg-primary);
+            border: 1px solid var(--color-gray-200);
+            border-radius: var(--radius-2xl);
+            padding: var(--space-8);
+            transition: all var(--transition-slow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cert-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient-gold);
+            transform: scaleX(0);
+            transition: transform var(--transition-slow);
+        }
+
+        .cert-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-2xl);
+            border-color: var(--color-accent-gold);
+        }
+
+        .cert-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .cert-header {
+            display: flex;
+            align-items: flex-start;
+            gap: var(--space-4);
+            margin-bottom: var(--space-4);
+        }
+
+        .cert-icon-wrapper {
+            width: 64px;
+            height: 64px;
+            border-radius: var(--radius-xl);
+            background: var(--gradient-gold);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: var(--text-3xl);
+            flex-shrink: 0;
+            box-shadow: var(--shadow-md);
+        }
+
+        .cert-info {
+            flex: 1;
+        }
+
+        .cert-name {
+            font-size: var(--text-xl);
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: var(--space-2);
+            line-height: 1.3;
+        }
+
+        .cert-issuer {
+            font-size: var(--text-sm);
+            color: var(--text-secondary);
+            font-weight: 500;
+            margin-bottom: var(--space-1);
+        }
+
+        .cert-date {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-2);
+            padding: var(--space-1) var(--space-3);
+            background: var(--color-accent-gold);
+            color: white;
+            border-radius: var(--radius-full);
+            font-size: var(--text-xs);
+            font-weight: 700;
+        }
+
         /* Footer */
         .footer {
             padding: var(--space-20) var(--space-6);
@@ -934,9 +1242,11 @@ const INDEX_HTML = `<!DOCTYPE html>
         <div class="nav-container">
             <div class="nav-logo">JC LEE</div>
             <div class="nav-links">
+                <a href="#tech-stack" class="nav-link">Tech Stack</a>
+                <a href="#experience" class="nav-link">Experience</a>
+                <a href="#certifications" class="nav-link">Certifications</a>
                 <a href="#projects" class="nav-link">Projects</a>
                 <a href="#dashboards" class="nav-link">Dashboards</a>
-                <a href="#stats" class="nav-link">Stats</a>
                 <a href="resume.html" class="nav-link">Resume</a>
                 <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
                     <span id="themeIcon">🌙</span>
@@ -1001,6 +1311,361 @@ const INDEX_HTML = `<!DOCTYPE html>
                     <span class="stat-icon">🚀</span>
                     <div class="stat-number" data-target="80">0</div>
                     <div class="stat-label">방화벽 중앙관리 (대)</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tech Stack Section -->
+    <section class="section" id="tech-stack">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-badge">Technical Expertise</span>
+                <h2 class="section-title">Tech Stack</h2>
+                <p class="section-description">
+                    8년 8개월간 운영한 15종 이상 보안 솔루션 및 인프라 기술 스택
+                </p>
+            </div>
+
+            <div class="tech-categories">
+                <!-- Security Solutions -->
+                <div class="tech-category">
+                    <div class="tech-category-header">
+                        <div class="tech-category-icon">🛡️</div>
+                        <h3 class="tech-category-title">Security Solutions</h3>
+                    </div>
+                    <div class="tech-items">
+                        <span class="tech-item">Fortigate</span>
+                        <span class="tech-item">Palo Alto</span>
+                        <span class="tech-item">Cisco ASA</span>
+                        <span class="tech-item">DDoS</span>
+                        <span class="tech-item">IPS/IDS</span>
+                        <span class="tech-item">WAF</span>
+                        <span class="tech-item">NAC</span>
+                        <span class="tech-item">DLP</span>
+                        <span class="tech-item">EDR/EPP</span>
+                        <span class="tech-item">MDM</span>
+                        <span class="tech-item">APT</span>
+                    </div>
+                </div>
+
+                <!-- Cloud & Containers -->
+                <div class="tech-category">
+                    <div class="tech-category-header">
+                        <div class="tech-category-icon">☁️</div>
+                        <h3 class="tech-category-title">Cloud & Containers</h3>
+                    </div>
+                    <div class="tech-items">
+                        <span class="tech-item">AWS VPC</span>
+                        <span class="tech-item">AWS IAM</span>
+                        <span class="tech-item">AWS GuardDuty</span>
+                        <span class="tech-item">AWS S3</span>
+                        <span class="tech-item">AWS CloudTrail</span>
+                        <span class="tech-item">Docker</span>
+                        <span class="tech-item">Kubernetes</span>
+                        <span class="tech-item">VMware</span>
+                        <span class="tech-item">Portainer</span>
+                    </div>
+                </div>
+
+                <!-- Automation & Development -->
+                <div class="tech-category">
+                    <div class="tech-category-header">
+                        <div class="tech-category-icon">⚙️</div>
+                        <h3 class="tech-category-title">Automation & Development</h3>
+                    </div>
+                    <div class="tech-items">
+                        <span class="tech-item">Python</span>
+                        <span class="tech-item">Node.js</span>
+                        <span class="tech-item">Flask</span>
+                        <span class="tech-item">Shell Script</span>
+                        <span class="tech-item">Ansible</span>
+                        <span class="tech-item">Terraform</span>
+                        <span class="tech-item">Jenkins</span>
+                        <span class="tech-item">GitLab CI/CD</span>
+                        <span class="tech-item">GitHub Actions</span>
+                    </div>
+                </div>
+
+                <!-- Networking -->
+                <div class="tech-category">
+                    <div class="tech-category-header">
+                        <div class="tech-category-icon">🌐</div>
+                        <h3 class="tech-category-title">Networking</h3>
+                    </div>
+                    <div class="tech-items">
+                        <span class="tech-item">OSPF</span>
+                        <span class="tech-item">BGP</span>
+                        <span class="tech-item">VLAN</span>
+                        <span class="tech-item">VxLAN</span>
+                        <span class="tech-item">MPLS</span>
+                        <span class="tech-item">Load Balancing</span>
+                        <span class="tech-item">SSL/TLS</span>
+                        <span class="tech-item">VPN</span>
+                        <span class="tech-item">Traefik</span>
+                    </div>
+                </div>
+
+                <!-- Monitoring & Observability -->
+                <div class="tech-category">
+                    <div class="tech-category-header">
+                        <div class="tech-category-icon">📊</div>
+                        <h3 class="tech-category-title">Monitoring & Observability</h3>
+                    </div>
+                    <div class="tech-items">
+                        <span class="tech-item">Grafana</span>
+                        <span class="tech-item">Prometheus</span>
+                        <span class="tech-item">Loki</span>
+                        <span class="tech-item">Tempo</span>
+                        <span class="tech-item">ELK Stack</span>
+                        <span class="tech-item">Splunk</span>
+                        <span class="tech-item">Zabbix</span>
+                        <span class="tech-item">Nagios</span>
+                    </div>
+                </div>
+
+                <!-- Database & Storage -->
+                <div class="tech-category">
+                    <div class="tech-category-header">
+                        <div class="tech-category-icon">💾</div>
+                        <h3 class="tech-category-title">Database & Storage</h3>
+                    </div>
+                    <div class="tech-items">
+                        <span class="tech-item">PostgreSQL</span>
+                        <span class="tech-item">MySQL</span>
+                        <span class="tech-item">MongoDB</span>
+                        <span class="tech-item">Redis</span>
+                        <span class="tech-item">SQLite</span>
+                        <span class="tech-item">Synology NAS</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Experience Timeline Section -->
+    <section class="section" id="experience" style="background: var(--bg-secondary);">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-badge">Career Journey</span>
+                <h2 class="section-title">Experience Timeline</h2>
+                <p class="section-description">
+                    8년 8개월간의 인프라·보안 엔지니어 경력 여정
+                </p>
+            </div>
+
+            <div class="timeline">
+                <!-- Item 1: Current Position -->
+                <div class="timeline-item">
+                    <div class="timeline-marker"></div>
+                    <div class="timeline-card">
+                        <span class="timeline-period">
+                            <span>📍</span>
+                            <span>2025.03 ~ 현재</span>
+                        </span>
+                        <h3 class="timeline-company">㈜아이티센 CTS</h3>
+                        <div class="timeline-position">Infrastructure Team Lead</div>
+                        <p class="timeline-description">
+                            인프라 팀 리드로 클라우드 인프라 설계 및 보안 아키텍처 구축 담당. 업무 자동화 및 관측성 플랫폼 구축으로 운영 효율 극대화.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Item 2 -->
+                <div class="timeline-item">
+                    <div class="timeline-marker"></div>
+                    <div class="timeline-card">
+                        <span class="timeline-period">
+                            <span>📅</span>
+                            <span>2024.10 ~ 2025.02 (5개월)</span>
+                        </span>
+                        <h3 class="timeline-company">비티에스</h3>
+                        <div class="timeline-position">Security Engineer</div>
+                        <p class="timeline-description">
+                            보안 시스템 운영 및 취약점 분석. 보안 정책 수립 및 침해사고 대응 체계 구축.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Item 3 -->
+                <div class="timeline-item">
+                    <div class="timeline-marker"></div>
+                    <div class="timeline-card">
+                        <span class="timeline-period">
+                            <span>📅</span>
+                            <span>2023.10 ~ 2024.09 (1년)</span>
+                        </span>
+                        <h3 class="timeline-company">티온리서치</h3>
+                        <div class="timeline-position">Network Engineer</div>
+                        <p class="timeline-description">
+                            네트워크 인프라 설계 및 운영. L2/L3 스위치, 라우터 구성 및 OSPF, BGP 프로토콜 관리.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Item 4 -->
+                <div class="timeline-item">
+                    <div class="timeline-marker"></div>
+                    <div class="timeline-card">
+                        <span class="timeline-period">
+                            <span>📅</span>
+                            <span>2023.04 ~ 2023.09 (6개월)</span>
+                        </span>
+                        <h3 class="timeline-company">뉴아이씨티</h3>
+                        <div class="timeline-position">Infrastructure Team</div>
+                        <p class="timeline-description">
+                            서버 인프라 구축 및 운영. 가상화 환경 관리 및 백업/복구 체계 수립.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Item 5 -->
+                <div class="timeline-item">
+                    <div class="timeline-marker"></div>
+                    <div class="timeline-card">
+                        <span class="timeline-period">
+                            <span>📅</span>
+                            <span>2021.09 ~ 2023.03 (1년 7개월)</span>
+                        </span>
+                        <h3 class="timeline-company">에스플러스시스템즈</h3>
+                        <div class="timeline-position">SOC Engineer</div>
+                        <p class="timeline-description">
+                            보안관제센터 운영. 실시간 보안 이벤트 모니터링, 침해사고 탐지 및 대응. SIEM 시스템 관리.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Item 6: First Position -->
+                <div class="timeline-item">
+                    <div class="timeline-marker"></div>
+                    <div class="timeline-card">
+                        <span class="timeline-period">
+                            <span>🚀</span>
+                            <span>2017.02 ~ 2021.08 (4년 7개월)</span>
+                        </span>
+                        <h3 class="timeline-company">피플앤시스템</h3>
+                        <div class="timeline-position">Network Administrator</div>
+                        <p class="timeline-description">
+                            네트워크 관리자로 커리어 시작. 네트워크 장비 운영, 보안 시스템 관리, 사용자 지원 및 인프라 유지보수 담당.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Certifications Section -->
+    <section class="section" id="certifications">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-badge">Professional Credentials</span>
+                <h2 class="section-title">Certifications</h2>
+                <p class="section-description">
+                    네트워크·보안·시스템 분야 전문 자격증 6개 보유
+                </p>
+            </div>
+
+            <div class="certifications-grid">
+                <!-- CCNP -->
+                <div class="cert-card">
+                    <div class="cert-header">
+                        <div class="cert-icon-wrapper">
+                            <span>🏅</span>
+                        </div>
+                        <div class="cert-info">
+                            <h3 class="cert-name">CCNP</h3>
+                            <div class="cert-issuer">Cisco Systems</div>
+                            <span class="cert-date">
+                                <span>📅</span>
+                                <span>2020.08</span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RHCSA -->
+                <div class="cert-card">
+                    <div class="cert-header">
+                        <div class="cert-icon-wrapper">
+                            <span>🎖️</span>
+                        </div>
+                        <div class="cert-info">
+                            <h3 class="cert-name">RHCSA</h3>
+                            <div class="cert-issuer">Red Hat</div>
+                            <span class="cert-date">
+                                <span>📅</span>
+                                <span>2019.01</span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CompTIA Linux+ -->
+                <div class="cert-card">
+                    <div class="cert-header">
+                        <div class="cert-icon-wrapper">
+                            <span>🏆</span>
+                        </div>
+                        <div class="cert-info">
+                            <h3 class="cert-name">CompTIA Linux+</h3>
+                            <div class="cert-issuer">CompTIA</div>
+                            <span class="cert-date">
+                                <span>📅</span>
+                                <span>2019.02</span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- LPIC Level 1 -->
+                <div class="cert-card">
+                    <div class="cert-header">
+                        <div class="cert-icon-wrapper">
+                            <span>🥇</span>
+                        </div>
+                        <div class="cert-info">
+                            <h3 class="cert-name">LPIC Level 1</h3>
+                            <div class="cert-issuer">Linux Professional Institute</div>
+                            <span class="cert-date">
+                                <span>📅</span>
+                                <span>2019.02</span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 사무자동화산업기사 -->
+                <div class="cert-card">
+                    <div class="cert-header">
+                        <div class="cert-icon-wrapper">
+                            <span>📜</span>
+                        </div>
+                        <div class="cert-info">
+                            <h3 class="cert-name">사무자동화산업기사</h3>
+                            <div class="cert-issuer">한국산업인력공단</div>
+                            <span class="cert-date">
+                                <span>📅</span>
+                                <span>2019.12</span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 리눅스마스터 2급 -->
+                <div class="cert-card">
+                    <div class="cert-header">
+                        <div class="cert-icon-wrapper">
+                            <span>🎓</span>
+                        </div>
+                        <div class="cert-info">
+                            <h3 class="cert-name">리눅스마스터 2급</h3>
+                            <div class="cert-issuer">한국정보통신진흥협회</div>
+                            <span class="cert-date">
+                                <span>📅</span>
+                                <span>2019.01</span>
+                            </span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
