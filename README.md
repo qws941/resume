@@ -136,7 +136,7 @@ python scripts/generate_company_resume.py --company="회사명"
 
 ## 🔄 업데이트 이력
 
-- **2025.10.13**: 고도화 및 통합
+- **2025.10.13**: 고도화 및 통합 (Phase 2)
   - **이슈 스캔**:
     - ESLint 경고 4개 수정 (미사용 변수 제거)
     - 백업 파일 제거 (CLAUDE.md v11.10 No-Backup Policy 준수)
@@ -148,6 +148,12 @@ python scripts/generate_company_resume.py --company="회사명"
     - tmux 기반 배포 모니터링 스크립트 추가
     - 4가지 모니터링 모드 (interactive, stream, snapshot, error search)
     - 50,000줄 scrollback 지원
+  - **TS 명령어 개선**:
+    - 세션 생성 후 auto-attach 실패 감지 및 명확한 피드백 제공
+    - 세션 안정화를 위한 0.5초 검증 대기 추가
+    - 수동 접속 방법 가이드 (`ts attach <name>`) 제공
+    - 종합 트러블슈팅 가이드 (`docs/TS_SESSION_TROUBLESHOOTING.md`)
+    - 코드 개선 패치 파일 (`docs/TS_SESSION_FIX.patch`)
 - **2025.10.12**: 가시성 개선 및 GitHub 통합 강화
   - **UI/UX 개선**:
     - 파란색 가시성 개선 (더 밝은 색상으로 변경: #3b82f6, #8b5cf6, #6d28d9)

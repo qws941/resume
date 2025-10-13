@@ -1,0 +1,205 @@
+# TS Session Auto-Attach Fix
+# This patch improves error handling for session creation and attachment
+# Apply to: /usr/local/bin/ts
+
+# CHANGES SUMMARY:
+# 1. Add session validation after creation with 0.5s delay
+# 2. Improve attach_session() error handling with fallback
+# 3. Add clear user feedback when auto-attach fails
+# 4. Suggest manual attachment method on failure
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# PATCH 1: Improved create_session() function
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+# Replace lines 133-200 in /usr/local/bin/ts
+
+create_session() {
+    local name="$1"
+    local path="${2:-$(pwd)}"
+    local description="${3:-}"
+    local tags="${4:-}"
+    local auto_claude="${5:-true}"  # 기본값을 true로 변경: 세션 생성 시 자동으로 claude 실행
+
+    # 독립 소켓 사용 (각 세션이 완전히 격리됨)
+    local socket_path="$TS_SOCKET_DIR/$name"
+
+    # Validate name
+    if [[ -z "$name" ]] || [[ "$name" =~ [[:space:]/:] ]]; then
+        echo -e "${RED}✗ Invalid session name${NC}" >&2
+        return 1
+    fi
+
+    # Check if session already exists in socket
+    if [[ -S "$socket_path" ]] && tmux -S "$socket_path" has-session -t "$name" 2>/dev/null; then
+        echo -e "${YELLOW}⚠️ Session already exists: $name${NC}"
+        return 0  # Success - session exists
+    fi
+
+    # Kill duplicate default tmux session
+    if tmux has-session -t "$name" 2>/dev/null; then
+        echo -e "${YELLOW}⚠️ Removing duplicate from default tmux${NC}"
+        tmux kill-session -t "$name" 2>/dev/null || true
+    fi
+
+    # Resolve path
+    path=$(realpath "$path" 2>/dev/null || echo "$path")
+
+    if [[ ! -d "$path" ]]; then
+        mkdir -p "$path" 2>/dev/null || true
+    fi
+
+    echo -e "${GREEN}🚀 Creating session: $name${NC}"
+
+    # 독립 소켓으로 세션 생성
+    if ! tmux -S "$socket_path" new-session -d -s "$name" -c "$path" 2>/dev/null; then
+        echo -e "${RED}✗ Failed to create session${NC}" >&2
+        return 1
+    fi
+
+    # Add to database
+    local should_auto_claude="false"
+    if [[ "$auto_claude" == "true" ]] || [[ "$auto_claude" == "--claude" ]]; then
+        should_auto_claude="true"
+    fi
+    ts_db_add_session "$name" "$path" "$description" "$tags" "$should_auto_claude"
+
+    # Auto-start Claude if requested
+    if [[ "$should_auto_claude" == "true" ]]; then
+        echo -e "${CYAN}🤖 Starting Claude in session...${NC}"
+        tmux -S "$socket_path" send-keys -t "$name" "cd \"$path\" && claude" Enter
+        sleep 1
+    fi
+
+    echo "$name" > "$TS_LAST_SESSION"
+    ts_log_to_grafana "create" "$name" 0
+
+    echo -e "${GREEN}✓ Session created: $name${NC}"
+    echo -e "${BLUE}  Path: $path${NC}"
+    [[ -n "$description" ]] && echo -e "${BLUE}  Description: $description${NC}"
+    [[ -n "$tags" ]] && echo -e "${BLUE}  Tags: $tags${NC}"
+
+    # 🆕 Wait for session to stabilize before attaching
+    sleep 0.5
+
+    # 🆕 Verify session is actually responsive
+    if ! ts_session_exists "$name"; then
+        echo -e "${RED}✗ Session creation failed verification${NC}" >&2
+        echo -e "${YELLOW}Try manually:${NC} ts attach $name" >&2
+        return 1
+    fi
+
+    # 🆕 Auto-attach with improved error handling
+    if ! attach_session_with_fallback "$name"; then
+        echo ""
+        echo -e "${YELLOW}⚠️ Auto-attach failed. Try manually:${NC}"
+        echo -e "${CYAN}  ts attach $name${NC}"
+        echo -e "${CYAN}  # or${NC}"
+        echo -e "${CYAN}  tmux -S $socket_path attach-session -t $name${NC}"
+        return 1
+    fi
+}
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# PATCH 2: New attach_session_with_fallback() helper
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+# Add this NEW function after create_session() (around line 201)
+
+attach_session_with_fallback() {
+    local name="$1"
+    local socket_path="$TS_SOCKET_DIR/$name"
+
+    # Check if session exists
+    if ! ts_session_exists "$name"; then
+        ts_print_error "Session does not exist: $name"
+        return 1
+    fi
+
+    # Check if already inside tmux
+    if [[ -n "${TMUX:-}" ]]; then
+        # Inside tmux - try switch-client first (safer than detach/attach)
+        if tmux switch-client -t "$name" 2>/dev/null; then
+            return 0
+        fi
+
+        # Fallback: detach and attach
+        echo -e "${YELLOW}⚠️ Inside tmux, switching sessions...${NC}"
+        exec bash -c "tmux detach-client && exec tmux -S '$socket_path' attach-session -t '$name'"
+    fi
+
+    # Outside tmux - direct attach
+    echo -e "${CYAN}🔗 Attaching to: $name${NC}"
+    echo "$name" > "$TS_LAST_SESSION"
+
+    # Get session path for context switch
+    if ts_db_session_exists "$name"; then
+        local session_data=$(ts_db_get_session "$name")
+        local session_path=$(echo "$session_data" | jq -r '.path')
+        local docker_context=$(echo "$session_data" | jq -r '.docker_context // "default"')
+
+        # Switch Docker context if needed
+        local current_context=$(docker context show 2>/dev/null || echo "default")
+        if [[ "$docker_context" != "$current_context" ]]; then
+            docker context use "$docker_context" &>/dev/null
+            if [[ "$docker_context" == "synology" ]]; then
+                echo -e "${CYAN}🔄 Docker context: synology (Synology NAS - 192.168.50.215)${NC}"
+            else
+                echo -e "${CYAN}🔄 Docker context: default (local)${NC}"
+            fi
+        fi
+
+        # Change to session path
+        if [[ -n "$session_path" ]] && [[ -d "$session_path" ]]; then
+            echo -e "${BLUE}📁 Moving to: $session_path${NC}"
+            cd "$session_path" 2>/dev/null || true
+        fi
+    fi
+
+    ts_log_to_grafana "attach" "$name" 0
+
+    # Execute tmux attach (replaces current shell)
+    exec tmux -S "$socket_path" attach-session -t "$name"
+}
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# PATCH 3: Update existing attach_session() to use new helper
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+# Replace lines 202-272 in /usr/local/bin/ts
+
+attach_session() {
+    local name="$1"
+
+    # 독립 소켓 사용 (각 세션이 완전히 격리됨)
+    local socket_path="$TS_SOCKET_DIR/$name"
+    local session_path=""
+
+    if ! ts_session_exists "$name"; then
+        # Check if in database
+        if ts_db_session_exists "$name"; then
+            echo -e "${CYAN}🔄 Auto-creating tmux session from database...${NC}"
+            local session_data=$(ts_db_get_session "$name")
+            local path=$(echo "$session_data" | jq -r '.path')
+            local auto_claude=$(echo "$session_data" | jq -r '.auto_claude // false')
+
+            tmux -S "$socket_path" new-session -d -s "$name" -c "$path" 2>/dev/null || {
+                ts_print_error "Failed to create session"
+                return 1
+            }
+
+            # Auto-start Claude if configured
+            if [[ "$auto_claude" == "true" ]]; then
+                echo -e "${CYAN}🤖 Starting Claude in session...${NC}"
+                tmux -S "$socket_path" send-keys -t "$name" "cd \"$path\" && claude" Enter
+                sleep 1
+            fi
+        else
+            ts_print_error "Session does not exist: $name"
+            return 1
+        fi
+    fi
+
+    # Use improved attach with fallback
+    attach_session_with_fallback "$name"
+}
