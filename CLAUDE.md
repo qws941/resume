@@ -223,6 +223,63 @@ npm test && npm run test:e2e
   - All dependencies updated to latest versions
   - Zero security vulnerabilities
 
+## Advanced Deployment Features
+
+### Slack Notifications
+
+**Setup** (requires `SLACK_WEBHOOK_URL` secret in GitHub):
+1. Create Slack Incoming Webhook in workspace
+2. Add as GitHub repository secret
+3. Notifications automatically sent on deployment
+
+**Features**:
+- Deployment success/failure status
+- Commit information and links
+- Rich formatting with Slack Block Kit
+- Conditional execution (only if webhook configured)
+
+**Reference**: `docs/SLACK_INTEGRATION.md`
+
+### Local Deployment Monitoring
+
+**Quick start**:
+```bash
+# Deploy with monitoring
+./scripts/deploy-with-monitoring.sh
+
+# Or monitor existing deployment
+./scripts/monitor-deployment.sh
+```
+
+**4 Monitoring Modes**:
+1. **Attach** (interactive): Full control with tmux
+2. **Stream** (2-sec refresh): Real-time hands-off monitoring
+3. **Snapshot**: Quick status check (last 50 lines)
+4. **Error Search**: Grep for errors/warnings in logs
+
+**Session Config**:
+- Name: `resume-deploy`
+- Scrollback: 50,000 lines
+- 4-step deployment (build → test → deploy → verify)
+
+**Reference**: `docs/MONITORING_GUIDE.md`
+
+### TS Session Integration
+
+**Troubleshooting**: If `ts create system` doesn't auto-attach:
+```bash
+# Manual attach
+ts attach system
+
+# Or direct tmux
+tmux -S /home/jclee/.tmux/sockets/system attach-session -t system
+
+# Sync database with sessions
+ts sync
+```
+
+**Reference**: `docs/TS_SESSION_TROUBLESHOOTING.md`
+
 ## Contact Information
 
 - Email: qws941@kakao.com
