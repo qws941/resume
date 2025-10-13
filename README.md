@@ -114,8 +114,40 @@ python scripts/generate_pdf.py
 python scripts/generate_company_resume.py --company="회사명"
 ```
 
+## 🚀 고급 기능
+
+### Slack 통합
+- 배포 성공/실패 알림을 Slack으로 자동 전송
+- GitHub Actions 워크플로우와 통합
+- 설정 방법: `docs/SLACK_INTEGRATION.md` 참고
+
+### 배포 모니터링 (tmux)
+- 실시간 배포 프로세스 모니터링
+- 4가지 모니터링 모드 (attach, stream, snapshot, error search)
+- 사용 방법: `docs/MONITORING_GUIDE.md` 참고
+
+```bash
+# 모니터링과 함께 배포
+./scripts/deploy-with-monitoring.sh
+
+# 배포 모니터링
+./scripts/monitor-deployment.sh
+```
+
 ## 🔄 업데이트 이력
 
+- **2025.10.13**: 고도화 및 통합
+  - **이슈 스캔**:
+    - ESLint 경고 4개 수정 (미사용 변수 제거)
+    - 백업 파일 제거 (CLAUDE.md v11.10 No-Backup Policy 준수)
+  - **Slack 연동**:
+    - GitHub Actions에 Slack 알림 추가
+    - 배포 성공/실패 상태, 커밋 정보, 라이브 사이트 링크 포함
+    - Rich formatting with Slack Block Kit
+  - **ts 세션 스트림**:
+    - tmux 기반 배포 모니터링 스크립트 추가
+    - 4가지 모니터링 모드 (interactive, stream, snapshot, error search)
+    - 50,000줄 scrollback 지원
 - **2025.10.12**: 가시성 개선 및 GitHub 통합 강화
   - **UI/UX 개선**:
     - 파란색 가시성 개선 (더 밝은 색상으로 변경: #3b82f6, #8b5cf6, #6d28d9)

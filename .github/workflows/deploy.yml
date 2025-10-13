@@ -77,3 +77,115 @@ jobs:
           echo "🚀 Deployment Summary"
           echo "---------------------"
           echo "${{ steps.gemini_summary.outputs.summary }}"
+
+  notify-slack:
+    runs-on: ubuntu-latest
+    name: Notify Slack
+    needs: [deploy-worker, generate-deployment-notes]
+    if: always()
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Get commit info
+        id: commit_info
+        run: |
+          echo "commit_sha=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+          echo "commit_author=$(git log -1 --pretty=format:'%an')" >> $GITHUB_OUTPUT
+          echo "commit_message<<EOF" >> $GITHUB_OUTPUT
+          git log -1 --pretty=%B >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Determine deployment status
+        id: status
+        run: |
+          if [ "${{ needs.deploy-worker.result }}" == "success" ]; then
+            echo "status=✅ Success" >> $GITHUB_OUTPUT
+            echo "color=#36a64f" >> $GITHUB_OUTPUT
+          else
+            echo "status=❌ Failed" >> $GITHUB_OUTPUT
+            echo "color=#ff0000" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Send Slack notification
+        if: vars.SLACK_WEBHOOK_URL != ''
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          DEPLOYMENT_URL="https://resume.jclee.me"
+          GITHUB_URL="${{ github.server_url }}/${{ github.repository }}/commit/${{ steps.commit_info.outputs.commit_sha }}"
+
+          # Create Slack message payload
+          cat << EOF > slack_payload.json
+          {
+            "text": "Resume Portfolio Deployment",
+            "blocks": [
+              {
+                "type": "header",
+                "text": {
+                  "type": "plain_text",
+                  "text": "🚀 Resume Portfolio Deployment"
+                }
+              },
+              {
+                "type": "section",
+                "fields": [
+                  {
+                    "type": "mrkdwn",
+                    "text": "*Status:*\n${{ steps.status.outputs.status }}"
+                  },
+                  {
+                    "type": "mrkdwn",
+                    "text": "*Branch:*\n\`${{ github.ref_name }}\`"
+                  },
+                  {
+                    "type": "mrkdwn",
+                    "text": "*Commit:*\n<${GITHUB_URL}|\`${{ steps.commit_info.outputs.commit_sha }}\`>"
+                  },
+                  {
+                    "type": "mrkdwn",
+                    "text": "*Author:*\n${{ steps.commit_info.outputs.commit_author }}"
+                  }
+                ]
+              },
+              {
+                "type": "section",
+                "text": {
+                  "type": "mrkdwn",
+                  "text": "*Commit Message:*\n\`\`\`${{ steps.commit_info.outputs.commit_message }}\`\`\`"
+                }
+              },
+              {
+                "type": "actions",
+                "elements": [
+                  {
+                    "type": "button",
+                    "text": {
+                      "type": "plain_text",
+                      "text": "View Live Site"
+                    },
+                    "url": "${DEPLOYMENT_URL}",
+                    "style": "primary"
+                  },
+                  {
+                    "type": "button",
+                    "text": {
+                      "type": "plain_text",
+                      "text": "View Workflow"
+                    },
+                    "url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+                  }
+                ]
+              }
+            ]
+          }
+          EOF
+
+          # Send to Slack
+          curl -X POST -H 'Content-type: application/json' \
+            --data @slack_payload.json \
+            "${SLACK_WEBHOOK_URL}"
+
+          echo "✅ Slack notification sent"

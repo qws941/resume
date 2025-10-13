@@ -5,7 +5,6 @@
  */
 
 const sharp = require('sharp');
-const fs = require('fs');
 
 async function convertIcon(svgPath, pngPath, size) {
   try {

@@ -7,15 +7,8 @@
 
 const fs = require('fs');
 
-// Base64 encoded simple PNG icons with purple background
-// These are minimal 1x1 pixel PNGs that will be scaled by the browser
-// For production, replace with actual designed icons
-
-// 192x192 placeholder (purple square)
-const icon192Base64 = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8DwHwAFBQIAX8jx0gAAAABJRU5ErkJggg==';
-
-// 512x512 placeholder (purple square)
-const icon512Base64 = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8DwHwAFBQIAX8jx0gAAAABJRU5ErkJggg==';
+// Note: For production, use actual designed icons
+// Base64-encoded placeholders removed (unused)
 
 // Create SVG-based icons as temporary solution
 const createSVGIcon = (size) => {
