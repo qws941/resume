@@ -880,6 +880,7 @@ const INDEX_HTML = `<!DOCTYPE html>
                         </div>
                         <div class="project-links">
                             <a href="https://splunk.jclee.me" target="_blank" class="project-link project-link-primary">Live Demo</a>
+                            <a href="https://grafana.jclee.me/d/splunk" target="_blank" class="project-link project-link-secondary">📊 Dashboard</a>
                             <a href="https://github.com/qws941/splunk" target="_blank" class="project-link project-link-secondary">GitHub</a>
                         </div>
                     </div>
@@ -904,6 +905,7 @@ const INDEX_HTML = `<!DOCTYPE html>
                         </div>
                         <div class="project-links">
                             <a href="https://safework.jclee.me" target="_blank" class="project-link project-link-primary">Live Demo</a>
+                            <a href="https://grafana.jclee.me/d/safework" target="_blank" class="project-link project-link-secondary">📊 Dashboard</a>
                             <a href="https://github.com/qws941/safework" target="_blank" class="project-link project-link-secondary">GitHub</a>
                         </div>
                     </div>
@@ -928,6 +930,7 @@ const INDEX_HTML = `<!DOCTYPE html>
                         </div>
                         <div class="project-links">
                             <a href="https://blacklist.jclee.me" target="_blank" class="project-link project-link-primary">Live Demo</a>
+                            <a href="https://grafana.jclee.me/d/blacklist" target="_blank" class="project-link project-link-secondary">📊 Dashboard</a>
                             <a href="https://github.com/qws941/blacklist" target="_blank" class="project-link project-link-secondary">GitHub</a>
                         </div>
                     </div>
@@ -952,6 +955,7 @@ const INDEX_HTML = `<!DOCTYPE html>
                         </div>
                         <div class="project-links">
                             <a href="https://fortinet.jclee.me" target="_blank" class="project-link project-link-primary">Live Demo</a>
+                            <a href="https://grafana.jclee.me/d/fortinet" target="_blank" class="project-link project-link-secondary">📊 Dashboard</a>
                             <a href="https://github.com/qws941/fortinet" target="_blank" class="project-link project-link-secondary">GitHub</a>
                         </div>
                     </div>
@@ -976,6 +980,7 @@ const INDEX_HTML = `<!DOCTYPE html>
                         </div>
                         <div class="project-links">
                             <a href="https://grafana.jclee.me" target="_blank" class="project-link project-link-primary">Live Demo</a>
+                            <a href="https://prometheus.jclee.me" target="_blank" class="project-link project-link-secondary">📊 Prometheus</a>
                             <a href="https://github.com/qws941/grafana" target="_blank" class="project-link project-link-secondary">GitHub</a>
                         </div>
                     </div>
@@ -997,7 +1002,7 @@ const INDEX_HTML = `<!DOCTYPE html>
                 <a href="tel:010-5757-9592" class="footer-link">Phone</a>
             </div>
             <p class="footer-copyright">
-                © 2024 Jaecheol Lee. All rights reserved.
+                © 2025 Jaecheol Lee. All rights reserved.
             </p>
         </div>
     </footer>
