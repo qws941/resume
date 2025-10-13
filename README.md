@@ -116,6 +116,16 @@ python scripts/generate_company_resume.py --company="회사명"
 
 ## 🔄 업데이트 이력
 
+- **2025.10.12**: 가시성 개선 및 GitHub 통합 강화
+  - **UI/UX 개선**:
+    - 파란색 가시성 개선 (더 밝은 색상으로 변경: #3b82f6, #8b5cf6, #6d28d9)
+    - 색상 대비 향상으로 사용자 경험 개선
+  - **콘텐츠 현실화**:
+    - 비현실적 장애율 데이터 전체 제거
+    - 더 신뢰할 수 있는 표현으로 개선 ("시스템 안정성 개선" 등)
+  - **GitHub 연동 강화**:
+    - 모든 개인 프로젝트에 GitHub 저장소 링크 추가
+    - Live Demo + GitHub 링크 병행 표시로 접근성 향상
 - **2025.09.30**: 이력서 전면 현행화 및 웹 포트폴리오 고도화
   - **이력서 콘텐츠**:
     - 최신 경력 추가 (아이티센 CTS, 2025.03~)
@@ -123,7 +133,7 @@ python scripts/generate_company_resume.py --company="회사명"
     - 모든 성과를 정량적 지표로 강화 (Before/After 수치 명시)
     - 기술 스택 현행화 (Portainer API, 컨테이너 오케스트레이션)
   - **웹 포트폴리오 개선**:
-    - 완전 반응형 디자인 구현 (4단계 브레이크포인트: 1200px/1024px/768px/640px/375px)
+    - 완전 반응형 디자인 구현 (5단계 브레이크포인트: 1200px/1024px/768px/640px/375px)
     - SEO 최적화 (Meta Description, Keywords, Open Graph, Twitter Card)
     - 웹 접근성 개선 (ARIA Labels, Semantic HTML, Role 속성)
     - 터치 디바이스 최적화 (44px 최소 터치 타겟, Active State)

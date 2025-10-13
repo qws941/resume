@@ -222,8 +222,12 @@ edge_cases:
 
 ```yaml
 current_state: "Production - Live"
-last_deployment: "2025-10-03 (commit 39a0093)"
+last_deployment: "2025-10-12 (commit 019c2e4)"
 health_status: "Healthy"
+recent_updates:
+  - "UI/UX: Enhanced blue color visibility"
+  - "Content: Removed unrealistic failure rate metrics"
+  - "GitHub: Added repository links to all projects"
 verification:
   - "https://resume.jclee.me → HTTP 200 ✅"
   - "https://resume.jclee.me/resume → HTTP 200 ✅"
@@ -231,6 +235,6 @@ verification:
 
 ---
 
-**Last Updated**: 2025-10-09
-**Environment Version**: 1.0
+**Last Updated**: 2025-10-12
+**Environment Version**: 1.1
 **Maintained By**: Claude Code + @qws941
