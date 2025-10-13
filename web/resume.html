@@ -3,7 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>이재철 - 인프라·보안 엔지니어</title>
+    <title>이재철 - 이력서 | Infrastructure & Security Engineer</title>
+
+    <!-- SEO -->
+    <meta name="description" content="8년 8개월 경력 인프라·보안 엔지니어 이재철의 상세 이력서. 금융·교육·제조 산업 프로덕션 운영 경험.">
+    <meta name="robots" content="index, follow">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;800;900&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
     <style>
         * {
             margin: 0;
@@ -11,520 +21,826 @@
             box-sizing: border-box;
         }
 
+        :root {
+            /* Design System - Same as index */
+            --color-primary-600: #9333ea;
+            --color-primary-700: #7e22ce;
+            --color-secondary-600: #2563eb;
+            --color-gray-50: #fafafa;
+            --color-gray-100: #f4f4f5;
+            --color-gray-200: #e4e4e7;
+            --color-gray-700: #3f3f46;
+            --color-gray-800: #27272a;
+            --color-gray-900: #18181b;
+
+            --bg-primary: #ffffff;
+            --bg-secondary: #fafafa;
+            --text-primary: #18181b;
+            --text-secondary: #52525b;
+            --text-tertiary: #71717a;
+
+            --gradient-primary: linear-gradient(135deg, #a855f7 0%, #7e22ce 50%, #3b82f6 100%);
+
+            --shadow-sm: 0 2px 4px rgba(0,0,0,0.06);
+            --shadow-md: 0 4px 8px rgba(0,0,0,0.08);
+            --shadow-lg: 0 8px 16px rgba(0,0,0,0.10);
+
+            --font-display: 'Playfair Display', serif;
+            --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Pretendard', sans-serif;
+
+            --space-2: 0.5rem;
+            --space-3: 0.75rem;
+            --space-4: 1rem;
+            --space-6: 1.5rem;
+            --space-8: 2rem;
+            --space-10: 2.5rem;
+            --space-12: 3rem;
+            --space-16: 4rem;
+
+            --radius-md: 0.5rem;
+            --radius-lg: 0.75rem;
+            --radius-xl: 1rem;
+            --radius-2xl: 1.5rem;
+            --radius-full: 9999px;
+
+            --transition-base: 200ms cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Pretendard', 'Inter', sans-serif;
+            font-family: var(--font-body);
             line-height: 1.6;
-            color: #1f2937;
-            background: #ffffff;
-            min-height: 100vh;
+            color: var(--text-primary);
+            background: var(--bg-primary);
+            -webkit-font-smoothing: antialiased;
         }
 
-        .resume-container {
-            max-width: 1200px;
+        /* Navigation */
+        .nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--color-gray-200);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .nav-container {
+            max-width: 1280px;
             margin: 0 auto;
-            display: grid;
-            grid-template-columns: 300px 1fr;
-            min-height: 100vh;
-        }
-
-        /* Sidebar */
-        .sidebar {
-            background: #111827;
-            color: #e5e7eb;
-            padding: 48px 32px;
-        }
-
-        .profile-section {
-            text-align: center;
-            margin-bottom: 40px;
-            padding-bottom: 32px;
-            border-bottom: 1px solid #374151;
-        }
-
-        .profile-img {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            background: #374151;
+            padding: var(--space-4) var(--space-6);
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            justify-content: center;
-            font-size: 32px;
-            color: white;
+        }
+
+        .nav-logo {
+            font-family: var(--font-display);
+            font-size: 1.25rem;
             font-weight: 700;
-            margin: 0 auto 20px;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
         }
 
-        .profile-name {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: #ffffff;
-            margin-bottom: 8px;
-        }
-
-        .profile-title {
-            font-size: 0.9rem;
-            color: #9ca3af;
-        }
-
-        .sidebar-section {
-            margin-bottom: 32px;
-        }
-
-        .sidebar-title {
-            font-size: 0.85rem;
+        .nav-back {
+            padding: 0.5rem 1rem;
+            background: var(--bg-secondary);
+            border: 1px solid var(--color-gray-200);
+            border-radius: var(--radius-lg);
+            text-decoration: none;
+            color: var(--text-primary);
+            font-size: 0.875rem;
             font-weight: 600;
-            color: #ffffff;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            margin-bottom: 16px;
+            transition: all var(--transition-base);
+        }
+
+        .nav-back:hover {
+            background: var(--bg-primary);
+            box-shadow: var(--shadow-md);
+        }
+
+        /* Resume Container */
+        .resume-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 120px 1.5rem 4rem;
+        }
+
+        /* Header */
+        .resume-header {
+            background: var(--gradient-primary);
+            border-radius: var(--radius-2xl);
+            padding: var(--space-16) var(--space-12);
+            color: white;
+            text-align: center;
+            margin-bottom: var(--space-12);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .resume-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 50%);
+            animation: pulse 4s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+
+        .resume-name {
+            font-family: var(--font-display);
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: var(--space-3);
+            position: relative;
+            z-index: 1;
+        }
+
+        .resume-title {
+            font-size: 1.5rem;
+            font-weight: 300;
+            opacity: 0.95;
+            margin-bottom: var(--space-6);
+            position: relative;
+            z-index: 1;
+        }
+
+        .resume-contact {
+            display: flex;
+            gap: var(--space-6);
+            justify-content: center;
+            flex-wrap: wrap;
+            font-size: 0.95rem;
+            position: relative;
+            z-index: 1;
         }
 
         .contact-item {
             display: flex;
-            align-items: flex-start;
-            margin-bottom: 12px;
-            font-size: 0.85rem;
-            color: #d1d5db;
+            align-items: center;
+            gap: var(--space-2);
         }
 
         .contact-item a {
-            color: #d1d5db;
+            color: white;
             text-decoration: none;
+            transition: opacity var(--transition-base);
         }
 
         .contact-item a:hover {
-            color: #ffffff;
+            opacity: 0.8;
         }
 
-        .skill-tag {
-            display: inline-block;
-            background: #1f2937;
-            color: #d1d5db;
-            padding: 6px 12px;
-            border-radius: 4px;
-            font-size: 0.75rem;
-            margin: 4px 4px 4px 0;
-            border: 1px solid #374151;
-        }
-
-        .cert-item {
-            margin-bottom: 12px;
-        }
-
-        .cert-name {
-            font-size: 0.85rem;
-            color: #e5e7eb;
-            font-weight: 500;
-        }
-
-        .cert-date {
-            font-size: 0.75rem;
-            color: #9ca3af;
-        }
-
-        /* Main Content */
-        .main-content {
-            padding: 48px 56px;
-            background: #fafafa;
-        }
-
+        /* Section */
         .section {
-            margin-bottom: 48px;
+            margin-bottom: var(--space-16);
         }
 
         .section-title {
-            font-size: 1.75rem;
+            font-family: var(--font-display);
+            font-size: 2rem;
             font-weight: 700;
-            color: #111827;
-            margin-bottom: 8px;
-            letter-spacing: -0.025em;
+            margin-bottom: var(--space-8);
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
         }
 
-        .section-subtitle {
-            font-size: 0.95rem;
-            color: #6b7280;
-            margin-bottom: 32px;
-            line-height: 1.6;
+        .section-icon {
+            font-size: 2rem;
         }
 
+        /* Summary */
+        .summary-text {
+            font-size: 1.125rem;
+            line-height: 1.8;
+            color: var(--text-secondary);
+            background: var(--bg-secondary);
+            padding: var(--space-8);
+            border-radius: var(--radius-xl);
+            border-left: 4px solid var(--color-primary-600);
+        }
+
+        /* Experience */
         .experience-item {
-            margin-bottom: 40px;
-            padding-bottom: 32px;
-            border-bottom: 1px solid #e5e7eb;
+            background: var(--bg-primary);
+            border: 1px solid var(--color-gray-200);
+            border-radius: var(--radius-xl);
+            padding: var(--space-8);
+            margin-bottom: var(--space-6);
+            transition: all var(--transition-base);
         }
 
-        .experience-item:last-child {
-            border-bottom: none;
-            padding-bottom: 0;
-        }
-
-        .company {
-            font-size: 1.15rem;
-            font-weight: 600;
-            color: #111827;
-            margin-bottom: 4px;
-        }
-
-        .period {
-            font-size: 0.85rem;
-            color: #6b7280;
-            margin-bottom: 12px;
-        }
-
-        .experience-item > p {
-            font-size: 0.95rem;
-            color: #4b5563;
-            margin-bottom: 16px;
-            line-height: 1.7;
-        }
-
-        .achievement {
-            background: #ffffff;
-            padding: 16px 20px;
-            border-radius: 6px;
-            margin: 12px 0;
-            border-left: 3px solid #111827;
-            font-size: 0.9rem;
-            line-height: 1.6;
-            color: #374151;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-        }
-
-        .projects-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
-        }
-
-        .project-card {
-            background: #ffffff;
-            border-radius: 6px;
-            padding: 24px;
-            border: 1px solid #e5e7eb;
-            transition: all 0.2s ease;
-        }
-
-        .project-card:hover {
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        .experience-item:hover {
+            box-shadow: var(--shadow-lg);
             transform: translateY(-2px);
         }
 
-        .project-title {
-            font-size: 1.05rem;
-            font-weight: 600;
-            color: #111827;
-            margin-bottom: 8px;
+        .experience-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: var(--space-4);
+            flex-wrap: wrap;
+            gap: var(--space-4);
         }
 
-        .project-card > p {
-            font-size: 0.85rem;
-            color: #6b7280;
-            line-height: 1.6;
-            margin-bottom: 12px;
+        .company-name {
+            font-size: 1.375rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .period {
+            font-size: 0.875rem;
+            color: var(--text-tertiary);
+            font-weight: 600;
+            padding: var(--space-2) var(--space-4);
+            background: var(--color-gray-100);
+            border-radius: var(--radius-full);
+        }
+
+        .role {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            margin-bottom: var(--space-4);
+        }
+
+        .achievement {
+            background: linear-gradient(135deg, rgba(168, 85, 247, 0.05) 0%, rgba(59, 130, 246, 0.05) 100%);
+            border-left: 3px solid var(--color-primary-600);
+            padding: var(--space-4);
+            border-radius: var(--radius-md);
+            margin: var(--space-3) 0;
+            font-size: 0.95rem;
+            line-height: 1.7;
+            color: var(--text-primary);
+        }
+
+        /* Projects Grid */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: var(--space-6);
+        }
+
+        .project-card {
+            background: var(--bg-primary);
+            border: 1px solid var(--color-gray-200);
+            border-radius: var(--radius-xl);
+            padding: var(--space-6);
+            transition: all var(--transition-base);
+        }
+
+        .project-card:hover {
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-4px);
+        }
+
+        .project-name {
+            font-size: 1.125rem;
+            font-weight: 700;
+            margin-bottom: var(--space-2);
+            color: var(--text-primary);
+        }
+
+        .project-tech {
+            font-size: 0.8rem;
+            color: var(--color-primary-600);
+            font-weight: 600;
+            margin-bottom: var(--space-3);
+        }
+
+        .project-description {
+            font-size: 0.9rem;
+            line-height: 1.7;
+            color: var(--text-secondary);
+            margin-bottom: var(--space-4);
+        }
+
+        .project-links {
+            display: flex;
+            gap: var(--space-3);
         }
 
         .project-link {
-            display: inline-block;
             font-size: 0.8rem;
-            color: #111827;
+            color: var(--color-primary-600);
             text-decoration: none;
-            font-weight: 500;
-            margin-top: 8px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
         }
 
         .project-link:hover {
             text-decoration: underline;
         }
 
-        .approach-grid {
+        /* Skills */
+        .skills-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 20px;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: var(--space-6);
         }
 
-        .approach-item {
-            background: #ffffff;
-            padding: 24px;
-            border-radius: 6px;
-            border: 1px solid #e5e7eb;
+        .skill-category {
+            background: var(--bg-primary);
+            border: 1px solid var(--color-gray-200);
+            border-radius: var(--radius-xl);
+            padding: var(--space-6);
         }
 
-        .approach-item h3 {
-            font-size: 1rem;
+        .skill-category-title {
+            font-size: 1.125rem;
+            font-weight: 700;
+            margin-bottom: var(--space-4);
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+        }
+
+        .skill-category-icon {
+            font-size: 1.5rem;
+        }
+
+        .skill-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--space-2);
+        }
+
+        .skill-tag {
+            padding: var(--space-2) var(--space-3);
+            background: var(--bg-secondary);
+            border-radius: var(--radius-md);
+            font-size: 0.8rem;
             font-weight: 600;
-            color: #111827;
-            margin-bottom: 12px;
+            color: var(--text-secondary);
+            transition: all var(--transition-base);
+            cursor: pointer;
         }
 
-        .approach-item p {
-            font-size: 0.875rem;
-            color: #6b7280;
-            line-height: 1.6;
+        .skill-tag:hover {
+            background: var(--gradient-primary);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        /* Certifications */
+        .cert-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: var(--space-4);
+        }
+
+        .cert-item {
+            background: var(--bg-secondary);
+            border-radius: var(--radius-lg);
+            padding: var(--space-4);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all var(--transition-base);
+        }
+
+        .cert-item:hover {
+            background: var(--bg-primary);
+            box-shadow: var(--shadow-md);
+        }
+
+        .cert-name {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .cert-date {
+            font-size: 0.85rem;
+            color: var(--text-tertiary);
+            font-weight: 600;
+        }
+
+        /* Print Styles */
+        @media print {
+            .nav, .nav-back {
+                display: none;
+            }
+
+            .resume-container {
+                padding-top: 0;
+            }
+
+            .experience-item,
+            .project-card,
+            .skill-category {
+                break-inside: avoid;
+                page-break-inside: avoid;
+            }
         }
 
         /* Responsive */
-        @media (max-width: 1024px) {
-            .resume-container {
-                grid-template-columns: 1fr;
+        @media (max-width: 768px) {
+            .resume-name {
+                font-size: 2.5rem;
             }
 
-            .sidebar {
-                padding: 32px 24px;
+            .resume-title {
+                font-size: 1.125rem;
             }
 
-            .main-content {
-                padding: 32px 24px;
-            }
-
-            .approach-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .projects-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        @media (max-width: 640px) {
-            .main-content {
-                padding: 24px 16px;
+            .resume-contact {
+                flex-direction: column;
+                align-items: center;
+                gap: var(--space-3);
             }
 
             .section-title {
                 font-size: 1.5rem;
             }
 
-            .achievement {
-                padding: 12px 16px;
-                font-size: 0.85rem;
+            .experience-header {
+                flex-direction: column;
+                gap: var(--space-2);
             }
 
-            .skill-tag {
-                font-size: 0.7rem;
-                padding: 5px 10px;
-            }
-        }
-
-        @media print {
-            body {
-                background: white;
-            }
-
-            .resume-container {
-                max-width: 100%;
-            }
-
-            .sidebar {
-                background: #1a1a1a;
-                -webkit-print-color-adjust: exact;
-                print-color-adjust: exact;
+            .projects-grid,
+            .skills-grid,
+            .cert-grid {
+                grid-template-columns: 1fr;
             }
         }
     </style>
 </head>
 <body>
-    <div class="resume-container">
-        <!-- Sidebar -->
-        <aside class="sidebar">
-            <div class="profile-section">
-                <div class="profile-img">JC</div>
-                <h1 class="profile-name">이재철</h1>
-                <p class="profile-title">Infrastructure & Security Engineer</p>
-            </div>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">JC LEE</a>
+            <a href="index.html" class="nav-back">← Back to Portfolio</a>
+        </div>
+    </nav>
 
-            <div class="sidebar-section">
-                <h2 class="sidebar-title">Contact</h2>
+    <!-- Resume Container -->
+    <div class="resume-container">
+        <!-- Header -->
+        <header class="resume-header">
+            <h1 class="resume-name">이재철 (Jaecheol Lee)</h1>
+            <p class="resume-title">Infrastructure & Security Engineer</p>
+            <div class="resume-contact">
                 <div class="contact-item">
+                    <span>📧</span>
                     <a href="mailto:qws941@kakao.com">qws941@kakao.com</a>
                 </div>
                 <div class="contact-item">
+                    <span>📱</span>
                     <a href="tel:010-5757-9592">010-5757-9592</a>
                 </div>
                 <div class="contact-item">
+                    <span>💼</span>
                     <a href="https://github.com/qws941" target="_blank">github.com/qws941</a>
                 </div>
                 <div class="contact-item">
-                    <a href="https://resume.jclee.me" target="_blank">Portfolio</a>
+                    <span>🌐</span>
+                    <a href="https://resume.jclee.me" target="_blank">resume.jclee.me</a>
+                </div>
+            </div>
+        </header>
+
+        <!-- Professional Summary -->
+        <section class="section">
+            <h2 class="section-title">
+                <span class="section-icon">👨‍💻</span>
+                Professional Summary
+            </h2>
+            <div class="summary-text">
+                8년 8개월간 금융·교육·제조 산업에서 인프라·보안 운영. 자동화로 일일 5시간 수작업 제거, DDD 아키텍처 기반 엔터프라이즈급 시스템 설계·구축.
+                15종 이상 보안 솔루션 통합 운영 및 프로덕션 시스템 99.9% 가용성 달성.
+            </div>
+        </section>
+
+        <!-- Work Experience -->
+        <section class="section">
+            <h2 class="section-title">
+                <span class="section-icon">💼</span>
+                Work Experience
+            </h2>
+
+            <div class="experience-item">
+                <div class="experience-header">
+                    <h3 class="company-name">㈜아이티센 CTS</h3>
+                    <span class="period">2025.03 - 현재</span>
+                </div>
+                <p class="role">정보보안 운영 엔지니어 | 넥스트레이드 운영SM (정보보안팀)</p>
+                <div class="achievement">
+                    ⚡ 보안 이벤트 대응시간 40% 단축 (45분 → 27분)
+                </div>
+                <div class="achievement">
+                    🛡️ 금융감독원 감사 지적사항 0건 (2회 연속)
+                </div>
+                <div class="achievement">
+                    📊 보안 정책 오탐률 50% 감소 (일 200건 → 100건)
                 </div>
             </div>
 
-            <div class="sidebar-section">
-                <h2 class="sidebar-title">Skills</h2>
-                <div>
-                    <span class="skill-tag">Python</span>
-                    <span class="skill-tag">Flask</span>
-                    <span class="skill-tag">Docker</span>
-                    <span class="skill-tag">Kubernetes</span>
-                    <span class="skill-tag">AWS</span>
-                    <span class="skill-tag">FortiGate</span>
-                    <span class="skill-tag">Palo Alto</span>
-                    <span class="skill-tag">NAC</span>
-                    <span class="skill-tag">DLP</span>
-                    <span class="skill-tag">EDR</span>
-                    <span class="skill-tag">PostgreSQL</span>
-                    <span class="skill-tag">Redis</span>
-                    <span class="skill-tag">Ansible</span>
-                    <span class="skill-tag">GitOps</span>
+            <div class="experience-item">
+                <div class="experience-header">
+                    <h3 class="company-name">㈜가온누리정보시스템</h3>
+                    <span class="period">2024.03 - 2025.02</span>
+                </div>
+                <p class="role">프리랜서 인프라 엔지니어 | 넥스트레이드 구축 프로젝트</p>
+                <div class="achievement">
+                    🔥 Python 방화벽 정책 자동화, 작업시간 50% 단축 (8시간 → 4시간)
+                </div>
+                <div class="achievement">
+                    🖥️ EPP/DLP 에이전트 충돌 해결, CPU 사용률 30% 개선 (60% → 42%)
+                </div>
+                <div class="achievement">
+                    🔒 내부정보 유출사고 0건 유지 (12개월)
                 </div>
             </div>
 
-            <div class="sidebar-section">
-                <h2 class="sidebar-title">Certifications</h2>
-                <div class="cert-item">
-                    <div class="cert-name">CCNP</div>
-                    <div class="cert-date">2020.08</div>
+            <div class="experience-item">
+                <div class="experience-header">
+                    <h3 class="company-name">㈜콴텍투자일임</h3>
+                    <span class="period">2022.08 - 2024.03</span>
                 </div>
-                <div class="cert-item">
-                    <div class="cert-name">RHCSA</div>
-                    <div class="cert-date">2019.01</div>
+                <p class="role">인프라·정보보호팀 인프라 엔지니어 | AI 기반 주식투자 서비스 FSDC 운영</p>
+                <div class="achievement">
+                    🏦 금융감독원 감사 통과, 개인정보 유출사고 0건 (19개월)
                 </div>
-                <div class="cert-item">
-                    <div class="cert-name">CompTIA Linux+</div>
-                    <div class="cert-date">2019.02</div>
-                </div>
-                <div class="cert-item">
-                    <div class="cert-name">LPIC Level 1</div>
-                    <div class="cert-date">2019.02</div>
+                <div class="achievement">
+                    📈 DB 접근제어 쿼리 튜닝, CPU 사용률 30% 개선 (75% → 52%)
                 </div>
             </div>
-        </aside>
 
-        <!-- Main Content -->
-        <main class="main-content">
-            <section class="section">
-                <h2 class="section-title">Professional Summary</h2>
-                <p class="section-subtitle">
-                    8년간 금융·교육·제조 산업 인프라 운영. 자동화로 일일 5시간 수작업 제거.
-                    DDD 아키텍처 기반 엔터프라이즈급 시스템 설계·구축.
-                </p>
-            </section>
+            <div class="experience-item">
+                <div class="experience-header">
+                    <h3 class="company-name">㈜메타넷엠플랫폼</h3>
+                    <span class="period">2019.12 - 2021.08</span>
+                </div>
+                <p class="role">인프라·시스템 엔지니어 | 1,000명 규모 재택근무 환경 구축</p>
+                <div class="achievement">
+                    🐍 Python 스위치 점검 자동화, 주당 75% 단축 (8시간 → 2시간)
+                </div>
+                <div class="achievement">
+                    ⚙️ Ansible NAC 정책 자동배포, 처리시간 90% 단축 (30분 → 3분)
+                </div>
+            </div>
+        </section>
 
-            <section class="section">
-                <h2 class="section-title">Work Experience</h2>
+        <!-- Personal Projects -->
+        <section class="section">
+            <h2 class="section-title">
+                <span class="section-icon">🚀</span>
+                Personal Projects
+            </h2>
 
-                <div class="experience-item">
-                    <h3 class="company">㈜아이티센 CTS | 정보보안 운영 엔지니어</h3>
-                    <p class="period">2025.03 - 현재</p>
-                    <p>넥스트레이드 운영SM (정보보안팀)</p>
-                    <div class="achievement">
-                        보안 이벤트 대응시간 40% 단축 (45분 → 27분)
-                    </div>
-                    <div class="achievement">
-                        금융감독원 감사 지적사항 0건 (2회 연속)
-                    </div>
-                    <div class="achievement">
-                        보안 정책 오탐률 50% 감소 (일 200건 → 100건)
+            <div class="projects-grid">
+                <div class="project-card">
+                    <h3 class="project-name">Splunk-FortiNet Integration</h3>
+                    <div class="project-tech">Node.js · Cloudflare Workers · DDD</div>
+                    <p class="project-description">
+                        80대 방화벽 중앙관리, 초당 10만 이벤트 처리, DDD Level 3 아키텍처
+                    </p>
+                    <div class="project-links">
+                        <a href="https://splunk.jclee.me" target="_blank" class="project-link">
+                            <span>Live Demo</span>
+                            <span>→</span>
+                        </a>
+                        <a href="https://github.com/qws941/splunk" target="_blank" class="project-link">
+                            <span>GitHub</span>
+                            <span>↗</span>
+                        </a>
                     </div>
                 </div>
 
-                <div class="experience-item">
-                    <h3 class="company">㈜가온누리정보시스템 | 프리랜서 인프라 엔지니어</h3>
-                    <p class="period">2024.03 - 2025.02</p>
-                    <p>넥스트레이드(다자간매매체결회사) 구축 프로젝트</p>
-                    <div class="achievement">
-                        Python 방화벽 정책 자동화, 작업시간 50% 단축 (8시간 → 4시간)
-                    </div>
-                    <div class="achievement">
-                        EPP/DLP 에이전트 충돌 해결, CPU 사용률 30% 개선 (60% → 42%)
-                    </div>
-                    <div class="achievement">
-                        내부정보 유출사고 0건 유지 (12개월)
-                    </div>
-                </div>
-
-                <div class="experience-item">
-                    <h3 class="company">㈜콴텍투자일임 | 인프라·정보보호팀 인프라 엔지니어</h3>
-                    <p class="period">2022.08 - 2024.03</p>
-                    <p>AI 기반 주식투자 서비스 - FSDC 운영</p>
-                    <div class="achievement">
-                        금융감독원 감사 통과, 개인정보 유출사고 0건 (19개월)
-                    </div>
-                    <div class="achievement">
-                        DB 접근제어 쿼리 튜닝, CPU 사용률 30% 개선 (75% → 52%)
+                <div class="project-card">
+                    <h3 class="project-name">SafeWork Industrial Health</h3>
+                    <div class="project-tech">Flask · PostgreSQL · Cloudflare Workers</div>
+                    <p class="project-description">
+                        산업보건 SaaS, Edge API 전국 동시접속, 집계 오류 100% 제거
+                    </p>
+                    <div class="project-links">
+                        <a href="https://safework.jclee.me" target="_blank" class="project-link">
+                            <span>Live Demo</span>
+                            <span>→</span>
+                        </a>
+                        <a href="https://github.com/qws941/safework" target="_blank" class="project-link">
+                            <span>GitHub</span>
+                            <span>↗</span>
+                        </a>
                     </div>
                 </div>
 
-                <div class="experience-item">
-                    <h3 class="company">㈜메타넷엠플랫폼 | 인프라·시스템 엔지니어</h3>
-                    <p class="period">2019.12 - 2021.08</p>
-                    <p>1,000명 규모 재택근무 환경 구축</p>
-                    <div class="achievement">
-                        Python 스위치 점검 자동화, 주당 75% 단축 (8시간 → 2시간)
-                    </div>
-                    <div class="achievement">
-                        Ansible NAC 정책 자동배포, 처리시간 90% 단축 (30분 → 3분)
-                    </div>
-                </div>
-            </section>
-
-            <section class="section">
-                <h2 class="section-title">Personal Projects</h2>
-                <div class="projects-grid">
-                    <div class="project-card">
-                        <h3 class="project-title">Splunk-FortiNet Integration</h3>
-                        <p><strong>Tech:</strong> Node.js, Cloudflare Workers, DDD</p>
-                        <p>80대 방화벽 중앙관리, 초당 10만 이벤트 처리</p>
-                        <a href="https://splunk.jclee.me" target="_blank" class="project-link">View Project →</a>
-                        <a href="https://github.com/qws941/splunk" target="_blank" class="project-link" style="margin-left: 12px;">GitHub →</a>
-                    </div>
-
-                    <div class="project-card">
-                        <h3 class="project-title">SafeWork Industrial Health</h3>
-                        <p><strong>Tech:</strong> Flask, PostgreSQL, Cloudflare Workers</p>
-                        <p>산업보건 SaaS, Edge API 전국 동시접속</p>
-                        <a href="https://safework.jclee.me" target="_blank" class="project-link">View Project →</a>
-                        <a href="https://github.com/qws941/safework" target="_blank" class="project-link" style="margin-left: 12px;">GitHub →</a>
-                    </div>
-
-                    <div class="project-card">
-                        <h3 class="project-title">REGTECH Threat Intelligence</h3>
-                        <p><strong>Tech:</strong> Flask, PostgreSQL, Portainer, Claude AI</p>
-                        <p>금융보안원 위협정보 자동수집, AI 워크플로우 5개</p>
-                        <a href="https://blacklist.jclee.me" target="_blank" class="project-link">View Project →</a>
-                        <a href="https://github.com/qws941/blacklist" target="_blank" class="project-link" style="margin-left: 12px;">GitHub →</a>
-                    </div>
-
-                    <div class="project-card">
-                        <h3 class="project-title">FortiGate Policy Orchestration</h3>
-                        <p><strong>Tech:</strong> Flask, FortiManager API, GitHub Actions</p>
-                        <p>방화벽 정책 자동배포, 3-tier HA 무중단</p>
-                        <a href="https://fortinet.jclee.me" target="_blank" class="project-link">View Project →</a>
-                        <a href="https://github.com/qws941/fortinet" target="_blank" class="project-link" style="margin-left: 12px;">GitHub →</a>
-                    </div>
-
-                    <div class="project-card">
-                        <h3 class="project-title">Full-Stack Observability</h3>
-                        <p><strong>Tech:</strong> Grafana, Prometheus, Loki, Tempo</p>
-                        <p>13개 서비스 통합, 30일 보관, 15개 타겟 수집</p>
-                        <a href="https://grafana.jclee.me" target="_blank" class="project-link">View Project →</a>
-                        <a href="https://github.com/qws941/grafana" target="_blank" class="project-link" style="margin-left: 12px;">GitHub →</a>
+                <div class="project-card">
+                    <h3 class="project-name">REGTECH Threat Intelligence</h3>
+                    <div class="project-tech">Flask · PostgreSQL · Portainer · Claude AI</div>
+                    <p class="project-description">
+                        금융보안원 위협정보 자동수집, 95% 시간 단축, AI CI/CD
+                    </p>
+                    <div class="project-links">
+                        <a href="https://blacklist.jclee.me" target="_blank" class="project-link">
+                            <span>Live Demo</span>
+                            <span>→</span>
+                        </a>
+                        <a href="https://github.com/qws941/blacklist" target="_blank" class="project-link">
+                            <span>GitHub</span>
+                            <span>↗</span>
+                        </a>
                     </div>
                 </div>
-            </section>
 
-            <section class="section">
-                <h2 class="section-title">Work Philosophy</h2>
-                <div class="approach-grid">
-                    <div class="approach-item">
-                        <h3>문제 해결 지향</h3>
-                        <p>불편함 발견, 자동화로 근본 해결</p>
-                    </div>
-                    <div class="approach-item">
-                        <h3>실무 중심 기술</h3>
-                        <p>현업 적용 가능성 우선 학습</p>
-                    </div>
-                    <div class="approach-item">
-                        <h3>지속적 운영</h3>
-                        <p>실제 운영, 피드백 수집, 개선</p>
-                    </div>
-                    <div class="approach-item">
-                        <h3>팀 효율성</h3>
-                        <p>팀 전체 생산성 향상</p>
+                <div class="project-card">
+                    <h3 class="project-name">FortiGate Policy Orchestration</h3>
+                    <div class="project-tech">Flask · FortiManager API · GitHub Actions</div>
+                    <p class="project-description">
+                        방화벽 정책 자동배포, 3-tier HA 무중단, 80% 시간 단축
+                    </p>
+                    <div class="project-links">
+                        <a href="https://fortinet.jclee.me" target="_blank" class="project-link">
+                            <span>Live Demo</span>
+                            <span>→</span>
+                        </a>
+                        <a href="https://github.com/qws941/fortinet" target="_blank" class="project-link">
+                            <span>GitHub</span>
+                            <span>↗</span>
+                        </a>
                     </div>
                 </div>
-            </section>
-        </main>
+
+                <div class="project-card">
+                    <h3 class="project-name">Full-Stack Observability</h3>
+                    <div class="project-tech">Grafana · Prometheus · Loki · Tempo</div>
+                    <p class="project-description">
+                        13개 서비스 통합, 메트릭·로그·트레이스 단일화, 30일 보관
+                    </p>
+                    <div class="project-links">
+                        <a href="https://grafana.jclee.me" target="_blank" class="project-link">
+                            <span>Live Demo</span>
+                            <span>→</span>
+                        </a>
+                        <a href="https://github.com/qws941/grafana" target="_blank" class="project-link">
+                            <span>GitHub</span>
+                            <span>↗</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Skills -->
+        <section class="section">
+            <h2 class="section-title">
+                <span class="section-icon">🛠️</span>
+                Technical Skills
+            </h2>
+
+            <div class="skills-grid">
+                <div class="skill-category">
+                    <h3 class="skill-category-title">
+                        <span class="skill-category-icon">🛡️</span>
+                        Security Solutions
+                    </h3>
+                    <div class="skill-tags">
+                        <span class="skill-tag">FortiGate</span>
+                        <span class="skill-tag">Palo Alto</span>
+                        <span class="skill-tag">NAC</span>
+                        <span class="skill-tag">DLP</span>
+                        <span class="skill-tag">EDR/EPP</span>
+                        <span class="skill-tag">APT</span>
+                        <span class="skill-tag">WAF</span>
+                        <span class="skill-tag">IPS/IDS</span>
+                        <span class="skill-tag">SIEM</span>
+                        <span class="skill-tag">Splunk</span>
+                    </div>
+                </div>
+
+                <div class="skill-category">
+                    <h3 class="skill-category-title">
+                        <span class="skill-category-icon">☁️</span>
+                        Cloud & Virtualization
+                    </h3>
+                    <div class="skill-tags">
+                        <span class="skill-tag">AWS</span>
+                        <span class="skill-tag">Docker</span>
+                        <span class="skill-tag">Kubernetes</span>
+                        <span class="skill-tag">VMware vSphere</span>
+                        <span class="skill-tag">NSX-T</span>
+                        <span class="skill-tag">Portainer</span>
+                    </div>
+                </div>
+
+                <div class="skill-category">
+                    <h3 class="skill-category-title">
+                        <span class="skill-category-icon">⚙️</span>
+                        Automation & Development
+                    </h3>
+                    <div class="skill-tags">
+                        <span class="skill-tag">Python</span>
+                        <span class="skill-tag">Node.js</span>
+                        <span class="skill-tag">Shell Script</span>
+                        <span class="skill-tag">Ansible</span>
+                        <span class="skill-tag">Terraform</span>
+                        <span class="skill-tag">GitHub Actions</span>
+                        <span class="skill-tag">GitLab CI</span>
+                    </div>
+                </div>
+
+                <div class="skill-category">
+                    <h3 class="skill-category-title">
+                        <span class="skill-category-icon">📊</span>
+                        Monitoring & Observability
+                    </h3>
+                    <div class="skill-tags">
+                        <span class="skill-tag">Grafana</span>
+                        <span class="skill-tag">Prometheus</span>
+                        <span class="skill-tag">Loki</span>
+                        <span class="skill-tag">Tempo</span>
+                        <span class="skill-tag">ELK Stack</span>
+                        <span class="skill-tag">Wazuh</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Certifications -->
+        <section class="section">
+            <h2 class="section-title">
+                <span class="section-icon">🏅</span>
+                Certifications
+            </h2>
+
+            <div class="cert-grid">
+                <div class="cert-item">
+                    <span class="cert-name">CCNP</span>
+                    <span class="cert-date">2020.08</span>
+                </div>
+                <div class="cert-item">
+                    <span class="cert-name">RHCSA</span>
+                    <span class="cert-date">2019.01</span>
+                </div>
+                <div class="cert-item">
+                    <span class="cert-name">CompTIA Linux+</span>
+                    <span class="cert-date">2019.02</span>
+                </div>
+                <div class="cert-item">
+                    <span class="cert-name">LPIC Level 1</span>
+                    <span class="cert-date">2019.02</span>
+                </div>
+            </div>
+        </section>
     </div>
+
+    <script>
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    window.scrollTo({
+                        top: target.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // Intersection Observer for fade-in animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // Observe all sections
+        document.querySelectorAll('.experience-item, .project-card, .skill-category').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(20px)';
+            el.style.transition = 'all 0.6s ease';
+            observer.observe(el);
+        });
+    </script>
 </body>
 </html>
