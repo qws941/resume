@@ -3,7 +3,9 @@ const INDEX_HTML = `<!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#a855f7">
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#18181b">
     <title>이재철 - Infrastructure & Security Engineer | 프리미엄 포트폴리오</title>
 
     <!-- SEO Meta Tags -->
@@ -1311,10 +1313,10 @@ const INDEX_HTML = `<!DOCTYPE html>
 </head>
 <body>
     <!-- Navigation -->
-    <nav class="nav" id="nav">
+    <nav class="nav" id="nav" role="navigation" aria-label="Main navigation">
         <div class="nav-container">
-            <div class="nav-logo">JC LEE</div>
-            <div class="nav-links">
+            <div class="nav-logo" role="heading" aria-level="1">JC LEE</div>
+            <div class="nav-links" role="menubar" aria-label="Primary menu">
                 <a href="#tech-stack" class="nav-link">Tech Stack</a>
                 <a href="#experience" class="nav-link">Experience</a>
                 <a href="#certifications" class="nav-link">Certifications</a>
@@ -1329,13 +1331,14 @@ const INDEX_HTML = `<!DOCTYPE html>
     </nav>
 
     <!-- Hero Section -->
-    <section class="hero">
+    <main>
+    <section class="hero" role="banner" aria-label="Hero section">
         <div class="hero-content">
-            <div class="hero-badge">
-                <span>⚡</span>
+            <div class="hero-badge" role="status" aria-live="polite">
+                <span aria-hidden="true">⚡</span>
                 <span>8+ Years of Excellence</span>
             </div>
-            <h1 class="hero-title">
+            <h1 class="hero-title" id="hero-title">
                 Building<br>
                 <span class="gradient-text">Infrastructure</span><br>
                 That Scales
@@ -1362,7 +1365,7 @@ const INDEX_HTML = `<!DOCTYPE html>
     </section>
 
     <!-- Stats Section -->
-    <section class="section" id="stats" style="background: var(--bg-secondary);">
+    <section class="section" id="stats" aria-label="Key performance statistics" style="background: var(--bg-secondary);">
         <div class="container">
             <div class="stats-grid">
                 <div class="stat-card">
@@ -1390,11 +1393,11 @@ const INDEX_HTML = `<!DOCTYPE html>
     </section>
 
     <!-- Tech Stack Section -->
-    <section class="section" id="tech-stack">
+    <section class="section" id="tech-stack" aria-labelledby="tech-stack-title">
         <div class="container">
             <div class="section-header">
                 <span class="section-badge">Technical Expertise</span>
-                <h2 class="section-title">Tech Stack</h2>
+                <h2 class="section-title" id="tech-stack-title">Tech Stack</h2>
                 <p class="section-description">
                     8년 8개월간 운영한 15종 이상 보안 솔루션 및 인프라 기술 스택
                 </p>
@@ -1517,11 +1520,11 @@ const INDEX_HTML = `<!DOCTYPE html>
     </section>
 
     <!-- Experience Timeline Section -->
-    <section class="section" id="experience" style="background: var(--bg-secondary);">
+    <section class="section" id="experience" aria-labelledby="experience-title" style="background: var(--bg-secondary);">
         <div class="container">
             <div class="section-header">
                 <span class="section-badge">Career Journey</span>
-                <h2 class="section-title">Experience Timeline</h2>
+                <h2 class="section-title" id="experience-title">Experience Timeline</h2>
                 <p class="section-description">
                     8년 8개월간의 인프라·보안 엔지니어 경력 여정
                 </p>
@@ -1614,7 +1617,7 @@ const INDEX_HTML = `<!DOCTYPE html>
                     <div class="timeline-card">
                         <span class="timeline-period">
                             <span>📅</span>
-                            <span>2019.12 ~ 2021.08 (1년 9개월)</span>
+                            <span>2020.08 ~ 2021.08 (1년)</span>
                         </span>
                         <h3 class="timeline-company">㈜메타넷엠플랫폼</h3>
                         <div class="timeline-position">인프라·시스템 엔지니어 | 대규모 콜센터 인프라</div>
@@ -1630,7 +1633,7 @@ const INDEX_HTML = `<!DOCTYPE html>
                     <div class="timeline-card">
                         <span class="timeline-period">
                             <span>🚀</span>
-                            <span>2017.02 ~ 2018.10 (1년 9개월)</span>
+                            <span>2017.10 ~ 2018.10 (1년)</span>
                         </span>
                         <h3 class="timeline-company">㈜엠티데이타</h3>
                         <div class="timeline-position">서버·시스템 엔지니어 | 한국항공우주산업(KAI)</div>
@@ -1644,11 +1647,11 @@ const INDEX_HTML = `<!DOCTYPE html>
     </section>
 
     <!-- Certifications Section -->
-    <section class="section" id="certifications">
+    <section class="section" id="certifications" aria-labelledby="certifications-title">
         <div class="container">
             <div class="section-header">
                 <span class="section-badge">Professional Credentials</span>
-                <h2 class="section-title">Certifications</h2>
+                <h2 class="section-title" id="certifications-title">Certifications</h2>
                 <p class="section-description">
                     네트워크·보안·시스템 분야 전문 자격증 6개 보유
                 </p>
@@ -1761,11 +1764,11 @@ const INDEX_HTML = `<!DOCTYPE html>
     </section>
 
     <!-- Projects Section -->
-    <section class="section" id="projects">
+    <section class="section" id="projects" aria-labelledby="projects-title">
         <div class="container">
             <div class="section-header">
                 <span class="section-badge">Featured Work</span>
-                <h2 class="section-title">Production Systems</h2>
+                <h2 class="section-title" id="projects-title">Production Systems</h2>
                 <p class="section-description">
                     실제 운영 중인 프로덕션 시스템 · 검증된 성과와 비즈니스 임팩트
                 </p>
@@ -1901,11 +1904,11 @@ const INDEX_HTML = `<!DOCTYPE html>
     </section>
 
     <!-- Monitoring Dashboards Section -->
-    <section class="section" id="dashboards" style="background: var(--bg-secondary);">
+    <section class="section" id="dashboards" aria-labelledby="dashboards-title" style="background: var(--bg-secondary);">
         <div class="container">
             <div class="section-header">
                 <span class="section-badge">Observability</span>
-                <h2 class="section-title">Monitoring Dashboards</h2>
+                <h2 class="section-title" id="dashboards-title">Monitoring Dashboards</h2>
                 <p class="section-description">
                     Grafana 기반 Full-Stack 관측성 플랫폼 · 실시간 메트릭·로그·트레이스 통합 모니터링
                 </p>
@@ -2126,8 +2129,10 @@ const INDEX_HTML = `<!DOCTYPE html>
         </div>
     </section>
 
+    </main>
+
     <!-- Footer -->
-    <footer class="footer">
+    <footer class="footer" role="contentinfo" aria-label="Contact information">
         <div class="container">
             <h2 class="footer-title">Let's Build Something Great</h2>
             <p class="footer-description">
