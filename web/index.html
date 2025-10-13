@@ -634,6 +634,162 @@
             border-color: var(--color-gray-300);
         }
 
+        /* Dashboard Section */
+        .dashboards-categories {
+            display: grid;
+            gap: var(--space-16);
+        }
+
+        .dashboard-category {
+            animation: fadeInUp 0.6s ease-out both;
+        }
+
+        .dashboard-category-header {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            margin-bottom: var(--space-8);
+        }
+
+        .dashboard-category-icon {
+            font-size: var(--text-4xl);
+        }
+
+        .dashboard-category-title {
+            font-family: var(--font-display);
+            font-size: var(--text-3xl);
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: var(--space-6);
+        }
+
+        .dashboard-card {
+            background: var(--bg-primary);
+            border: 1px solid var(--color-gray-200);
+            border-radius: var(--radius-xl);
+            padding: var(--space-6);
+            transition: all var(--transition-slow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .dashboard-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--gradient-primary);
+            transform: scaleX(0);
+            transition: transform var(--transition-slow);
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-xl);
+            border-color: var(--color-primary-300);
+        }
+
+        .dashboard-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .dashboard-header {
+            display: flex;
+            align-items: flex-start;
+            gap: var(--space-4);
+            margin-bottom: var(--space-4);
+        }
+
+        .dashboard-icon-wrapper {
+            width: 48px;
+            height: 48px;
+            border-radius: var(--radius-lg);
+            background: var(--gradient-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: var(--text-2xl);
+            flex-shrink: 0;
+        }
+
+        .dashboard-info {
+            flex: 1;
+        }
+
+        .dashboard-title {
+            font-size: var(--text-lg);
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: var(--space-2);
+            line-height: 1.3;
+        }
+
+        .dashboard-uid {
+            font-size: var(--text-xs);
+            color: var(--text-tertiary);
+            font-family: 'Monaco', 'Courier New', monospace;
+        }
+
+        .dashboard-description {
+            font-size: var(--text-sm);
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: var(--space-4);
+        }
+
+        .dashboard-link {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-2);
+            padding: var(--space-2) var(--space-4);
+            background: var(--gradient-primary);
+            color: white;
+            text-decoration: none;
+            border-radius: var(--radius-lg);
+            font-size: var(--text-sm);
+            font-weight: 600;
+            transition: all var(--transition-base);
+        }
+
+        .dashboard-link:hover {
+            transform: translateX(4px);
+            box-shadow: var(--shadow-md);
+        }
+
+        /* Dashboard Screenshot */
+        .dashboard-preview {
+            margin-top: var(--space-12);
+            text-align: center;
+        }
+
+        .dashboard-preview-title {
+            font-family: var(--font-display);
+            font-size: var(--text-3xl);
+            font-weight: 700;
+            margin-bottom: var(--space-6);
+        }
+
+        .dashboard-preview-image {
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+            border-radius: var(--radius-2xl);
+            box-shadow: var(--shadow-2xl);
+            border: 1px solid var(--color-gray-200);
+            transition: transform var(--transition-slow);
+        }
+
+        .dashboard-preview-image:hover {
+            transform: scale(1.02);
+        }
+
         /* Footer */
         .footer {
             padding: var(--space-20) var(--space-6);
@@ -778,6 +934,7 @@
             <div class="nav-logo">JC LEE</div>
             <div class="nav-links">
                 <a href="#projects" class="nav-link">Projects</a>
+                <a href="#dashboards" class="nav-link">Dashboards</a>
                 <a href="#stats" class="nav-link">Stats</a>
                 <a href="resume.html" class="nav-link">Resume</a>
                 <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
@@ -984,6 +1141,232 @@
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Monitoring Dashboards Section -->
+    <section class="section" id="dashboards" style="background: var(--bg-secondary);">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-badge">Observability</span>
+                <h2 class="section-title">Monitoring Dashboards</h2>
+                <p class="section-description">
+                    Grafana 기반 Full-Stack 관측성 플랫폼 · 실시간 메트릭·로그·트레이스 통합 모니터링
+                </p>
+            </div>
+
+            <div class="dashboards-categories">
+                <!-- Core Monitoring -->
+                <div class="dashboard-category">
+                    <div class="dashboard-category-header">
+                        <span class="dashboard-category-icon">🎯</span>
+                        <h3 class="dashboard-category-title">Core Monitoring</h3>
+                    </div>
+                    <div class="dashboard-grid">
+                        <div class="dashboard-card">
+                            <div class="dashboard-header">
+                                <div class="dashboard-icon-wrapper">
+                                    <span>💚</span>
+                                </div>
+                                <div class="dashboard-info">
+                                    <h4 class="dashboard-title">Monitoring Stack Health</h4>
+                                    <span class="dashboard-uid">monitoring-stack-health</span>
+                                </div>
+                            </div>
+                            <p class="dashboard-description">
+                                Prometheus, Loki, Tempo 모니터링 스택 헬스 체크. 데이터 수집률, 쿼리 성능, 스토리지 상태 실시간 추적.
+                            </p>
+                            <a href="https://grafana.jclee.me/d/monitoring-stack-health" target="_blank" class="dashboard-link">
+                                <span>View Dashboard</span>
+                                <span>→</span>
+                            </a>
+                        </div>
+                        <div class="dashboard-card">
+                            <div class="dashboard-header">
+                                <div class="dashboard-icon-wrapper">
+                                    <span>⚡</span>
+                                </div>
+                                <div class="dashboard-info">
+                                    <h4 class="dashboard-title">Query Performance</h4>
+                                    <span class="dashboard-uid">query-performance</span>
+                                </div>
+                            </div>
+                            <p class="dashboard-description">
+                                Prometheus 쿼리 성능 분석. 느린 쿼리 탐지, 실행 시간 트렌드, 메모리 사용량 최적화 인사이트.
+                            </p>
+                            <a href="https://grafana.jclee.me/d/query-performance" target="_blank" class="dashboard-link">
+                                <span>View Dashboard</span>
+                                <span>→</span>
+                            </a>
+                        </div>
+                        <div class="dashboard-card">
+                            <div class="dashboard-header">
+                                <div class="dashboard-icon-wrapper">
+                                    <span>🏥</span>
+                                </div>
+                                <div class="dashboard-info">
+                                    <h4 class="dashboard-title">Service Health</h4>
+                                    <span class="dashboard-uid">service-health</span>
+                                </div>
+                            </div>
+                            <p class="dashboard-description">
+                                전체 서비스 가용성 및 헬스 상태 통합 뷰. Uptime, 응답 시간, 에러율 SLA 모니터링.
+                            </p>
+                            <a href="https://grafana.jclee.me/d/service-health" target="_blank" class="dashboard-link">
+                                <span>View Dashboard</span>
+                                <span>→</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Infrastructure -->
+                <div class="dashboard-category">
+                    <div class="dashboard-category-header">
+                        <span class="dashboard-category-icon">🏗️</span>
+                        <h3 class="dashboard-category-title">Infrastructure</h3>
+                    </div>
+                    <div class="dashboard-grid">
+                        <div class="dashboard-card">
+                            <div class="dashboard-header">
+                                <div class="dashboard-icon-wrapper">
+                                    <span>📊</span>
+                                </div>
+                                <div class="dashboard-info">
+                                    <h4 class="dashboard-title">System Metrics (USE)</h4>
+                                    <span class="dashboard-uid">infrastructure-metrics</span>
+                                </div>
+                            </div>
+                            <p class="dashboard-description">
+                                USE Method 기반 인프라 모니터링. CPU·메모리·디스크·네트워크 Utilization/Saturation/Errors 추적.
+                            </p>
+                            <a href="https://grafana.jclee.me/d/infrastructure-metrics" target="_blank" class="dashboard-link">
+                                <span>View Dashboard</span>
+                                <span>→</span>
+                            </a>
+                        </div>
+                        <div class="dashboard-card">
+                            <div class="dashboard-header">
+                                <div class="dashboard-icon-wrapper">
+                                    <span>🐳</span>
+                                </div>
+                                <div class="dashboard-info">
+                                    <h4 class="dashboard-title">Container Performance</h4>
+                                    <span class="dashboard-uid">container-performance</span>
+                                </div>
+                            </div>
+                            <p class="dashboard-description">
+                                Docker 컨테이너 리소스 사용률. cAdvisor 기반 실시간 CPU/메모리/네트워크 모니터링 및 제한 임계값 추적.
+                            </p>
+                            <a href="https://grafana.jclee.me/d/container-performance" target="_blank" class="dashboard-link">
+                                <span>View Dashboard</span>
+                                <span>→</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Applications -->
+                <div class="dashboard-category">
+                    <div class="dashboard-category-header">
+                        <span class="dashboard-category-icon">🚀</span>
+                        <h3 class="dashboard-category-title">Applications</h3>
+                    </div>
+                    <div class="dashboard-grid">
+                        <div class="dashboard-card">
+                            <div class="dashboard-header">
+                                <div class="dashboard-icon-wrapper">
+                                    <span>📱</span>
+                                </div>
+                                <div class="dashboard-info">
+                                    <h4 class="dashboard-title">Application Monitoring</h4>
+                                    <span class="dashboard-uid">application-monitoring</span>
+                                </div>
+                            </div>
+                            <p class="dashboard-description">
+                                애플리케이션 레이어 성능 모니터링. HTTP 요청률, 응답 시간, 에러율, 처리량 RED Metrics 추적.
+                            </p>
+                            <a href="https://grafana.jclee.me/d/application-monitoring" target="_blank" class="dashboard-link">
+                                <span>View Dashboard</span>
+                                <span>→</span>
+                            </a>
+                        </div>
+                        <div class="dashboard-card">
+                            <div class="dashboard-header">
+                                <div class="dashboard-icon-wrapper">
+                                    <span>🤖</span>
+                                </div>
+                                <div class="dashboard-info">
+                                    <h4 class="dashboard-title">n8n Workflow Automation</h4>
+                                    <span class="dashboard-uid">n8n-workflow-automation-reds</span>
+                                </div>
+                            </div>
+                            <p class="dashboard-description">
+                                n8n 워크플로우 자동화 모니터링. 실행 성공률, 처리 시간, 노드별 에러 추적, REDS 메트릭 분석.
+                            </p>
+                            <a href="https://grafana.jclee.me/d/n8n-workflow-automation-reds" target="_blank" class="dashboard-link">
+                                <span>View Dashboard</span>
+                                <span>→</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Logging & Alerting -->
+                <div class="dashboard-category">
+                    <div class="dashboard-category-header">
+                        <span class="dashboard-category-icon">📝</span>
+                        <h3 class="dashboard-category-title">Logging & Alerting</h3>
+                    </div>
+                    <div class="dashboard-grid">
+                        <div class="dashboard-card">
+                            <div class="dashboard-header">
+                                <div class="dashboard-icon-wrapper">
+                                    <span>🔍</span>
+                                </div>
+                                <div class="dashboard-info">
+                                    <h4 class="dashboard-title">Log Analysis</h4>
+                                    <span class="dashboard-uid">log-analysis</span>
+                                </div>
+                            </div>
+                            <p class="dashboard-description">
+                                Loki 기반 통합 로그 분석. 에러 패턴 탐지, 로그 볼륨 트렌드, 서비스별 로그 필터링 및 검색.
+                            </p>
+                            <a href="https://grafana.jclee.me/d/log-analysis" target="_blank" class="dashboard-link">
+                                <span>View Dashboard</span>
+                                <span>→</span>
+                            </a>
+                        </div>
+                        <div class="dashboard-card">
+                            <div class="dashboard-header">
+                                <div class="dashboard-icon-wrapper">
+                                    <span>🚨</span>
+                                </div>
+                                <div class="dashboard-info">
+                                    <h4 class="dashboard-title">Alert Overview</h4>
+                                    <span class="dashboard-uid">alert-overview</span>
+                                </div>
+                            </div>
+                            <p class="dashboard-description">
+                                Alertmanager 통합 알림 현황. 활성 알림, 억제 규칙, 알림 히스토리, 채널별 전송 상태 관리.
+                            </p>
+                            <a href="https://grafana.jclee.me/d/alert-overview" target="_blank" class="dashboard-link">
+                                <span>View Dashboard</span>
+                                <span>→</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dashboard Preview -->
+            <div class="dashboard-preview">
+                <h3 class="dashboard-preview-title">Dashboard Preview</h3>
+                <img src="assets/dashboards/blacklist-dashboard.png"
+                     alt="Blacklist Management Dashboard Preview"
+                     class="dashboard-preview-image"
+                     loading="lazy">
             </div>
         </div>
     </section>
