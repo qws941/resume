@@ -24,17 +24,18 @@ const SECURITY_HEADERS = {
   'Content-Security-Policy': "default-src 'self'; font-src 'self' https://fonts.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; script-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'",
 };
 
+// Route mapping for scalability
+const ROUTES = {
+  '/': INDEX_HTML,
+  '/resume': RESUME_HTML,
+};
+
 export default {
   async fetch(request) {
     const url = new URL(request.url);
+    const content = ROUTES[url.pathname] || INDEX_HTML;
 
-    if (url.pathname === '/resume') {
-      return new Response(RESUME_HTML, {
-        headers: SECURITY_HEADERS,
-      });
-    }
-
-    return new Response(INDEX_HTML, {
+    return new Response(content, {
       headers: SECURITY_HEADERS,
     });
   },

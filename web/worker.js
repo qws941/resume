@@ -31,6 +31,48 @@ const INDEX_HTML = `<!DOCTYPE html>
     <!-- Canonical URL -->
     <link rel="canonical" href="https://resume.jclee.me">
 
+    <!-- Structured Data (JSON-LD) for SEO -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "name": "이재철",
+      "alternateName": "Jaecheol Lee",
+      "jobTitle": "Infrastructure & Security Engineer",
+      "worksFor": {
+        "@type": "Organization",
+        "name": "㈜아이티센 CTS"
+      },
+      "url": "https://resume.jclee.me",
+      "sameAs": [
+        "https://github.com/qws941"
+      ],
+      "email": "qws941@kakao.com",
+      "telephone": "+82-10-5757-9592",
+      "address": {
+        "@type": "PostalAddress",
+        "addressRegion": "경기도 시흥시",
+        "addressCountry": "KR"
+      },
+      "knowsAbout": [
+        "Infrastructure Engineering",
+        "Security Engineering",
+        "DevOps",
+        "Docker",
+        "Kubernetes",
+        "Python",
+        "Automation",
+        "DDoS Protection",
+        "IPS",
+        "WAF"
+      ],
+      "alumniOf": {
+        "@type": "CollegeOrUniversity",
+        "name": "부천대학교"
+      }
+    }
+    </script>
+
     <!-- Performance Optimization: Resource Hints -->
     <link rel="dns-prefetch" href="https://fonts.googleapis.com">
     <link rel="dns-prefetch" href="https://fonts.gstatic.com">
@@ -3131,17 +3173,18 @@ const SECURITY_HEADERS = {
   'Content-Security-Policy': "default-src 'self'; font-src 'self' https://fonts.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; script-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'",
 };
 
+// Route mapping for scalability
+const ROUTES = {
+  '/': INDEX_HTML,
+  '/resume': RESUME_HTML,
+};
+
 export default {
   async fetch(request) {
     const url = new URL(request.url);
+    const content = ROUTES[url.pathname] || INDEX_HTML;
 
-    if (url.pathname === '/resume') {
-      return new Response(RESUME_HTML, {
-        headers: SECURITY_HEADERS,
-      });
-    }
-
-    return new Response(INDEX_HTML, {
+    return new Response(content, {
       headers: SECURITY_HEADERS,
     });
   },

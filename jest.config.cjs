@@ -1,10 +1,13 @@
 /** @type {import('jest').Config} */
 module.exports = {
   testEnvironment: 'node',
-  testMatch: ['**/tests/unit/**/*.test.js'],
+  testMatch: ['**/tests/unit/**/*.test.js', '**/tests/integration/**/*.test.js'],
   collectCoverageFrom: [
     'web/**/*.js',
     '!web/worker.js', // Auto-generated, skip
+    '!web/generate-icons.js', // One-time script, skip
+    '!web/convert-icons-to-png.js', // One-time script, skip
+    '!web/src/index.js', // Unused legacy file, skip
     '!**/node_modules/**',
   ],
   coverageThreshold: {
