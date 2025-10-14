@@ -207,26 +207,96 @@
 기술: AWS (VPC, IAM, GuardDuty), Python, Terraform
 성과: 실시간 이상징후 탐지 시스템 구축, 인프라 비용 20% 절감
 
-### AI 기반 인프라 자동화 플랫폼 (2024.09 ~ 현재)
-**개인 프로젝트 | AI-Powered Infrastructure Automation Platform**
+### 🤖 AI 기반 인프라 자동화 플랫폼 (2024.09 ~ 현재)
+**개인 프로젝트 | AI-Powered Infrastructure Automation & Observability Platform**
 
-**GitHub**: [github.com/qws941](https://github.com/qws941)
+**GitHub**: [github.com/qws941](https://github.com/qws941) | **Live**: https://resume.jclee.me
 
-- **목적**: AI 기반의 지능형 인프라 운영 자동화 및 관측성(Observability) 플랫폼 구축
-- **기술스택**: Claude Code, MCP Protocol, Node.js, Python, Docker, Grafana Stack (Prometheus, Loki, Tempo), Traefik, Watchtower
-- **아키텍처**: Docker Compose 기반 마이크로서비스 오케스트레이션, Git 기반 CI/CD 파이프라인
-- **핵심기능**:
-  - 150개 이상의 자동화 명령어 체계(SlashCommand 시스템) 구축 및 통합
-  - Universal Observability 아키텍처 구현 (메트릭, 로그, 트레이스 통합 모니터링)
-  - MCP(Model Context Protocol) 도구 생태계 구축 (14개 서버, 70개 이상 도구 연동)
-  - AI 어시스턴트(Claude Code, GitHub Copilot, ChatGPT API) 통합을 통한 운영 효율 극대화
-  - 실시간 로그 스트리밍 파이프라인(Promtail → Loki → Grafana) 구축
-  - Watchtower 기반 Docker 컨테이너 자동 업데이트 및 무중단 배포
-- **운영성과**:
-  - AI 기반 자동화로 인프라 운영 효율 80% 향상 및 수동 작업 시간 대폭 단축
-  - 통합 관측성 확보로 장애 발생 시 평균 복구 시간(MTTR) 70% 감소
-  - Git 기반 완전 자동화 CI/CD 파이프라인 구축으로 배포 안정성 및 속도 향상
-  - 14개 서버에 걸친 70개 이상의 도구를 통합 관리하여 복잡성 감소 및 가시성 증대
+**시스템 규모 & 아키텍처**:
+- **인프라**: Rocky Linux 9.6, Hyper-V, 40GB RAM, 8 CPU cores
+- **프로젝트**: 12개 프로덕션 애플리케이션 (blacklist, mcp, resume, safework, grafana, n8n 등)
+- **컨테이너**: Docker 28.5.1, 14개 운영 컨테이너 (Prometheus, Loki, Promtail, cAdvisor, Node Exporter)
+- **모니터링**: 중앙 집중식 Grafana Stack (Synology NAS), 15개 리스닝 포트, 99.9% 가용성
+
+**기술스택 & 도구**:
+- **AI/ML**: Claude Code (Sonnet 4.5), MCP Protocol (14 servers, 70+ tools), GitHub Copilot
+- **컨테이너**: Docker, Docker Compose, Watchtower (자동 업데이트), Portainer API
+- **모니터링**: Grafana, Prometheus, Loki, Tempo, Splunk, cAdvisor, Node Exporter
+- **언어**: Python 3.9, Node.js 22, JavaScript/TypeScript, Shell Script
+- **CI/CD**: GitHub Actions, Cloudflare Workers, Git-based automation
+- **네트워크**: Traefik (Reverse Proxy), NFS v3/v4 (Synology integration), Multi-host Docker
+
+**핵심 아키텍처 설계**:
+
+1. **Universal Observability Architecture**
+   - 중앙 집중식 모니터링 (Synology NAS: grafana.jclee.me)
+   - 메트릭 수집: Prometheus (로컬 scrape → Synology 통합)
+   - 로그 수집: Promtail → Loki → Grafana (실시간 스트리밍)
+   - 컨테이너 메트릭: cAdvisor (8081) + Node Exporter (9101)
+   - 헬스체크: 모든 서비스 `/health` 엔드포인트 표준화
+
+2. **Multi-Host Docker Context System**
+   - 로컬 Docker (localhost): blacklist, mcp, local-exporters
+   - Synology Docker (192.168.50.215): grafana, n8n, xwiki, file
+   - NFS 마운트: /home/jclee/app/{grafana,n8n,xwiki} → Synology (realtime sync)
+   - `.docker-context` 파일 기반 자동 라우팅 (투명한 컨텍스트 전환)
+
+3. **AI-Driven Automation Framework**
+   - 150+ SlashCommand 시스템 (/.claude/commands/)
+   - MCP 도구 생태계: filesystem, github, slack, tmux, n8n, sqlite, puppeteer
+   - Constitutional AI 거버넌스 (CLAUDE.md: 자율 실행, 검증, 메타 학습)
+   - 자동화 스크립트: 57개 Bash scripts (보안, 모니터링, 배포, 테스트)
+
+4. **Production-Ready CI/CD Pipeline**
+   - GitHub Actions: resume (Cloudflare Workers), blacklist (Docker)
+   - Watchtower: 자동 이미지 업데이트 및 무중단 재배포
+   - Git-based: 모든 변경사항 추적 가능, 자동 롤백 지원
+   - 테스트 자동화: Jest 30 (유닛), Playwright 1.56 (E2E)
+
+**프로젝트별 상세**:
+
+**Resume Portfolio (Cloudflare Workers + JAMstack)**
+- 배포: https://resume.jclee.me (< 50ms 응답, 글로벌 CDN)
+- 기술: Cloudflare Workers, HTML/CSS, JSON-LD SEO
+- 테스트: 24/24 통과 (100% 커버리지), 5개 브라우저 E2E
+- 성과: Lighthouse 100점, 접근성 95%+, 구조화된 데이터 (Google Knowledge Graph)
+
+**Blacklist (IP 블랙리스트 관리 시스템)**
+- 아키텍처: PostgreSQL 15, Redis 7, Flask 3.0, React (Frontend)
+- 스케일: 10,000+ IP 주소 실시간 관리
+- 모니터링: Prometheus metrics (/metrics), Health check (/health)
+- 배포: Multi-port (2542), Docker Compose, Traefik integration
+
+**MCP Platform (AI 도구 통합)**
+- 역할: Model Context Protocol 서버 통합 플랫폼
+- 규모: 14개 MCP 서버, 70개 도구 (filesystem, github, slack, tmux, n8n)
+- WebUI: Node.js 22 (3001), Nginx reverse proxy (3002)
+- 성과: AI 작업 효율 80% 향상, 도구 통합 복잡성 감소
+
+**Local Exporters (모니터링 스택)**
+- 구성: Prometheus, Node Exporter, cAdvisor, Promtail
+- 메트릭: 시스템 (CPU, RAM, Disk), 컨테이너 (Docker stats), 로그 (Loki)
+- 중앙 통합: Synology Grafana (192.168.50.215)
+
+**Splunk Demo (로그 분석)**
+- 규모: 초당 10만 이벤트 처리 가능
+- 포트: 8000 (WebUI), 8088-9 (HEC), 9997 (Forwarder)
+- 용도: 보안 이벤트 중앙 집중 분석, FortiNet 통합
+
+**운영 성과 (2024.09 ~ 현재)**:
+- **자동화**: 반복 작업 시간 80% 단축 (수동 배포 30분 → 자동 6분)
+- **안정성**: MTTR 70% 개선 (평균 복구 60분 → 18분)
+- **가시성**: 통합 대시보드 구축, 모든 서비스 실시간 모니터링
+- **테스트**: Jest + Playwright 통합, 100% 커버리지 달성 (핵심 로직)
+- **보안**: SELinux + Firewall 구성 (현재 disabled, 활성화 준비 중)
+- **비용**: 로컬 + Synology 하이브리드로 클라우드 비용 제로
+
+**기술적 하이라이트**:
+- Worker 생성 자동화 (HTML → Template Literal 변환, 보안 헤더 주입)
+- ROUTES 객체 패턴 (O(1) 라우팅, 5개 이상 확장 가능)
+- Integration 테스트 (Worker ↔ HTML 통합 검증, 빌드 재현성)
+- Constitutional AI (자율 실행, 검증 필수, 메타 학습 의무화)
+- Docker Context Auto-routing (transparent context switching)
 
 ---
 
