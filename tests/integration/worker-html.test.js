@@ -102,8 +102,8 @@ describe('Worker-HTML Integration', () => {
 
   describe('Build Reproducibility', () => {
     test('regenerating worker should produce consistent output', () => {
-      // Run generate-worker.js
-      const generateScript = require('../../web/generate-worker.js');
+      // Run generate-worker.js (side effect: regenerates worker.js)
+      require('../../web/generate-worker.js');
 
       // Read newly generated worker
       const newWorkerCode = fs.readFileSync(
