@@ -11,6 +11,16 @@ playwright-report/
 test-results/
 .serena/
 
+# Temporary files
+*.tmp
+*.temp
+*~
+*.swp
+*.swo
+*.bak
+*.backup
+*.old
+
 # OS files
 .DS_Store
 Thumbs.db
