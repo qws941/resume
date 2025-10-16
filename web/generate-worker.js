@@ -1,13 +1,39 @@
 const fs = require('fs');
 const path = require('path');
 
-// Read HTML files and escape backticks for template literals
-const indexHtml = fs.readFileSync(path.join(__dirname, 'index.html'), 'utf-8')
-  .replace(/`/g, '\\`')
-  .replace(/\$/g, '\\$');
-const resumeHtml = fs.readFileSync(path.join(__dirname, 'resume.html'), 'utf-8')
-  .replace(/`/g, '\\`')
-  .replace(/\$/g, '\\$');
+// Escape patterns for template literal safety
+const ESCAPE_PATTERNS = {
+  BACKTICK: /`/g,
+  DOLLAR: /\$/g,
+};
+
+/**
+ * Reads and escapes HTML file for embedding in template literals
+ * @param {string} filename - Name of HTML file to read
+ * @returns {string} Escaped HTML content
+ */
+function readAndEscapeHtml(filename) {
+  const filePath = path.join(__dirname, filename);
+
+  // Check if file exists before reading
+  if (!fs.existsSync(filePath)) {
+    console.error(`❌ Error: File not found: ${filePath}`);
+    process.exit(1);
+  }
+
+  try {
+    return fs.readFileSync(filePath, 'utf-8')
+      .replace(ESCAPE_PATTERNS.BACKTICK, '\\`')
+      .replace(ESCAPE_PATTERNS.DOLLAR, '\\$');
+  } catch (error) {
+    console.error(`❌ Error reading file ${filename}:`, error.message);
+    process.exit(1);
+  }
+}
+
+// Read and escape HTML files
+const indexHtml = readAndEscapeHtml('index.html');
+const resumeHtml = readAndEscapeHtml('resume.html');
 
 const workerJs = `// Cloudflare Worker - Auto-generated
 const INDEX_HTML = \`${indexHtml}\`;
@@ -42,5 +68,14 @@ export default {
 };
 `;
 
-fs.writeFileSync(path.join(__dirname, 'worker.js'), workerJs);
-console.log('✅ worker.js generated successfully');
+// Write generated worker.js with error handling
+try {
+  const outputPath = path.join(__dirname, 'worker.js');
+  fs.writeFileSync(outputPath, workerJs);
+  console.log('✅ worker.js generated successfully');
+  console.log(`📁 Output: ${outputPath}`);
+  console.log(`📊 Size: ${(workerJs.length / 1024).toFixed(2)} KB`);
+} catch (error) {
+  console.error('❌ Error writing worker.js:', error.message);
+  process.exit(1);
+}
