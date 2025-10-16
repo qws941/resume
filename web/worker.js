@@ -808,8 +808,8 @@ const INDEX_HTML = `<!DOCTYPE html>
                         <span class="doc-stat">99.98% uptime</span>
                     </div>
                     <div class="doc-links">
-                        <a href="https://raw.githubusercontent.com/qws941/resume/master/resume/nextrade/exports/ARCHITECTURE_COMPACT.pdf" download class="doc-link-pdf">PDF</a>
-                        <a href="https://raw.githubusercontent.com/qws941/resume/master/resume/nextrade/exports/ARCHITECTURE_COMPACT.docx" download class="doc-link-docx">DOCX</a>
+                        <a href="https://github.com/qws941/resume/raw/master/resume/nextrade/exports/ARCHITECTURE_COMPACT.pdf" download class="doc-link-pdf">PDF</a>
+                        <a href="https://github.com/qws941/resume/raw/master/resume/nextrade/exports/ARCHITECTURE_COMPACT.docx" download class="doc-link-docx">DOCX</a>
                     </div>
                 </div>
 
@@ -822,8 +822,8 @@ const INDEX_HTML = `<!DOCTYPE html>
                         <span class="doc-stat">Zero data loss</span>
                     </div>
                     <div class="doc-links">
-                        <a href="https://raw.githubusercontent.com/qws941/resume/master/resume/nextrade/exports/DR_PLAN_COMPACT.pdf" download class="doc-link-pdf">PDF</a>
-                        <a href="https://raw.githubusercontent.com/qws941/resume/master/resume/nextrade/exports/DR_PLAN_COMPACT.docx" download class="doc-link-docx">DOCX</a>
+                        <a href="https://github.com/qws941/resume/raw/master/resume/nextrade/exports/DR_PLAN_COMPACT.pdf" download class="doc-link-pdf">PDF</a>
+                        <a href="https://github.com/qws941/resume/raw/master/resume/nextrade/exports/DR_PLAN_COMPACT.docx" download class="doc-link-docx">DOCX</a>
                     </div>
                 </div>
 
@@ -836,8 +836,8 @@ const INDEX_HTML = `<!DOCTYPE html>
                         <span class="doc-stat">33% false positive</span>
                     </div>
                     <div class="doc-links">
-                        <a href="https://raw.githubusercontent.com/qws941/resume/master/resume/nextrade/exports/SOC_RUNBOOK_COMPACT.pdf" download class="doc-link-pdf">PDF</a>
-                        <a href="https://raw.githubusercontent.com/qws941/resume/master/resume/nextrade/exports/SOC_RUNBOOK_COMPACT.docx" download class="doc-link-docx">DOCX</a>
+                        <a href="https://github.com/qws941/resume/raw/master/resume/nextrade/exports/SOC_RUNBOOK_COMPACT.pdf" download class="doc-link-pdf">PDF</a>
+                        <a href="https://github.com/qws941/resume/raw/master/resume/nextrade/exports/SOC_RUNBOOK_COMPACT.docx" download class="doc-link-docx">DOCX</a>
                     </div>
                 </div>
 
@@ -850,7 +850,7 @@ const INDEX_HTML = `<!DOCTYPE html>
                         <span class="doc-stat">All-in-one</span>
                     </div>
                     <div class="doc-links">
-                        <a href="https://raw.githubusercontent.com/qws941/resume/master/resume/nextrade/exports/Nextrade_Full_Documentation.pdf" download class="doc-link-pdf-full">Complete PDF</a>
+                        <a href="https://github.com/qws941/resume/raw/master/resume/nextrade/exports/Nextrade_Full_Documentation.pdf" download class="doc-link-pdf-full">Complete PDF</a>
                     </div>
                 </div>
             </div>
@@ -1687,8 +1687,8 @@ const RESUME_HTML = `<!DOCTYPE html>
                         <span class="doc-stat">99.98% uptime</span>
                     </div>
                     <div class="doc-links">
-                        <a href="https://raw.githubusercontent.com/qws941/resume/master/resume/nextrade/exports/ARCHITECTURE_COMPACT.pdf" download class="doc-link-pdf">PDF</a>
-                        <a href="https://raw.githubusercontent.com/qws941/resume/master/resume/nextrade/exports/ARCHITECTURE_COMPACT.docx" download class="doc-link-docx">DOCX</a>
+                        <a href="https://github.com/qws941/resume/raw/master/resume/nextrade/exports/ARCHITECTURE_COMPACT.pdf" download class="doc-link-pdf">PDF</a>
+                        <a href="https://github.com/qws941/resume/raw/master/resume/nextrade/exports/ARCHITECTURE_COMPACT.docx" download class="doc-link-docx">DOCX</a>
                     </div>
                 </div>
 
@@ -1701,8 +1701,8 @@ const RESUME_HTML = `<!DOCTYPE html>
                         <span class="doc-stat">100% test success</span>
                     </div>
                     <div class="doc-links">
-                        <a href="https://raw.githubusercontent.com/qws941/resume/master/resume/nextrade/exports/DR_PLAN_COMPACT.pdf" download class="doc-link-pdf">PDF</a>
-                        <a href="https://raw.githubusercontent.com/qws941/resume/master/resume/nextrade/exports/DR_PLAN_COMPACT.docx" download class="doc-link-docx">DOCX</a>
+                        <a href="https://github.com/qws941/resume/raw/master/resume/nextrade/exports/DR_PLAN_COMPACT.pdf" download class="doc-link-pdf">PDF</a>
+                        <a href="https://github.com/qws941/resume/raw/master/resume/nextrade/exports/DR_PLAN_COMPACT.docx" download class="doc-link-docx">DOCX</a>
                     </div>
                 </div>
 
@@ -1715,8 +1715,8 @@ const RESUME_HTML = `<!DOCTYPE html>
                         <span class="doc-stat">MTTR 27분</span>
                     </div>
                     <div class="doc-links">
-                        <a href="https://raw.githubusercontent.com/qws941/resume/master/resume/nextrade/exports/SOC_RUNBOOK_COMPACT.pdf" download class="doc-link-pdf">PDF</a>
-                        <a href="https://raw.githubusercontent.com/qws941/resume/master/resume/nextrade/exports/SOC_RUNBOOK_COMPACT.docx" download class="doc-link-docx">DOCX</a>
+                        <a href="https://github.com/qws941/resume/raw/master/resume/nextrade/exports/SOC_RUNBOOK_COMPACT.pdf" download class="doc-link-pdf">PDF</a>
+                        <a href="https://github.com/qws941/resume/raw/master/resume/nextrade/exports/SOC_RUNBOOK_COMPACT.docx" download class="doc-link-docx">DOCX</a>
                     </div>
                 </div>
 
@@ -1729,7 +1729,7 @@ const RESUME_HTML = `<!DOCTYPE html>
                         <span class="doc-stat">30+ pages</span>
                     </div>
                     <div class="doc-links">
-                        <a href="https://raw.githubusercontent.com/qws941/resume/master/resume/nextrade/exports/Nextrade_Full_Documentation.pdf" download class="doc-link-pdf-full">Download PDF</a>
+                        <a href="https://github.com/qws941/resume/raw/master/resume/nextrade/exports/Nextrade_Full_Documentation.pdf" download class="doc-link-pdf-full">Download PDF</a>
                     </div>
                 </div>
             </div>
