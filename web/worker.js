@@ -808,8 +808,8 @@ const INDEX_HTML = `<!DOCTYPE html>
                         <span class="doc-stat">99.98% uptime</span>
                     </div>
                     <div class="doc-links">
-                        <a href="/downloads/ARCHITECTURE_COMPACT.pdf" download class="doc-link-pdf">PDF</a>
-                        <a href="/downloads/ARCHITECTURE_COMPACT.docx" download class="doc-link-docx">DOCX</a>
+                        <a href="https://raw.githubusercontent.com/qws941/resume/master/resume/nextrade/exports/ARCHITECTURE_COMPACT.pdf" download class="doc-link-pdf">PDF</a>
+                        <a href="https://raw.githubusercontent.com/qws941/resume/master/resume/nextrade/exports/ARCHITECTURE_COMPACT.docx" download class="doc-link-docx">DOCX</a>
                     </div>
                 </div>
 
@@ -822,8 +822,8 @@ const INDEX_HTML = `<!DOCTYPE html>
                         <span class="doc-stat">Zero data loss</span>
                     </div>
                     <div class="doc-links">
-                        <a href="/downloads/DR_PLAN_COMPACT.pdf" download class="doc-link-pdf">PDF</a>
-                        <a href="/downloads/DR_PLAN_COMPACT.docx" download class="doc-link-docx">DOCX</a>
+                        <a href="https://raw.githubusercontent.com/qws941/resume/master/resume/nextrade/exports/DR_PLAN_COMPACT.pdf" download class="doc-link-pdf">PDF</a>
+                        <a href="https://raw.githubusercontent.com/qws941/resume/master/resume/nextrade/exports/DR_PLAN_COMPACT.docx" download class="doc-link-docx">DOCX</a>
                     </div>
                 </div>
 
@@ -836,8 +836,8 @@ const INDEX_HTML = `<!DOCTYPE html>
                         <span class="doc-stat">33% false positive</span>
                     </div>
                     <div class="doc-links">
-                        <a href="/downloads/SOC_RUNBOOK_COMPACT.pdf" download class="doc-link-pdf">PDF</a>
-                        <a href="/downloads/SOC_RUNBOOK_COMPACT.docx" download class="doc-link-docx">DOCX</a>
+                        <a href="https://raw.githubusercontent.com/qws941/resume/master/resume/nextrade/exports/SOC_RUNBOOK_COMPACT.pdf" download class="doc-link-pdf">PDF</a>
+                        <a href="https://raw.githubusercontent.com/qws941/resume/master/resume/nextrade/exports/SOC_RUNBOOK_COMPACT.docx" download class="doc-link-docx">DOCX</a>
                     </div>
                 </div>
 
@@ -850,7 +850,7 @@ const INDEX_HTML = `<!DOCTYPE html>
                         <span class="doc-stat">All-in-one</span>
                     </div>
                     <div class="doc-links">
-                        <a href="/downloads/Nextrade_Full_Documentation.pdf" download class="doc-link-pdf-full">Complete PDF</a>
+                        <a href="https://raw.githubusercontent.com/qws941/resume/master/resume/nextrade/exports/Nextrade_Full_Documentation.pdf" download class="doc-link-pdf-full">Complete PDF</a>
                     </div>
                 </div>
             </div>
@@ -1366,6 +1366,134 @@ const RESUME_HTML = `<!DOCTYPE html>
             transform: translateY(-2px);
         }
 
+        /* Documentation */
+        .docs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .doc-card {
+            background: linear-gradient(135deg, var(--color-white) 0%, var(--color-gray-50) 100%);
+            border: var(--border-width) solid var(--color-black);
+            padding: 2.5rem;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .doc-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--color-cyan) 0%, #8b5cf6 100%);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .doc-card:hover {
+            transform: translate(-6px, -6px);
+            box-shadow: var(--shadow-brutal);
+        }
+
+        .doc-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .doc-icon {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            display: inline-block;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .doc-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+        }
+
+        .doc-description {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: var(--color-gray-600);
+            margin-bottom: 1.5rem;
+        }
+
+        .doc-stats {
+            display: flex;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .doc-stat {
+            font-size: 0.875rem;
+            font-weight: 700;
+            padding: 0.5rem 1rem;
+            background: var(--color-gray-100);
+            border: 2px solid var(--color-black);
+        }
+
+        .doc-links {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .doc-link-pdf,
+        .doc-link-docx,
+        .doc-link-pdf-full {
+            flex: 1;
+            padding: 0.75rem;
+            text-align: center;
+            text-decoration: none;
+            font-size: 0.875rem;
+            font-weight: 700;
+            color: var(--color-white);
+            border: var(--border-width) solid var(--color-black);
+            transition: var(--transition);
+        }
+
+        .doc-link-pdf {
+            background: #dc2626;
+        }
+
+        .doc-link-pdf:hover {
+            background: #b91c1c;
+            transform: translateY(-2px);
+        }
+
+        .doc-link-docx {
+            background: #2563eb;
+        }
+
+        .doc-link-docx:hover {
+            background: #1d4ed8;
+            transform: translateY(-2px);
+        }
+
+        .doc-link-pdf-full {
+            background: #059669;
+        }
+
+        .doc-link-pdf-full:hover {
+            background: #047857;
+            transform: translateY(-2px);
+        }
+
+        .doc-card:last-child {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+        }
+
         /* Certifications */
         .cert-grid {
             display: grid;
@@ -1437,6 +1565,7 @@ const RESUME_HTML = `<!DOCTYPE html>
                 font-size: 1.25rem;
             }
 
+            .docs-grid,
             .projects-grid,
             .skills-grid {
                 grid-template-columns: 1fr;
@@ -1541,6 +1670,68 @@ const RESUME_HTML = `<!DOCTYPE html>
                 <p class="role">인프라·시스템 엔지니어 | 1,000명 규모 재택근무 환경 구축</p>
                 <div class="achievement">🐍 Python 스위치 점검 자동화, 주당 75% 단축 (8시간 → 2시간)</div>
                 <div class="achievement">⚙️ Ansible NAC 정책 자동배포, 처리시간 90% 단축 (30분 → 3분)</div>
+            </div>
+        </section>
+
+        <!-- Technical Documentation -->
+        <section class="section">
+            <h2 class="section-title">Technical Documentation</h2>
+
+            <div class="docs-grid">
+                <div class="doc-card">
+                    <div class="doc-icon">🏗️</div>
+                    <h3 class="doc-title">Architecture</h3>
+                    <p class="doc-description">Zero Trust 아키텍처, 15종 보안 솔루션, 자동화 프레임워크</p>
+                    <div class="doc-stats">
+                        <span class="doc-stat">19개월 0 breaches</span>
+                        <span class="doc-stat">99.98% uptime</span>
+                    </div>
+                    <div class="doc-links">
+                        <a href="https://raw.githubusercontent.com/qws941/resume/master/resume/nextrade/exports/ARCHITECTURE_COMPACT.pdf" download class="doc-link-pdf">PDF</a>
+                        <a href="https://raw.githubusercontent.com/qws941/resume/master/resume/nextrade/exports/ARCHITECTURE_COMPACT.docx" download class="doc-link-docx">DOCX</a>
+                    </div>
+                </div>
+
+                <div class="doc-card">
+                    <div class="doc-icon">🔄</div>
+                    <h3 class="doc-title">Disaster Recovery</h3>
+                    <p class="doc-description">RTO 2.5시간 달성, 5종 재해 시나리오, 백업/복구 절차</p>
+                    <div class="doc-stats">
+                        <span class="doc-stat">37% faster DR</span>
+                        <span class="doc-stat">100% test success</span>
+                    </div>
+                    <div class="doc-links">
+                        <a href="https://raw.githubusercontent.com/qws941/resume/master/resume/nextrade/exports/DR_PLAN_COMPACT.pdf" download class="doc-link-pdf">PDF</a>
+                        <a href="https://raw.githubusercontent.com/qws941/resume/master/resume/nextrade/exports/DR_PLAN_COMPACT.docx" download class="doc-link-docx">DOCX</a>
+                    </div>
+                </div>
+
+                <div class="doc-card">
+                    <div class="doc-icon">🛡️</div>
+                    <h3 class="doc-title">SOC Operations</h3>
+                    <p class="doc-description">24/7 보안관제, 4종 대응 플레이북, SIEM 대시보드</p>
+                    <div class="doc-stats">
+                        <span class="doc-stat">MTTD 3.2분</span>
+                        <span class="doc-stat">MTTR 27분</span>
+                    </div>
+                    <div class="doc-links">
+                        <a href="https://raw.githubusercontent.com/qws941/resume/master/resume/nextrade/exports/SOC_RUNBOOK_COMPACT.pdf" download class="doc-link-pdf">PDF</a>
+                        <a href="https://raw.githubusercontent.com/qws941/resume/master/resume/nextrade/exports/SOC_RUNBOOK_COMPACT.docx" download class="doc-link-docx">DOCX</a>
+                    </div>
+                </div>
+
+                <div class="doc-card">
+                    <div class="doc-icon">📦</div>
+                    <h3 class="doc-title">Complete Package</h3>
+                    <p class="doc-description">전체 기술 문서 통합본 (Architecture + DR + SOC)</p>
+                    <div class="doc-stats">
+                        <span class="doc-stat">3 documents</span>
+                        <span class="doc-stat">30+ pages</span>
+                    </div>
+                    <div class="doc-links">
+                        <a href="https://raw.githubusercontent.com/qws941/resume/master/resume/nextrade/exports/Nextrade_Full_Documentation.pdf" download class="doc-link-pdf-full">Download PDF</a>
+                    </div>
+                </div>
             </div>
         </section>
 
