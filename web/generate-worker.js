@@ -124,7 +124,7 @@ const SECURITY_HEADERS = {
   'X-Frame-Options': 'DENY',
   'X-XSS-Protection': '1; mode=block',
   'Referrer-Policy': 'strict-origin-when-cross-origin',
-  'Content-Security-Policy': "default-src 'self'; font-src 'self' https://fonts.gstatic.com; style-src ${styleSrc}; script-src ${scriptSrc}; img-src 'self' data:; connect-src 'self' https://grafana.jclee.me",
+  'Content-Security-Policy': "default-src 'self'; font-src 'self' https://fonts.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; script-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://grafana.jclee.me",
 };
 
 // Route mapping for scalability

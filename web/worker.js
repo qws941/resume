@@ -1860,7 +1860,7 @@ const SECURITY_HEADERS = {
   'X-Frame-Options': 'DENY',
   'X-XSS-Protection': '1; mode=block',
   'Referrer-Policy': 'strict-origin-when-cross-origin',
-  'Content-Security-Policy': "default-src 'self'; font-src 'self' https://fonts.gstatic.com; style-src 'self' 'sha256-Ask//PVrBRNFS5zd0r5CB0n02spP7fmfdIThPc/jq/k=' 'sha256-45gFmuuqD6vG68FvXcHZvL4RMfKCo6fMfVOEaRXKu4M=' https://fonts.googleapis.com; script-src 'self' 'sha256-HFs5YJqwNZljRnc65UK1qGXtFHBPLWYLi+3GOfYtxSs='; img-src 'self' data:; connect-src 'self' https://grafana.jclee.me",
+  'Content-Security-Policy': "default-src 'self'; font-src 'self' https://fonts.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; script-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://grafana.jclee.me",
 };
 
 // Route mapping for scalability
