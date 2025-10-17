@@ -62,7 +62,7 @@ qws941@kakao.com | 010-5757-9592 | github.com/qws941
 
 ## 보유 기술
 
-**보안**: Fortigate, Palo Alto, Splunk, Genian NAC, Symantec DLP, Imperva, WAF, IPS/IDS, SIEM
+**보안**: 방화벽, WAF, IPS/IDS, SIEM, NAC, DLP, VPN, EDR
 **클라우드/가상화**: AWS (VPC, IAM, GuardDuty), Docker, Kubernetes, VMware vSphere/NSX-T
 **자동화**: Python, Shell Script, Ansible, Terraform, GitHub Actions
 **모니터링**: Grafana, Prometheus, Loki, ELK Stack

@@ -300,10 +300,10 @@
 ## 기술 스택
 
 ### 보안 솔루션
-- 네트워크 보안: Fortigate, Palo Alto, Cisco ASA, DDoS, IPS/IDS, WAF
+- 네트워크 보안: 방화벽, DDoS, IPS/IDS, WAF
 - 엔드포인트: NAC, DLP, EDR/EPP, MDM, APT
 - 접근제어: 서버/DB 접근제어, SSL VPN, IPSec, SSL 복호화
-- 모니터링: SIEM, SOAR, Wazuh, Kibana, Splunk
+- 모니터링: SIEM, SOAR
 
 ### 클라우드 및 가상화
 - AWS: EC2, VPC, IAM, S3, CloudTrail, GuardDuty, Route53
