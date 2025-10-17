@@ -125,9 +125,9 @@
 2021.09 ~ 2022.04 (8개월) | 국민대학교 차세대 정보시스템
 
 주요 업무
-- Fortigate UTM, VMware NSX-T 기반 네트워크 세분화
+- UTM, VMware NSX-T 기반 네트워크 세분화
 - NAC, DLP, APT 등 보안 솔루션 통합 운영
-- OSS 기반 보안 모니터링(Wazuh, Kibana) 구축
+- OSS 기반 보안 모니터링 구축
 
 주요 성과
 - **안정성 향상**: 네트워크 세분화 및 모니터링 강화로 장애율 25% 감소 (월 12건 → 9건)
@@ -142,12 +142,12 @@
 
 주요 업무
 - 1,000명 규모 재택근무 환경 구축
-- Fortigate SSL VPN, NAC 솔루션 통합
+- SSL VPN, NAC 솔루션 통합
 - Ansible 기반 정책 자동 배포
-- Python 기반 Cisco 스위치 자동 점검 시스템 개발
+- Python 기반 네트워크 스위치 자동 점검 시스템 개발
 
 주요 성과
-- **자동화 구현**: Python으로 Cisco 스위치 점검 자동화, 주당 소요시간 75% 단축 (8시간 → 2시간)
+- **자동화 구현**: Python으로 네트워크 스위치 점검 자동화, 주당 소요시간 75% 단축 (8시간 → 2시간)
 - **안정성 개선**: 백신-VPN 충돌 근본 원인 분석 및 해결, 장애 문의 40% 감소 (주 20건 → 12건)
 - **정책 자동화**: Ansible로 NAC 예외정책 자동 배포, 처리시간 90% 단축 (건당 30분 → 3분)
 - **아키텍처 설계**: 신규 사이트 3개소 네트워크 설계 및 구축 완료 (동시 500명 규모)
@@ -176,18 +176,18 @@
 
 **GitHub**: [github.com/qws941](https://github.com/qws941)
 
-#### Splunk-FortiNet Integration
-- **목적**: 80대 방화벽 실시간 중앙관리 플랫폼 및 Splunk 중심 보안 통합
-- **기술스택**: Node.js, Cloudflare Workers, JavaScript, Splunk API, FortiManager/FortiOS API
-- **아키텍처**: DDD Level 3로 9개 도메인 분리 설계, FortiManager/FortiAnalyzer 직접 API 연동
+#### 보안 통합 관리 플랫폼
+- **목적**: 80대 방화벽 실시간 중앙관리 플랫폼
+- **기술스택**: Node.js, Cloudflare Workers, JavaScript, REST API, Webhook
+- **아키텍처**: 도메인 기반 아키텍처 설계, 방화벽 중앙관리 API 연동
 - **핵심기능**:
-  - Splunk를 통한 중앙 집중식 로그 분석 및 정책 검증
-  - FortiManager/FortiAnalyzer 실시간 데이터 수집 및 정책 위반 자동 탐지
-  - 초당 10만 이벤트 처리 및 75,000% 확장 여유로 엔터프라이즈 검증 완료
+  - 중앙 집중식 로그 분석 및 정책 검증
+  - 방화벽 실시간 데이터 수집 및 정책 위반 자동 탐지
+  - 대용량 이벤트 처리 시스템
 - **운영성과**:
   - 80대 방화벽 정책 실시간 중앙 관리 및 모니터링
-  - 정책 검증 시간 80% 단축 (수동 검토 불필요)
-  - AI 기반 위협 분석 및 자동 알림 시스템 구축
+  - 정책 검증 자동화
+  - 위협 분석 및 자동 알림 시스템 구축
 
 #### SafeWork Industrial Health Platform
 - **목적**: 산업보건 설문조사 SaaS 플랫폼
@@ -264,7 +264,7 @@
 
 역할: 보안 인프라 구축 리드
 규모: 1,000명 동시 접속
-기술: Fortigate SSL VPN, NAC, Ansible, Python
+기술: SSL VPN, NAC, Ansible, Python
 성과: COVID-19 대응 2주 내 구축 완료, 운영 인력 3명에서 1명으로 축소
 
 ### 금융 클라우드 보안 아키텍처

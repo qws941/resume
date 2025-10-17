@@ -39,8 +39,8 @@ qws941@kakao.com | 010-5757-9592 | github.com/qws941
 ### ㈜메타넷엠플랫폼 | 인프라 엔지니어
 **2019.12 ~ 2021.08 | 대규모 콜센터 인프라**
 
-- 재택근무 인프라 구축: Fortigate SSL VPN, NAC 솔루션 통합
-- Python 자동화: Cisco 스위치 점검 시스템 개발
+- 재택근무 인프라 구축: SSL VPN, NAC 솔루션 통합
+- Python 자동화: 네트워크 스위치 점검 시스템 개발
 - Ansible 기반 정책 자동 배포: NAC 예외정책 자동화
 - 신규 사이트 네트워크 설계 및 구축
 
@@ -48,10 +48,10 @@ qws941@kakao.com | 010-5757-9592 | github.com/qws941
 
 ## 주요 프로젝트
 
-### Splunk-FortiNet Integration (2024 ~ 현재)
+### 보안 통합 관리 플랫폼 (2024 ~ 현재)
 - 방화벽 중앙관리 플랫폼 개발
-- 기술스택: Node.js, Cloudflare Workers, Splunk API, FortiManager API
-- DDD Level 3 아키텍처 설계, 정책 검증 자동화
+- 기술스택: Node.js, Cloudflare Workers, REST API, Webhook
+- 정책 검증 자동화
 
 ### SafeWork Industrial Health Platform
 - 산업보건 설문조사 SaaS 플랫폼
