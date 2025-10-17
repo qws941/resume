@@ -13,7 +13,7 @@ qws941@kakao.com | 010-5757-9592 | github.com/qws941
 ## Work Experience
 
 ### ㈜아이티센 CTS | 정보보안 운영 엔지니어
-**2025.03 ~ 현재 | Nextrade 증권거래소 운영SM**
+**2025.03 ~ 현재 | Nextrade(다자간매매체결회사) 운영SM**
 
 - 보안 솔루션 운영: Fortigate, Splunk, CrowdStrike, Genian NAC, Symantec DLP, CyberArk, Imperva
 - 보안 이벤트 모니터링 및 인시던트 대응
@@ -21,7 +21,7 @@ qws941@kakao.com | 010-5757-9592 | github.com/qws941
 - 금융감독원 정기 감사 대응
 
 ### ㈜가온누리정보시스템 | 프리랜서 인프라 엔지니어
-**2024.03 ~ 2025.02 | Nextrade 증권거래소 구축 프로젝트**
+**2024.03 ~ 2025.02 | Nextrade(다자간매매체결회사) 구축 프로젝트**
 
 - 보안 아키텍처 설계: Zero Trust 기반 5계층 망분리 (외부/거래/내부/개발/관리망), Air-Gap 구축
 - 보안 솔루션 도입: 15종 솔루션 통합 (Fortigate, Splunk, CrowdStrike, NAC, DLP, CyberArk 등)
