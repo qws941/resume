@@ -1766,10 +1766,8 @@ const RESUME_HTML = `<!DOCTYPE html>
                         <span class="skill-tag">FortiGate</span>
                         <span class="skill-tag">Palo Alto</span>
                         <span class="skill-tag">Splunk</span>
-                        <span class="skill-tag">CrowdStrike</span>
                         <span class="skill-tag">Genian NAC</span>
                         <span class="skill-tag">Symantec DLP</span>
-                        <span class="skill-tag">CyberArk</span>
                         <span class="skill-tag">Imperva</span>
                     </div>
                 </div>
