@@ -1634,12 +1634,11 @@ const RESUME_HTML = `<!DOCTYPE html>
                     <h3 class="company-name">㈜아이티센 CTS</h3>
                     <span class="period">2025.03 - 현재 (8개월)</span>
                 </div>
-                <p class="role">정보보안 운영 엔지니어 | 대한민국 최초 신규 증권거래소(20년만) Nextrade 운영SM</p>
-                <div class="achievement">보안 인프라 구축 및 운영: Zero Trust Architecture, 24/7 SOC, 재해복구 체계 완비</div>
-                <div class="achievement">15종 보안 솔루션 통합 관제: Fortigate, Splunk, CrowdStrike, Genian NAC, Symantec DLP, CyberArk, Imperva</div>
-                <div class="achievement">인시던트 대응: P0~P3 등급별 SLA 기반 대응 프로세스 운영</div>
-                <div class="achievement">재해복구: DR 사이트 관리 및 분기별 복구 테스트 수행</div>
-                <div class="achievement">컴플라이언스: 금융감독원 정기 감사 대응, ISMS-P 인증 유지</div>
+                <p class="role">정보보안 운영 엔지니어 | Nextrade 증권거래소 운영SM</p>
+                <div class="achievement">보안 솔루션 운영: Fortigate, Splunk, CrowdStrike, Genian NAC, Symantec DLP, CyberArk, Imperva</div>
+                <div class="achievement">보안 이벤트 모니터링 및 인시던트 대응</div>
+                <div class="achievement">재해복구 사이트 관리 및 테스트</div>
+                <div class="achievement">금융감독원 정기 감사 대응</div>
             </div>
 
             <div class="experience-item">
