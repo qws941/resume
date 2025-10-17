@@ -150,6 +150,122 @@ HTML files (index.html, resume.html)
   → wrangler deploy (to Cloudflare)
 ```
 
+## 📊 Observability
+
+### Monitoring Endpoints
+
+**Health Check**:
+```bash
+curl https://resume.jclee.me/health
+```
+
+Returns JSON with service status, version, uptime, and request metrics:
+```json
+{
+  "status": "healthy",
+  "version": "1.0.0",
+  "deployed_at": "2025-10-17T09:45:00.000Z",
+  "uptime_seconds": 3600,
+  "metrics": {
+    "requests_total": 1234,
+    "requests_success": 1230,
+    "requests_error": 4,
+    "vitals_received": 56
+  }
+}
+```
+
+**Prometheus Metrics**:
+```bash
+curl https://resume.jclee.me/metrics
+```
+
+Prometheus exposition format for Grafana integration:
+```
+# HELP http_requests_total Total HTTP requests
+# TYPE http_requests_total counter
+http_requests_total{job="resume"} 1234
+
+# HELP http_requests_success Successful HTTP requests
+# TYPE http_requests_success counter
+http_requests_success{job="resume"} 1230
+
+# HELP http_requests_error Failed HTTP requests
+# TYPE http_requests_error counter
+http_requests_error{job="resume"} 4
+
+# HELP http_response_time_seconds Average response time
+# TYPE http_response_time_seconds gauge
+http_response_time_seconds{job="resume"} 0.05
+
+# HELP web_vitals_received Total Web Vitals data points received
+# TYPE web_vitals_received counter
+web_vitals_received{job="resume"} 56
+```
+
+**Web Vitals Endpoint**:
+```bash
+curl -X POST https://resume.jclee.me/api/vitals \
+  -H "Content-Type: application/json" \
+  -d '{"lcp": 1250, "fid": 50, "cls": 0.05}'
+```
+
+### Grafana Integration
+
+All metrics and logs are automatically sent to the centralized observability stack:
+
+- **Metrics**: Prometheus scrapes `/metrics` endpoint
+- **Logs**: All requests logged to Loki at `https://grafana.jclee.me/loki/api/v1/push`
+- **Dashboard**: View real-time metrics at `https://grafana.jclee.me`
+
+**Log Format** (Loki):
+```json
+{
+  "job": "resume-worker",
+  "level": "INFO",
+  "path": "/",
+  "method": "GET",
+  "event": "request",
+  "response_time_ms": 45
+}
+```
+
+### Performance Budgets (Lighthouse CI)
+
+Automated performance testing on every deployment:
+
+- **Performance**: ≥90 score
+- **Accessibility**: ≥95 score
+- **Best Practices**: ≥95 score
+- **SEO**: ≥95 score
+
+**Web Vitals Targets**:
+- LCP (Largest Contentful Paint): <2.5s
+- FID (First Input Delay): <100ms
+- CLS (Cumulative Layout Shift): <0.1
+- FCP (First Contentful Paint): <1.8s
+- TTFB (Time to First Byte): <0.8s
+
+### Security Headers
+
+Enhanced Content Security Policy with SHA-256 hashes (no `unsafe-inline`):
+
+```
+Content-Security-Policy:
+  default-src 'self';
+  font-src 'self' https://fonts.gstatic.com;
+  style-src 'self' 'sha256-...' https://fonts.googleapis.com;
+  script-src 'self' 'sha256-...';
+  img-src 'self' data:;
+  connect-src 'self' https://grafana.jclee.me
+```
+
+Additional security headers:
+- `X-Content-Type-Options: nosniff`
+- `X-Frame-Options: DENY`
+- `X-XSS-Protection: 1; mode=block`
+- `Referrer-Policy: strict-origin-when-cross-origin`
+
 ## 🧪 Testing
 
 ```bash
