@@ -101,7 +101,7 @@ const RESUME_HTML = \`${resumeHtml}\`;
 
 // Version and deployment info
 const VERSION = '1.0.0';
-const DEPLOYED_AT = new Date().toISOString();
+const DEPLOYED_AT = process.env.DEPLOYED_AT || new Date().toISOString();
 
 // CSP directives (generated at build time from inline content hashes)
 const CSP_SCRIPT_SRC = \`${scriptSrc}\`;
