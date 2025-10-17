@@ -1608,7 +1608,7 @@ const RESUME_HTML = `<!DOCTYPE html>
         <!-- Header -->
         <header class="resume-header">
             <h1 class="resume-name">이재철 (Jaecheol Lee)</h1>
-            <p class="resume-title">Infrastructure & Security Engineer</p>
+            <p class="resume-title">인프라·보안 엔지니어 | 8년 8개월 경력</p>
             <div class="resume-contact">
                 <div class="contact-item">📧 <a href="mailto:qws941@kakao.com">qws941@kakao.com</a></div>
                 <div class="contact-item">📱 <a href="tel:010-5757-9592">010-5757-9592</a></div>
@@ -1619,10 +1619,9 @@ const RESUME_HTML = `<!DOCTYPE html>
 
         <!-- Summary -->
         <section class="section">
-            <h2 class="section-title">Summary</h2>
+            <h2 class="section-title">Professional Summary</h2>
             <div class="summary-text">
-                8년 8개월간 금융·교육·제조 산업에서 인프라·보안 운영. 자동화로 일일 5시간 수작업 제거, DDD 아키텍처 기반 엔터프라이즈급 시스템 설계·구축.
-                15종 이상 보안 솔루션 통합 운영 및 프로덕션 시스템 99.9% 가용성 달성.
+                8년 8개월 경력의 인프라·보안 엔지니어입니다. 금융권 Zero Trust 아키텍처 설계 및 24/7 SOC 운영 경험을 보유하고 있으며, Python 기반 자동화를 통한 운영 효율화를 전문으로 합니다. 15종 이상의 보안 솔루션 통합 운영 및 컴플라이언스 관리 경험이 있습니다.
             </div>
         </section>
 
@@ -1633,43 +1632,50 @@ const RESUME_HTML = `<!DOCTYPE html>
             <div class="experience-item">
                 <div class="experience-header">
                     <h3 class="company-name">㈜아이티센 CTS</h3>
-                    <span class="period">2025.03 - 현재</span>
+                    <span class="period">2025.03 - 현재 (8개월)</span>
                 </div>
-                <p class="role">정보보안 운영 엔지니어 | 넥스트레이드 운영SM (정보보안팀)</p>
-                <div class="achievement">⚡ 보안 이벤트 대응시간 40% 단축 (45분 → 27분)</div>
-                <div class="achievement">🛡️ 금융감독원 감사 지적사항 0건 (2회 연속)</div>
-                <div class="achievement">📊 보안 정책 오탐률 50% 감소 (일 200건 → 100건)</div>
+                <p class="role">정보보안 운영 엔지니어 | 대한민국 최초 신규 증권거래소(20년만) Nextrade 운영SM</p>
+                <div class="achievement">보안 인프라 구축 및 운영: Zero Trust Architecture, 24/7 SOC, 재해복구 체계 완비</div>
+                <div class="achievement">15종 보안 솔루션 통합 관제: Fortigate, Splunk, CrowdStrike, Genian NAC, Symantec DLP, CyberArk, Imperva</div>
+                <div class="achievement">인시던트 대응: P0~P3 등급별 SLA 기반 대응 프로세스 운영</div>
+                <div class="achievement">재해복구: DR 사이트 관리 및 분기별 복구 테스트 수행</div>
+                <div class="achievement">컴플라이언스: 금융감독원 정기 감사 대응, ISMS-P 인증 유지</div>
             </div>
 
             <div class="experience-item">
                 <div class="experience-header">
                     <h3 class="company-name">㈜가온누리정보시스템</h3>
-                    <span class="period">2024.03 - 2025.02</span>
+                    <span class="period">2024.03 - 2025.02 (11개월)</span>
                 </div>
-                <p class="role">프리랜서 인프라 엔지니어 | 넥스트레이드 구축 프로젝트</p>
-                <div class="achievement">🔥 Python 방화벽 정책 자동화, 작업시간 50% 단축 (8시간 → 4시간)</div>
-                <div class="achievement">🖥️ EPP/DLP 에이전트 충돌 해결, CPU 사용률 30% 개선 (60% → 42%)</div>
-                <div class="achievement">🔒 내부정보 유출사고 0건 유지 (12개월)</div>
+                <p class="role">프리랜서 인프라 엔지니어 | Nextrade 증권거래소 구축 프로젝트</p>
+                <div class="achievement">보안 아키텍처 설계: Zero Trust 기반 5계층 망분리 (외부/거래/내부/개발/관리망), Air-Gap 구축</div>
+                <div class="achievement">보안 솔루션 도입: 15종 솔루션 통합 (Fortigate, Splunk, CrowdStrike, NAC, DLP, CyberArk 등)</div>
+                <div class="achievement">자동화 개발: Python 기반 방화벽/NAC/DLP 정책 관리 프레임워크 구축</div>
+                <div class="achievement">컴플라이언스: 금융위원회 본인가 사전 심사 대응, ISMS-P/ISO 27001 인증 준비</div>
             </div>
 
             <div class="experience-item">
                 <div class="experience-header">
                     <h3 class="company-name">㈜콴텍투자일임</h3>
-                    <span class="period">2022.08 - 2024.03</span>
+                    <span class="period">2022.08 - 2024.03 (1년 7개월)</span>
                 </div>
-                <p class="role">인프라·정보보호팀 인프라 엔지니어 | AI 기반 주식투자 서비스 FSDC 운영</p>
-                <div class="achievement">🏦 금융감독원 감사 통과, 개인정보 유출사고 0건 (19개월)</div>
-                <div class="achievement">📈 DB 접근제어 쿼리 튜닝, CPU 사용률 30% 개선 (75% → 52%)</div>
+                <p class="role">인프라 엔지니어 | AI 기반 주식투자 서비스 FSDC 운영</p>
+                <div class="achievement">금융보안데이터센터(FSDC) 운영: 망분리 환경 DLP/DB 접근제어/VPN 정책 관리</div>
+                <div class="achievement">Python 기반 운영 자동화: 반복 작업 자동화 스크립트 개발 및 적용</div>
+                <div class="achievement">성능 최적화: DB 접근제어 쿼리 튜닝 수행</div>
+                <div class="achievement">컴플라이언스: 금융감독원 정기 감사 대응, 개인정보 보호 체계 운영</div>
             </div>
 
             <div class="experience-item">
                 <div class="experience-header">
                     <h3 class="company-name">㈜메타넷엠플랫폼</h3>
-                    <span class="period">2019.12 - 2021.08</span>
+                    <span class="period">2019.12 - 2021.08 (1년 9개월)</span>
                 </div>
-                <p class="role">인프라·시스템 엔지니어 | 1,000명 규모 재택근무 환경 구축</p>
-                <div class="achievement">🐍 Python 스위치 점검 자동화, 주당 75% 단축 (8시간 → 2시간)</div>
-                <div class="achievement">⚙️ Ansible NAC 정책 자동배포, 처리시간 90% 단축 (30분 → 3분)</div>
+                <p class="role">인프라 엔지니어 | 대규모 콜센터 인프라</p>
+                <div class="achievement">재택근무 인프라 구축: Fortigate SSL VPN, NAC 솔루션 통합</div>
+                <div class="achievement">Python 자동화: Cisco 스위치 점검 시스템 개발</div>
+                <div class="achievement">Ansible 기반 정책 자동 배포: NAC 예외정책 자동화</div>
+                <div class="achievement">신규 사이트 네트워크 설계 및 구축</div>
             </div>
         </section>
 
@@ -1682,10 +1688,6 @@ const RESUME_HTML = `<!DOCTYPE html>
                     <div class="doc-icon">🏗️</div>
                     <h3 class="doc-title">Architecture</h3>
                     <p class="doc-description">Zero Trust 아키텍처, 15종 보안 솔루션, 자동화 프레임워크</p>
-                    <div class="doc-stats">
-                        <span class="doc-stat">19개월 0 breaches</span>
-                        <span class="doc-stat">99.98% uptime</span>
-                    </div>
                     <div class="doc-links">
                         <a href="https://github.com/qws941/resume/raw/master/resume/nextrade/exports/ARCHITECTURE_COMPACT.pdf" download class="doc-link-pdf">PDF</a>
                         <a href="https://github.com/qws941/resume/raw/master/resume/nextrade/exports/ARCHITECTURE_COMPACT.docx" download class="doc-link-docx">DOCX</a>
@@ -1695,11 +1697,7 @@ const RESUME_HTML = `<!DOCTYPE html>
                 <div class="doc-card">
                     <div class="doc-icon">🔄</div>
                     <h3 class="doc-title">Disaster Recovery</h3>
-                    <p class="doc-description">RTO 2.5시간 달성, 5종 재해 시나리오, 백업/복구 절차</p>
-                    <div class="doc-stats">
-                        <span class="doc-stat">37% faster DR</span>
-                        <span class="doc-stat">100% test success</span>
-                    </div>
+                    <p class="doc-description">재해 시나리오, 백업/복구 절차</p>
                     <div class="doc-links">
                         <a href="https://github.com/qws941/resume/raw/master/resume/nextrade/exports/DR_PLAN_COMPACT.pdf" download class="doc-link-pdf">PDF</a>
                         <a href="https://github.com/qws941/resume/raw/master/resume/nextrade/exports/DR_PLAN_COMPACT.docx" download class="doc-link-docx">DOCX</a>
@@ -1709,11 +1707,7 @@ const RESUME_HTML = `<!DOCTYPE html>
                 <div class="doc-card">
                     <div class="doc-icon">🛡️</div>
                     <h3 class="doc-title">SOC Operations</h3>
-                    <p class="doc-description">24/7 보안관제, 4종 대응 플레이북, SIEM 대시보드</p>
-                    <div class="doc-stats">
-                        <span class="doc-stat">MTTD 3.2분</span>
-                        <span class="doc-stat">MTTR 27분</span>
-                    </div>
+                    <p class="doc-description">24/7 보안관제, 대응 플레이북, SIEM 대시보드</p>
                     <div class="doc-links">
                         <a href="https://github.com/qws941/resume/raw/master/resume/nextrade/exports/SOC_RUNBOOK_COMPACT.pdf" download class="doc-link-pdf">PDF</a>
                         <a href="https://github.com/qws941/resume/raw/master/resume/nextrade/exports/SOC_RUNBOOK_COMPACT.docx" download class="doc-link-docx">DOCX</a>
@@ -1724,10 +1718,6 @@ const RESUME_HTML = `<!DOCTYPE html>
                     <div class="doc-icon">📦</div>
                     <h3 class="doc-title">Complete Package</h3>
                     <p class="doc-description">전체 기술 문서 통합본 (Architecture + DR + SOC)</p>
-                    <div class="doc-stats">
-                        <span class="doc-stat">3 documents</span>
-                        <span class="doc-stat">30+ pages</span>
-                    </div>
                     <div class="doc-links">
                         <a href="https://github.com/qws941/resume/raw/master/resume/nextrade/exports/Nextrade_Full_Documentation.pdf" download class="doc-link-pdf-full">Download PDF</a>
                     </div>
@@ -1737,66 +1727,30 @@ const RESUME_HTML = `<!DOCTYPE html>
 
         <!-- Projects -->
         <section class="section">
-            <h2 class="section-title">Projects</h2>
+            <h2 class="section-title">Key Projects</h2>
 
             <div class="projects-grid">
                 <div class="project-card">
                     <h3 class="project-name">Splunk-FortiNet Integration</h3>
-                    <div class="project-tech">Node.js · Cloudflare Workers · DDD</div>
+                    <div class="project-tech">Node.js · Cloudflare Workers · Splunk API · FortiManager/FortiOS API</div>
                     <p class="project-description">
-                        80대 방화벽 중앙관리, 초당 10만 이벤트 처리, DDD Level 3 아키텍처
+                        방화벽 중앙관리 플랫폼 개발, DDD Level 3 아키텍처 설계, 정책 검증 자동화
                     </p>
                     <div class="project-links">
-                        <a href="https://splunk.jclee.me" target="_blank" class="project-link">Live</a>
-                        <a href="https://github.com/qws941/splunk" target="_blank" class="project-link">Code</a>
+                        <a href="https://splunk.jclee.me" target="_blank" class="project-link">Live Demo</a>
+                        <a href="https://github.com/qws941/splunk" target="_blank" class="project-link">Source Code</a>
                     </div>
                 </div>
 
                 <div class="project-card">
-                    <h3 class="project-name">SafeWork Industrial Health</h3>
-                    <div class="project-tech">Flask · PostgreSQL · Cloudflare Workers</div>
+                    <h3 class="project-name">SafeWork Industrial Health Platform</h3>
+                    <div class="project-tech">Flask 3.0 · PostgreSQL 15 · Redis 7 · Cloudflare Workers</div>
                     <p class="project-description">
-                        산업보건 SaaS, Edge API 전국 동시접속, 집계 오류 100% 제거
+                        산업보건 설문조사 SaaS 플랫폼, Edge API 기반 설문 시스템, 종이 설문 디지털화
                     </p>
                     <div class="project-links">
-                        <a href="https://safework.jclee.me" target="_blank" class="project-link">Live</a>
-                        <a href="https://github.com/qws941/safework" target="_blank" class="project-link">Code</a>
-                    </div>
-                </div>
-
-                <div class="project-card">
-                    <h3 class="project-name">REGTECH Threat Intelligence</h3>
-                    <div class="project-tech">Flask · PostgreSQL · Claude AI</div>
-                    <p class="project-description">
-                        금융보안원 위협정보 자동수집, 95% 시간 단축, AI CI/CD
-                    </p>
-                    <div class="project-links">
-                        <a href="https://blacklist.jclee.me" target="_blank" class="project-link">Live</a>
-                        <a href="https://github.com/qws941/blacklist" target="_blank" class="project-link">Code</a>
-                    </div>
-                </div>
-
-                <div class="project-card">
-                    <h3 class="project-name">FortiGate Policy Orchestration</h3>
-                    <div class="project-tech">Flask · FortiManager API · GitHub Actions</div>
-                    <p class="project-description">
-                        방화벽 정책 자동배포, 3-tier HA 무중단, 80% 시간 단축
-                    </p>
-                    <div class="project-links">
-                        <a href="https://fortinet.jclee.me" target="_blank" class="project-link">Live</a>
-                        <a href="https://github.com/qws941/fortinet" target="_blank" class="project-link">Code</a>
-                    </div>
-                </div>
-
-                <div class="project-card">
-                    <h3 class="project-name">Full-Stack Observability</h3>
-                    <div class="project-tech">Grafana · Prometheus · Loki · Tempo</div>
-                    <p class="project-description">
-                        13개 서비스 통합, 메트릭·로그·트레이스 단일화, 30일 보관
-                    </p>
-                    <div class="project-links">
-                        <a href="https://grafana.jclee.me" target="_blank" class="project-link">Live</a>
-                        <a href="https://github.com/qws941/grafana" target="_blank" class="project-link">Code</a>
+                        <a href="https://safework.jclee.me" target="_blank" class="project-link">Live Demo</a>
+                        <a href="https://github.com/qws941/safework" target="_blank" class="project-link">Source Code</a>
                     </div>
                 </div>
             </div>
@@ -1804,59 +1758,52 @@ const RESUME_HTML = `<!DOCTYPE html>
 
         <!-- Skills -->
         <section class="section">
-            <h2 class="section-title">Skills</h2>
+            <h2 class="section-title">Technical Skills</h2>
 
             <div class="skills-grid">
                 <div class="skill-category">
-                    <h3 class="skill-category-title">🛡️ Security Solutions</h3>
+                    <h3 class="skill-category-title">🛡️ Security</h3>
                     <div class="skill-tags">
                         <span class="skill-tag">FortiGate</span>
                         <span class="skill-tag">Palo Alto</span>
-                        <span class="skill-tag">NAC</span>
-                        <span class="skill-tag">DLP</span>
-                        <span class="skill-tag">EDR/EPP</span>
-                        <span class="skill-tag">APT</span>
-                        <span class="skill-tag">WAF</span>
-                        <span class="skill-tag">IPS/IDS</span>
-                        <span class="skill-tag">SIEM</span>
                         <span class="skill-tag">Splunk</span>
+                        <span class="skill-tag">CrowdStrike</span>
+                        <span class="skill-tag">Genian NAC</span>
+                        <span class="skill-tag">Symantec DLP</span>
+                        <span class="skill-tag">CyberArk</span>
+                        <span class="skill-tag">Imperva</span>
                     </div>
                 </div>
 
                 <div class="skill-category">
-                    <h3 class="skill-category-title">☁️ Cloud & Virtualization</h3>
+                    <h3 class="skill-category-title">☁️ Cloud & Container</h3>
                     <div class="skill-tags">
                         <span class="skill-tag">AWS</span>
                         <span class="skill-tag">Docker</span>
                         <span class="skill-tag">Kubernetes</span>
-                        <span class="skill-tag">VMware vSphere</span>
-                        <span class="skill-tag">NSX-T</span>
-                        <span class="skill-tag">Portainer</span>
+                        <span class="skill-tag">VMware vSphere/NSX-T</span>
                     </div>
                 </div>
 
                 <div class="skill-category">
-                    <h3 class="skill-category-title">⚙️ Automation & Development</h3>
+                    <h3 class="skill-category-title">⚙️ Automation</h3>
                     <div class="skill-tags">
                         <span class="skill-tag">Python</span>
-                        <span class="skill-tag">Node.js</span>
                         <span class="skill-tag">Shell Script</span>
                         <span class="skill-tag">Ansible</span>
                         <span class="skill-tag">Terraform</span>
                         <span class="skill-tag">GitHub Actions</span>
-                        <span class="skill-tag">GitLab CI</span>
                     </div>
                 </div>
 
                 <div class="skill-category">
-                    <h3 class="skill-category-title">📊 Monitoring & Observability</h3>
+                    <h3 class="skill-category-title">📊 Monitoring</h3>
                     <div class="skill-tags">
                         <span class="skill-tag">Grafana</span>
                         <span class="skill-tag">Prometheus</span>
                         <span class="skill-tag">Loki</span>
                         <span class="skill-tag">Tempo</span>
                         <span class="skill-tag">ELK Stack</span>
-                        <span class="skill-tag">Wazuh</span>
                     </div>
                 </div>
             </div>
@@ -1864,7 +1811,7 @@ const RESUME_HTML = `<!DOCTYPE html>
 
         <!-- Certifications -->
         <section class="section">
-            <h2 class="section-title">Certifications</h2>
+            <h2 class="section-title">Certifications & Education</h2>
 
             <div class="cert-grid">
                 <div class="cert-item">
@@ -1884,6 +1831,9 @@ const RESUME_HTML = `<!DOCTYPE html>
                     <span class="cert-date">2019.02</span>
                 </div>
             </div>
+            <p style="margin-top: 1.5rem; font-size: 0.95rem; color: var(--color-gray-600);">
+                <strong>Education:</strong> 한양사이버대학교 컴퓨터공학과 (2024.03 ~ 재학중)
+            </p>
         </section>
     </div>
 </body>
