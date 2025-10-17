@@ -75,13 +75,13 @@ function readAndEscapeHtml(filename) {
   }
 }
 
-// Read original HTML files for hash extraction
-const indexHtmlRaw = fs.readFileSync(path.join(__dirname, 'index.html'), 'utf-8');
-const resumeHtmlRaw = fs.readFileSync(path.join(__dirname, 'resume.html'), 'utf-8');
+// Read and escape HTML files for worker embedding (DO THIS FIRST)
+const indexHtml = readAndEscapeHtml('index.html');
+const resumeHtml = readAndEscapeHtml('resume.html');
 
-// Extract inline script and style hashes
-const indexHashes = extractInlineHashes(indexHtmlRaw);
-const resumeHashes = extractInlineHashes(resumeHtmlRaw);
+// Extract inline script and style hashes FROM ESCAPED HTML (critical for CSP)
+const indexHashes = extractInlineHashes(indexHtml);
+const resumeHashes = extractInlineHashes(resumeHtml);
 
 // Combine all unique hashes
 const allScriptHashes = [...new Set([...indexHashes.scriptHashes, ...resumeHashes.scriptHashes])];
@@ -91,13 +91,9 @@ const allStyleHashes = [...new Set([...indexHashes.styleHashes, ...resumeHashes.
 const scriptSrc = `'self' ${allScriptHashes.join(' ')}`;
 const styleSrc = `'self' ${allStyleHashes.join(' ')} https://fonts.googleapis.com`;
 
-console.log('🔐 Generated CSP hashes:');
+console.log('🔐 Generated CSP hashes from escaped HTML:');
 console.log(`  Script hashes: ${allScriptHashes.length}`);
 console.log(`  Style hashes: ${allStyleHashes.length}`);
-
-// Read and escape HTML files for worker embedding
-const indexHtml = readAndEscapeHtml('index.html');
-const resumeHtml = readAndEscapeHtml('resume.html');
 
 const workerJs = `// Cloudflare Worker - Auto-generated
 const INDEX_HTML = \`${indexHtml}\`;
@@ -106,6 +102,10 @@ const RESUME_HTML = \`${resumeHtml}\`;
 // Version and deployment info
 const VERSION = '1.0.0';
 const DEPLOYED_AT = new Date().toISOString();
+
+// CSP directives (generated at build time from inline content hashes)
+const CSP_SCRIPT_SRC = '${scriptSrc}';
+const CSP_STYLE_SRC = '${styleSrc}';
 
 // Metrics storage (in-memory, per-worker instance)
 const metrics = {
@@ -116,7 +116,7 @@ const metrics = {
   vitals_received: 0,
 };
 
-// Security headers
+// Security headers with SHA-256 hashes (NO unsafe-inline)
 const SECURITY_HEADERS = {
   'Content-Type': 'text/html;charset=UTF-8',
   'Cache-Control': 'public, max-age=3600',
@@ -124,7 +124,7 @@ const SECURITY_HEADERS = {
   'X-Frame-Options': 'DENY',
   'X-XSS-Protection': '1; mode=block',
   'Referrer-Policy': 'strict-origin-when-cross-origin',
-  'Content-Security-Policy': "default-src 'self'; font-src 'self' https://fonts.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; script-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://grafana.jclee.me",
+  'Content-Security-Policy': \`default-src 'self'; font-src 'self' https://fonts.gstatic.com; style-src \${CSP_STYLE_SRC}; script-src \${CSP_SCRIPT_SRC}; img-src 'self' data:; connect-src 'self' https://grafana.jclee.me\`,
 };
 
 // Route mapping for scalability

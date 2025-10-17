@@ -1843,6 +1843,10 @@ const RESUME_HTML = `<!DOCTYPE html>
 const VERSION = '1.0.0';
 const DEPLOYED_AT = new Date().toISOString();
 
+// CSP directives (generated at build time from inline content hashes)
+const CSP_SCRIPT_SRC = ''self' 'sha256-HFs5YJqwNZljRnc65UK1qGXtFHBPLWYLi+3GOfYtxSs='';
+const CSP_STYLE_SRC = ''self' 'sha256-Ask//PVrBRNFS5zd0r5CB0n02spP7fmfdIThPc/jq/k=' 'sha256-45gFmuuqD6vG68FvXcHZvL4RMfKCo6fMfVOEaRXKu4M=' https://fonts.googleapis.com';
+
 // Metrics storage (in-memory, per-worker instance)
 const metrics = {
   requests_total: 0,
@@ -1852,7 +1856,7 @@ const metrics = {
   vitals_received: 0,
 };
 
-// Security headers
+// Security headers with SHA-256 hashes (NO unsafe-inline)
 const SECURITY_HEADERS = {
   'Content-Type': 'text/html;charset=UTF-8',
   'Cache-Control': 'public, max-age=3600',
@@ -1860,7 +1864,7 @@ const SECURITY_HEADERS = {
   'X-Frame-Options': 'DENY',
   'X-XSS-Protection': '1; mode=block',
   'Referrer-Policy': 'strict-origin-when-cross-origin',
-  'Content-Security-Policy': "default-src 'self'; font-src 'self' https://fonts.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; script-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://grafana.jclee.me",
+  'Content-Security-Policy': `default-src 'self'; font-src 'self' https://fonts.gstatic.com; style-src ${CSP_STYLE_SRC}; script-src ${CSP_SCRIPT_SRC}; img-src 'self' data:; connect-src 'self' https://grafana.jclee.me`,
 };
 
 // Route mapping for scalability
