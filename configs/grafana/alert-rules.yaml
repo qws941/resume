@@ -1,0 +1,152 @@
+apiVersion: 1
+
+groups:
+  - orgId: 1
+    name: Resume Portfolio Alerts
+    folder: Production
+    interval: 1m
+    rules:
+      - uid: resume_high_error_rate
+        title: High Error Rate - Resume Portfolio
+        condition: C
+        data:
+          - refId: A
+            relativeTimeRange:
+              from: 300
+              to: 0
+            datasourceUid: prometheus
+            model:
+              expr: sum(rate(http_requests_total{job="resume",status=~"5.."}[5m]))
+              refId: A
+          - refId: B
+            relativeTimeRange:
+              from: 300
+              to: 0
+            datasourceUid: prometheus
+            model:
+              expr: sum(rate(http_requests_total{job="resume"}[5m]))
+              refId: B
+          - refId: C
+            relativeTimeRange:
+              from: 0
+              to: 0
+            datasourceUid: __expr__
+            model:
+              type: math
+              expression: A / B
+              refId: C
+        noDataState: OK
+        execErrState: Alerting
+        for: 5m
+        annotations:
+          description: "Error rate for resume portfolio is {{ printf \"%.2f\" $values.C.Value }}% (threshold: 5%)"
+          summary: "High error rate detected in resume portfolio"
+        labels:
+          severity: critical
+          service: resume-portfolio
+          team: infrastructure
+        isPaused: false
+
+      - uid: resume_high_latency
+        title: High p99 Latency - Resume Portfolio
+        condition: A
+        data:
+          - refId: A
+            relativeTimeRange:
+              from: 600
+              to: 0
+            datasourceUid: prometheus
+            model:
+              expr: http_response_time_seconds{job="resume"} > 0.5
+              refId: A
+        noDataState: OK
+        execErrState: OK
+        for: 10m
+        annotations:
+          description: "Average response time is {{ printf \"%.3f\" $values.A.Value }}s (threshold: 0.5s)"
+          summary: "High response time detected in resume portfolio"
+        labels:
+          severity: warning
+          service: resume-portfolio
+          team: infrastructure
+        isPaused: false
+
+      - uid: resume_service_down
+        title: Resume Portfolio Service Down
+        condition: A
+        data:
+          - refId: A
+            relativeTimeRange:
+              from: 60
+              to: 0
+            datasourceUid: prometheus
+            model:
+              expr: up{job="resume"} == 0
+              refId: A
+        noDataState: Alerting
+        execErrState: Alerting
+        for: 1m
+        annotations:
+          description: "Resume portfolio service is not responding to health checks"
+          summary: "Resume portfolio service is DOWN"
+        labels:
+          severity: critical
+          service: resume-portfolio
+          team: infrastructure
+        isPaused: false
+
+      - uid: resume_zero_requests
+        title: Resume Portfolio - No Traffic
+        condition: A
+        data:
+          - refId: A
+            relativeTimeRange:
+              from: 300
+              to: 0
+            datasourceUid: prometheus
+            model:
+              expr: rate(http_requests_total{job="resume"}[5m]) == 0
+              refId: A
+        noDataState: OK
+        execErrState: OK
+        for: 15m
+        annotations:
+          description: "Resume portfolio has received zero requests in the last 15 minutes"
+          summary: "No traffic to resume portfolio"
+        labels:
+          severity: warning
+          service: resume-portfolio
+          team: infrastructure
+        isPaused: false
+
+contactPoints:
+  - orgId: 1
+    name: Resume Portfolio Alerts
+    receivers:
+      - uid: resume_slack_alerts
+        type: slack
+        settings:
+          url: ${SLACK_WEBHOOK_URL}
+          title: "{{ .CommonLabels.severity | toUpper }}: {{ .CommonAnnotations.summary }}"
+          text: |
+            {{ .CommonAnnotations.description }}
+
+            Labels:
+            {{ range .CommonLabels.SortedPairs }}
+            • {{ .Name }}: {{ .Value }}
+            {{ end }}
+
+            Time: {{ .StartsAt.Format "2006-01-02 15:04:05 MST" }}
+        disableResolveMessage: false
+
+policies:
+  - orgId: 1
+    receiver: Resume Portfolio Alerts
+    group_by:
+      - alertname
+      - severity
+    group_wait: 10s
+    group_interval: 5m
+    repeat_interval: 4h
+    matchers:
+      - service = resume-portfolio

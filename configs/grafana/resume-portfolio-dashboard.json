@@ -1,0 +1,399 @@
+{
+  "dashboard": {
+    "title": "Resume Portfolio - Production Overview",
+    "tags": ["resume", "cloudflare-workers", "production"],
+    "timezone": "browser",
+    "schemaVersion": 38,
+    "version": 1,
+    "refresh": "30s",
+    "panels": [
+      {
+        "id": 1,
+        "title": "Health Check Status",
+        "type": "stat",
+        "gridPos": {
+          "x": 0,
+          "y": 0,
+          "w": 6,
+          "h": 4
+        },
+        "targets": [
+          {
+            "expr": "up{job=\"resume\"}",
+            "refId": "A",
+            "legendFormat": "Health Status"
+          }
+        ],
+        "options": {
+          "graphMode": "none",
+          "colorMode": "background",
+          "textMode": "value_and_name"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "mappings": [
+              {
+                "type": "value",
+                "options": {
+                  "0": {
+                    "text": "DOWN",
+                    "color": "red"
+                  },
+                  "1": {
+                    "text": "UP",
+                    "color": "green"
+                  }
+                }
+              }
+            ],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "value": 0,
+                  "color": "red"
+                },
+                {
+                  "value": 1,
+                  "color": "green"
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "id": 2,
+        "title": "Total Requests",
+        "type": "stat",
+        "gridPos": {
+          "x": 6,
+          "y": 0,
+          "w": 6,
+          "h": 4
+        },
+        "targets": [
+          {
+            "expr": "http_requests_total{job=\"resume\"}",
+            "refId": "A",
+            "legendFormat": "Total Requests"
+          }
+        ],
+        "options": {
+          "graphMode": "area",
+          "colorMode": "value"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "unit": "short",
+            "color": {
+              "mode": "thresholds"
+            },
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "value": 0,
+                  "color": "blue"
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "id": 3,
+        "title": "Error Count",
+        "type": "stat",
+        "gridPos": {
+          "x": 12,
+          "y": 0,
+          "w": 6,
+          "h": 4
+        },
+        "targets": [
+          {
+            "expr": "http_requests_error{job=\"resume\"}",
+            "refId": "A",
+            "legendFormat": "Errors"
+          }
+        ],
+        "options": {
+          "graphMode": "area",
+          "colorMode": "value"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "unit": "short",
+            "color": {
+              "mode": "thresholds"
+            },
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "value": 0,
+                  "color": "green"
+                },
+                {
+                  "value": 1,
+                  "color": "red"
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "id": 4,
+        "title": "Average Response Time",
+        "type": "stat",
+        "gridPos": {
+          "x": 18,
+          "y": 0,
+          "w": 6,
+          "h": 4
+        },
+        "targets": [
+          {
+            "expr": "http_response_time_seconds{job=\"resume\"}",
+            "refId": "A",
+            "legendFormat": "Avg Response Time"
+          }
+        ],
+        "options": {
+          "graphMode": "area",
+          "colorMode": "value"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "unit": "s",
+            "decimals": 3,
+            "color": {
+              "mode": "thresholds"
+            },
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "value": 0,
+                  "color": "green"
+                },
+                {
+                  "value": 0.1,
+                  "color": "yellow"
+                },
+                {
+                  "value": 0.5,
+                  "color": "red"
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "id": 5,
+        "title": "Request Rate & Error Rate",
+        "type": "timeseries",
+        "gridPos": {
+          "x": 0,
+          "y": 4,
+          "w": 12,
+          "h": 8
+        },
+        "targets": [
+          {
+            "expr": "sum(rate(http_requests_total{job=\"resume\"}[1m]))",
+            "refId": "A",
+            "legendFormat": "Total Request Rate"
+          },
+          {
+            "expr": "sum(rate(http_requests_success{job=\"resume\"}[1m]))",
+            "refId": "B",
+            "legendFormat": "Success Rate"
+          },
+          {
+            "expr": "sum(rate(http_requests_error{job=\"resume\"}[1m]))",
+            "refId": "C",
+            "legendFormat": "Error Rate"
+          }
+        ],
+        "options": {
+          "tooltip": {
+            "mode": "multi"
+          },
+          "legend": {
+            "displayMode": "table",
+            "placement": "bottom",
+            "calcs": ["mean", "lastNotNull", "max"]
+          }
+        },
+        "fieldConfig": {
+          "defaults": {
+            "unit": "reqps",
+            "custom": {
+              "lineInterpolation": "smooth",
+              "fillOpacity": 10
+            }
+          },
+          "overrides": [
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "Error Rate"
+              },
+              "properties": [
+                {
+                  "id": "color",
+                  "value": {
+                    "mode": "fixed",
+                    "fixedColor": "red"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "id": 6,
+        "title": "Request Latency Percentiles",
+        "type": "timeseries",
+        "gridPos": {
+          "x": 12,
+          "y": 4,
+          "w": 12,
+          "h": 8
+        },
+        "targets": [
+          {
+            "expr": "http_response_time_seconds{job=\"resume\"}",
+            "refId": "A",
+            "legendFormat": "Average Response Time"
+          }
+        ],
+        "options": {
+          "tooltip": {
+            "mode": "multi"
+          },
+          "legend": {
+            "displayMode": "table",
+            "placement": "bottom",
+            "calcs": ["mean", "lastNotNull", "max", "min"]
+          }
+        },
+        "fieldConfig": {
+          "defaults": {
+            "unit": "s",
+            "decimals": 3,
+            "custom": {
+              "lineInterpolation": "smooth",
+              "fillOpacity": 10
+            },
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "value": 0,
+                  "color": "green"
+                },
+                {
+                  "value": 0.1,
+                  "color": "yellow"
+                },
+                {
+                  "value": 0.5,
+                  "color": "red"
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "id": 7,
+        "title": "Web Vitals Received",
+        "type": "stat",
+        "gridPos": {
+          "x": 0,
+          "y": 12,
+          "w": 6,
+          "h": 4
+        },
+        "targets": [
+          {
+            "expr": "web_vitals_received{job=\"resume\"}",
+            "refId": "A",
+            "legendFormat": "Vitals Data Points"
+          }
+        ],
+        "options": {
+          "graphMode": "area",
+          "colorMode": "value"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "unit": "short",
+            "color": {
+              "mode": "palette-classic"
+            }
+          }
+        }
+      },
+      {
+        "id": 8,
+        "title": "Application Logs",
+        "type": "logs",
+        "gridPos": {
+          "x": 0,
+          "y": 16,
+          "w": 24,
+          "h": 8
+        },
+        "targets": [
+          {
+            "expr": "{job=\"resume-worker\"}",
+            "refId": "A"
+          }
+        ],
+        "options": {
+          "showTime": true,
+          "showLabels": true,
+          "sortOrder": "Descending",
+          "wrapLogMessage": true,
+          "prettifyLogMessage": false,
+          "enableLogDetails": true
+        }
+      }
+    ],
+    "annotations": {
+      "list": [
+        {
+          "name": "Deployments",
+          "datasource": "Prometheus",
+          "enable": true,
+          "iconColor": "rgba(0, 211, 255, 1)",
+          "expr": "changes(http_requests_total{job=\"resume\"}[5m]) > 0",
+          "step": "60s",
+          "tagKeys": "deployment",
+          "textFormat": "New Deployment",
+          "titleFormat": "Deployment Event"
+        }
+      ]
+    },
+    "templating": {
+      "list": []
+    },
+    "time": {
+      "from": "now-6h",
+      "to": "now"
+    },
+    "timepicker": {
+      "refresh_intervals": ["10s", "30s", "1m", "5m", "15m", "30m", "1h"]
+    }
+  },
+  "overwrite": true,
+  "folderId": 0,
+  "folderUid": ""
+}
