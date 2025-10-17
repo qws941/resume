@@ -95,13 +95,17 @@ console.log('🔐 Generated CSP hashes from escaped HTML:');
 console.log(`  Script hashes: ${allScriptHashes.length}`);
 console.log(`  Style hashes: ${allStyleHashes.length}`);
 
+// Read deployment timestamp from environment (injected by CI/CD) or use build time
+const deployedAt = process.env.DEPLOYED_AT || new Date().toISOString();
+console.log(`📅 Deployment timestamp: ${deployedAt}`);
+
 const workerJs = `// Cloudflare Worker - Auto-generated
 const INDEX_HTML = \`${indexHtml}\`;
 const RESUME_HTML = \`${resumeHtml}\`;
 
 // Version and deployment info
 const VERSION = '1.0.0';
-const DEPLOYED_AT = process.env.DEPLOYED_AT || new Date().toISOString();
+const DEPLOYED_AT = '${deployedAt}';
 
 // CSP directives (generated at build time from inline content hashes)
 const CSP_SCRIPT_SRC = \`${scriptSrc}\`;
