@@ -244,13 +244,13 @@ async function handleVitals(request) {
     const vitals = await request.json();
     metrics.vitals_received++;
 
-    // Log to Loki
-    await logToLoki('INFO', JSON.stringify({
+    // Fire-and-forget Loki logging (non-blocking)
+    logToLoki('INFO', JSON.stringify({
       event: 'web_vitals',
       vitals: vitals,
     }), {
       metric_type: 'web_vitals',
-    });
+    }).catch(err => console.error('Loki vitals logging failed:', err));
 
     return new Response(JSON.stringify({ received: true }), {
       headers: { 'Content-Type': 'application/json' },
@@ -294,12 +294,17 @@ export default {
       const content = ROUTES[url.pathname] || INDEX_HTML;
       metrics.requests_success++;
 
-      // Track response time
+      // Create response immediately (don't await Loki logging)
+      const response = new Response(content, {
+        headers: SECURITY_HEADERS,
+      });
+
+      // Track response time AFTER creating response
       const responseTime = Date.now() - startTime;
       metrics.response_time_sum += responseTime;
 
-      // Log request to Loki
-      await logToLoki('INFO', JSON.stringify({
+      // Fire-and-forget Loki logging (non-blocking)
+      logToLoki('INFO', JSON.stringify({
         event: 'request',
         path: url.pathname,
         method: request.method,
@@ -307,23 +312,21 @@ export default {
       }), {
         path: url.pathname,
         method: request.method,
-      });
+      }).catch(err => console.error('Loki logging failed:', err));
 
-      return new Response(content, {
-        headers: SECURITY_HEADERS,
-      });
+      return response;
     } catch (error) {
       metrics.requests_error++;
 
-      // Log error to Loki
-      await logToLoki('ERROR', JSON.stringify({
+      // Fire-and-forget error logging (non-blocking)
+      logToLoki('ERROR', JSON.stringify({
         event: 'error',
         path: url.pathname,
         error: error.message,
       }), {
         path: url.pathname,
         error_type: 'internal',
-      });
+      }).catch(err => console.error('Loki error logging failed:', err));
 
       return new Response('Internal Server Error', {
         status: 500,
