@@ -1844,8 +1844,8 @@ const VERSION = '1.0.0';
 const DEPLOYED_AT = new Date().toISOString();
 
 // CSP directives (generated at build time from inline content hashes)
-const CSP_SCRIPT_SRC = ''self' 'sha256-HFs5YJqwNZljRnc65UK1qGXtFHBPLWYLi+3GOfYtxSs='';
-const CSP_STYLE_SRC = ''self' 'sha256-Ask//PVrBRNFS5zd0r5CB0n02spP7fmfdIThPc/jq/k=' 'sha256-45gFmuuqD6vG68FvXcHZvL4RMfKCo6fMfVOEaRXKu4M=' https://fonts.googleapis.com';
+const CSP_SCRIPT_SRC = `'self' 'sha256-HFs5YJqwNZljRnc65UK1qGXtFHBPLWYLi+3GOfYtxSs='`;
+const CSP_STYLE_SRC = `'self' 'sha256-Ask//PVrBRNFS5zd0r5CB0n02spP7fmfdIThPc/jq/k=' 'sha256-45gFmuuqD6vG68FvXcHZvL4RMfKCo6fMfVOEaRXKu4M=' https://fonts.googleapis.com`;
 
 // Metrics storage (in-memory, per-worker instance)
 const metrics = {
