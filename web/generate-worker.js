@@ -27,10 +27,11 @@ function extractInlineHashes(html) {
   const styleHashes = [];
 
   // Extract inline scripts
+  // CRITICAL: Do NOT trim() - browser calculates hash with exact whitespace
   const scriptRegex = /<script>([\s\S]*?)<\/script>/g;
   let scriptMatch;
   while ((scriptMatch = scriptRegex.exec(html)) !== null) {
-    const scriptContent = scriptMatch[1].trim();
+    const scriptContent = scriptMatch[1]; // NO TRIM!
     if (scriptContent) {
       const hash = generateHash(scriptContent);
       scriptHashes.push(`'sha256-${hash}'`);
@@ -38,10 +39,11 @@ function extractInlineHashes(html) {
   }
 
   // Extract inline styles
+  // CRITICAL: Do NOT trim() - browser calculates hash with exact whitespace
   const styleRegex = /<style>([\s\S]*?)<\/style>/g;
   let styleMatch;
   while ((styleMatch = styleRegex.exec(html)) !== null) {
-    const styleContent = styleMatch[1].trim();
+    const styleContent = styleMatch[1]; // NO TRIM!
     if (styleContent) {
       const hash = generateHash(styleContent);
       styleHashes.push(`'sha256-${hash}'`);

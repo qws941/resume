@@ -1841,11 +1841,11 @@ const RESUME_HTML = `<!DOCTYPE html>
 
 // Version and deployment info
 const VERSION = '1.0.0';
-const DEPLOYED_AT = '2025-10-18T03:34:43.685Z';
+const DEPLOYED_AT = '2025-10-18T06:23:06.805Z';
 
 // CSP directives (generated at build time from inline content hashes)
-const CSP_SCRIPT_SRC = `'self' 'sha256-HFs5YJqwNZljRnc65UK1qGXtFHBPLWYLi+3GOfYtxSs='`;
-const CSP_STYLE_SRC = `'self' 'sha256-Ask//PVrBRNFS5zd0r5CB0n02spP7fmfdIThPc/jq/k=' 'sha256-45gFmuuqD6vG68FvXcHZvL4RMfKCo6fMfVOEaRXKu4M=' https://fonts.googleapis.com`;
+const CSP_SCRIPT_SRC = `'self' 'sha256-lzVHvKwroSNeSD6kNvH//bXPPv1/Oid2ZqtNGerm07I='`;
+const CSP_STYLE_SRC = `'self' 'sha256-zdJSV2J8eDikECFiOxoeB/BWV7EJ7UMTELkfGMB3HMc=' 'sha256-bW6PzpApDT8z3aOlJS2q/f33MCtNT6B/TLhh6fXlkn8=' https://fonts.googleapis.com`;
 
 // Metrics storage (in-memory, per-worker instance)
 const metrics = {
