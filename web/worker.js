@@ -1841,7 +1841,7 @@ const RESUME_HTML = `<!DOCTYPE html>
 
 // Version and deployment info
 const VERSION = '1.0.0';
-const DEPLOYED_AT = '2025-10-17T12:36:14.930Z';
+const DEPLOYED_AT = '2025-10-18T02:22:10.351Z';
 
 // CSP directives (generated at build time from inline content hashes)
 const CSP_SCRIPT_SRC = `'self' 'sha256-HFs5YJqwNZljRnc65UK1qGXtFHBPLWYLi+3GOfYtxSs='`;
