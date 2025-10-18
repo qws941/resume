@@ -34,10 +34,12 @@ module.exports = [
     ignores: [
       'node_modules/**',
       'archive/**',
+      'coverage/**', // Auto-generated test coverage
       'web/worker.js', // Generated file
       '*.min.js',
       'dist/**',
       'build/**',
+      '.wrangler/**',
     ],
   },
 ];
