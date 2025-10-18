@@ -75,13 +75,21 @@ function readAndEscapeHtml(filename) {
   }
 }
 
-// Read and escape HTML files for worker embedding (DO THIS FIRST)
-const indexHtml = readAndEscapeHtml('index.html');
-const resumeHtml = readAndEscapeHtml('resume.html');
+// CRITICAL: Calculate hashes from ORIGINAL HTML before escaping
+// (Browsers calculate hashes from the actual HTML they receive, not the escaped template literal)
+const indexHtmlOriginal = fs.readFileSync(path.join(__dirname, 'index.html'), 'utf-8');
+const resumeHtmlOriginal = fs.readFileSync(path.join(__dirname, 'resume.html'), 'utf-8');
 
-// Extract inline script and style hashes FROM ESCAPED HTML (critical for CSP)
-const indexHashes = extractInlineHashes(indexHtml);
-const resumeHashes = extractInlineHashes(resumeHtml);
+const indexHashes = extractInlineHashes(indexHtmlOriginal);
+const resumeHashes = extractInlineHashes(resumeHtmlOriginal);
+
+// NOW escape HTML for worker embedding
+const indexHtml = indexHtmlOriginal
+  .replace(ESCAPE_PATTERNS.BACKTICK, '\\`')
+  .replace(ESCAPE_PATTERNS.DOLLAR, '\\$');
+const resumeHtml = resumeHtmlOriginal
+  .replace(ESCAPE_PATTERNS.BACKTICK, '\\`')
+  .replace(ESCAPE_PATTERNS.DOLLAR, '\\$');
 
 // Combine all unique hashes
 const allScriptHashes = [...new Set([...indexHashes.scriptHashes, ...resumeHashes.scriptHashes])];
