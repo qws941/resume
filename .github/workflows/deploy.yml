@@ -16,8 +16,12 @@ jobs:
           node-version: '20'
       - name: Install Wrangler
         run: npm install -g wrangler
+      - name: Set Deployment Timestamp
+        run: echo "DEPLOYED_AT=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> $GITHUB_ENV
       - name: Generate Worker
         run: cd web && node generate-worker.js
+        env:
+          DEPLOYED_AT: ${{ env.DEPLOYED_AT }}
       - name: Publish Worker
         uses: cloudflare/wrangler-action@v3
         with:

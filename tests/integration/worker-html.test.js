@@ -138,7 +138,8 @@ describe('Worker-HTML Integration', () => {
       expect(workerCode).toContain('\'/\': INDEX_HTML');
       expect(workerCode).toContain('\'/resume\': RESUME_HTML');
       expect(workerCode).toContain('ROUTES[url.pathname]');
-      expect(workerCode).toContain('return new Response(content');
+      // Check for actual response creation pattern
+      expect(workerCode).toContain('const response = new Response(content');
     });
   });
 });

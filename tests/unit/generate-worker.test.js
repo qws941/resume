@@ -62,13 +62,23 @@ describe('Worker Generator', () => {
     test('dollar signs should be escaped in embedded HTML', () => {
       const workerContent = fs.readFileSync(workerPath, 'utf-8');
 
-      // Should contain escaped dollar signs if any
-      // Note: This depends on source HTML content
-      if (workerContent.includes('$')) {
-        // If there are dollar signs, check if they're properly escaped
-        const hasProperEscaping = workerContent.includes('\\$');
-        expect(hasProperEscaping || !workerContent.match(/\$\{/)).toBeTruthy();
+      // Extract only the HTML template literals (INDEX_HTML and RESUME_HTML)
+      const htmlTemplateRegex = /const (?:INDEX_HTML|RESUME_HTML) = `([\s\S]*?)`;/g;
+      let htmlMatch;
+      let hasUnescapedDollarInHtml = false;
+
+      while ((htmlMatch = htmlTemplateRegex.exec(workerContent)) !== null) {
+        const htmlContent = htmlMatch[1];
+        // Check for unescaped ${...} patterns in HTML content
+        // This would break the worker's template literal if not escaped
+        if (htmlContent.match(/(?<!\\)\$\{/)) {
+          hasUnescapedDollarInHtml = true;
+          break;
+        }
       }
+
+      // HTML content should NOT have unescaped ${...} patterns
+      expect(hasUnescapedDollarInHtml).toBeFalsy();
     });
   });
 
