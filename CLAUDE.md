@@ -55,6 +55,9 @@ npm run test:e2e:ui
 
 # E2E headed mode (visible browser)
 npm run test:e2e:headed
+
+# Run all tests before deployment
+npm test && npm run test:e2e
 ```
 
 ### Code Quality
@@ -101,10 +104,73 @@ cp master/resume_master.md master/resume_final.md
 3. **Deploy**: Push to `master` branch (GitHub Actions auto-deploys) OR run `wrangler deploy` manually
 
 **Why this matters**:
-- `worker.js` is the actual deployed code
-- `generate-worker.js` escapes backticks and `$` for template literal compatibility
-- Routing: `/` → index.html, `/resume` → resume.html
+- `worker.js` is the actual deployed code (referenced in `wrangler.toml`)
+- `generate-worker.js` performs critical transformations:
+  - **HTML Minification**: 15% size reduction using `html-minifier-terser`
+  - **CSP Hash Generation**: Extracts `<script>` and `<style>` tags, generates SHA-256 hashes
+  - **Template Literal Escaping**: Escapes backticks (`) and dollar signs ($) for JavaScript embedding
+  - **Deployment Timestamp**: Injects `DEPLOYED_AT` from environment (set by CI/CD)
+- Routing: `/` → index.html, `/resume` → resume.html, `/health` → health check, `/metrics` → Prometheus metrics
 - Forgetting step 2 will deploy outdated HTML
+
+**CRITICAL CSP Hash Calculation**:
+- CSP hashes MUST be calculated from **original HTML before escaping** (web/generate-worker.js:61-78)
+- **DO NOT use `.trim()`** on extracted inline scripts/styles before hashing
+- Browsers calculate CSP hashes with **exact whitespace** as rendered in HTML
+- Commit f67b5eb fixed this: removed `trim()` from hash calculation to match browser behavior
+
+### Observability Endpoints
+
+The Cloudflare Worker exposes three monitoring endpoints:
+
+**1. Health Check** (`/health`):
+```bash
+curl https://resume.jclee.me/health
+```
+Returns JSON with service status, version, deployment time, uptime, and metrics:
+```json
+{
+  "status": "healthy",
+  "version": "1.0.0",
+  "deployed_at": "2025-10-18T09:45:00.000Z",
+  "uptime_seconds": 3600,
+  "metrics": {
+    "requests_total": 1234,
+    "requests_success": 1230,
+    "requests_error": 4,
+    "vitals_received": 56
+  }
+}
+```
+
+**2. Prometheus Metrics** (`/metrics`):
+```bash
+curl https://resume.jclee.me/metrics
+```
+Returns Prometheus exposition format for Grafana integration:
+```
+# HELP http_requests_total Total HTTP requests
+# TYPE http_requests_total counter
+http_requests_total{job="resume"} 1234
+
+# HELP http_response_time_seconds Average response time
+# TYPE http_response_time_seconds gauge
+http_response_time_seconds{job="resume"} 0.05
+```
+
+**3. Web Vitals Collection** (`/api/vitals`):
+```bash
+curl -X POST https://resume.jclee.me/api/vitals \
+  -H "Content-Type: application/json" \
+  -d '{"lcp": 1250, "fid": 50, "cls": 0.05}'
+```
+Accepts POST requests with Web Vitals data (LCP, FID, CLS, FCP, TTFB), logs to Grafana Loki.
+
+**Loki Integration**:
+- All requests logged to `https://grafana.jclee.me/loki/api/v1/push`
+- Fire-and-forget async logging (non-blocking, doesn't delay response)
+- Log labels: `job="resume-worker"`, `level="INFO|ERROR"`, `path="/..."`, `method="GET"`
+- Failed Loki writes are silently caught (logged to console but don't block request)
 
 ### Content Hierarchy
 
@@ -112,6 +178,8 @@ cp master/resume_master.md master/resume_final.md
 - **master/resume_final.md**: Compressed submission version
 - **company-specific/**: Tailored resumes derived from master
 - **web/index.html**: Portfolio showcasing 5 production projects
+- **web/resume.html**: HTML version of resume
+- **resume/nextrade/**: Technical documentation (Architecture, DR, SOC) for download
 
 All versions must maintain consistency in:
 - Career dates and timeline
@@ -123,25 +191,45 @@ All versions must maintain consistency in:
 **Trigger**: Push to `master` branch
 
 **Workflow** (`.github/workflows/deploy.yml`):
-1. `deploy-worker`: Deploys to Cloudflare Workers using `wrangler-action@v3`
-2. `generate-deployment-notes`: Calls Gemini API to summarize commit for deployment log
+1. **deploy-worker**:
+   - Checkout code
+   - Install Node.js 20 and Wrangler
+   - Set `DEPLOYED_AT` environment variable (ISO 8601 UTC timestamp)
+   - Generate worker.js with embedded timestamp
+   - Deploy using `cloudflare/wrangler-action@v3`
+
+2. **generate-deployment-notes**:
+   - Fetch latest commit message
+   - Call Gemini API to summarize commit for deployment log
+   - Print concise 1-2 sentence summary
+
+3. **notify-slack** (optional, if `SLACK_WEBHOOK_URL` secret exists):
+   - Send rich Slack notification with deployment status
+   - Include commit info, links to live site and workflow
+   - Uses Slack Block Kit for formatting
 
 **Required Secrets**:
 - `CLOUDFLARE_API_TOKEN`
 - `CLOUDFLARE_ACCOUNT_ID`
 - `GEMINI_API_KEY`
+- `SLACK_WEBHOOK_URL` (optional)
 
-**Verification**: `curl -I https://resume.jclee.me` (expect HTTP 200)
+**Verification**:
+```bash
+curl -I https://resume.jclee.me  # Expect HTTP 200
+curl https://resume.jclee.me/health  # Check deployment timestamp
+```
 
 ### Web Portfolio Design
 
-**Current Design** (commit 59ebf6e, 2025-10-09):
+**Current Design** (Updated 2025-10-18):
 - Minimal 1-column layout with premium visual effects
 - Dark mode toggle with localStorage persistence
 - Responsive: 5 breakpoints (1200px/1024px/768px/640px/375px)
 - SEO: Meta tags, Open Graph, Twitter Card, canonical URL
 - Accessibility: ARIA labels, semantic HTML, 44px touch targets
 - Animations: Scroll fade-in, counter animations, hover effects with cubic-bezier easing
+- **NEW**: Nextrade technical documentation download section (4 docs with PDF/DOCX options)
 
 **Typography**:
 - Hero title: Playfair Display 4.8rem
@@ -153,38 +241,61 @@ All versions must maintain consistency in:
 - Gold gradient: `#f59e0b → #d97706`
 - Shadows: Enhanced opacity (0.35-0.5) for depth
 
-## Testing Strategy
+**Security Headers**:
+- Content-Security-Policy with SHA-256 hashes (NO `unsafe-inline`)
+- Strict-Transport-Security with HSTS preload
+- X-Content-Type-Options: nosniff
+- X-Frame-Options: DENY
+- X-XSS-Protection: 1; mode=block
+- Referrer-Policy: strict-origin-when-cross-origin
 
-This project uses Jest for unit testing and Playwright for E2E testing.
+## Testing Strategy
 
 ### Unit Tests
 - **Location**: `tests/unit/`
+- **Framework**: Jest 30.2.0 (CommonJS config: `jest.config.cjs`)
 - **Focus**: Worker generation, HTML escaping, security headers
 - **Key test**: `generate-worker.test.js` validates:
-  - worker.js generation
+  - worker.js generation and minification
   - Backtick and `$` escaping in template literals
+  - CSP hash generation for inline scripts/styles
   - Security headers presence
   - Routing logic
 
+### Integration Tests
+- **Location**: `tests/integration/`
+- **Focus**: Worker HTML serving, routing, health endpoints
+
 ### E2E Tests
-- **Framework**: Playwright
+- **Location**: `tests/e2e/`
+- **Framework**: Playwright 1.56.0
 - **Browsers**: Chromium, Firefox, WebKit
 - **Config**: `playwright.config.js`
 
-### Test Before Deploy
-Always run tests before deploying:
-```bash
-npm test && npm run test:e2e
-```
+### Performance Tests
+- **Lighthouse CI**: `.github/workflows/lighthouse-ci.yml`
+- **Budgets**:
+  - Performance: ≥90 score
+  - Accessibility: ≥95 score
+  - Best Practices: ≥95 score
+  - SEO: ≥95 score
+- **Web Vitals Targets**:
+  - LCP: <2.5s
+  - FID: <100ms
+  - CLS: <0.1
+  - FCP: <1.8s
+  - TTFB: <0.8s
 
 ## Important Files
 
 - **ENVIRONMENTAL_MAP.md**: Environment configuration (topology, dependencies, workflow)
-- **DEPLOYMENT_STATUS.md**: Service deployment status report
+- **DEPLOYMENT_STATUS.md**: Service deployment status report (last updated 2025-10-18)
 - **web/wrangler.toml**: Cloudflare Workers config (name: "resume", main: "worker.js")
-- **web/generate-worker.js**: Worker generator (reads HTML, escapes special chars, writes worker.js)
+- **web/generate-worker.js**: Worker generator with CSP hash calculation (DO NOT trim inline content!)
+- **web/worker.js**: Generated worker code (auto-generated, do not edit directly)
 - **tests/unit/generate-worker.test.js**: Worker generation validation
 - **package.json**: Scripts, dependencies, Node.js version requirement (>=20.0.0)
+- **.github/workflows/deploy.yml**: CI/CD pipeline with deployment timestamp injection
 
 ## Resume Content Guidelines
 
@@ -208,14 +319,21 @@ npm test && npm run test:e2e
 
 - **Node.js**: >=20.0.0 (specified in package.json engines)
 - **Key packages**:
-  - `wrangler`: Cloudflare Workers CLI (v4.42.2)
+  - `wrangler`: Cloudflare Workers CLI (v4.42.2+)
   - `@playwright/test`: E2E testing (v1.56.0)
   - `jest`: Unit testing (v30.2.0)
-  - `eslint`: Linting (v9.37.0, flat config)
+  - `eslint`: Linting (v9.37.0, flat config: `eslint.config.cjs`)
   - `prettier`: Code formatting (v3.6.2)
+  - `html-minifier-terser`: HTML minification (v7.2.0)
   - `sharp`: Image processing (v0.34.4)
 
 ### Recent Updates
+- **2025-10-18**: Test fixes & CI deployment timestamp
+  - Dollar sign escape test accuracy improvement
+  - Route pattern test aligned with actual implementation
+  - GitHub Actions injects `DEPLOYED_AT` environment variable
+  - 24/24 tests passing (100% success rate)
+
 - **2025-10-13**: Repository modernization
   - ESLint 8 → 9 (flat config: `eslint.config.cjs`)
   - Jest 29 → 30 (CommonJS config: `jest.config.cjs`)
@@ -280,129 +398,85 @@ ts sync
 
 **Reference**: `docs/TS_SESSION_TROUBLESHOOTING.md`
 
+## Common Development Patterns
+
+### Editing HTML Content
+
+When updating portfolio content:
+
+1. **Edit HTML files** (`web/index.html` or `web/resume.html`)
+2. **Regenerate worker**: `npm run build`
+3. **Test locally**: `npm run dev` (Wrangler dev server)
+4. **Run tests**: `npm test && npm run test:e2e`
+5. **Deploy**: `git push origin master` (auto-deploys via GitHub Actions)
+
+**IMPORTANT**: Never edit `web/worker.js` directly - it's auto-generated.
+
+### Adding New Monitoring Metrics
+
+To add new metrics to `/metrics` endpoint:
+
+1. **Update metrics object** in `web/generate-worker.js` (line 116-123)
+2. **Update `generateMetrics()` function** (line 182-206)
+3. **Increment metrics** in request handler
+4. **Regenerate worker**: `npm run build`
+5. **Test**: Check `/metrics` endpoint returns new metric
+
+### Updating Security Headers
+
+To modify CSP or other security headers:
+
+1. **Edit `SECURITY_HEADERS`** in `web/generate-worker.js` (line 126-135)
+2. **CSP hashes are auto-generated** from inline content (do not manually edit)
+3. **Regenerate worker**: `npm run build`
+4. **Test CSP**: Check browser console for violations
+
+## Troubleshooting
+
+### Worker.js Not Updating After HTML Changes
+
+**Problem**: Deployed site shows old HTML content
+**Cause**: Forgot to run `generate-worker.js`
+**Solution**:
+```bash
+npm run build  # Regenerates worker.js
+cd web && wrangler deploy
+```
+
+### CSP Violations in Browser Console
+
+**Problem**: "Refused to execute inline script because it violates CSP"
+**Cause**: CSP hash mismatch (likely due to HTML changes)
+**Solution**:
+```bash
+npm run build  # Recalculates CSP hashes
+cd web && wrangler deploy
+```
+
+**Root Cause**: If hashes still don't match, verify `generate-worker.js` does NOT trim inline content before hashing (commit f67b5eb)
+
+### Deployment Timestamp Shows Build Time Instead of Deploy Time
+
+**Problem**: `/health` endpoint shows incorrect `deployed_at`
+**Cause**: `DEPLOYED_AT` environment variable not set
+**Solution**: GitHub Actions automatically sets this. For local deployment:
+```bash
+DEPLOYED_AT=$(date -u +'%Y-%m-%dT%H:%M:%SZ') npm run build
+cd web && wrangler deploy
+```
+
+### Tests Failing After HTML Changes
+
+**Problem**: Unit tests fail after modifying HTML
+**Cause**: Tests validate generated `worker.js` structure
+**Solution**:
+1. Regenerate worker: `npm run build`
+2. Check if tests need updating (e.g., new routes, changed escaping)
+3. Run tests: `npm test`
+
 ## Contact Information
 
 - Email: qws941@kakao.com
 - Phone: 010-5757-9592
 - GitHub: github.com/qws941
 - Address: 경기도 시흥시 장현천로61, 307동 1301호
-## Infrastructure Integration
-
-### Observability Stack (Synology NAS)
-
-All projects integrate with centralized monitoring on grafana.jclee.me:
-
-```yaml
-grafana: https://grafana.jclee.me
-  dashboards: Project-specific dashboards for metrics visualization
-  loki: Centralized logging (all docker logs → promtail → Loki)
-  prometheus: Metrics collection and alerting
-
-n8n: https://n8n.jclee.me
-  workflows: Automated CI/CD, notifications, integrations
-  webhooks: Event-driven automation triggers
-
-slack: Team notifications
-  channels: #alerts, #deployments, #monitoring
-  integration: Via n8n workflows and direct API
-```
-
-**Health Checks**:
-```bash
-# Verify infrastructure connectivity
-curl -sf https://grafana.jclee.me/api/health
-curl -sf https://n8n.jclee.me/healthz
-```
-
-### Common Libraries (v1.0.0)
-
-Centralized bash libraries eliminate code duplication:
-
-```bash
-# Load common libraries in scripts
-source "${HOME}/.claude/lib/bash/colors.sh"    # Color definitions, output functions
-source "${HOME}/.claude/lib/bash/logging.sh"   # Loki logging functions
-source "${HOME}/.claude/lib/bash/ids.sh"       # Task ID generation
-source "${HOME}/.claude/lib/bash/api-clients.sh" # Grafana, n8n, Slack APIs
-source "${HOME}/.claude/lib/bash/errors.sh"    # Error handling, retries
-
-# Example usage
-TASK_ID=$(generate_task_id "deploy")
-log_info "Starting deployment: $TASK_ID"
-log_to_loki "my-project" "Deployment started" "INFO"
-```
-
-**Key Functions**:
-- `log_to_loki(job, message, level)` - Send logs to Grafana Loki
-- `generate_task_id(prefix)` - Create UUID-based task IDs
-- `grafana_query(endpoint, method, data)` - Query Grafana API
-- `n8n_webhook(webhook_id, data)` - Trigger n8n workflows
-- `slack_message(channel, text)` - Send Slack notifications
-- `retry_with_backoff(attempts, delay, max_delay, cmd)` - Retry with exponential backoff
-- `require_command(cmd, package)` - Check dependencies
-- `require_env(var)` - Validate environment variables
-
-**Documentation**: `~/.claude/lib/README.md`
-
-### Deployment Standards
-
-All projects follow Constitutional Framework v11.11:
-
-```yaml
-mandatory_structure:
-  - /resume/ (architecture, api, deployment, troubleshooting)
-  - /demo/ (screenshots/, videos/, examples/)
-  - docker-compose.yml (with health checks and Traefik labels)
-  - .env.example (template for required env vars)
-
-observability_requirements:
-  - Metrics endpoint: /{service}/metrics (Prometheus format)
-  - Health endpoint: /{service}/health (JSON response)
-  - Docker logs: Automatically sent to Loki via promtail
-
-prohibited:
-  - Local Grafana/Prometheus/Loki instances (ports 3000/9090/3100)
-  - Backup files (*.backup, *.bak, *.old) - Use git only
-  - Root directory clutter - Use structured subdirectories
-```
-
-### Testing Requirements
-
-```bash
-# Pre-deployment checklist
-npm test                    # All unit tests must pass
-npm run test:coverage       # Coverage ≥ 80%
-npm run lint                # No linting errors
-docker-compose up -d        # Deploy
-sleep 5
-curl http://localhost:PORT/health  # Verify health endpoint
-
-# Grafana verification (mandatory)
-# 1. Check service is UP in Prometheus
-# 2. Verify error_rate == 0
-# 3. Confirm logs flowing to Loki
-```
-
-### Environment Variables
-
-Required environment variables for infrastructure integration:
-
-```bash
-# Grafana/Loki/Prometheus
-LOKI_URL=https://grafana.jclee.me
-GRAFANA_URL=https://grafana.jclee.me
-PROMETHEUS_URL=https://prometheus.jclee.me
-
-# n8n
-N8N_URL=https://n8n.jclee.me
-N8N_API_KEY=<from ~/.env>
-
-# Slack
-SLACK_BOT_TOKEN=<from ~/.env>
-SLACK_WEBHOOK_URL=<from ~/.env>
-
-# Service-specific
-SERVICE_NAME=<project-name>
-LOG_LEVEL=info
-TZ=Asia/Seoul
-```
