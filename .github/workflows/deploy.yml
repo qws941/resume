@@ -16,6 +16,8 @@ jobs:
           node-version: '20'
       - name: Install Wrangler
         run: npm install -g wrangler
+      - name: Install Dependencies
+        run: npm install
       - name: Set Deployment Timestamp
         run: echo "DEPLOYED_AT=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> $GITHUB_ENV
       - name: Generate Worker
