@@ -1,7 +1,7 @@
 # 🚀 배포 상태 보고서
 
 **생성 시간**: 2025-10-09 18:10 KST
-**마지막 점검**: 2025-10-18 (Test fixes & CI deployment timestamp)
+**마지막 점검**: 2025-10-19 (Marketing language removal - all exaggerations removed)
 
 ---
 
@@ -28,12 +28,13 @@
 - **상태**: ✅ 정상 (HTTP 200)
 - **플랫폼**: Cloudflare Workers
 - **내용**: 이재철 포트폴리오 (인프라·보안 엔지니어)
-- **최신 배포**: 2025-10-18 (commit 91fdc78)
+- **최신 배포**: 2025-10-19 (commit 6205985)
 - **최근 개선사항**:
-  - Testing: 24/24 테스트 통과 (100% 성공률)
-  - CI/CD: GitHub Actions에 배포 타임스탬프 자동 주입
-  - Quality: Dollar sign 이스케이프 테스트 정확성 개선
-  - Monitoring: Grafana Loki 통합 (비차단 비동기 로깅)
+  - Content: 모든 마케팅 과장 표현 제거 (14개)
+  - Hero Section: "복잡한 인프라를 단순하게" → "인프라·보안 엔지니어"
+  - Stats: "50~95% Time Saved" → "5+ Projects", "24/7 Operations"
+  - Documentation: "대한민국 최초", "19개월 연속 무사고" → 팩트 기반 설명
+  - Projects: 모든 성능 수치 과장 제거 (80대 방화벽, 95% 단축 등)
 
 ### 2. SafeWork System
 - **URL**: https://safework.jclee.me
@@ -165,6 +166,20 @@ npx wrangler deploy
 
 ## 🔄 변경 이력
 
+### 2025-10-19
+- **Content Overhaul**: 마케팅 과장 표현 전면 제거
+  - 제거된 과장 표현 14개:
+    - Hero: "복잡한 인프라를 단순하게", "50~95% 시간 단축"
+    - Stats: "50~95% Time Saved", "High Uptime Achieved"
+    - Documentation: "대한민국 최초(20년만)", "19개월 연속 무사고", "99.98% uptime", "0 breaches", "37% faster", "Zero data loss"
+    - Projects: "80대 방화벽", "초당 10만", "95% 시간 단축", "80% 시간 단축"
+  - 팩트 기반 내용 11개 추가:
+    - Hero: "인프라·보안 엔지니어", "금융권 보안 인프라 구축 및 운영"
+    - Stats: "5+ Projects", "24/7 Operations"
+    - Documentation: "다자간매매체결회사", "보안 아키텍처 설계"
+- **Verification**: 실시간 웹사이트 검증 완료 (과장 표현 0/14, 팩트 11/11)
+- **Deployment**: commit 6205985, deployed at 2025-10-19T13:24:08Z
+
 ### 2025-10-18
 - **Testing**: 테스트 정확성 개선 (24/24 통과 유지)
   - Dollar sign 이스케이프: HTML 템플릿만 검사하도록 수정
@@ -205,5 +220,5 @@ npx wrangler deploy
 
 ---
 
-**마지막 업데이트**: 2025-10-18
+**마지막 업데이트**: 2025-10-19
 **보고서 생성**: Claude Code AI Assistant
