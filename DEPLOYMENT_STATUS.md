@@ -1,7 +1,7 @@
 # 🚀 배포 상태 보고서
 
 **생성 시간**: 2025-10-09 18:10 KST
-**마지막 점검**: 2025-10-19 (Marketing language removal - all exaggerations removed)
+**마지막 점검**: 2025-10-20 (Resume-centric site restructure - dedicated Resume section added)
 
 ---
 
@@ -28,13 +28,15 @@
 - **상태**: ✅ 정상 (HTTP 200)
 - **플랫폼**: Cloudflare Workers
 - **내용**: 이재철 포트폴리오 (인프라·보안 엔지니어)
-- **최신 배포**: 2025-10-19 (commit 6205985)
-- **최근 개선사항**:
-  - Content: 모든 마케팅 과장 표현 제거 (14개)
-  - Hero Section: "복잡한 인프라를 단순하게" → "인프라·보안 엔지니어"
-  - Stats: "50~95% Time Saved" → "5+ Projects", "24/7 Operations"
-  - Documentation: "대한민국 최초", "19개월 연속 무사고" → 팩트 기반 설명
-  - Projects: 모든 성능 수치 과장 제거 (80대 방화벽, 95% 단축 등)
+- **최신 배포**: 2025-10-20 06:31:33 UTC
+- **최근 개선사항** (2025-10-20):
+  - **Site Restructure**: Resume 중심 재구성
+  - **Resume Section**: 전용 섹션 추가 (노란색 그라데이션 배경, 대형 다운로드 버튼)
+  - **Navigation**: "Docs, Projects, Contact" → "Resume, Projects, Contact" 순서 변경
+  - **Hero CTA**: "프로젝트 보기" → "이력서 보기" 우선순위 변경
+  - **PDF Download**: 이력서 PDF 다운로드 기능 추가 (resume_final.pdf 683KB)
+  - **Technical Docs**: Resume 카드 제거, Nextrade 문서만 포함 (4개)
+  - **Content Simplification**: 사이트 복잡도 감소, Resume 콘텐츠 집중
 
 ### 2. SafeWork System
 - **URL**: https://safework.jclee.me
@@ -166,6 +168,22 @@ npx wrangler deploy
 
 ## 🔄 변경 이력
 
+### 2025-10-20
+- **Site Restructure**: Resume 중심 사이트 재구성
+  - **PDF Generation**: Markdown 이력서 → PDF 변환 (chromium-browser headless)
+  - **Resume Section**: 전용 섹션 생성 (id="resume")
+    - 노란색 그라데이션 배경 (linear-gradient(135deg, #fef3c7, #fcd34d))
+    - 대형 다운로드 버튼 (2rem x 4rem padding, 1.5rem font)
+    - 4개 경력 통계 카드: "2017~ Start Career", "금융·제조 Industry", "Python Automation", "ISMS-P Compliance"
+  - **Navigation Update**: "Docs, Projects, Contact" → "Resume, Projects, Contact"
+  - **Hero CTA Simplification**:
+    - Primary: "프로젝트 보기" → "이력서 보기" (#resume)
+    - Secondary: "이력서 다운로드 (PDF)" → "프로젝트 보기" (#projects)
+  - **Technical Docs Cleanup**: Resume 카드 제거 (Nextrade 문서만 4개 유지)
+  - **Content Organization**: Resume 섹션과 Technical Docs 명확히 분리
+- **Deployment**: 2025-10-20T06:31:33Z
+- **Worker Size**: 26.54 KB (이전 25.82 KB → +0.72 KB)
+
 ### 2025-10-19
 - **Content Overhaul**: 마케팅 과장 표현 전면 제거
   - 제거된 과장 표현 14개:
@@ -220,5 +238,5 @@ npx wrangler deploy
 
 ---
 
-**마지막 업데이트**: 2025-10-19
+**마지막 업데이트**: 2025-10-20
 **보고서 생성**: Claude Code AI Assistant
