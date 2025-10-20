@@ -99,7 +99,7 @@ cp master/resume_master.md master/resume_final.md
 
 **IMPORTANT**: The portfolio uses Cloudflare Workers, but the HTML files are NOT directly deployed.
 
-1. **Edit HTML**: Modify `web/index.html` or `web/resume.html`
+1. **Edit HTML**: Modify `web/index.html`
 2. **Generate Worker**: Run `node generate-worker.js` (embeds HTML into `worker.js` as template literals)
 3. **Deploy**: Push to `master` branch (GitHub Actions auto-deploys) OR run `wrangler deploy` manually
 
@@ -110,7 +110,7 @@ cp master/resume_master.md master/resume_final.md
   - **CSP Hash Generation**: Extracts `<script>` and `<style>` tags, generates SHA-256 hashes
   - **Template Literal Escaping**: Escapes backticks (`) and dollar signs ($) for JavaScript embedding
   - **Deployment Timestamp**: Injects `DEPLOYED_AT` from environment (set by CI/CD)
-- Routing: `/` → index.html, `/resume` → resume.html, `/health` → health check, `/metrics` → Prometheus metrics
+- Routing: `/` → index.html, `/health` → health check, `/metrics` → Prometheus metrics, `/api/vitals` → Web Vitals collection
 - Forgetting step 2 will deploy outdated HTML
 
 **CRITICAL CSP Hash Calculation**:
@@ -175,10 +175,9 @@ Accepts POST requests with Web Vitals data (LCP, FID, CLS, FCP, TTFB), logs to G
 ### Content Hierarchy
 
 - **master/resume_master.md**: Single source of truth (complete career history)
-- **master/resume_final.md**: Compressed submission version
+- **master/resume_final.md**: Compressed submission version (downloadable from portfolio)
 - **company-specific/**: Tailored resumes derived from master
-- **web/index.html**: Portfolio showcasing 5 production projects
-- **web/resume.html**: HTML version of resume
+- **web/index.html**: Portfolio showcasing 5 production projects (single-page application)
 - **resume/nextrade/**: Technical documentation (Architecture, DR, SOC) for download
 
 All versions must maintain consistency in:

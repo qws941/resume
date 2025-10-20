@@ -59,7 +59,6 @@ function extractInlineHashes(html) {
   // CRITICAL: Calculate hashes from ORIGINAL HTML before escaping
   // (Browsers calculate hashes from the actual HTML they receive, not the escaped template literal)
   const indexHtmlRaw = fs.readFileSync(path.join(__dirname, 'index.html'), 'utf-8');
-  const resumeHtmlRaw = fs.readFileSync(path.join(__dirname, 'resume.html'), 'utf-8');
 
   // Minify HTML (15% size reduction, faster edge cold starts)
   const minifyOptions = {
@@ -72,22 +71,17 @@ function extractInlineHashes(html) {
   };
 
   const indexHtmlOriginal = await minify(indexHtmlRaw, minifyOptions);
-  const resumeHtmlOriginal = await minify(resumeHtmlRaw, minifyOptions);
 
   const indexHashes = extractInlineHashes(indexHtmlOriginal);
-  const resumeHashes = extractInlineHashes(resumeHtmlOriginal);
 
   // NOW escape HTML for worker embedding
   const indexHtml = indexHtmlOriginal
     .replace(ESCAPE_PATTERNS.BACKTICK, '\\`')
     .replace(ESCAPE_PATTERNS.DOLLAR, '\\$');
-  const resumeHtml = resumeHtmlOriginal
-    .replace(ESCAPE_PATTERNS.BACKTICK, '\\`')
-    .replace(ESCAPE_PATTERNS.DOLLAR, '\\$');
 
-  // Combine all unique hashes
-  const allScriptHashes = [...new Set([...indexHashes.scriptHashes, ...resumeHashes.scriptHashes])];
-  const allStyleHashes = [...new Set([...indexHashes.styleHashes, ...resumeHashes.styleHashes])];
+  // Use hashes from index.html only
+  const allScriptHashes = indexHashes.scriptHashes;
+  const allStyleHashes = indexHashes.styleHashes;
 
   // Generate CSP directives with hashes
   const scriptSrc = `'self' ${allScriptHashes.join(' ')}`;
@@ -103,7 +97,6 @@ function extractInlineHashes(html) {
 
   const workerJs = `// Cloudflare Worker - Auto-generated
 const INDEX_HTML = \`${indexHtml}\`;
-const RESUME_HTML = \`${resumeHtml}\`;
 
 // Version and deployment info
 const VERSION = '1.0.0';
@@ -137,7 +130,6 @@ const SECURITY_HEADERS = {
 // Route mapping for scalability
 const ROUTES = {
   '/': INDEX_HTML,
-  '/resume': RESUME_HTML,
 };
 
 /**

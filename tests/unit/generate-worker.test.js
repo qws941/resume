@@ -20,11 +20,6 @@ describe('Worker Generator', () => {
       expect(workerContent).toContain('const INDEX_HTML');
     });
 
-    test('worker.js should contain RESUME_HTML constant', () => {
-      const workerContent = fs.readFileSync(workerPath, 'utf-8');
-      expect(workerContent).toContain('const RESUME_HTML');
-    });
-
     test('worker.js should have security headers', () => {
       const workerContent = fs.readFileSync(workerPath, 'utf-8');
       expect(workerContent).toContain('SECURITY_HEADERS');
@@ -35,9 +30,8 @@ describe('Worker Generator', () => {
 
     test('worker.js should have routing logic', () => {
       const workerContent = fs.readFileSync(workerPath, 'utf-8');
-      expect(workerContent).toContain('/resume');
-      expect(workerContent).toContain('RESUME_HTML');
       expect(workerContent).toContain('INDEX_HTML');
+      expect(workerContent).toContain('ROUTES');
     });
   });
 
@@ -47,7 +41,7 @@ describe('Worker Generator', () => {
 
       // Should not contain unescaped backticks within template literals
       // This is a simplified check - actual implementation may vary
-      const templateLiteralMatches = workerContent.match(/const (INDEX|RESUME)_HTML = `[\s\S]*?`;/g);
+      const templateLiteralMatches = workerContent.match(/const INDEX_HTML = `[\s\S]*?`;/g);
 
       if (templateLiteralMatches) {
         templateLiteralMatches.forEach(match => {
@@ -62,8 +56,8 @@ describe('Worker Generator', () => {
     test('dollar signs should be escaped in embedded HTML', () => {
       const workerContent = fs.readFileSync(workerPath, 'utf-8');
 
-      // Extract only the HTML template literals (INDEX_HTML and RESUME_HTML)
-      const htmlTemplateRegex = /const (?:INDEX_HTML|RESUME_HTML) = `([\s\S]*?)`;/g;
+      // Extract only the HTML template literal (INDEX_HTML)
+      const htmlTemplateRegex = /const INDEX_HTML = `([\s\S]*?)`;/g;
       let htmlMatch;
       let hasUnescapedDollarInHtml = false;
 
