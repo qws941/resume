@@ -1,0 +1,103 @@
+{
+  "resume": [
+    {
+      "icon": "🏦",
+      "title": "Nextrade Securities Exchange",
+      "description": "다자간매매체결회사 보안 인프라 구축 및 운영 (2024~현재)",
+      "stats": ["Financial", "150 Servers", "15+ Solutions"],
+      "highlight": true,
+      "completePdfUrl": "https://github.com/qws941/resume/raw/master/resume/nextrade/exports/Nextrade_Full_Documentation.pdf"
+    },
+    {
+      "icon": "📈",
+      "title": "Quantec AI Trading Platform",
+      "description": "AI 기반 주식투자 플랫폼 인프라 운영 (2022~2024)",
+      "stats": ["Financial", "AWS Hybrid"],
+      "pdfUrl": "https://github.com/qws941/resume/raw/master/resume/quantec/exports/TECHNICAL_OVERVIEW.pdf",
+      "docxUrl": "https://github.com/qws941/resume/raw/master/resume/quantec/exports/TECHNICAL_OVERVIEW.docx"
+    },
+    {
+      "icon": "🎓",
+      "title": "KMU Next-Generation System",
+      "description": "국민대학교 차세대 정보시스템 구축 (2021~2022)",
+      "stats": ["Education", "NSX-T"],
+      "pdfUrl": "https://github.com/qws941/resume/raw/master/resume/kmu/exports/TECHNICAL_OVERVIEW.pdf",
+      "docxUrl": "https://github.com/qws941/resume/raw/master/resume/kmu/exports/TECHNICAL_OVERVIEW.docx"
+    },
+    {
+      "icon": "📞",
+      "title": "Telecom Call Center Infrastructure",
+      "description": "대규모 통신사 콜센터 인프라 구축 (2020~2021)",
+      "stats": ["Telecom", "1,000+ Users"],
+      "pdfUrl": "https://github.com/qws941/resume/raw/master/resume/metanet/exports/TECHNICAL_OVERVIEW.pdf",
+      "docxUrl": "https://github.com/qws941/resume/raw/master/resume/metanet/exports/TECHNICAL_OVERVIEW.docx"
+    },
+    {
+      "icon": "✈️",
+      "title": "KAI Manufacturing Security",
+      "description": "한국항공우주산업 제조 보안 인프라 운영 (2017~2018)",
+      "stats": ["Manufacturing", "50+ Servers"],
+      "pdfUrl": "https://github.com/qws941/resume/raw/master/resume/kai/exports/TECHNICAL_OVERVIEW.pdf",
+      "docxUrl": "https://github.com/qws941/resume/raw/master/resume/kai/exports/TECHNICAL_OVERVIEW.docx"
+    }
+  ],
+  "projects": [
+    {
+      "icon": "🔥",
+      "title": "Splunk-FortiNet Integration",
+      "tech": "Node.js · Cloudflare Workers · DDD",
+      "description": "방화벽 중앙관리 플랫폼, 정책 검증 자동화, REST API 기반 통합",
+      "liveUrl": "https://splunk.jclee.me",
+      "githubUrl": "https://github.com/qws941/splunk"
+    },
+    {
+      "icon": "🏭",
+      "title": "SafeWork Industrial Health",
+      "tech": "Flask · PostgreSQL · Cloudflare Workers",
+      "description": "산업보건 SaaS, Edge API 전국 동시접속 지원, 집계 오류 개선, 실시간 대시보드",
+      "liveUrl": "https://safework.jclee.me",
+      "githubUrl": "https://github.com/qws941/safework"
+    },
+    {
+      "icon": "🛡️",
+      "title": "REGTECH Threat Intelligence",
+      "tech": "Flask · PostgreSQL · Claude AI",
+      "description": "금융보안원 위협정보 자동수집, AI 기반 CI/CD, Portainer API 자동배포",
+      "liveUrl": "https://blacklist.jclee.me",
+      "githubUrl": "https://github.com/qws941/blacklist"
+    },
+    {
+      "icon": "🚀",
+      "title": "FortiGate Policy Orchestration",
+      "tech": "Flask · FortiManager API · GitHub Actions",
+      "description": "방화벽 정책 자동배포, HA 구성 지원, RESTful API 기반 오케스트레이션",
+      "liveUrl": "https://fortinet.jclee.me",
+      "githubUrl": "https://github.com/qws941/fortinet"
+    },
+    {
+      "icon": "📊",
+      "title": "Public Grafana Monitoring",
+      "tech": "Grafana 12.2.1 · Prometheus · Loki · Docker · PUBLIC",
+      "description": "로그인 없이 접근 가능한 실시간 모니터링 대시보드 (Anonymous Viewer). System, Docker, Logs 3개 대시보드 운영 중.",
+      "dashboards": [
+        {
+          "name": "System Overview",
+          "url": "https://grafana.jclee.me/d/system-overview"
+        },
+        {
+          "name": "Docker Monitoring",
+          "url": "https://grafana.jclee.me/d/docker-monitoring"
+        },
+        {
+          "name": "Logs Dashboard",
+          "url": "https://grafana.jclee.me/d/logs-dashboard"
+        },
+        {
+          "name": "Grafana Home",
+          "url": "https://grafana.jclee.me"
+        }
+      ],
+      "documentationUrl": "https://github.com/qws941/claude/blob/main/.claude/docs/GRAFANA-PUBLIC-DASHBOARDS.md"
+    }
+  ]
+}

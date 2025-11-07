@@ -54,6 +54,88 @@ function extractInlineHashes(html) {
   return { scriptHashes, styleHashes };
 }
 
+/**
+ * Generate resume cards HTML from JSON data
+ * @param {Array} resumeData - Array of resume project objects
+ * @returns {string} HTML string for resume cards
+ */
+function generateResumeCards(resumeData) {
+  return resumeData.map(project => {
+    const cardClass = project.highlight ? 'doc-card doc-card-highlight' : 'doc-card';
+    const linksHtml = project.completePdfUrl
+      ? `<a href="${project.completePdfUrl}" download class="doc-link-pdf-full">Complete PDF</a>`
+      : `<a href="${project.pdfUrl}" download class="doc-link-pdf">PDF</a>
+                        <a href="${project.docxUrl}" download class="doc-link-docx">DOCX</a>`;
+
+    return `
+                <!-- Project: ${project.title} -->
+                <div class="${cardClass}">
+                    <div class="doc-icon">${project.icon}</div>
+                    <h3 class="doc-title">${project.title}</h3>
+                    <p class="doc-description">${project.description}</p>
+                    <div class="doc-stats">
+                        ${project.stats.map(stat => `<span class="doc-stat">${stat}</span>`).join('\n                        ')}
+                    </div>
+                    <div class="doc-links">
+                        ${linksHtml}
+                    </div>
+                </div>`;
+  }).join('\n\n');
+}
+
+/**
+ * Generate project cards HTML from JSON data
+ * @param {Array} projectsData - Array of project objects
+ * @returns {string} HTML string for project cards
+ */
+function generateProjectCards(projectsData) {
+  return projectsData.map(project => {
+    // Special handling for Grafana project with multiple dashboards
+    if (project.dashboards) {
+      const dashboardLinks = project.dashboards.map(dashboard =>
+        `<a href="${dashboard.url}" target="_blank" class="project-link ${dashboard.name === 'Grafana Home' ? 'project-link-secondary' : 'project-link-primary'}" style="font-size: 0.875rem;">${dashboard.name}</a>`
+      ).join('\n                            ');
+
+      return `
+                <!-- Project: ${project.title} -->
+                <div class="project-card">
+                    <div class="project-header">${project.icon}</div>
+                    <div class="project-body">
+                        <h3 class="project-title">${project.title}</h3>
+                        <div class="project-tech">${project.tech}</div>
+                        <p class="project-description">
+                            ${project.description}
+                        </p>
+                        <div class="project-links" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.5rem; margin-bottom: 0.5rem;">
+                            ${dashboardLinks}
+                        </div>
+                        <div class="project-links">
+                            <a href="${project.documentationUrl}" target="_blank" class="project-link project-link-secondary">Documentation</a>
+                        </div>
+                    </div>
+                </div>`;
+    }
+
+    // Standard project card
+    return `
+                <!-- Project: ${project.title} -->
+                <div class="project-card">
+                    <div class="project-header">${project.icon}</div>
+                    <div class="project-body">
+                        <h3 class="project-title">${project.title}</h3>
+                        <div class="project-tech">${project.tech}</div>
+                        <p class="project-description">
+                            ${project.description}
+                        </p>
+                        <div class="project-links">
+                            <a href="${project.liveUrl}" target="_blank" class="project-link project-link-primary">Live Demo</a>
+                            <a href="${project.githubUrl}" target="_blank" class="project-link project-link-secondary">GitHub</a>
+                        </div>
+                    </div>
+                </div>`;
+  }).join('\n\n');
+}
+
 // Main async function to handle Promise-based minification
 (async () => {
   // CRITICAL: Calculate hashes from ORIGINAL HTML before escaping
@@ -62,7 +144,16 @@ function extractInlineHashes(html) {
 
   // Read CSS and inject into HTML
   const cssContent = fs.readFileSync(path.join(__dirname, 'styles.css'), 'utf-8');
-  const indexHtmlWithCSS = indexHtmlRaw.replace('<!-- CSS_PLACEHOLDER -->', cssContent);
+  let indexHtmlWithCSS = indexHtmlRaw.replace('<!-- CSS_PLACEHOLDER -->', cssContent);
+
+  // Read data.json and inject project data
+  const projectData = JSON.parse(fs.readFileSync(path.join(__dirname, 'data.json'), 'utf-8'));
+  const resumeCardsHtml = generateResumeCards(projectData.resume);
+  const projectCardsHtml = generateProjectCards(projectData.projects);
+
+  indexHtmlWithCSS = indexHtmlWithCSS
+    .replace('<!-- RESUME_CARDS_PLACEHOLDER -->', resumeCardsHtml)
+    .replace('<!-- PROJECT_CARDS_PLACEHOLDER -->', projectCardsHtml);
 
   // Minify HTML (15% size reduction, faster edge cold starts)
   const minifyOptions = {

@@ -31,7 +31,7 @@ const INDEX_HTML = `<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8"><
 
 // Version and deployment info
 const VERSION = '1.0.0';
-const DEPLOYED_AT = '2025-11-07T16:09:51.172Z';
+const DEPLOYED_AT = '2025-11-07T19:41:34.843Z';
 
 // CSP directives (generated at build time from inline content hashes)
 const CSP_SCRIPT_SRC = `'self' 'sha256-iFJNDDNbNZiWOAUkW7PuqLIL2dJ5KjTo6XjvDlguY4M='`;
