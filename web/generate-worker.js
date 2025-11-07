@@ -60,6 +60,10 @@ function extractInlineHashes(html) {
   // (Browsers calculate hashes from the actual HTML they receive, not the escaped template literal)
   const indexHtmlRaw = fs.readFileSync(path.join(__dirname, 'index.html'), 'utf-8');
 
+  // Read CSS and inject into HTML
+  const cssContent = fs.readFileSync(path.join(__dirname, 'styles.css'), 'utf-8');
+  const indexHtmlWithCSS = indexHtmlRaw.replace('<!-- CSS_PLACEHOLDER -->', cssContent);
+
   // Minify HTML (15% size reduction, faster edge cold starts)
   const minifyOptions = {
     collapseWhitespace: true,
@@ -70,7 +74,7 @@ function extractInlineHashes(html) {
     keepClosingSlash: true,
   };
 
-  const indexHtmlOriginal = await minify(indexHtmlRaw, minifyOptions);
+  const indexHtmlOriginal = await minify(indexHtmlWithCSS, minifyOptions);
 
   const indexHashes = extractInlineHashes(indexHtmlOriginal);
 
