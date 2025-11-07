@@ -99,19 +99,37 @@ cp master/resume_master.md master/resume_final.md
 
 **IMPORTANT**: The portfolio uses Cloudflare Workers, but the HTML files are NOT directly deployed.
 
-1. **Edit HTML**: Modify `web/index.html`
-2. **Generate Worker**: Run `node generate-worker.js` (embeds HTML into `worker.js` as template literals)
+**Phase 1: CSS Separation** (Completed 2025-11-07)
+- `web/styles.css` contains all CSS (758 lines)
+- `web/index.html` has CSS placeholder: `<!-- CSS_PLACEHOLDER -->`
+- Build script injects CSS at build time
+
+**Phase 2: Data-Driven Templates** (Completed 2025-11-07)
+- `web/data.json` contains all project data (resume cards + project cards)
+- `web/index.html` has placeholders: `<!-- RESUME_CARDS_PLACEHOLDER -->` and `<!-- PROJECT_CARDS_PLACEHOLDER -->`
+- Build script generates HTML from JSON at build time
+
+**Build Pipeline**:
+1. **Edit Content**: Modify `web/data.json` (project data) OR `web/index.html` (structure)
+2. **Generate Worker**: Run `npm run build` (performs 4 transformations)
 3. **Deploy**: Push to `master` branch (GitHub Actions auto-deploys) OR run `wrangler deploy` manually
 
 **Why this matters**:
 - `worker.js` is the actual deployed code (referenced in `wrangler.toml`)
 - `generate-worker.js` performs critical transformations:
+  - **CSS Injection**: Reads `styles.css`, replaces `<!-- CSS_PLACEHOLDER -->`
+  - **Data Injection**: Reads `data.json`, generates HTML cards from templates
   - **HTML Minification**: 15% size reduction using `html-minifier-terser`
   - **CSP Hash Generation**: Extracts `<script>` and `<style>` tags, generates SHA-256 hashes
   - **Template Literal Escaping**: Escapes backticks (`) and dollar signs ($) for JavaScript embedding
   - **Deployment Timestamp**: Injects `DEPLOYED_AT` from environment (set by CI/CD)
 - Routing: `/` → index.html, `/health` → health check, `/metrics` → Prometheus metrics, `/api/vitals` → Web Vitals collection
 - Forgetting step 2 will deploy outdated HTML
+
+**Template Functions** (`web/generate-worker.js`):
+- `generateResumeCards(data)`: Creates resume project cards (lines 62-84)
+- `generateProjectCards(data)`: Creates portfolio project cards (lines 86-130)
+- Special handling for Grafana project with multiple dashboard links
 
 **CRITICAL CSP Hash Calculation**:
 - CSP hashes MUST be calculated from **original HTML before escaping** (web/generate-worker.js:61-78)
@@ -174,11 +192,47 @@ Accepts POST requests with Web Vitals data (LCP, FID, CLS, FCP, TTFB), logs to G
 
 ### Content Hierarchy
 
+**Source Files**:
 - **master/resume_master.md**: Single source of truth (complete career history)
 - **master/resume_final.md**: Compressed submission version (downloadable from portfolio)
 - **company-specific/**: Tailored resumes derived from master
-- **web/index.html**: Portfolio showcasing 5 production projects (single-page application)
+- **web/data.json**: Portfolio project data (resume cards + project cards)
+- **web/styles.css**: All CSS styles (758 lines)
+- **web/index.html**: HTML structure with placeholders (200 lines)
 - **resume/nextrade/**: Technical documentation (Architecture, DR, SOC) for download
+
+**Generated Files** (do not edit directly):
+- **web/worker.js**: Cloudflare Worker with embedded HTML (30.57 KB, auto-generated)
+
+**Data Structure** (`web/data.json`):
+```json
+{
+  "resume": [
+    {
+      "icon": "🏦",
+      "title": "Project Title",
+      "description": "Project description",
+      "stats": ["Tag1", "Tag2"],
+      "highlight": true,  // Optional, for featured projects
+      "pdfUrl": "...",    // For standard resume cards
+      "docxUrl": "...",   // For standard resume cards
+      "completePdfUrl": "..."  // For highlighted resume cards
+    }
+  ],
+  "projects": [
+    {
+      "icon": "🔥",
+      "title": "Project Title",
+      "tech": "Tech Stack",
+      "description": "Description",
+      "liveUrl": "...",   // For standard projects
+      "githubUrl": "...", // For standard projects
+      "dashboards": [...], // For Grafana project with multiple links
+      "documentationUrl": "..."  // For projects with docs
+    }
+  ]
+}
+```
 
 All versions must maintain consistency in:
 - Career dates and timeline
@@ -287,14 +341,26 @@ curl https://resume.jclee.me/health  # Check deployment timestamp
 
 ## Important Files
 
+**Source Files** (edit these):
+- **web/data.json**: Project data (resume cards + project cards) - Edit to add/update projects
+- **web/styles.css**: All CSS styles (758 lines) - Edit to change styling
+- **web/index.html**: HTML structure with placeholders (200 lines) - Edit to change layout
+
+**Configuration Files**:
 - **ENVIRONMENTAL_MAP.md**: Environment configuration (topology, dependencies, workflow)
 - **DEPLOYMENT_STATUS.md**: Service deployment status report (last updated 2025-10-18)
 - **web/wrangler.toml**: Cloudflare Workers config (name: "resume", main: "worker.js")
-- **web/generate-worker.js**: Worker generator with CSP hash calculation (DO NOT trim inline content!)
-- **web/worker.js**: Generated worker code (auto-generated, do not edit directly)
-- **tests/unit/generate-worker.test.js**: Worker generation validation
 - **package.json**: Scripts, dependencies, Node.js version requirement (>=20.0.0)
 - **.github/workflows/deploy.yml**: CI/CD pipeline with deployment timestamp injection
+
+**Build System**:
+- **web/generate-worker.js**: Worker generator with template system and CSP hash calculation (DO NOT trim inline content!)
+
+**Generated Files** (do not edit):
+- **web/worker.js**: Generated worker code (auto-generated, 30.57 KB)
+
+**Tests**:
+- **tests/unit/generate-worker.test.js**: Worker generation validation
 
 ## Resume Content Guidelines
 
@@ -327,6 +393,22 @@ curl https://resume.jclee.me/health  # Check deployment timestamp
   - `sharp`: Image processing (v0.34.4)
 
 ### Recent Updates
+
+- **2025-11-07**: Phase 2 Refactoring - Data-Driven Templates
+  - Extracted project data to `web/data.json` (resume cards + project cards)
+  - Added template generation functions in `generate-worker.js`
+  - Reduced `index.html` from 445 to 200 lines (245 lines of data separated)
+  - Single source of truth for all project content
+  - Easy project updates: edit JSON, not HTML
+  - Commits: `b67d623` (Phase 1), `eb3edb4` (Phase 2)
+
+- **2025-11-07**: Phase 1 Refactoring - CSS Separation
+  - Extracted CSS to `web/styles.css` (758 lines)
+  - Modified `generate-worker.js` to inject CSS during build
+  - Reduced `index.html` from 1,204 to 445 lines (760 lines of CSS separated)
+  - Build verified: CSP hashes correct (1 script, 1 style)
+  - Final worker.js size: 30.57 KB
+
 - **2025-10-18**: Test fixes & CI deployment timestamp
   - Dollar sign escape test accuracy improvement
   - Route pattern test aligned with actual implementation
@@ -399,17 +481,30 @@ ts sync
 
 ## Common Development Patterns
 
-### Editing HTML Content
+### Editing Portfolio Content
 
-When updating portfolio content:
+**To add/update projects** (recommended approach):
 
-1. **Edit HTML files** (`web/index.html` or `web/resume.html`)
+1. **Edit `web/data.json`**: Add/modify project entries
 2. **Regenerate worker**: `npm run build`
 3. **Test locally**: `npm run dev` (Wrangler dev server)
 4. **Run tests**: `npm test && npm run test:e2e`
 5. **Deploy**: `git push origin master` (auto-deploys via GitHub Actions)
 
-**IMPORTANT**: Never edit `web/worker.js` directly - it's auto-generated.
+**To modify HTML structure**:
+
+1. **Edit `web/index.html`**: Change layout/structure (keep placeholders intact)
+2. Follow steps 2-5 above
+
+**To update styles**:
+
+1. **Edit `web/styles.css`**: Modify CSS rules
+2. Follow steps 2-5 above
+
+**IMPORTANT**:
+- Never edit `web/worker.js` directly - it's auto-generated
+- Keep placeholders intact: `<!-- CSS_PLACEHOLDER -->`, `<!-- RESUME_CARDS_PLACEHOLDER -->`, `<!-- PROJECT_CARDS_PLACEHOLDER -->`
+- Template functions expect specific JSON structure (see Content Hierarchy section)
 
 ### Adding New Monitoring Metrics
 
