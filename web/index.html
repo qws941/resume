@@ -7,8 +7,57 @@
 
     <!-- SEO -->
     <meta name="description" content="8년 8개월 경력 인프라·보안 엔지니어. 금융·제조 산업 인프라 운영 및 보안 솔루션 관리 경험.">
+    <meta name="keywords" content="인프라 엔지니어, 보안 엔지니어, DevSecOps, Python 자동화, 금융 보안, FortiGate, VMware, Docker, Kubernetes">
+    <meta name="author" content="이재철 (Jaecheol Lee)">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://resume.jclee.me">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://resume.jclee.me">
+    <meta property="og:title" content="이재철 - Infrastructure & Security Engineer">
+    <meta property="og:description" content="8년 8개월 경력 인프라·보안 엔지니어. 금융·제조 산업 인프라 운영 및 보안 솔루션 관리 경험.">
+    <meta property="og:site_name" content="Jaecheol Lee Resume">
+    <meta property="og:locale" content="ko_KR">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://resume.jclee.me">
+    <meta name="twitter:title" content="이재철 - Infrastructure & Security Engineer">
+    <meta name="twitter:description" content="8년 8개월 경력 인프라·보안 엔지니어. 금융·제조 산업 인프라 운영 및 보안 솔루션 관리 경험.">
+
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "name": "이재철",
+      "alternateName": "Jaecheol Lee",
+      "url": "https://resume.jclee.me",
+      "email": "qws941@kakao.com",
+      "telephone": "+82-10-5757-9592",
+      "jobTitle": "Infrastructure & Security Engineer",
+      "worksFor": {
+        "@type": "Organization",
+        "name": "Nextrade Securities Exchange"
+      },
+      "sameAs": [
+        "https://github.com/qws941",
+        "https://grafana.jclee.me"
+      ],
+      "knowsAbout": [
+        "Infrastructure Engineering",
+        "Security Engineering",
+        "DevSecOps",
+        "Python Automation",
+        "VMware",
+        "Docker",
+        "Kubernetes",
+        "FortiGate",
+        "Network Security"
+      ]
+    }
+    </script>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -36,8 +85,8 @@
             --color-gray-800: #262626;
             --color-gray-900: #171717;
 
-            --color-cyan: #06b6d4;
-            --color-cyan-dark: #0891b2;
+            --color-cyan: #0e7490;
+            --color-cyan-dark: #155e75;
             --color-violet: #8b5cf6;
             --color-violet-dark: #7c3aed;
 
@@ -412,12 +461,12 @@
         }
 
         .doc-link-pdf-full {
-            background: #059669;
+            background: #065f46;
             color: var(--color-white);
         }
 
         .doc-link-pdf-full:hover {
-            background: #047857;
+            background: #064e3b;
             transform: translateY(-3px);
         }
 
@@ -719,6 +768,43 @@
                 font-size: 2.5rem;
             }
         }
+
+        /* Utility classes to replace inline styles */
+        .resume-section-bg {
+            background: linear-gradient(135deg, #fef3c7 0%, #fcd34d 100%);
+        }
+
+        .section-header-centered {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto 4rem;
+        }
+
+        .section-description-full {
+            max-width: 100%;
+        }
+
+        .download-btn-container {
+            text-align: center;
+            margin-top: 3rem;
+        }
+
+        .resume-download-btn {
+            background: var(--color-black);
+            color: var(--color-white);
+            box-shadow: var(--shadow-brutal);
+            padding: 2rem 4rem;
+            font-size: 1.5rem;
+            display: inline-flex;
+        }
+
+        .download-icon {
+            font-size: 2rem;
+        }
+
+        .stats-grid-spaced {
+            margin-top: 4rem;
+        }
     </style>
 </head>
 <body>
@@ -786,31 +872,24 @@
     </section>
 
     <!-- Resume -->
-    <section class="section" id="resume" style="background: linear-gradient(135deg, #fef3c7 0%, #fcd34d 100%);">
+    <section class="section resume-section-bg" id="resume">
         <div class="container">
-            <div class="section-header" style="text-align: center; max-width: 800px; margin: 0 auto 4rem;">
+            <div class="section-header section-header-centered">
                 <div class="section-badge">Resume</div>
                 <h2 class="section-title">이재철 이력서</h2>
-                <p class="section-description" style="max-width: 100%;">
+                <p class="section-description section-description-full">
                     8.8년 경력 인프라·보안 엔지니어. 금융·제조 산업 인프라 운영 및 보안 솔루션 관리 경험.
                 </p>
             </div>
 
-            <div style="text-align: center; margin-top: 3rem;">
-                <a href="https://github.com/qws941/resume/raw/master/master/resume_final.pdf" download class="btn" style="
-                    background: var(--color-black);
-                    color: var(--color-white);
-                    box-shadow: var(--shadow-brutal);
-                    padding: 2rem 4rem;
-                    font-size: 1.5rem;
-                    display: inline-flex;
-                ">
+            <div class="download-btn-container">
+                <a href="https://github.com/qws941/resume/raw/master/master/resume_final.pdf" download class="btn resume-download-btn">
                     <span>이력서 다운로드 (PDF)</span>
-                    <span style="font-size: 2rem;">↓</span>
+                    <span class="download-icon">↓</span>
                 </a>
             </div>
 
-            <div class="stats-grid" style="margin-top: 4rem;">
+            <div class="stats-grid stats-grid-spaced">
                 <div class="stat-card">
                     <div class="stat-number">2017~</div>
                     <div class="stat-label">Start Career</div>
