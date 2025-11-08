@@ -332,6 +332,7 @@ This project is for personal use and portfolio demonstration.
 
 ## 🔗 Links
 
-- **GitHub**: https://github.com/qws941/resume
 - **Live Site**: https://resume.jclee.me
+- **GitLab** (Primary): http://gitlab.jclee.me/jclee/resume
+- **GitHub** (Mirror): https://github.com/qws941/resume
 - **Documentation**: Comprehensive technical docs in `/resume/nextrade/`

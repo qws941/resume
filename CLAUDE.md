@@ -253,11 +253,31 @@ All versions must maintain consistency in:
 - Quantitative metrics (format: "50% 시간 단축 (8시간 → 4시간)")
 - Technical stack keywords
 
+### Git Repository
+
+**Primary**: GitLab (ssh://git@192.168.50.215:2222/jclee/resume.git)
+**Mirror**: GitHub (https://github.com/qws941/resume.git)
+
+**Remotes Configuration**:
+```bash
+origin  ssh://git@192.168.50.215:2222/jclee/resume.git  # GitLab
+github  https://github.com/qws941/resume.git           # GitHub
+```
+
+**Multi-Push Workflow**:
+```bash
+# Push to both remotes
+git push origin master  # GitLab
+git push github master  # GitHub
+```
+
 ### CI/CD Pipeline
 
-**Trigger**: Push to `master` branch
+#### GitHub Actions (`.github/workflows/deploy.yml`)
 
-**Workflow** (`.github/workflows/deploy.yml`):
+**Trigger**: Push to `master` branch on GitHub
+
+**Workflow**:
 1. **deploy-worker**:
    - Checkout code
    - Install Node.js 20 and Wrangler
@@ -280,6 +300,24 @@ All versions must maintain consistency in:
 - `CLOUDFLARE_ACCOUNT_ID`
 - `GEMINI_API_KEY`
 - `SLACK_WEBHOOK_URL` (optional)
+
+#### GitLab CI/CD (`.gitlab-ci.yml`)
+
+**Trigger**: Tag creation (semantic versioning: `v1.0.0`)
+
+**Pipeline** (Release-Only):
+1. **validate**: Tag format validation
+2. **build**: Create release package (.tar.gz)
+3. **release**: Publish GitLab release
+4. **notify**: Send Slack notification (optional)
+
+**Usage**:
+```bash
+git tag -a v1.0.0 -m "Release v1.0.0"
+git push origin v1.0.0
+```
+
+**Note**: Regular commits do NOT trigger GitLab CI/CD (release-only pipeline)
 
 **Verification**:
 ```bash
