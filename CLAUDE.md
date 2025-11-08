@@ -8,6 +8,8 @@ Personal resume management system for infrastructure and security engineer with 
 
 **Live Site**: https://resume.jclee.me (Cloudflare Workers)
 
+**Key Concept**: This is a **source-to-worker pipeline** where source files (HTML/CSS/JSON) are transformed into a single deployable Cloudflare Worker. Direct HTML editing doesn't affect production - you must regenerate `worker.js` via `npm run build`.
+
 ## Key Commands
 
 ### Web Portfolio Development
@@ -38,7 +40,7 @@ cd web && wrangler deployments list
 ### Testing
 
 ```bash
-# Run all unit tests
+# Run all unit tests (Jest)
 npm test
 
 # Watch mode for development
@@ -47,27 +49,35 @@ npm test:watch
 # Coverage report
 npm test:coverage
 
-# E2E tests (Playwright)
+# E2E tests (Playwright - requires worker.js to be built)
 npm run test:e2e
 
-# E2E with UI
+# E2E with UI (interactive debugging)
 npm run test:e2e:ui
 
 # E2E headed mode (visible browser)
 npm run test:e2e:headed
 
-# Run all tests before deployment
-npm test && npm run test:e2e
+# Run all tests before deployment (recommended)
+npm run build && npm test && npm run test:e2e
 ```
+
+**Important**: E2E tests validate the generated `worker.js`, so always run `npm run build` before E2E testing if you've changed source files.
 
 ### Code Quality
 
 ```bash
-# Lint code
+# Lint code (ESLint 9 with flat config)
 npm run lint
 
-# Format code
+# Format code (Prettier)
 npm run format
+
+# Run single test file
+npm test -- tests/unit/generate-worker.test.js
+
+# Run tests matching pattern
+npm test -- --testNamePattern="CSP hash"
 ```
 
 ### PDF Generation
@@ -109,22 +119,26 @@ cp master/resume_master.md master/resume_final.md
 - `web/index.html` has placeholders: `<!-- RESUME_CARDS_PLACEHOLDER -->` and `<!-- PROJECT_CARDS_PLACEHOLDER -->`
 - Build script generates HTML from JSON at build time
 
-**Build Pipeline**:
-1. **Edit Content**: Modify `web/data.json` (project data) OR `web/index.html` (structure)
-2. **Generate Worker**: Run `npm run build` (performs 4 transformations)
+**Build Pipeline** (3 phases):
+1. **Edit Content**: Modify `web/data.json` (project data) OR `web/index.html` (structure) OR `web/styles.css` (styling)
+2. **Generate Worker**: Run `npm run build` (performs 6 transformations)
 3. **Deploy**: Push to `master` branch (GitHub Actions auto-deploys) OR run `wrangler deploy` manually
 
-**Why this matters**:
-- `worker.js` is the actual deployed code (referenced in `wrangler.toml`)
-- `generate-worker.js` performs critical transformations:
-  - **CSS Injection**: Reads `styles.css`, replaces `<!-- CSS_PLACEHOLDER -->`
-  - **Data Injection**: Reads `data.json`, generates HTML cards from templates
-  - **HTML Minification**: 15% size reduction using `html-minifier-terser`
-  - **CSP Hash Generation**: Extracts `<script>` and `<style>` tags, generates SHA-256 hashes
-  - **Template Literal Escaping**: Escapes backticks (`) and dollar signs ($) for JavaScript embedding
-  - **Deployment Timestamp**: Injects `DEPLOYED_AT` from environment (set by CI/CD)
-- Routing: `/` → index.html, `/health` → health check, `/metrics` → Prometheus metrics, `/api/vitals` → Web Vitals collection
-- Forgetting step 2 will deploy outdated HTML
+**6 Critical Transformations** (`web/generate-worker.js`):
+1. **CSS Injection**: Reads `styles.css`, replaces `<!-- CSS_PLACEHOLDER -->` (758 lines → inline CSS)
+2. **Data Injection**: Reads `data.json`, generates HTML cards from templates (resume + projects)
+3. **HTML Minification**: 15% size reduction using `html-minifier-terser` (whitespace removal, tag optimization)
+4. **CSP Hash Generation**: Extracts `<script>` and `<style>` tags, generates SHA-256 hashes (CRITICAL: no trim())
+5. **Template Literal Escaping**: Escapes backticks (`) and dollar signs ($) for safe JavaScript embedding
+6. **Deployment Timestamp**: Injects `DEPLOYED_AT` from environment variable (ISO 8601 UTC)
+
+**Worker Routing**:
+- `/` → Embedded index.html (minified)
+- `/health` → Health check JSON (status, metrics, uptime)
+- `/metrics` → Prometheus exposition format
+- `/api/vitals` → Web Vitals POST endpoint (Loki logging)
+
+**Common Mistake**: Editing `worker.js` directly or deploying without running `npm run build` will result in outdated production code.
 
 **Template Functions** (`web/generate-worker.js`):
 - `generateResumeCards(data)`: Creates resume project cards (lines 62-84)
@@ -382,15 +396,24 @@ curl https://resume.jclee.me/health  # Check deployment timestamp
 
 ## Dependencies
 
-- **Node.js**: >=20.0.0 (specified in package.json engines)
-- **Key packages**:
-  - `wrangler`: Cloudflare Workers CLI (v4.42.2+)
-  - `@playwright/test`: E2E testing (v1.56.0)
-  - `jest`: Unit testing (v30.2.0)
-  - `eslint`: Linting (v9.37.0, flat config: `eslint.config.cjs`)
-  - `prettier`: Code formatting (v3.6.2)
-  - `html-minifier-terser`: HTML minification (v7.2.0)
-  - `sharp`: Image processing (v0.34.4)
+### Runtime Requirements
+- **Node.js**: >=20.0.0 (enforced in package.json engines)
+- **npm**: Package manager (comes with Node.js)
+
+### Key DevDependencies
+- `wrangler@^4.42.2`: Cloudflare Workers CLI and local dev server
+- `@playwright/test@^1.56.0`: E2E testing framework (Chromium, Firefox, WebKit)
+- `jest@^30.2.0`: Unit testing framework (CommonJS config)
+- `eslint@^9.37.0`: Linting (flat config: `eslint.config.cjs`)
+- `prettier@^3.6.2`: Code formatting
+- `html-minifier-terser@^7.2.0`: HTML minification in build pipeline
+- `sharp@^0.34.4`: Image processing utilities
+
+### Configuration Files
+- `jest.config.cjs`: Jest 30 CommonJS configuration
+- `eslint.config.cjs`: ESLint 9 flat config (modern syntax)
+- `playwright.config.js`: Playwright E2E test configuration
+- `web/wrangler.toml`: Cloudflare Workers deployment config
 
 ### Recent Updates
 
@@ -527,46 +550,79 @@ To modify CSP or other security headers:
 
 ## Troubleshooting
 
-### Worker.js Not Updating After HTML Changes
+### Worker.js Not Updating After Source Changes
 
-**Problem**: Deployed site shows old HTML content
-**Cause**: Forgot to run `generate-worker.js`
+**Problem**: Deployed site shows old HTML/CSS/data content
+**Cause**: Forgot to run build step - `worker.js` not regenerated
 **Solution**:
 ```bash
-npm run build  # Regenerates worker.js
+npm run build  # Regenerates worker.js from source files
+npm test       # Verify worker.js is valid
 cd web && wrangler deploy
 ```
+
+**Prevention**: Always run `npm run deploy` (includes build) instead of manual `wrangler deploy`
 
 ### CSP Violations in Browser Console
 
 **Problem**: "Refused to execute inline script because it violates CSP"
-**Cause**: CSP hash mismatch (likely due to HTML changes)
+**Cause**: CSP hash mismatch after HTML/CSS changes
 **Solution**:
 ```bash
 npm run build  # Recalculates CSP hashes
+npm test       # Verify hashes are correct
 cd web && wrangler deploy
 ```
 
-**Root Cause**: If hashes still don't match, verify `generate-worker.js` does NOT trim inline content before hashing (commit f67b5eb)
+**Critical**: `generate-worker.js` must NOT trim inline content before hashing (commit f67b5eb). Browsers calculate CSP hashes with exact whitespace.
+
+### E2E Tests Failing But Unit Tests Pass
+
+**Problem**: Playwright tests fail while Jest tests pass
+**Cause**: E2E tests validate `worker.js` but it wasn't regenerated after source changes
+**Solution**:
+```bash
+npm run build           # Regenerate worker.js
+npm run test:e2e        # Re-run E2E tests
+```
+
+**Always**: Run build before E2E tests: `npm run build && npm run test:e2e`
 
 ### Deployment Timestamp Shows Build Time Instead of Deploy Time
 
 **Problem**: `/health` endpoint shows incorrect `deployed_at`
 **Cause**: `DEPLOYED_AT` environment variable not set
-**Solution**: GitHub Actions automatically sets this. For local deployment:
+**Solution**:
+- **GitHub Actions**: Automatically set (no action needed)
+- **Local deployment**:
 ```bash
 DEPLOYED_AT=$(date -u +'%Y-%m-%dT%H:%M:%SZ') npm run build
 cd web && wrangler deploy
 ```
 
-### Tests Failing After HTML Changes
+### Local Development Server Not Reflecting Changes
 
-**Problem**: Unit tests fail after modifying HTML
-**Cause**: Tests validate generated `worker.js` structure
+**Problem**: `npm run dev` shows old content
+**Cause**: Wrangler caches worker code
 **Solution**:
-1. Regenerate worker: `npm run build`
-2. Check if tests need updating (e.g., new routes, changed escaping)
-3. Run tests: `npm test`
+```bash
+# Stop Wrangler (Ctrl+C)
+npm run build           # Regenerate worker.js
+npm run dev             # Restart dev server
+```
+
+### Tests Pass Locally But Fail in CI
+
+**Problem**: CI/CD pipeline fails tests that pass locally
+**Cause**: Missing `npm run build` step or stale dependencies
+**Solution**:
+```bash
+# Clean install and rebuild
+rm -rf node_modules package-lock.json
+npm install
+npm run build
+npm test && npm run test:e2e
+```
 
 ## Contact Information
 
