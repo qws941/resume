@@ -387,6 +387,38 @@ export default {
         return response;
       }
 
+      // SEO Routes
+      if (url.pathname === '/sitemap.xml') {
+        metrics.requests_success++;
+        return new Response(\`<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://resume.jclee.me/</loc>
+    <lastmod>\${new Date().toISOString().split('T')[0]}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+</urlset>\`, {
+          headers: {
+            'Content-Type': 'application/xml',
+            'Cache-Control': 'public, max-age=3600',
+          },
+        });
+      }
+
+      if (url.pathname === '/robots.txt') {
+        metrics.requests_success++;
+        return new Response(\`User-agent: *
+Allow: /
+
+Sitemap: https://resume.jclee.me/sitemap.xml\`, {
+          headers: {
+            'Content-Type': 'text/plain',
+            'Cache-Control': 'public, max-age=3600',
+          },
+        });
+      }
+
       // Static content routes
       const content = ROUTES[url.pathname] || INDEX_HTML;
       metrics.requests_success++;
