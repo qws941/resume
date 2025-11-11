@@ -160,6 +160,40 @@
             flex-wrap: wrap;
         }
 
+        .hero-download {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            padding: 1rem 0;
+            border-top: 1px solid var(--color-gray-200);
+        }
+
+        .download-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--color-gray-700);
+            text-decoration: none;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .download-link:hover {
+            color: var(--color-cyan);
+            transform: translateX(2px);
+        }
+
+        .download-link svg {
+            flex-shrink: 0;
+        }
+
+        .download-divider {
+            color: var(--color-gray-300);
+            font-weight: 300;
+        }
+
         /* Buttons */
         .btn {
             display: inline-flex;

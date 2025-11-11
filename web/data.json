@@ -1,4 +1,8 @@
 {
+  "resumeDownload": {
+    "pdfUrl": "https://github.com/qws941/resume/raw/master/master/resume_final.pdf",
+    "mdUrl": "https://github.com/qws941/resume/raw/master/master/resume_final.md"
+  },
   "resume": [
     {
       "icon": "🏦",
