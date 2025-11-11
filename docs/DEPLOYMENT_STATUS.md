@@ -1,7 +1,41 @@
 # 🚀 배포 상태 보고서
 
 **생성 시간**: 2025-10-09 18:10 KST
-**마지막 점검**: 2025-10-20 (Resume-centric site restructure - dedicated Resume section added)
+**마지막 점검**: 2025-11-11 21:12 KST
+**배포 상태**: ⚠️ **중요** - 완성된 신규 기능이 프로덕션에 미배포 상태
+
+---
+
+## 🚨 긴급 배포 대기 중 (2025-11-11)
+
+### 완료된 신규 기능 (로컬 테스트 완료, 프로덕션 미배포)
+- ✅ **Open Graph 이미지**: 소셜 미디어 공유 시 미리보기 이미지 (Twitter, LinkedIn, Facebook)
+  - 파일: `web/og-image.png` (84.08 KB, 1200x630px)
+  - Meta tags: og:image, Twitter Card 추가
+  - Worker 임베딩: Base64 인코딩 (112.11 KB)
+  - 커밋: 1159cc7 "feat(seo): Add Open Graph image for social sharing"
+
+- ✅ **Web Vitals 추적**: 클라이언트 성능 지표 수집 (LCP, FID, CLS, FCP, TTFB)
+  - 구현: Custom PerformanceObserver (라이브러리 의존성 없음)
+  - 전송: sendBeacon API (non-blocking)
+  - 백엔드: `/api/vitals` 엔드포인트 활용
+  - 커밋: 7148d48 "feat(analytics): Add Web Vitals tracking implementation"
+
+### 배포 차단 원인
+- ❌ **GitHub SSH 푸시 실패**: `git@github.com: Permission denied (publickey)`
+- ❌ **GitHub Actions 미실행**: 푸시 실패로 CI/CD 파이프라인 미작동
+- ❌ **로컬 Wrangler 인증 실패**: `Unable to authenticate request [code: 10001]`
+- ✅ **GitLab 커밋 완료**: 2개 커밋 정상 푸시 (primary repository)
+
+### 프로덕션 버전 현황
+- **현재 배포**: 2025-11-08T14:42:20Z (3일 전)
+- **로컬 빌드**: 2025-11-11T21:11:43Z (신규 기능 포함)
+- **Worker 크기**: 150.06 KB (OG 이미지 포함)
+
+### 즉시 필요한 조치
+1. **Option A**: GitHub SSH 키 수정 → 푸시 재시도 → GitHub Actions 자동 배포
+2. **Option B**: `npx wrangler login` → 로컬 인증 → `npm run deploy`
+3. **Option C**: HTTPS 원격 추가 → 푸시 → GitHub Actions 자동 배포
 
 ---
 
@@ -167,6 +201,28 @@ npx wrangler deploy
 ---
 
 ## 🔄 변경 이력
+
+### 2025-11-11
+- **신규 기능 완료 (프로덕션 미배포)**:
+  - **Open Graph 이미지** (commit 1159cc7):
+    - Sharp 라이브러리 기반 SVG → PNG 생성
+    - 브랜드 색상 그라데이션 (#7c3aed → #5b21b6 → #2563eb)
+    - 1200x630px 표준 크기 (84.08 KB)
+    - Worker에 Base64 임베딩 (112.11 KB 증가)
+    - `/og-image.png` 라우트 추가 (1년 캐시)
+    - E2E 테스트: 10/10 통과
+  - **Web Vitals 추적** (commit 7148d48):
+    - Custom PerformanceObserver 구현
+    - 5개 지표: LCP, FID, CLS, FCP, TTFB
+    - sendBeacon API (non-blocking)
+    - 3개 트리거: 페이지 숨김, 언로드, 10초 타이머
+    - Worker 크기: +1.69 KB (150.06 KB 최종)
+    - E2E 테스트: 10/10 통과
+- **배포 차단**: GitHub SSH 키 오류 + Wrangler 인증 실패
+- **GitLab 커밋**: ✅ 완료 (primary repository)
+- **GitHub 커밋**: ❌ 실패 (CI/CD 파이프라인 미작동)
+- **프로덕션 버전**: 2025-11-08 (3일 전, 신규 기능 미포함)
+- **Grok AI 이력서 분석**: 7개 성과 문구 모두 과장 없음, 구체성 높음
 
 ### 2025-10-20
 - **Site Restructure**: Resume 중심 사이트 재구성
