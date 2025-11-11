@@ -11,7 +11,7 @@
     {
       "icon": "📈",
       "title": "Quantec AI Trading Platform",
-      "description": "AI 기반 주식투자 플랫폼 인프라 운영 (2022~2024)",
+      "description": "AI 주식투자 플랫폼 인프라 운영 (2022~2024)",
       "stats": ["Financial", "AWS Hybrid"],
       "pdfUrl": "https://github.com/qws941/resume/raw/master/resume/quantec/exports/TECHNICAL_OVERVIEW.pdf",
       "docxUrl": "https://github.com/qws941/resume/raw/master/resume/quantec/exports/TECHNICAL_OVERVIEW.docx"
@@ -46,7 +46,7 @@
       "icon": "🔥",
       "title": "Splunk-FortiNet Integration",
       "tech": "Node.js · Cloudflare Workers · DDD",
-      "description": "방화벽 중앙관리 플랫폼, 정책 검증 자동화, REST API 기반 통합",
+      "description": "80대 방화벽 중앙관리, 정책 자동 검증, 대용량 이벤트 처리",
       "liveUrl": "https://splunk.jclee.me",
       "githubUrl": "https://github.com/qws941/splunk"
     },
@@ -54,7 +54,7 @@
       "icon": "🏭",
       "title": "SafeWork Industrial Health",
       "tech": "Flask · PostgreSQL · Cloudflare Workers",
-      "description": "산업보건 SaaS, Edge API 전국 동시접속 지원, 집계 오류 개선, 실시간 대시보드",
+      "description": "산업보건 SaaS, Edge API 동시접속 처리, 집계 오류 100% 제거",
       "liveUrl": "https://safework.jclee.me",
       "githubUrl": "https://github.com/qws941/safework"
     },
@@ -62,7 +62,7 @@
       "icon": "🛡️",
       "title": "REGTECH Threat Intelligence",
       "tech": "Flask · PostgreSQL · Claude AI",
-      "description": "금융보안원 위협정보 자동수집, AI 기반 CI/CD, Portainer API 자동배포",
+      "description": "금융보안원 위협정보 자동 수집, AI 기반 CI/CD, 자동 배포",
       "liveUrl": "https://blacklist.jclee.me",
       "githubUrl": "https://github.com/qws941/blacklist"
     },
@@ -70,7 +70,7 @@
       "icon": "🚀",
       "title": "FortiGate Policy Orchestration",
       "tech": "Flask · FortiManager API · GitHub Actions",
-      "description": "방화벽 정책 자동배포, HA 구성 지원, RESTful API 기반 오케스트레이션",
+      "description": "방화벽 정책 자동 배포, HA 구성 지원, REST API 오케스트레이션",
       "liveUrl": "https://fortinet.jclee.me",
       "githubUrl": "https://github.com/qws941/fortinet"
     },
@@ -78,7 +78,7 @@
       "icon": "📊",
       "title": "Public Grafana Monitoring",
       "tech": "Grafana 12.2.1 · Prometheus · Loki · Docker · PUBLIC",
-      "description": "로그인 없이 접근 가능한 실시간 모니터링 대시보드 (Anonymous Viewer). System, Docker, Logs 3개 대시보드 운영 중.",
+      "description": "로그인 없이 접근 가능한 실시간 모니터링 (System, Docker, Logs 대시보드)",
       "dashboards": [
         {
           "name": "System Overview",
