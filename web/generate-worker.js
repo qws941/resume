@@ -193,8 +193,16 @@ function generateProjectCards(projectsData) {
   const deployedAt = process.env.DEPLOYED_AT || new Date().toISOString();
   console.log(`📅 Deployment timestamp: ${deployedAt}`);
 
+  // Read and encode OG image
+  const ogImagePath = path.join(__dirname, 'og-image.png');
+  const ogImageBase64 = fs.readFileSync(ogImagePath).toString('base64');
+  console.log(`🖼️  Embedded OG image: ${(ogImageBase64.length / 1024).toFixed(2)} KB (base64)`);
+
   const workerJs = `// Cloudflare Worker - Auto-generated
 const INDEX_HTML = \`${indexHtml}\`;
+
+// Open Graph image (base64-encoded PNG)
+const OG_IMAGE_BASE64 = '${ogImageBase64}';
 
 // Version and deployment info
 const VERSION = '1.0.0';
@@ -415,6 +423,18 @@ Sitemap: https://resume.jclee.me/sitemap.xml\`, {
           headers: {
             'Content-Type': 'text/plain',
             'Cache-Control': 'public, max-age=3600',
+          },
+        });
+      }
+
+      // Open Graph image
+      if (url.pathname === '/og-image.png') {
+        metrics.requests_success++;
+        const imageBuffer = Uint8Array.from(atob(OG_IMAGE_BASE64), c => c.charCodeAt(0));
+        return new Response(imageBuffer, {
+          headers: {
+            'Content-Type': 'image/png',
+            'Cache-Control': 'public, max-age=31536000, immutable', // 1 year cache
           },
         });
       }
