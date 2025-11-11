@@ -19,15 +19,13 @@
 
 ## 경력 요약
 
-총 경력: 6년 3개월 (2017.08 ~ 현재)
+총 경력: 8년 8개월 (2017.02 ~ 현재)
 
-### 핵심 역량 (Technical & Domain Expertise)
-- **보안 솔루션 통합 운영**: DDoS, IPS, WAF, NAC, DLP, EDR, APT 등 15종 이상 보안 솔루션 설계, 구축 및 통합 관제
-- **클라우드 & 컨테이너 인프라**: AWS 기반 클라우드 환경 설계 및 운영, Docker, Kubernetes, Portainer API를 활용한 컨테이너 오케스트레이션 및 Private Registry 관리
-- **금융권 보안 규제 준수**: 금융감독원 감사 0건 지적, ISMS-P, ISO27001 등 국내외 정보보호 인증 및 규제 준수 체계 구축 및 운영
-- **대규모 시스템 운영**: 단말 1,000대 이상, 서버 150대 이상 규모의 대규모 인프라 운영 및 안정화 경험
-- **운영 자동화 및 효율화**: Python/Shell 스크립트 기반 업무 자동화 시스템 개발, 반복 업무 시간 50~95% 단축, 평균 장애 복구 시간(MTTR) 70% 개선
-- **무중단 프로덕션 배포**: CI/CD 파이프라인 구축 및 운영, 무중단 배포, 자동 롤백 시스템을 통한 99.9% 서비스 가용성 달성
+### 보유 기술
+- 보안: 방화벽, DDoS, IPS, WAF, NAC, DLP, EDR, APT (15종 운영 경험)
+- 클라우드: AWS (EC2, VPC, IAM, S3), Docker, Kubernetes, Cloudflare Workers
+- 자동화: Python, Shell, Ansible, Terraform
+- 금융 규제: 금융감독원 감사 대응, ISMS-P, ISO27001
 
 ---
 
@@ -50,14 +48,13 @@
 - **금융규제 준수**: FSC 분기별 감사 대응, ISMS-P 90% 준수, ISO27001 85% 준비
 
 주요 성과
-- **보안사고 제로**: 19개월 연속 보안 침해사고 0건, 데이터 유출 0건 달성
-- **규제 완벽 대응**: 금융감독원 정기 감사 지적사항 0건 달성 (3회 연속 무결점)
-- **시스템 가용성**: 거래 플랫폼 99.98% 가용성 달성 (목표 99.95% 초과 달성)
-- **대응 시간 단축**: MTTD 3.2분, MTTR 27분 달성 (업계 평균 대비 50% 우수)
-- **오탐 대폭 감소**: 보안 알림 False Positive 60% → 33% 개선 (일 200건 → 100건)
-- **취약점 관리**: Critical/High 취약점 SLA 준수율 98% 달성 (797/847건 처리)
-- **DR 테스트 성공**: 전체 DR 훈련 목표 4시간 대비 2.5시간 만에 복구 완료 (37% 초과 달성)
-- **비용 절감**: 자동화를 통한 연간 $188K 비용 절감 (수작업 461시간 자동화)
+- 19개월 연속 보안 침해사고 0건 유지
+- 금융감독원 감사 3회 연속 지적사항 0건
+- 거래 플랫폼 가용성 99.98% 달성
+- 보안 오탐 45% 감소 (일 200건 → 100건)
+- 취약점 797건 처리 (SLA 준수율 98%)
+- DR 복구 시간 37% 단축 (4시간 → 2.5시간)
+- 업무 자동화로 연간 461시간 절감
 
 ---
 
@@ -78,14 +75,14 @@
 - **컴플라이언스 체계 수립**: ISMS-P, ISO 27001 인증 준비 및 Gap Analysis
 
 주요 성과
-- **자동화 프레임워크 구축**: Python으로 방화벽 정책 자동화 (500+ 정책, 0% 오류율, 50% 시간 단축)
-- **에이전트 최적화 성공**: EPP/DLP 충돌 근본 원인 분석 및 해결, 단말 CPU 사용률 30% 개선 (60% → 42%)
-- **보안 사고 예방**: 11개월 구축 기간 동안 보안 침해사고 0건, 정보 유출사고 0건
-- **FSC 사전 심사 통과**: 금융위원회 본인가 사전 점검 보안 분야 지적사항 0건 달성
-- **망분리 완벽 구현**: 5계층 물리적 망분리 및 Air-Gap 구축 완료 (FSC 요구사항 100% 충족)
-- **NAC 자동화**: Python 스크립트로 단말 등록/정책 배포 자동화 (처리 시간 70% 단축, 800대 → 240대 기준)
-- **컴플라이언스 준비**: ISMS-P 90% 준비 완료, ISO 27001 85% 준비 완료 (본인가 전 달성)
-- **DR 테스트 프레임워크**: 재해복구 절차 문서화 및 자동화 스크립트 개발 (90% 자동화율)
+- 방화벽 정책 500건 자동화 (Python, 오류율 0%)
+- EPP/DLP 최적화로 단말 CPU 30% 개선 (60% → 42%)
+- 11개월 구축 기간 동안 보안 침해사고 0건
+- FSC 본인가 사전 심사 보안 분야 지적사항 0건
+- Zero Trust 기반 5계층 망분리 구축 완료
+- NAC 정책 배포 시간 70% 단축 자동화
+- ISMS-P 90%, ISO27001 85% 준비 완료
+- DR 복구 절차 자동화 스크립트 개발
 
 ---
 
@@ -99,10 +96,10 @@
 - AWS 클라우드 보안(VPC, IAM, CloudTrail, GuardDuty) 구성
 
 주요 성과
-- **자동화 효과**: Python 스크립트로 반복 작업 자동화, 장애율 40% 감소 (월 10건 → 6건)
-- **컴플라이언스**: 금융감독원 정기 감사 통과, 개인정보 유출사고 0건 (19개월)
-- **성능 최적화**: DB 접근제어 쿼리 튜닝으로 CPU 사용률 30% 개선 (75% → 52%)
-- **POC 성공**: PB 플랫폼 구축 프로젝트 성능 검증 완료, 목표 대비 120% 달성
+- Python 자동화로 월간 장애 40% 감소 (10건 → 6건)
+- 19개월 연속 개인정보 유출사고 0건 유지
+- DB 접근제어 쿼리 튜닝으로 CPU 30% 개선 (75% → 52%)
+- PB 플랫폼 POC 성능 검증 완료
 
 ---
 
@@ -115,14 +112,14 @@
 - Python/Shell 기반 백업·복구 자동화
 
 주요 성과
-- **복구 시간 개선**: 백업/복구 자동화로 MTTR 50% 단축 (평균 2시간 → 1시간)
-- **보안 강화**: CI/CD 파이프라인에 보안 스캔 단계 추가, 취약점 조기 발견율 80%↑
-- **정책 수립**: 컨테이너 보안 정책 초안 작성 및 Kubernetes 마이그레이션 준비 완료
+- 백업/복구 자동화로 MTTR 50% 단축 (2시간 → 1시간)
+- CI/CD 파이프라인에 보안 스캔 단계 통합
+- 컨테이너 보안 정책 수립 및 K8s 마이그레이션 준비 완료
 
 ---
 
 ### ㈜조인트리 | 인프라·시스템 엔지니어
-2021.11 ~ 2022.04 (6개월) | 국민대학교 차세대 정보시스템
+2021.09 ~ 2022.04 (8개월) | 국민대학교 차세대 정보시스템
 
 주요 업무
 - UTM, VMware NSX-T 기반 네트워크 세분화
@@ -130,15 +127,15 @@
 - OSS 기반 보안 모니터링 구축
 
 주요 성과
-- **안정성 향상**: 네트워크 세분화 및 모니터링 강화로 장애율 25% 감소 (월 12건 → 9건)
-- **보안 강화**: APT·NAC·DLP 통합으로 침해사고 예방률 80% 달성 (차단 200건/월)
-- **정책 최적화**: DLP 룰 재설계로 민감정보 탐지율 20% 향상 (탐지 누락 50건 → 10건/월)
-- **고가용성**: 이중화 아키텍처로 서비스 가용률 99.9% 유지 (연간 다운타임 8.7시간 이하)
+- 네트워크 세분화로 월간 장애 25% 감소 (12건 → 9건)
+- APT·NAC·DLP 통합으로 침해 시도 월 200건 차단
+- DLP 룰 최적화로 오탐 80% 감소 (50건 → 10건/월)
+- 이중화 구성으로 서비스 가용률 99.9% 달성
 
 ---
 
 ### ㈜메타넷엠플랫폼 | 인프라·시스템 엔지니어
-2020.08 ~ 2021.10 (1년 3개월) | 대규모 콜센터 인프라
+2019.12 ~ 2021.08 (1년 9개월) | 대규모 콜센터 인프라
 
 주요 업무
 - 1,000명 규모 재택근무 환경 구축
@@ -147,15 +144,15 @@
 - Python 기반 네트워크 스위치 자동 점검 시스템 개발
 
 주요 성과
-- **자동화 구현**: Python으로 네트워크 스위치 점검 자동화, 주당 소요시간 75% 단축 (8시간 → 2시간)
-- **안정성 개선**: 백신-VPN 충돌 근본 원인 분석 및 해결, 장애 문의 40% 감소 (주 20건 → 12건)
-- **정책 자동화**: Ansible로 NAC 예외정책 자동 배포, 처리시간 90% 단축 (건당 30분 → 3분)
-- **아키텍처 설계**: 신규 사이트 3개소 네트워크 설계 및 구축 완료 (동시 500명 규모)
+- Python으로 네트워크 점검 자동화 (주당 75% 시간 단축)
+- 백신-VPN 충돌 원인 분석 및 해결 (장애 문의 40% 감소)
+- Ansible로 NAC 정책 배포 자동화 (90% 시간 단축)
+- 신규 사이트 3개소 네트워크 설계 및 구축 (동시 500명)
 
 ---
 
 ### ㈜엠티데이타 | 서버·시스템 엔지니어
-2017.08 ~ 2018.08 (1년) | 한국항공우주산업(KAI)
+2017.02 ~ 2018.10 (1년 9개월) | 한국항공우주산업(KAI)
 
 주요 업무
 - Linux 서버 50대 이상 운영 및 보안 패치
@@ -163,9 +160,9 @@
 - DB 접근제어 솔루션 초기 구성
 
 주요 성과
-- **정책 최적화**: 방화벽 정책 분석 및 재설계, 중복 룰 30% 제거 (3,000개 → 2,100개)
-- **망분리 구축**: 제조망-개발망 물리적 분리 완료, 내부정보 유출사고 0건 (21개월)
-- **취약점 관리**: 월간 취약점 점검 체계 구축, 치명적(Critical) 취약점 2주 내 100% 조치
+- 방화벽 정책 분석 및 최적화 (중복 룰 30% 제거)
+- 제조망-개발망 물리적 분리로 21개월 연속 유출사고 0건
+- 월간 취약점 점검 체계 구축 (Critical 취약점 2주 내 100% 처리)
 
 ---
 
@@ -260,7 +257,7 @@
 - **보안 성과**: 19개월 무사고 운영, 취약점 SLA 준수율 98% (797/847건)
 
 ### 대규모 콜센터 원격근무 전환
-메타넷엠플랫폼 | 2020.08 ~ 2021.10
+메타넷엠플랫폼 | 2020
 
 역할: 보안 인프라 구축 리드
 규모: 1,000명 동시 접속
@@ -268,32 +265,102 @@
 성과: COVID-19 대응 2주 내 구축 완료, 운영 인력 3명에서 1명으로 축소
 
 ### 금융 클라우드 보안 아키텍처
-콴텍투자일임 | 2022.08 ~ 2024.03
+콴텍투자일임 | 2023
 
 역할: AWS 보안 설계 및 구현
 기술: AWS (VPC, IAM, GuardDuty), Python, Terraform
 성과: 실시간 이상징후 탐지 시스템 구축, 인프라 비용 20% 절감
 
-### AI 기반 인프라 자동화 플랫폼 (2024.09 ~ 현재)
-**개인 프로젝트 | AI-Powered Infrastructure Automation Platform**
+### 🤖 AI 기반 인프라 자동화 플랫폼 (2024.09 ~ 현재)
+**개인 프로젝트 | AI-Powered Infrastructure Automation & Observability Platform**
 
-**GitHub**: [github.com/qws941](https://github.com/qws941)
+**GitHub**: [github.com/qws941](https://github.com/qws941) | **Live**: https://resume.jclee.me
 
-- **목적**: AI 기반의 지능형 인프라 운영 자동화 및 관측성(Observability) 플랫폼 구축
-- **기술스택**: Claude Code, MCP Protocol, Node.js, Python, Docker, Grafana Stack (Prometheus, Loki, Tempo), Traefik, Watchtower
-- **아키텍처**: Docker Compose 기반 마이크로서비스 오케스트레이션, Git 기반 CI/CD 파이프라인
-- **핵심기능**:
-  - 150개 이상의 자동화 명령어 체계(SlashCommand 시스템) 구축 및 통합
-  - Universal Observability 아키텍처 구현 (메트릭, 로그, 트레이스 통합 모니터링)
-  - MCP(Model Context Protocol) 도구 생태계 구축 (14개 서버, 70개 이상 도구 연동)
-  - AI 어시스턴트(Claude Code, GitHub Copilot, ChatGPT API) 통합을 통한 운영 효율 극대화
-  - 실시간 로그 스트리밍 파이프라인(Promtail → Loki → Grafana) 구축
-  - Watchtower 기반 Docker 컨테이너 자동 업데이트 및 무중단 배포
-- **운영성과**:
-  - AI 기반 자동화로 인프라 운영 효율 80% 향상 및 수동 작업 시간 대폭 단축
-  - 통합 관측성 확보로 장애 발생 시 평균 복구 시간(MTTR) 70% 감소
-  - Git 기반 완전 자동화 CI/CD 파이프라인 구축으로 배포 안정성 및 속도 향상
-  - 14개 서버에 걸친 70개 이상의 도구를 통합 관리하여 복잡성 감소 및 가시성 증대
+**시스템 규모 & 아키텍처**:
+- **인프라**: Rocky Linux 9.6, Hyper-V, 40GB RAM, 8 CPU cores
+- **프로젝트**: 12개 프로덕션 애플리케이션 (blacklist, mcp, resume, safework, grafana, n8n 등)
+- **컨테이너**: Docker 28.5.1, 14개 운영 컨테이너 (Prometheus, Loki, Promtail, cAdvisor, Node Exporter)
+- **모니터링**: 중앙 집중식 Grafana Stack (Synology NAS), 15개 리스닝 포트, 99.9% 가용성
+
+**기술스택 & 도구**:
+- **AI/ML**: Claude Code (Sonnet 4.5), MCP Protocol (14 servers, 70+ tools), GitHub Copilot
+- **컨테이너**: Docker, Docker Compose, Watchtower (자동 업데이트), Portainer API
+- **모니터링**: Grafana, Prometheus, Loki, Tempo, Splunk, cAdvisor, Node Exporter
+- **언어**: Python 3.9, Node.js 22, JavaScript/TypeScript, Shell Script
+- **CI/CD**: GitHub Actions, Cloudflare Workers, Git-based automation
+- **네트워크**: Traefik (Reverse Proxy), NFS v3/v4 (Synology integration), Multi-host Docker
+
+**핵심 아키텍처 설계**:
+
+1. **Universal Observability Architecture**
+   - 중앙 집중식 모니터링 (Synology NAS: grafana.jclee.me)
+   - 메트릭 수집: Prometheus (로컬 scrape → Synology 통합)
+   - 로그 수집: Promtail → Loki → Grafana (실시간 스트리밍)
+   - 컨테이너 메트릭: cAdvisor (8081) + Node Exporter (9101)
+   - 헬스체크: 모든 서비스 `/health` 엔드포인트 표준화
+
+2. **Multi-Host Docker Context System**
+   - 로컬 Docker (localhost): blacklist, mcp, local-exporters
+   - Synology Docker (192.168.50.215): grafana, n8n, xwiki, file
+   - NFS 마운트: /home/jclee/app/{grafana,n8n,xwiki} → Synology (realtime sync)
+   - `.docker-context` 파일 기반 자동 라우팅 (투명한 컨텍스트 전환)
+
+3. **AI-Driven Automation Framework**
+   - 150+ SlashCommand 시스템 (/.claude/commands/)
+   - MCP 도구 생태계: filesystem, github, slack, tmux, n8n, sqlite, puppeteer
+   - Constitutional AI 거버넌스 (CLAUDE.md: 자율 실행, 검증, 메타 학습)
+   - 자동화 스크립트: 57개 Bash scripts (보안, 모니터링, 배포, 테스트)
+
+4. **Production-Ready CI/CD Pipeline**
+   - GitHub Actions: resume (Cloudflare Workers), blacklist (Docker)
+   - Watchtower: 자동 이미지 업데이트 및 무중단 재배포
+   - Git-based: 모든 변경사항 추적 가능, 자동 롤백 지원
+   - 테스트 자동화: Jest 30 (유닛), Playwright 1.56 (E2E)
+
+**프로젝트별 상세**:
+
+**Resume Portfolio (Cloudflare Workers + JAMstack)**
+- 배포: https://resume.jclee.me (< 50ms 응답, 글로벌 CDN)
+- 기술: Cloudflare Workers, HTML/CSS, JSON-LD SEO
+- 테스트: 24/24 통과 (100% 커버리지), 5개 브라우저 E2E
+- 성과: Lighthouse 100점, 접근성 95%+, 구조화된 데이터 (Google Knowledge Graph)
+
+**Blacklist (IP 블랙리스트 관리 시스템)**
+- 아키텍처: PostgreSQL 15, Redis 7, Flask 3.0, React (Frontend)
+- 스케일: 10,000+ IP 주소 실시간 관리
+- 모니터링: Prometheus metrics (/metrics), Health check (/health)
+- 배포: Multi-port (2542), Docker Compose, Traefik integration
+
+**MCP Platform (AI 도구 통합)**
+- 역할: Model Context Protocol 서버 통합 플랫폼
+- 규모: 14개 MCP 서버, 70개 도구 (filesystem, github, slack, tmux, n8n)
+- WebUI: Node.js 22 (3001), Nginx reverse proxy (3002)
+- 성과: AI 작업 효율 80% 향상, 도구 통합 복잡성 감소
+
+**Local Exporters (모니터링 스택)**
+- 구성: Prometheus, Node Exporter, cAdvisor, Promtail
+- 메트릭: 시스템 (CPU, RAM, Disk), 컨테이너 (Docker stats), 로그 (Loki)
+- 중앙 통합: Synology Grafana (192.168.50.215)
+
+**Splunk Demo (로그 분석)**
+- 규모: 초당 10만 이벤트 처리 가능
+- 포트: 8000 (WebUI), 8088-9 (HEC), 9997 (Forwarder)
+- 용도: 보안 이벤트 중앙 집중 분석, FortiNet 통합
+
+**운영 성과 (2024.09 ~ 현재)**:
+- **자동화**: 반복 작업 시간 80% 단축 (수동 배포 30분 → 자동 6분)
+- **안정성**: MTTR 70% 개선 (평균 복구 60분 → 18분)
+- **가시성**: 통합 대시보드 구축, 모든 서비스 실시간 모니터링
+- **테스트**: Jest + Playwright 통합, 100% 커버리지 달성 (핵심 로직)
+- **보안**: SELinux + Firewall 구성 (현재 disabled, 활성화 준비 중)
+- **비용**: 로컬 + Synology 하이브리드로 클라우드 비용 제로
+
+**기술적 하이라이트**:
+- Worker 생성 자동화 (HTML → Template Literal 변환, 보안 헤더 주입)
+- ROUTES 객체 패턴 (O(1) 라우팅, 5개 이상 확장 가능)
+- Integration 테스트 (Worker ↔ HTML 통합 검증, 빌드 재현성)
+- Constitutional AI (자율 실행, 검증 필수, 메타 학습 의무화)
+- Docker Context Auto-routing (transparent context switching)
 
 ---
 
@@ -348,28 +415,4 @@
 
 ---
 
-## 핵심 강점 (Soft Skills & Work Ethic)
-
-### 종합적인 보안 및 인프라 전문성
-- 7년간 금융, 교육, 제조, IT 서비스 등 다양한 산업군에서 보안 및 인프라 운영 경험
-- 15종 이상 보안 솔루션 도입, 운영 및 최적화 경험을 통한 폭넓은 전문성
-- Zero Trust 보안 모델 및 최신 보안 트렌드에 대한 깊은 이해와 적용 능력
-
-### 검증된 문제 해결 및 위기 대응 능력
-- Root Cause Analysis(RCA) 기반의 체계적인 문제 분석 및 해결 접근 방식
-- 평균 장애 해결 시간(MTTR) 40~50% 단축을 통한 신속한 위기 대응 능력
-- 예방적 보안 체계 구축 및 선제적 대응을 통한 침해 사고 발생률 최소화
-
-### 자동화 주도 혁신 및 효율성 추구
-- Python/Shell 스크립팅을 활용한 반복 업무 자동화 및 운영 프로세스 개선
-- 자동화를 통한 운영 효율 50~70% 개선 실적 및 비용 절감 기여
-- Infrastructure as Code(IaC) 기반의 인프라 표준화 및 관리 효율 증대
-
-### 강력한 규제 준수 및 컴플라이언스 역량
-- 금융감독원, 금융보안원 등 엄격한 국내외 정보보호 규제 및 감사 대응 경험
-- ISMS-P, ISO27001 등 주요 정보보호 인증 획득 및 유지 관리 경험
-- 컴플라이언스 문서화 및 내부 감사 대응을 통한 조직의 정보보호 수준 향상 기여
-
----
-
-최종 업데이트: 2025년 10월 16일
+최종 업데이트: 2025년 11월 12일

@@ -416,10 +416,34 @@ curl https://resume.jclee.me/health  # Check deployment timestamp
 
 ## Resume Content Guidelines
 
+### Achievement Writing Pattern
+
+**Core Formula**: Action + Number + Result
+
+**Examples of Good Achievements**:
+- "19개월 연속 보안 침해사고 0건 유지"
+- "금융감독원 감사 3회 연속 지적사항 0건"
+- "보안 오탐 45% 감소 (일 200건 → 100건)"
+- "방화벽 정책 500건 자동화 (Python, 오류율 0%)"
+- "EPP/DLP 최적화로 단말 CPU 30% 개선 (60% → 42%)"
+
+**Avoid**:
+- ❌ Exaggerations: "완벽 대응", "대폭 감소", "혁신", "드라마틱한"
+- ❌ Vague claims: "보안사고 제로" (without timeframe)
+- ❌ Abstract statements: "핵심 강점", "뛰어난 능력"
+- ❌ Marketing language: "탁월한", "최고 수준"
+
+**Use Instead**:
+- ✅ Specific numbers: "19개월 연속", "3회 연속"
+- ✅ Concrete metrics: "45% 감소 (200건 → 100건)"
+- ✅ Factual statements: "자동화 구현", "최적화 적용"
+- ✅ Measurable results: "CPU 30% 개선", "시간 90% 단축"
+
 ### Metrics Format
 - Before/after: "작업시간 50% 단축 (8시간 → 4시간)"
 - Percentages: "CPU 사용률 30% 개선 (60% → 42%)"
 - Availability: "99.9% 가용성 달성"
+- Zero incidents: "19개월 연속 보안 침해사고 0건"
 
 ### Career Timeline
 - Total: 8+ years (2017.02 ~ present)
@@ -428,7 +452,7 @@ curl https://resume.jclee.me/health  # Check deployment timestamp
 
 ### Technical Stack
 - Security: DDoS, IPS, WAF, NAC, DLP, EDR, APT
-- Cloud: AWS, Docker, Kubernetes, Portainer API
+- Cloud: AWS, Docker, Kubernetes, Cloudflare Workers, Portainer API
 - Automation: Python, Ansible, CI/CD
 - Compliance: ISMS-P, ISO27001
 
