@@ -25,7 +25,62 @@
 
 ---
 
-## 🔧 Solution: Manual Deployment Steps
+## ⚡ Quick Deployment (Automation Scripts)
+
+**NEW**: Three helper scripts for streamlined deployment:
+
+### 1. Quick Deploy (Recommended)
+```bash
+# One-command deployment with all checks
+./scripts/quick-deploy.sh
+```
+- Checks prerequisites (Node.js, npm, git)
+- Runs all tests (unit + E2E)
+- Builds worker.js with timestamp
+- Deploys to Cloudflare Workers
+- Runs comprehensive verification
+- **Requires**: `CLOUDFLARE_API_TOKEN` environment variable
+
+### 2. Deployment Helper
+```bash
+# Step-by-step deployment with progress indicators
+./scripts/deploy-helper.sh
+```
+- 6-stage deployment pipeline
+- Color-coded progress output
+- Git status validation
+- Production URL summary
+- **Requires**: `CLOUDFLARE_API_TOKEN` environment variable
+
+### 3. Verification Only
+```bash
+# Verify existing deployment (7 comprehensive checks)
+./scripts/verify-deployment.sh
+```
+- Deployment timestamp check
+- Open Graph image validation
+- OG meta tags verification
+- Web Vitals tracking check
+- Vitals endpoint test
+- Security headers validation
+- Prometheus metrics check
+- **No credentials required** (read-only checks)
+
+**Usage Example**:
+```bash
+# Set API token (get from Cloudflare Dashboard)
+export CLOUDFLARE_API_TOKEN=your_token_here
+
+# Deploy with one command
+./scripts/quick-deploy.sh
+
+# Or verify existing deployment
+./scripts/verify-deployment.sh
+```
+
+---
+
+## 🔧 Manual Deployment Steps (If Automation Fails)
 
 ### Option 1: Fix GitHub Authentication (Best Long-term Solution)
 
