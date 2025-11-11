@@ -155,6 +155,7 @@ function generateProjectCards(projectsData) {
     .replace('<!-- RESUME_CARDS_PLACEHOLDER -->', resumeCardsHtml)
     .replace('<!-- PROJECT_CARDS_PLACEHOLDER -->', projectCardsHtml)
     .replace('<!-- RESUME_PDF_URL -->', projectData.resumeDownload.pdfUrl)
+    .replace('<!-- RESUME_DOCX_URL -->', projectData.resumeDownload.docxUrl)
     .replace('<!-- RESUME_MD_URL -->', projectData.resumeDownload.mdUrl);
 
   // Minify HTML (15% size reduction, faster edge cold starts)
