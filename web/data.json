@@ -143,6 +143,13 @@
       "githubUrl": "https://github.com/qws941/claude"
     },
     {
+      "icon": "⚡",
+      "title": "Ansible FortiManager Automation",
+      "tech": "Ansible · FortiManager API · Ansible Vault · Docker · 584 Lines",
+      "description": "FortiManager 정책 자동화, 3개 플레이북 (IaC), Vault 시크릿 관리, 정책 백업/배포",
+      "githubUrl": "https://github.com/qws941/policy"
+    },
+    {
       "icon": "📜",
       "title": "Constitutional Governance System",
       "tech": "Bash · Python · JSONL · Git Hooks · v12.0",
