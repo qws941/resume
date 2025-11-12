@@ -1,6 +1,8 @@
 .gemini/
 gha-creds-*.json
 .env
+.claude.json
+data/
 
 # Dependencies
 node_modules/

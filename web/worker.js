@@ -34,7 +34,7 @@ const OG_IMAGE_BASE64 = 'iVBORw0KGgoAAAANSUhEUgAABLAAAAJ2CAYAAABPQHtcAAAACXBIWXM
 
 // Version and deployment info
 const VERSION = '1.0.0';
-const DEPLOYED_AT = '2025-11-11T21:07:58.845Z';
+const DEPLOYED_AT = '2025-11-12T01:03:31Z';
 
 // CSP directives (generated at build time from inline content hashes)
 const CSP_SCRIPT_SRC = `'self' 'sha256-drT689qeADSx82e0IL+TsRDPW71nAnFMaq7/SAXiK4Q=' 'sha256-zs+4J8cC1q5fwDOyvn4APEMKVZsN1GmQ2jr0OQ2Z4Ng='`;
