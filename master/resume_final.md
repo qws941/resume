@@ -319,11 +319,13 @@
 
 **프로젝트별 상세**:
 
-**Resume Portfolio (Cloudflare Workers + JAMstack)**
-- 배포: https://resume.jclee.me (< 50ms 응답, 글로벌 CDN)
-- 기술: Cloudflare Workers, HTML/CSS, JSON-LD SEO
-- 테스트: 24/24 통과 (100% 커버리지), 5개 브라우저 E2E
-- 성과: Lighthouse 100점, 접근성 95%+, 구조화된 데이터 (Google Knowledge Graph)
+**Resume Portfolio (Cloudflare Workers + Observability)**
+- **배포**: https://resume.jclee.me (< 50ms 응답, 글로벌 CDN)
+- **기술**: Cloudflare Workers (152 KB), Grafana Loki 통합, Prometheus 메트릭
+- **인프라**: GitLab (Primary) + GitHub (Mirror, CI/CD)
+- **모니터링**: Web Vitals 추적, 실시간 로깅, Health Check 엔드포인트
+- **테스트**: 23/23 유닛 테스트, 10/10 E2E 테스트 통과
+- **성과**: Lighthouse 100점, Open Graph 소셜 미리보기, CSP 강화 보안
 
 **Blacklist (IP 블랙리스트 관리 시스템)**
 - 아키텍처: PostgreSQL 15, Redis 7, Flask 3.0, React (Frontend)

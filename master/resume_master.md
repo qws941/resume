@@ -319,11 +319,20 @@
 
 **프로젝트별 상세**:
 
-**Resume Portfolio (Cloudflare Workers + JAMstack)**
-- 배포: https://resume.jclee.me (< 50ms 응답, 글로벌 CDN)
-- 기술: Cloudflare Workers, HTML/CSS, JSON-LD SEO
-- 테스트: 24/24 통과 (100% 커버리지), 5개 브라우저 E2E
-- 성과: Lighthouse 100점, 접근성 95%+, 구조화된 데이터 (Google Knowledge Graph)
+**Resume Portfolio (Cloudflare Workers + Observability)**
+- **배포**: https://resume.jclee.me (< 50ms 응답, 글로벌 CDN)
+- **기술스택**: Cloudflare Workers (152 KB), HTML/CSS, JSON-LD SEO, Grafana Loki 통합
+- **인프라**: GitLab (Primary, 192.168.50.215:2222) + GitHub (Mirror, CI/CD)
+- **CI/CD**: GitHub Actions 자동 배포, 배포 타임스탬프 주입
+- **모니터링**:
+  - Grafana Loki 실시간 로깅 (https://grafana.jclee.me/loki)
+  - Prometheus 메트릭 수집 (/metrics 엔드포인트)
+  - Web Vitals 추적 (LCP, FID, CLS, FCP, TTFB)
+  - Health Check (/health): 배포 시각, 가동 시간, 요청 통계
+- **보안**: CSP SHA-256 해시 (unsafe-inline 제거), HSTS, X-Frame-Options
+- **테스트**: 23/23 유닛 테스트, 10/10 E2E 테스트 (Playwright)
+- **성과**: Lighthouse 100점, 접근성 95%+, Open Graph 소셜 미리보기
+- **최신 배포**: 2025-11-12T01:04:49Z (Account: a8d9c67f586acdd15eebcc65ca3aa5bb)
 
 **Blacklist (IP 블랙리스트 관리 시스템)**
 - 아키텍처: PostgreSQL 15, Redis 7, Flask 3.0, React (Frontend)
