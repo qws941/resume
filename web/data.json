@@ -103,6 +103,58 @@
         }
       ],
       "documentationUrl": "https://github.com/qws941/claude/blob/main/.claude/docs/GRAFANA-PUBLIC-DASHBOARDS.md"
+    },
+    {
+      "icon": "🤖",
+      "title": "ML Agent Selection System",
+      "tech": "Python · Flask · Scikit-learn · PostgreSQL · 22 MCP Servers",
+      "description": "ML 기반 자동 에이전트 라우팅, 145+ 스크립트 관리, Constitutional Framework v12.0",
+      "liveUrl": "http://127.0.0.1:5001",
+      "githubUrl": "https://github.com/qws941/claude"
+    },
+    {
+      "icon": "🔄",
+      "title": "n8n Workflow Automation",
+      "tech": "n8n · PostgreSQL · Redis · Docker · 541 Nodes",
+      "description": "Self-hosted workflow automation, 2709+ templates, API orchestration",
+      "liveUrl": "https://n8n.jclee.me",
+      "githubUrl": "https://github.com/qws941/n8n"
+    },
+    {
+      "icon": "🏢",
+      "title": "GitLab Enterprise Edition",
+      "tech": "GitLab EE 17.5.3 · PostgreSQL 16.1 · Redis 7.2 · Traefik",
+      "description": "Self-hosted DevOps platform, Container Registry, CI/CD pipelines, 7일 자동 백업",
+      "liveUrl": "https://gitlab.jclee.me",
+      "githubUrl": "https://github.com/qws941/claude/tree/main/app/gitlab"
+    },
+    {
+      "icon": "⚙️",
+      "title": "Nginx Airgap Configuration",
+      "tech": "Nginx 1.24+ · Airgap Deployment · Security Hardening",
+      "description": "폐쇄망 환경용 Nginx 설정, 보안 강화 설정, 패키지 사전 준비",
+      "githubUrl": "https://github.com/qws941/nginx"
+    },
+    {
+      "icon": "🐍",
+      "title": "Python Automation Framework",
+      "tech": "Python · Ansible · Bash · Git Hooks · 145+ Scripts",
+      "description": "인프라 자동화 프레임워크, 파일 거버넌스, AI 보상 시스템, 세션 연속성",
+      "githubUrl": "https://github.com/qws941/claude"
+    },
+    {
+      "icon": "📜",
+      "title": "Constitutional Governance System",
+      "tech": "Bash · Python · JSONL · Git Hooks · v12.0",
+      "description": "파일 생성 쿼터 (3 scripts, 2 docs), 70% 유사도 감지, 자동 로깅",
+      "githubUrl": "https://github.com/qws941/claude/blob/main/scripts/master-prevention-system.sh"
+    },
+    {
+      "icon": "🧠",
+      "title": "AI Compensation Core",
+      "tech": "Python · Pattern Detection · Multi-Model Validation · 8 Compensations",
+      "description": "AI 한계 보상: Context window, Hallucination 감지, Real-time data, Domain routing",
+      "githubUrl": "https://github.com/qws941/claude/blob/main/scripts/ai-compensation-core.py"
     }
   ]
 }
