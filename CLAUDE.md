@@ -479,6 +479,18 @@ curl https://resume.jclee.me/health  # Check deployment timestamp
 
 ### Recent Updates
 
+- **2025-11-12**: Infrastructure Observability Integration
+  - Added Grafana Loki real-time logging integration
+  - Added Prometheus metrics collection (`/metrics` endpoint)
+  - Added Web Vitals tracking (LCP, FID, CLS, FCP, TTFB via `/api/vitals`)
+  - Updated git infrastructure: GitLab (Primary at 192.168.50.215:2222) + GitHub (Mirror)
+  - Added Open Graph image for social media previews (embedded as base64)
+  - Enhanced CSP with SHA-256 hashes (removed `unsafe-inline`)
+  - Worker size increased to 152 KB (from 30.57 KB due to OG image)
+  - Test updates: 23/23 unit tests, 10/10 E2E tests
+  - Latest deployment: 2025-11-12T01:04:49Z
+  - Account: a8d9c67f586acdd15eebcc65ca3aa5bb
+
 - **2025-11-07**: Phase 2 Refactoring - Data-Driven Templates
   - Extracted project data to `web/data.json` (resume cards + project cards)
   - Added template generation functions in `generate-worker.js`
@@ -492,7 +504,6 @@ curl https://resume.jclee.me/health  # Check deployment timestamp
   - Modified `generate-worker.js` to inject CSS during build
   - Reduced `index.html` from 1,204 to 445 lines (760 lines of CSS separated)
   - Build verified: CSP hashes correct (1 script, 1 style)
-  - Final worker.js size: 30.57 KB
 
 - **2025-10-18**: Test fixes & CI deployment timestamp
   - Dollar sign escape test accuracy improvement
