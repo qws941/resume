@@ -267,6 +267,9 @@ Based on Grok AI analysis of resume content:
 | Document | Purpose |
 |----------|---------|
 | **DEPLOYMENT_READY.md** (this file) | Quick deployment guide |
+| **DEPLOYMENT_VISUAL_GUIDE.md** | 시각적 배포 가이드 (diagrams & flowcharts) ⭐ NEW |
+| **CLOUDFLARE_AUTH_METHODS.md** | Authentication methods comparison ⭐ NEW |
+| **GET_CLOUDFLARE_API_TOKEN.md** | Step-by-step token generation |
 | **MANUAL_DEPLOYMENT_GUIDE.md** | Comprehensive troubleshooting (517 lines) |
 | **scripts/README.md** | Automation scripts reference |
 | **DEPLOYMENT_STATUS.md** | Historical deployment tracking |
