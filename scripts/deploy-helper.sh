@@ -114,10 +114,16 @@ check_git_status() {
 deploy_cloudflare() {
     echo -e "${YELLOW}[5/6]${NC} Deploying to Cloudflare Workers..."
 
-    # Check authentication
-    if [[ -z "${CLOUDFLARE_API_TOKEN:-}" ]]; then
-        echo -e "${RED}✗ CLOUDFLARE_API_TOKEN not set${NC}"
-        echo -e "${YELLOW}→ Run: export CLOUDFLARE_API_TOKEN=your_token_here${NC}"
+    # Check authentication (supports both API Token and Global API Key)
+    if [[ -n "${CLOUDFLARE_API_TOKEN:-}" ]]; then
+        echo -e "${BLUE}Using: API Token authentication${NC}"
+    elif [[ -n "${CLOUDFLARE_API_KEY:-}" && -n "${CLOUDFLARE_EMAIL:-}" ]]; then
+        echo -e "${BLUE}Using: Global API Key authentication${NC}"
+    else
+        echo -e "${RED}✗ No Cloudflare authentication configured${NC}"
+        echo -e "${YELLOW}→ Option 1: export CLOUDFLARE_API_TOKEN=your_token${NC}"
+        echo -e "${YELLOW}→ Option 2: export CLOUDFLARE_API_KEY=your_key && export CLOUDFLARE_EMAIL=your@email${NC}"
+        echo -e "${YELLOW}→ See guide: docs/CLOUDFLARE_AUTH_METHODS.md${NC}"
         exit 1
     fi
 

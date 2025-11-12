@@ -19,30 +19,36 @@ echo -e "${BLUE}║  Resume Portfolio - Quick Deploy      ║${NC}"
 echo -e "${BLUE}╚════════════════════════════════════════╝${NC}"
 echo ""
 
-# Check if CLOUDFLARE_API_TOKEN is set
-if [[ -z "${CLOUDFLARE_API_TOKEN:-}" ]]; then
-    echo -e "${RED}✗ CLOUDFLARE_API_TOKEN not set${NC}"
+# Check authentication (supports both API Token and Global API Key)
+if [[ -n "${CLOUDFLARE_API_TOKEN:-}" ]]; then
+    echo -e "${GREEN}✓ Authentication: API Token (recommended)${NC}"
+    AUTH_METHOD="API Token"
+elif [[ -n "${CLOUDFLARE_API_KEY:-}" && -n "${CLOUDFLARE_EMAIL:-}" ]]; then
+    echo -e "${GREEN}✓ Authentication: Global API Key${NC}"
+    AUTH_METHOD="Global API Key"
+else
+    echo -e "${RED}✗ No Cloudflare authentication configured${NC}"
     echo ""
     echo -e "${YELLOW}Quick Setup Options:${NC}"
     echo ""
-    echo -e "Option 1: Set environment variable"
+    echo -e "Option 1: API Token (⭐ Recommended)"
     echo -e "  export CLOUDFLARE_API_TOKEN=your_token_here"
     echo -e "  $0"
     echo ""
-    echo -e "Option 2: Interactive login (opens browser)"
+    echo -e "Option 2: Global API Key"
+    echo -e "  export CLOUDFLARE_API_KEY=your_key_here"
+    echo -e "  export CLOUDFLARE_EMAIL=your@email.com"
+    echo -e "  $0"
+    echo ""
+    echo -e "Option 3: Interactive login (opens browser)"
     echo -e "  cd web && npx wrangler login"
     echo ""
-    echo -e "Option 3: Get token from Cloudflare Dashboard"
-    echo -e "  1. https://dash.cloudflare.com/"
-    echo -e "  2. My Profile → API Tokens → Create Token"
-    echo -e "  3. Use 'Edit Cloudflare Workers' template"
-    echo ""
-    echo -e "${BLUE}→ See full guide: docs/MANUAL_DEPLOYMENT_GUIDE.md${NC}"
+    echo -e "${BLUE}→ See detailed guide: docs/CLOUDFLARE_AUTH_METHODS.md${NC}"
+    echo -e "${BLUE}→ See token guide: docs/GET_CLOUDFLARE_API_TOKEN.md${NC}"
     echo ""
     exit 1
 fi
 
-echo -e "${GREEN}✓ CLOUDFLARE_API_TOKEN configured${NC}"
 echo ""
 
 # Run deployment helper
