@@ -112,13 +112,29 @@ Push to `master` branch triggers automatic deployment:
 
 ### Manual Deployment
 
+**Recommended Method** (uses Cloudflare REST API, bypasses Wrangler auth):
+
 ```bash
-# Deploy to Cloudflare Workers
-cd web && wrangler deploy
+# Deploy using REST API script
+npm run deploy
+
+# OR directly run the script
+./scripts/deploy-via-api.sh
+```
+
+**Alternative Method** (requires Wrangler API token):
+
+```bash
+# Deploy with Wrangler CLI
+npm run deploy:wrangler
+
+# OR: cd web && wrangler deploy
 
 # Check deployment status
 wrangler deployments list
 ```
+
+**Note**: If Wrangler authentication fails (code: 10001), the REST API method uses your Global API Key from `.env` and works reliably. See `docs/CLOUDFLARE_TOKEN_SETUP.md` for details.
 
 ### Environment Variables
 

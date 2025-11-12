@@ -14,7 +14,8 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "dev": "cd web && wrangler dev",
-    "deploy": "npm run build && cd web && wrangler deploy"
+    "deploy": "npm run build && ./scripts/deploy-via-api.sh",
+    "deploy:wrangler": "npm run build && cd web && wrangler deploy"
   },
   "keywords": [
     "resume",
