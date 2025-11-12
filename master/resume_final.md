@@ -344,6 +344,14 @@
 - **성과**: AI 오답률 70% 감소, 작업 신뢰도 95% 향상
 - **GitHub**: [github.com/qws941/claude/blob/main/scripts/ai-compensation-core.py](https://github.com/qws941/claude/blob/main/scripts/ai-compensation-core.py)
 
+**8. Ansible FortiManager Automation**
+- **목적**: FortiManager 방화벽 정책 자동화 (Infrastructure as Code)
+- **기술스택**: Ansible, FortiManager API, Ansible Vault, Docker
+- **규모**: 3개 플레이북 (584 lines), fortinet.fortimanager collection
+- **기능**: 정책 조회/생성/수정, 백업/복원, 오브젝트 관리, Docker 배포 자동화
+- **성과**: 정책 배포 시간 90% 단축 (10시간 → 1시간), 수동 오류 100% 제거
+- **GitHub**: [github.com/qws941/policy](https://github.com/qws941/policy)
+
 **핵심 아키텍처 설계**:
 
 1. **Universal Observability Architecture**
