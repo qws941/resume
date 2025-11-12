@@ -352,6 +352,14 @@
 - **성과**: 정책 배포 시간 90% 단축 (10시간 → 1시간), 수동 오류 100% 제거
 - **GitHub**: [github.com/qws941/policy](https://github.com/qws941/policy)
 
+**9. NAS Infrastructure Deployment**
+- **목적**: Synology NAS 인프라 자동 배포 시스템
+- **기술스택**: Bash, rsync, SSH, Docker Compose, Synology DSM
+- **규모**: 9개 서비스 (Grafana, Prometheus, Loki, AlertManager, GitLab, Traefik, Splunk, Promtail, Node Exporter)
+- **기능**: 원격 Docker 관리, 자동 rsync 동기화, 멀티 서비스 오케스트레이션
+- **성과**: 배포 자동화로 수동 작업 100% 제거, 인프라 동기화 시간 95% 단축
+- **GitHub**: [github.com/qws941/claude/tree/main/infra](https://github.com/qws941/claude/tree/main/infra)
+
 **핵심 아키텍처 설계**:
 
 1. **Universal Observability Architecture**

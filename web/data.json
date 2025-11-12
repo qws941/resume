@@ -150,6 +150,13 @@
       "githubUrl": "https://github.com/qws941/policy"
     },
     {
+      "icon": "🏗️",
+      "title": "NAS Infrastructure Deployment",
+      "tech": "Bash · rsync · SSH · Docker Compose · Synology NAS",
+      "description": "Synology NAS 인프라 자동 배포, 9개 서비스 오케스트레이션, 원격 Docker 관리",
+      "githubUrl": "https://github.com/qws941/claude/tree/main/infra"
+    },
+    {
       "icon": "📜",
       "title": "Constitutional Governance System",
       "tech": "Bash · Python · JSONL · Git Hooks · v12.0",
