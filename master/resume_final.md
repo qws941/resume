@@ -283,12 +283,66 @@
 - **모니터링**: 중앙 집중식 Grafana Stack (Synology NAS), 15개 리스닝 포트, 99.9% 가용성
 
 **기술스택 & 도구**:
-- **AI/ML**: Claude Code (Sonnet 4.5), MCP Protocol (14 servers, 70+ tools), GitHub Copilot
+- **AI/ML**: Claude Code (Sonnet 4.5), MCP Protocol (22 servers, 145+ tools), GitHub Copilot
 - **컨테이너**: Docker, Docker Compose, Watchtower (자동 업데이트), Portainer API
 - **모니터링**: Grafana, Prometheus, Loki, Tempo, Splunk, cAdvisor, Node Exporter
 - **언어**: Python 3.9, Node.js 22, JavaScript/TypeScript, Shell Script
 - **CI/CD**: GitHub Actions, Cloudflare Workers, Git-based automation
 - **네트워크**: Traefik (Reverse Proxy), NFS v3/v4 (Synology integration), Multi-host Docker
+
+**세부 프로젝트 컴포넌트**:
+
+**1. ML Agent Selection System**
+- **목적**: ML 기반 자동 에이전트 라우팅 시스템
+- **기술스택**: Python, Flask, Scikit-learn, PostgreSQL, 22 MCP Servers
+- **규모**: 145+ 스크립트 관리, Constitutional Framework v12.0
+- **성과**: AI 작업 효율 80% 향상, 자동 에이전트 라우팅으로 의사결정 시간 70% 단축
+- **Live**: http://127.0.0.1:5001
+- **GitHub**: [github.com/qws941/claude](https://github.com/qws941/claude)
+
+**2. n8n Workflow Automation**
+- **목적**: Self-hosted 워크플로우 자동화 플랫폼
+- **기술스택**: n8n, PostgreSQL, Redis, Docker, 541 Nodes
+- **규모**: 2709+ 템플릿, API 오케스트레이션
+- **성과**: 반복 작업 자동화로 월 100+ 시간 절감, 워크플로우 재사용성 95% 향상
+- **Live**: https://n8n.jclee.me
+- **GitHub**: [github.com/qws941/n8n](https://github.com/qws941/n8n)
+
+**3. GitLab Enterprise Edition**
+- **목적**: Self-hosted DevOps 플랫폼 및 Container Registry
+- **기술스택**: GitLab EE 17.5.3, PostgreSQL 16.1, Redis 7.2, Traefik
+- **규모**: CI/CD pipelines, Container Registry, 7일 자동 백업
+- **성과**: Private 코드 호스팅, 자동화된 CI/CD, 컨테이너 이미지 관리
+- **Live**: https://gitlab.jclee.me
+- **GitHub**: [github.com/qws941/claude/tree/main/app/gitlab](https://github.com/qws941/claude/tree/main/app/gitlab)
+
+**4. Nginx Airgap Configuration**
+- **목적**: 폐쇄망 환경용 Nginx 설정 및 보안 강화
+- **기술스택**: Nginx 1.24+, Airgap Deployment, Security Hardening
+- **특징**: 패키지 사전 준비, 오프라인 설치 지원
+- **성과**: 폐쇄망 환경에서 100% 자급 배포 가능, 보안 설정 표준화
+- **GitHub**: [github.com/qws941/nginx](https://github.com/qws941/nginx)
+
+**5. Python Automation Framework**
+- **목적**: 인프라 자동화 프레임워크
+- **기술스택**: Python, Ansible, Bash, Git Hooks, 145+ Scripts
+- **특징**: 파일 거버넌스, AI 보상 시스템, 세션 연속성
+- **성과**: 인프라 운영 시간 60% 단축, 스크립트 재사용성 90% 향상
+- **GitHub**: [github.com/qws941/claude](https://github.com/qws941/claude)
+
+**6. Constitutional Governance System v12.0**
+- **목적**: 파일 생성 쿼터 관리 및 구조 거버넌스
+- **기술스택**: Bash, Python, JSONL, Git Hooks
+- **규모**: 파일 생성 쿼터 (3 scripts, 2 docs), 70% 유사도 감지, 자동 로깅
+- **성과**: 파일 중복 90% 감소, 프로젝트 구조 일관성 100% 유지
+- **GitHub**: [github.com/qws941/claude/blob/main/scripts/master-prevention-system.sh](https://github.com/qws941/claude/blob/main/scripts/master-prevention-system.sh)
+
+**7. AI Compensation Core**
+- **목적**: AI 한계 보상 시스템 (8가지 보상 메커니즘)
+- **기술스택**: Python, Pattern Detection, Multi-Model Validation
+- **보상 영역**: Context window, Hallucination 감지, Real-time data, Domain routing
+- **성과**: AI 오답률 70% 감소, 작업 신뢰도 95% 향상
+- **GitHub**: [github.com/qws941/claude/blob/main/scripts/ai-compensation-core.py](https://github.com/qws941/claude/blob/main/scripts/ai-compensation-core.py)
 
 **핵심 아키텍처 설계**:
 
@@ -321,11 +375,18 @@
 
 **Resume Portfolio (Cloudflare Workers + Observability)**
 - **배포**: https://resume.jclee.me (< 50ms 응답, 글로벌 CDN)
-- **기술**: Cloudflare Workers (152 KB), Grafana Loki 통합, Prometheus 메트릭
-- **인프라**: GitLab (Primary) + GitHub (Mirror, CI/CD)
-- **모니터링**: Web Vitals 추적, 실시간 로깅, Health Check 엔드포인트
-- **테스트**: 23/23 유닛 테스트, 10/10 E2E 테스트 통과
-- **성과**: Lighthouse 100점, Open Graph 소셜 미리보기, CSP 강화 보안
+- **기술스택**: Cloudflare Workers (152 KB), HTML/CSS, JSON-LD SEO, Grafana Loki 통합
+- **인프라**: GitLab (Primary, 192.168.50.215:2222) + GitHub (Mirror, CI/CD)
+- **CI/CD**: GitHub Actions 자동 배포, 배포 타임스탬프 주입
+- **모니터링**:
+  - Grafana Loki 실시간 로깅 (https://grafana.jclee.me/loki)
+  - Prometheus 메트릭 수집 (/metrics 엔드포인트)
+  - Web Vitals 추적 (LCP, FID, CLS, FCP, TTFB)
+  - Health Check (/health): 배포 시각, 가동 시간, 요청 통계
+- **보안**: CSP SHA-256 해시 (unsafe-inline 제거), HSTS, X-Frame-Options
+- **테스트**: 23/23 유닛 테스트, 10/10 E2E 테스트 (Playwright)
+- **성과**: Lighthouse 100점, 접근성 95%+, Open Graph 소셜 미리보기
+- **최신 배포**: 2025-11-12T01:04:49Z (Account: a8d9c67f586acdd15eebcc65ca3aa5bb)
 
 **Blacklist (IP 블랙리스트 관리 시스템)**
 - 아키텍처: PostgreSQL 15, Redis 7, Flask 3.0, React (Frontend)
