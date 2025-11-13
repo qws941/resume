@@ -8,40 +8,40 @@
     {
       "icon": "🏦",
       "title": "Nextrade Securities Exchange",
-      "description": "다자간매매체결회사 보안 인프라 구축 및 운영 (2024~현재)",
-      "stats": ["Financial", "150 Servers", "15+ Solutions"],
+      "description": "다자간 매매 체결 회사 보안 인프라 구축 및 운영 (2024 ~ 현재)",
+      "stats": ["Financial Sector", "150+ Servers", "15+ Security Solutions"],
       "highlight": true,
       "completePdfUrl": "https://github.com/qws941/resume/raw/master/resume/nextrade/exports/Nextrade_Full_Documentation.pdf"
     },
     {
       "icon": "📈",
       "title": "Quantec AI Trading Platform",
-      "description": "AI 주식투자 플랫폼 인프라 운영 (2022~2024)",
-      "stats": ["Financial", "AWS Hybrid"],
+      "description": "AI 기반 주식 투자 플랫폼 인프라 운영 (2022 ~ 2024)",
+      "stats": ["Financial Sector", "AWS Hybrid Cloud", "Platform Operations"],
       "pdfUrl": "https://github.com/qws941/resume/raw/master/resume/quantec/exports/TECHNICAL_OVERVIEW.pdf",
       "docxUrl": "https://github.com/qws941/resume/raw/master/resume/quantec/exports/TECHNICAL_OVERVIEW.docx"
     },
     {
       "icon": "🎓",
-      "title": "KMU Next-Generation System",
-      "description": "국민대학교 차세대 정보시스템 구축 (2021~2022)",
-      "stats": ["Education", "NSX-T"],
+      "title": "Kookmin University Next-Generation System",
+      "description": "국민대학교 차세대 정보 시스템 구축 (2021 ~ 2022)",
+      "stats": ["Education Sector", "VMware NSX-T", "System Integration"],
       "pdfUrl": "https://github.com/qws941/resume/raw/master/resume/kmu/exports/TECHNICAL_OVERVIEW.pdf",
       "docxUrl": "https://github.com/qws941/resume/raw/master/resume/kmu/exports/TECHNICAL_OVERVIEW.docx"
     },
     {
       "icon": "📞",
-      "title": "Telecom Call Center Infrastructure",
-      "description": "대규모 통신사 콜센터 인프라 구축 (2020~2021)",
-      "stats": ["Telecom", "1,000+ Users"],
+      "title": "Outsourced Call Center Infrastructure for Telecom",
+      "description": "대규모 통신사 콜센터 위탁 운영 인프라 구축 (2020 ~ 2021)",
+      "stats": ["Outsourced Operations", "Call Center", "1,000+ Users"],
       "pdfUrl": "https://github.com/qws941/resume/raw/master/resume/metanet/exports/TECHNICAL_OVERVIEW.pdf",
       "docxUrl": "https://github.com/qws941/resume/raw/master/resume/metanet/exports/TECHNICAL_OVERVIEW.docx"
     },
     {
       "icon": "✈️",
-      "title": "KAI Manufacturing Security",
-      "description": "한국항공우주산업 제조 보안 인프라 운영 (2017~2018)",
-      "stats": ["Manufacturing", "50+ Servers"],
+      "title": "Korea Aerospace Industries Manufacturing Security",
+      "description": "한국항공우주산업 제조 보안 인프라 운영 (2017 ~ 2018)",
+      "stats": ["Manufacturing Sector", "50+ Servers", "Security Management"],
       "pdfUrl": "https://github.com/qws941/resume/raw/master/resume/kai/exports/TECHNICAL_OVERVIEW.pdf",
       "docxUrl": "https://github.com/qws941/resume/raw/master/resume/kai/exports/TECHNICAL_OVERVIEW.docx"
     }
