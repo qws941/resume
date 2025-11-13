@@ -103,16 +103,8 @@
       "description": "시스템, Docker 컨테이너, 로그를 통합 모니터링하는 관찰성 플랫폼으로, 로그인 없이 접근 가능하며 Prometheus와 Loki를 활용해 실시간 가시성을 제공, 지연 시간 200ms 이내 유지",
       "dashboards": [
         {
-          "name": "System Overview",
-          "url": "https://grafana.jclee.me/d/system-overview"
-        },
-        {
-          "name": "Docker Monitoring",
-          "url": "https://grafana.jclee.me/d/docker-monitoring"
-        },
-        {
-          "name": "Logs Dashboard",
-          "url": "https://grafana.jclee.me/d/logs-dashboard"
+          "name": "Claude Code - Unified Monitoring",
+          "url": "https://grafana.jclee.me/d/41b7362d-deab-4688-a9a3-adb7f489febb/claude-code-unified-monitoring"
         },
         {
           "name": "Grafana Home",
