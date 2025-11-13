@@ -76,6 +76,9 @@
     <style><!-- CSS_PLACEHOLDER --></style>
 </head>
 <body>
+    <!-- Skip to content link for keyboard users -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
     <!-- Navigation -->
     <nav class="nav">
         <div class="nav-container">
@@ -105,7 +108,7 @@
     </nav>
 
     <!-- Hero -->
-    <section class="hero">
+    <section class="hero" id="main-content" role="main" aria-label="Introduction">
         <div class="container">
             <div class="hero-content">
                 <div class="hero-badge">Infrastructure & Security Engineer</div>
@@ -174,11 +177,11 @@
     </section>
 
     <!-- Resume -->
-    <section class="section resume-section-bg" id="resume">
+    <section class="section resume-section-bg" id="resume" role="region" aria-labelledby="resume-heading">
         <div class="container">
             <div class="section-header section-header-centered">
                 <div class="section-badge">Resume</div>
-                <h2 class="section-title">이재철 이력서</h2>
+                <h2 class="section-title" id="resume-heading">이재철 이력서</h2>
                 <p class="section-description section-description-full">
                     8.8년 경력 인프라·보안 엔지니어. 금융·제조 산업 인프라 운영 및 보안 솔루션 관리 경험.
                 </p>
@@ -213,11 +216,11 @@
     </section>
 
     <!-- Technical Documentation -->
-    <section class="section" id="documentation">
+    <section class="section" id="documentation" role="region" aria-labelledby="docs-heading">
         <div class="container">
             <div class="section-header">
                 <div class="section-badge">Technical Docs</div>
-                <h2 class="section-title">Career Projects Technical Documentation</h2>
+                <h2 class="section-title" id="docs-heading">Career Projects Technical Documentation</h2>
                 <p class="section-description">
                     8년간의 주요 경력 프로젝트 기술 문서. 금융·제조·교육·통신 산업에서의 인프라 및 보안 시스템 구축 경험.
                 </p>
@@ -229,11 +232,11 @@
     </section>
 
     <!-- Projects -->
-    <section class="section" id="projects">
+    <section class="section" id="projects" role="region" aria-labelledby="projects-heading">
         <div class="container">
             <div class="section-header">
                 <div class="section-badge">Portfolio</div>
-                <h2 class="section-title">Production Projects</h2>
+                <h2 class="section-title" id="projects-heading">Production Projects</h2>
                 <p class="section-description">
                     실제 운영 중인 프로덕션 시스템. 모든 프로젝트는 퍼블릭 Grafana 대시보드에서 실시간 모니터링되며, 자동화된 CI/CD를 통해 관리됩니다.
                 </p>
@@ -246,11 +249,11 @@
     </section>
 
     <!-- Contact -->
-    <section class="section" id="contact">
+    <section class="section" id="contact" role="region" aria-labelledby="contact-heading">
         <div class="container">
             <div class="section-header">
                 <div class="section-badge">Get In Touch</div>
-                <h2 class="section-title">Let's Work Together</h2>
+                <h2 class="section-title" id="contact-heading">Let's Work Together</h2>
                 <p class="section-description">
                     인프라 자동화, 보안 아키텍처, DevOps 전환에 대해 논의하고 싶으신가요? 연락주세요.
                 </p>
