@@ -10,7 +10,7 @@ const SELECTORS = {
 };
 
 const EXPECTED_COUNTS = {
-  PROJECTS: 5,
+  PROJECTS: 14, // Updated to match current data.json (2025-11-13)
   STATS: 8, // Updated to match live site
 };
 
@@ -91,7 +91,7 @@ test.describe('Responsive Design', () => {
     await page.goto('/');
 
     const projectCards = page.locator('.project-card');
-    await expect(projectCards).toHaveCount(5);
+    await expect(projectCards).toHaveCount(14);
     await expect(projectCards.first()).toBeVisible();
   });
 });
