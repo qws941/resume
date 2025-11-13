@@ -43,7 +43,7 @@ test.describe('Portfolio Homepage', () => {
     await expect(page.locator(SELECTORS.HERO_TITLE)).toContainText('인프라');
   });
 
-  test('should display 5 project cards', async ({ page }) => {
+  test('should display 14 project cards', async ({ page }) => {
     const projectCards = page.locator(SELECTORS.PROJECT_CARD);
     await expect(projectCards).toHaveCount(EXPECTED_COUNTS.PROJECTS);
   });
