@@ -100,7 +100,7 @@
       "icon": "📊",
       "title": "Grafana Observability Platform",
       "tech": "Grafana 12.2.1, Prometheus, Loki, Docker",
-      "description": "시스템, Docker 컨테이너, 로그를 통합 모니터링하는 관찰성 플랫폼으로, 로그인 없이 접근 가능하며 Prometheus와 Loki를 활용해 실시간 가시성을 제공, 지연 시간 200ms 이내 유지",
+      "description": "5개 대시보드(System Overview, Docker Monitoring, Logs Dashboard, AI 통합 모니터링, Home)를 운영하는 관찰성 플랫폼. Anonymous Viewer로 로그인 없이 접근 가능하며, Prometheus 메트릭스(CPU, Memory, Disk, Network)와 Loki 로그 수집을 통해 실시간 가시성 제공, API 응답 지연 200ms 이내 유지",
       "dashboards": [
         {
           "name": "System Overview",
