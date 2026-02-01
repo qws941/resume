@@ -23,7 +23,19 @@ CHANGED_FILES=$(git diff --name-only "$BASE_BRANCH"...HEAD 2>/dev/null || git di
 
 if [ -z "$CHANGED_FILES" ]; then
     echo "No changes detected"
-    echo "[]" > "$OUTPUT_DIR/affected_targets.json"
+    # Output object format for CI parsing (not array)
+    cat > "$OUTPUT_DIR/affected_targets.json" <<EOF
+{
+  "base_branch": "$BASE_BRANCH",
+  "changed_files_count": 0,
+  "portfolio": false,
+  "job_dashboard": false,
+  "data": false,
+  "infra": false,
+  "affected_targets_count": 0,
+  "has_build_changes": false
+}
+EOF
     exit 0
 fi
 
@@ -79,6 +91,26 @@ if ! command -v bazel &> /dev/null; then
     echo "$AFFECTED_PATHS" | tr ' ' '\n' | sort -u | grep -v '^$'
     echo "$AFFECTED_PATHS" | tr ' ' '\n' | sort -u | grep -v '^$' > "$OUTPUT_DIR/affected_targets.txt"
     
+    # Generate JSON output with boolean flags for CI
+    PORTFOLIO=$(echo "$CHANGED_FILES" | grep -qE "^typescript/portfolio-worker/|^typescript/data/" && echo "true" || echo "false")
+    JOB_DASHBOARD=$(echo "$CHANGED_FILES" | grep -qE "^typescript/job-automation/" && echo "true" || echo "false")
+    DATA=$(echo "$CHANGED_FILES" | grep -qE "^typescript/data/" && echo "true" || echo "false")
+    INFRA=$(echo "$CHANGED_FILES" | grep -qE "^infrastructure/" && echo "true" || echo "false")
+    AFFECTED_COUNT=$(echo "$AFFECTED_PATHS" | tr ' ' '\n' | grep -v '^$' | sort -u | wc -l)
+    
+    cat > "$OUTPUT_DIR/affected_targets.json" <<EOF
+{
+  "base_branch": "$BASE_BRANCH",
+  "changed_files_count": $(echo "$CHANGED_FILES" | wc -l),
+  "portfolio": $PORTFOLIO,
+  "job_dashboard": $JOB_DASHBOARD,
+  "data": $DATA,
+  "infra": $INFRA,
+  "affected_targets_count": $AFFECTED_COUNT,
+  "has_build_changes": $([ -n "$BUILD_CHANGES" ] && echo "true" || echo "false")
+}
+EOF
+    
     exit 0
 fi
 
@@ -108,11 +140,19 @@ echo "Test targets: $(wc -l < "$OUTPUT_DIR/test_targets.txt" 2>/dev/null || echo
 echo ""
 echo "Output saved to: $OUTPUT_DIR/"
 
-# Generate JSON output
+PORTFOLIO=$(echo "$CHANGED_FILES" | grep -qE "^typescript/portfolio-worker/|^typescript/data/" && echo "true" || echo "false")
+JOB_DASHBOARD=$(echo "$CHANGED_FILES" | grep -qE "^typescript/job-automation/" && echo "true" || echo "false")
+DATA=$(echo "$CHANGED_FILES" | grep -qE "^typescript/data/" && echo "true" || echo "false")
+INFRA=$(echo "$CHANGED_FILES" | grep -qE "^infrastructure/" && echo "true" || echo "false")
+
 cat > "$OUTPUT_DIR/affected_targets.json" << EOF
 {
   "base_branch": "$BASE_BRANCH",
   "changed_files_count": $(echo "$CHANGED_FILES" | wc -l),
+  "portfolio": $PORTFOLIO,
+  "job_dashboard": $JOB_DASHBOARD,
+  "data": $DATA,
+  "infra": $INFRA,
   "affected_targets_count": $(wc -l < "$OUTPUT_DIR/all_affected.txt" 2>/dev/null || echo 0),
   "has_build_changes": $([ -n "$BUILD_CHANGES" ] && echo "true" || echo "false"),
   "outputs": {
