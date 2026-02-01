@@ -97,7 +97,7 @@ test.describe("Mobile Responsiveness", () => {
     await page.waitForLoadState("networkidle");
 
     // Check main body text is at least 14px (minimum readable)
-    const bodyTexts = await page.locator("p, li, span").all();
+    const bodyTexts = await page.locator("p:not(small):not(sub):not(sup), li, span:not(small):not(sub):not(sup)").all();
 
     if (bodyTexts.length > 0) {
       let tooSmallCount = 0;
@@ -213,6 +213,10 @@ test.describe("Mobile Responsiveness", () => {
       expect(box).toBeTruthy();
 
       if (box) {
+        // Scroll element into view before clicking
+        // Playwright\'s .click() requires element visible in viewport
+        await clickable.scrollIntoViewIfNeeded();
+        
         // Use click instead of touchscreen.tap (works for mobile viewports without hasTouch)
         await clickable.click();
 
