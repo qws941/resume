@@ -41,7 +41,7 @@ test.describe("Portfolio Homepage", () => {
 
   test("should display hero section", async ({ page }) => {
     await checkElementVisible(page, SELECTORS.HERO_TITLE);
-    await expect(page.locator(SELECTORS.HERO_TITLE)).toContainText("이재철");
+    await expect(page.locator(SELECTORS.HERO_TITLE)).toContainText(/Jaecheol Lee|이재철/);
   });
 
   test("should display project cards", async ({ page }) => {
