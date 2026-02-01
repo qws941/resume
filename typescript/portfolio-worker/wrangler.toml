@@ -24,6 +24,10 @@ vars = { ENVIRONMENT = "production", LOKI_URL = "https://grafana.jclee.me/api/da
 routes = [
   { pattern = "resume.jclee.me", custom_domain = true }
 ]
+# Assets must be explicitly defined per environment
+[env.production.assets]
+directory = "./assets"
+binding = "ASSETS"
 # NOTE: job.jclee.me now served by job-automation-mcp/workers/ (modular architecture)
 [[env.production.d1_databases]]
 binding = "DB"

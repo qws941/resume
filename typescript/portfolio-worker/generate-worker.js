@@ -590,9 +590,10 @@ export default {
 
     try {
       // Static Assets (Fonts, etc.)
-      // Delegate to Cloudflare Worker Assets binding if available
       if (url.pathname.startsWith('/assets/') && env.ASSETS) {
-        return env.ASSETS.fetch(request);
+        const assetPath = url.pathname.replace('/assets/', '/');
+        const assetUrl = new URL(assetPath, request.url);
+        return env.ASSETS.fetch(new Request(assetUrl, request));
       }
 
       // Routing

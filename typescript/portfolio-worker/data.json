@@ -2,194 +2,111 @@
   "resumeDownload": {
     "pdfUrl": "https://resume.jclee.me/resume.pdf",
     "docxUrl": "https://gitlab.jclee.me/jclee/resume/-/raw/master/resumes/master/archive/resume_final.docx",
-    "mdUrl": "https://gitlab.jclee.me/jclee/resume/-/raw/master/resumes/master/resume_final.md"
+    "mdUrl": "https://gitlab.jclee.me/jclee/resume/-/raw/master/resumes/master/archive/resume_final.md"
   },
   "resume": [
     {
-      "icon": "🏦",
+      "icon": "",
       "title": "(주)아이티센 CTS",
-      "description": "대체거래소(ATS) 보안 관제 업무를 담당하고 있습니다. Splunk 기반 로그 분석, FortiGate 방화벽 정책 관리, 월간 보안 리포트 작성 등의 업무를 수행합니다.",
-      "period": "2025.03 ~ 현재",
-      "stats": ["보안관제", "컴플라이언스", "DR"],
-      "highlight": true,
-      "completePdfUrl": "https://gitlab.jclee.me/jclee/resume/-/raw/master/resumes/technical/nextrade/exports/Nextrade_Full_Documentation.pdf"
+      "description": "ATS 보안 관제 및 Splunk 로그 분석 시스템 운영",
+      "period": "2025.03 — Present",
+      "stats": ["Splunk", "FortiGate", "Security"],
+      "highlight": false,
+      "completePdfUrl": ""
     },
     {
-      "icon": "🏗️",
+      "icon": "",
       "title": "(주)가온누리정보시스템",
-      "description": "ATS 구축 프로젝트에서 보안 인프라 설계를 담당했습니다. 금융위원회 본인가 심사 기준에 맞춰 네트워크 분리 및 접근통제 정책을 수립했으며, FortiGate HA 구성을 통해 고가용성 환경을 구현했습니다.",
-      "period": "2024.03 ~ 2025.02",
-      "stats": ["아키텍처", "망분리", "인허가"],
+      "description": "ATS 보안 인프라 아키텍처 설계 및 네트워크 분리 구축",
+      "period": "2024.03 — 2025.02",
+      "stats": ["Architecture", "Network", "HA"],
       "highlight": false
     },
     {
-      "icon": "📈",
+      "icon": "",
       "title": "(주)콴텍투자일임",
-      "description": "AI 투자 서비스의 인프라 운영을 담당했습니다. AWS 환경에서 Prometheus/Grafana 기반 모니터링 시스템을 구축하고, 약 20대 서버의 통합 관리 체계를 마련했습니다.",
-      "period": "2022.08 ~ 2024.02",
-      "stats": ["AWS", "정책설계", "안정운영"],
+      "description": "AWS 클라우드 인프라 운영 및 모니터링 환경 구축",
+      "period": "2022.08 — 2024.02",
+      "stats": ["AWS", "Prometheus", "Grafana"],
       "highlight": false
     },
     {
-      "icon": "☁️",
+      "icon": "",
       "title": "(주)펀엔씨",
-      "description": "온프레미스에서 AWS로의 마이그레이션을 수행했습니다. VPC 설계 및 EKS 클러스터 구축을 담당했고, GitLab CI/CD 파이프라인을 구성했습니다.",
-      "period": "2022.05 ~ 2022.07",
-      "stats": ["AWS", "K8s", "DevOps"],
-      "highlight": false
-    },
-    {
-      "icon": "🎓",
-      "title": "(주)조인트리",
-      "description": "대학 전산 환경의 보안 강화 프로젝트에 참여했습니다. VMware NSX-T 기반 네트워크 세그멘테이션 구축 및 보안솔루션(방화벽, NAC, DLP 등) 설치를 담당했습니다.",
-      "period": "2021.09 ~ 2022.04",
-      "stats": ["NSX-T", "보안통합", "SI"],
-      "highlight": false
-    },
-    {
-      "icon": "📞",
-      "title": "(주)메타넷엠플랫폼",
-      "description": "콜센터 인프라 운영 및 재택근무 환경 구축을 담당했습니다. VPN 환경 구성과 Ansible 기반 서버 프로비저닝 자동화 작업을 수행했습니다.",
-      "period": "2019.12 ~ 2021.08",
-      "stats": ["VPN/NAC", "Ansible", "Python"],
-      "highlight": false
-    },
-    {
-      "icon": "✈️",
-      "title": "(주)엠티데이타",
-      "description": "방위산업체 KAI의 IT 인프라 운영을 담당했습니다. 서버/클라이언트 환경 관리 및 헬프데스크 업무를 수행했습니다.",
-      "period": "2017.02 ~ 2018.10",
-      "stats": ["서버운영", "방화벽", "망분리"],
+      "description": "AWS 마이그레이션 및 Kubernetes(EKS) CI/CD 파이프라인 구축",
+      "period": "2022.05 — 2022.07",
+      "stats": ["AWS", "EKS", "CI/CD"],
       "highlight": false
     }
   ],
   "projects": [
     {
-      "icon": "📊",
+      "icon": "",
       "title": "Observability Platform",
-      "tech": "Grafana, Prometheus, Loki, Docker",
-      "description": "Grafana/Prometheus/Loki 기반 모니터링 플랫폼을 구축하여 개인 프로젝트들의 메트릭과 로그를 수집하고 있습니다.",
-      "tagline": "모니터링 플랫폼",
-      "metrics": {
-        "dashboards": "10개 대시보드 운영",
-        "services": "15개 서비스 모니터링"
-      },
-      "related_skills": ["Grafana", "Prometheus", "Loki", "Docker"]
+      "tech": "Grafana, Prometheus, Loki",
+      "description": "메트릭/로그 통합 모니터링 시스템 구축",
+      "tagline": "Monitoring",
+      "metrics": {},
+      "related_skills": ["Grafana", "Prometheus", "Loki"]
     },
     {
-      "icon": "🦊",
+      "icon": "",
       "title": "GitLab Self-Hosted",
-      "tech": "GitLab, Docker, CI/CD",
-      "description": "개인 프로젝트 관리를 위해 GitLab을 자체 호스팅하여 운영하고 있습니다.",
-      "tagline": "Git 저장소",
-      "metrics": {
-        "repositories": "30개 프로젝트 관리"
-      },
+      "tech": "GitLab, Docker",
+      "description": "온프레미스 Git 저장소 및 CI/CD 파이프라인 운영",
+      "tagline": "DevOps",
+      "metrics": {},
       "related_skills": ["GitLab", "Docker", "CI/CD"]
     },
     {
-      "icon": "🔄",
+      "icon": "",
       "title": "n8n Automation",
-      "tech": "n8n, PostgreSQL, Docker",
-      "description": "반복 업무 자동화를 위해 n8n 워크플로우 플랫폼을 운영하고 있습니다.",
-      "tagline": "워크플로우 자동화",
-      "metrics": {
-        "workflows": "20개 워크플로우 운영"
-      },
-      "related_skills": ["n8n", "PostgreSQL", "Docker"]
+      "tech": "n8n, PostgreSQL",
+      "description": "인프라 운영 워크플로우 자동화",
+      "tagline": "Automation",
+      "metrics": {},
+      "related_skills": ["n8n", "PostgreSQL"]
     }
   ],
   "certifications": [
-    {
-      "name": "CCNP",
-      "issuer": "Cisco Systems",
-      "date": "2020.08"
-    },
-    {
-      "name": "RHCSA",
-      "issuer": "Red Hat",
-      "date": "2019.01"
-    },
-    {
-      "name": "CompTIA Linux+",
-      "issuer": "CompTIA",
-      "date": "2019.02"
-    },
-    {
-      "name": "LPIC Level 1",
-      "issuer": "Linux Professional Institute",
-      "date": "2019.02"
-    },
-    {
-      "name": "사무자동화산업기사",
-      "issuer": "한국산업인력공단",
-      "date": "2019.12"
-    },
-    {
-      "name": "리눅스마스터 2급",
-      "issuer": "한국정보통신진흥협회",
-      "date": "2019.01"
-    }
+    { "name": "CCNP", "issuer": "Cisco", "date": "2020.08" },
+    { "name": "RHCSA", "issuer": "Red Hat", "date": "2019.01" },
+    { "name": "CompTIA Linux+", "issuer": "CompTIA", "date": "2019.02" },
+    { "name": "LPIC-1", "issuer": "LPI", "date": "2019.02" }
   ],
   "skills": {
     "observability": {
       "title": "Observability",
-      "icon": "Activity",
+      "icon": "",
       "items": ["Grafana", "Prometheus", "Loki", "Splunk"]
     },
-    "cloud": ["AWS (EC2, VPC, EKS, S3)", "Docker", "Kubernetes", "Linux"],
+    "cloud": ["AWS", "Docker", "Kubernetes", "Linux"],
     "devops": ["GitLab CI/CD", "GitHub Actions", "Ansible", "Terraform"],
     "automation": ["Python", "Shell", "n8n"],
     "database": ["PostgreSQL", "MySQL", "Redis"],
     "security": ["FortiGate", "NAC", "DLP", "IPS"]
   },
   "hero": {
-    "badge": "Infrastructure Engineer",
+    "badge": "",
     "title": "이재철",
     "titleEn": "Jaecheol Lee",
-    "subtitle": "금융·제조·공공 분야 인프라 설계 및 운영\nObservability, 보안 인프라, 자동화"
+    "subtitle": "Infrastructure Engineer building reliable automation systems."
   },
   "sectionDescriptions": {
-    "resume": "금융, 제조, 공공 분야에서 인프라 설계 및 운영 경험을 쌓았습니다.",
-    "projects": "개인적으로 운영 중인 인프라입니다.",
-    "infrastructure": "실제 운영 중인 서비스입니다.",
-    "skills": "실무에서 활용하고 있는 기술입니다.",
-    "certifications": "취득한 자격증입니다.",
-    "contact": "연락처입니다."
+    "resume": "",
+    "projects": "",
+    "infrastructure": "",
+    "skills": "",
+    "certifications": "",
+    "contact": ""
   },
-  "achievements": [
-    "넥스트레이드 ATS 보안 인프라 설계 참여 (금융위 본인가 통과)",
-    "Grafana/Prometheus 기반 모니터링 체계 구축 경험",
-    "Ansible/n8n 기반 운영 자동화 경험"
-  ],
-  "infrastructure": [
-    {
-      "icon": "📊",
-      "title": "Grafana",
-      "description": "Prometheus + Loki 기반 모니터링",
-      "status": "running",
-      "url": "https://grafana.jclee.me/public-dashboards/8c91649fe829cb4905edf4a60579d0a0"
-    },
-    {
-      "icon": "🦊",
-      "title": "GitLab",
-      "description": "Self-hosted Git + CI/CD",
-      "status": "running",
-      "url": "https://gitlab.jclee.me"
-    },
-    {
-      "icon": "🔄",
-      "title": "n8n",
-      "description": "워크플로우 자동화",
-      "status": "running",
-      "url": "https://n8n.jclee.me"
-    }
-  ],
+  "achievements": [],
+  "infrastructure": [],
   "contact": {
     "email": "qws941@kakao.com",
-    "phone": "010-5757-9592",
+    "phone": "",
     "github": "https://github.com/qws941",
     "website": "https://resume.jclee.me",
-    "monitoring": "https://grafana.jclee.me/public-dashboards/8c91649fe829cb4905edf4a60579d0a0"
+    "monitoring": ""
   }
 }

@@ -3,7 +3,7 @@
  * @module validators
  */
 
-const logger = require('../logger');
+const logger = require("../logger");
 
 /**
  * Validate data.json structure and required fields
@@ -15,21 +15,22 @@ function validateData(data) {
 
   // Validate resumeDownload
   if (!data.resumeDownload) {
-    errors.push('Missing resumeDownload object');
+    errors.push("Missing resumeDownload object");
   } else {
     if (!data.resumeDownload.pdfUrl)
-      errors.push('Missing resumeDownload.pdfUrl');
+      errors.push("Missing resumeDownload.pdfUrl");
     if (!data.resumeDownload.docxUrl)
-      errors.push('Missing resumeDownload.docxUrl');
-    if (!data.resumeDownload.mdUrl) errors.push('Missing resumeDownload.mdUrl');
+      errors.push("Missing resumeDownload.docxUrl");
+    if (!data.resumeDownload.mdUrl) errors.push("Missing resumeDownload.mdUrl");
   }
 
   // Validate resume array
   if (!Array.isArray(data.resume)) {
-    errors.push('resume must be an array');
+    errors.push("resume must be an array");
   } else {
     data.resume.forEach((item, idx) => {
-      if (!item.icon) errors.push(`resume[${idx}]: missing icon`);
+      // Icon check removed for minimal design
+      // if (!item.icon) errors.push(`resume[${idx}]: missing icon`);
       if (!item.title) errors.push(`resume[${idx}]: missing title`);
       if (!item.description) errors.push(`resume[${idx}]: missing description`);
       if (!Array.isArray(item.stats))
@@ -45,10 +46,11 @@ function validateData(data) {
 
   // Validate projects array
   if (!Array.isArray(data.projects)) {
-    errors.push('projects must be an array');
+    errors.push("projects must be an array");
   } else {
     data.projects.forEach((item, idx) => {
-      if (!item.icon) errors.push(`projects[${idx}]: missing icon`);
+      // Icon check removed for minimal design
+      // if (!item.icon) errors.push(`projects[${idx}]: missing icon`);
       if (!item.title) errors.push(`projects[${idx}]: missing title`);
       if (!item.tech) errors.push(`projects[${idx}]: missing tech`);
       if (!item.description)
@@ -73,7 +75,7 @@ function validateData(data) {
 
   // Validate certifications
   if (!Array.isArray(data.certifications)) {
-    errors.push('certifications must be an array');
+    errors.push("certifications must be an array");
   } else {
     data.certifications.forEach((item, idx) => {
       if (!item.name) errors.push(`certifications[${idx}]: missing name`);
@@ -83,8 +85,8 @@ function validateData(data) {
   }
 
   // Validate skills
-  if (!data.skills || typeof data.skills !== 'object') {
-    errors.push('skills must be an object');
+  if (!data.skills || typeof data.skills !== "object") {
+    errors.push("skills must be an object");
   } else {
     // Dynamically validate all skill categories in the data
     // Supports two formats:
@@ -93,14 +95,20 @@ function validateData(data) {
     Object.entries(data.skills).forEach(([cat, value]) => {
       if (Array.isArray(value)) {
         // Simple array format - all items must be strings
-        if (value.length > 0 && !value.every(item => typeof item === 'string')) {
+        if (
+          value.length > 0 &&
+          !value.every((item) => typeof item === "string")
+        ) {
           errors.push(`skills.${cat} array items must be strings`);
         }
-      } else if (typeof value === 'object' && value !== null) {
+      } else if (typeof value === "object" && value !== null) {
         // Object format - must have items array with strings
         if (!Array.isArray(value.items)) {
           errors.push(`skills.${cat}.items must be an array`);
-        } else if (value.items.length > 0 && !value.items.every(item => typeof item === 'string')) {
+        } else if (
+          value.items.length > 0 &&
+          !value.items.every((item) => typeof item === "string")
+        ) {
           errors.push(`skills.${cat}.items must contain only strings`);
         }
       } else {
@@ -110,10 +118,10 @@ function validateData(data) {
   }
 
   if (errors.length > 0) {
-    throw new Error(`Data validation failed:\n  - ${errors.join('\n  - ')}`);
+    throw new Error(`Data validation failed:\n  - ${errors.join("\n  - ")}`);
   }
 
-  logger.log('✓ Data validation passed\n');
+  logger.log("✓ Data validation passed\n");
 }
 
 module.exports = {

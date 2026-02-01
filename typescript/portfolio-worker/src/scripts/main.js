@@ -1,24 +1,20 @@
-import { initLanguage } from './modules/i18n.js';
-import { initTheme } from './modules/theme.js';
-import { initWebVitals } from './modules/web-vitals.js';
-import { initializeABTesting } from './modules/ab-test.js';
-import { initUI } from './modules/ui.js';
+import { initWebVitals } from "./modules/web-vitals.js";
+import { initializeABTesting } from "./modules/ab-test.js";
+import { initUI } from "./modules/ui.js";
 
 // Initialize all modules
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener("DOMContentLoaded", () => {
   initUI();
-  initLanguage();
-  initTheme();
   initializeABTesting();
   initWebVitals();
 
   // Service Worker Registration
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
       navigator.serviceWorker
-        .register('/sw.js')
+        .register("/sw.js")
         .then((registration) => {
-          console.log('✅ Service Worker registered:', registration.scope);
+          console.log("✅ Service Worker registered:", registration.scope);
 
           // Check for updates periodically
           setInterval(
@@ -29,13 +25,13 @@ document.addEventListener('DOMContentLoaded', () => {
           ); // Check every hour
         })
         .catch((error) => {
-          console.log('❌ Service Worker registration failed:', error);
+          console.log("❌ Service Worker registration failed:", error);
         });
     });
 
     // Handle service worker updates
-    navigator.serviceWorker.addEventListener('controllerchange', () => {
-      console.log('🔄 Service Worker updated - page will reload');
+    navigator.serviceWorker.addEventListener("controllerchange", () => {
+      console.log("🔄 Service Worker updated - page will reload");
       window.location.reload();
     });
   }
