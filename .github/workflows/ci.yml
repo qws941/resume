@@ -70,7 +70,25 @@ jobs:
         id: affected
         run: |
           chmod +x tools/ci/affected.sh
-          ./tools/ci/affected.sh origin/${{ github.base_ref || 'master' }}
+
+          # Determine correct base ref:
+          # - Push events: use github.event.before (commit before push)
+          # - PR events: use origin/{target_branch}
+          # - workflow_dispatch: use HEAD~1 (deploy previous commit changes)
+          if [ "${{ github.event_name }}" = "push" ]; then
+            BASE_REF="${{ github.event.before }}"
+            # Handle initial push or force push (before might be all zeros)
+            if [ "$BASE_REF" = "0000000000000000000000000000000000000000" ]; then
+              BASE_REF="HEAD~1"
+            fi
+          elif [ "${{ github.event_name }}" = "pull_request" ]; then
+            BASE_REF="origin/${{ github.base_ref }}"
+          else
+            BASE_REF="HEAD~1"
+          fi
+
+          echo "Using base ref: $BASE_REF"
+          ./tools/ci/affected.sh "$BASE_REF"
 
           # Parse affected targets
           if [ -f .affected/affected_targets.json ]; then
@@ -80,7 +98,7 @@ jobs:
             INFRA=$(jq -r '.infra // false' .affected/affected_targets.json)
           else
             # Fallback: check changed files manually
-            CHANGED_FILES=$(git diff --name-only origin/${{ github.base_ref || 'master' }}...HEAD 2>/dev/null || git diff --name-only HEAD~1)
+            CHANGED_FILES=$(git diff --name-only "$BASE_REF"...HEAD 2>/dev/null || git diff --name-only HEAD~1)
             
             PORTFOLIO=$(echo "$CHANGED_FILES" | grep -q "typescript/portfolio-worker\|typescript/data" && echo "true" || echo "false")
             JOB_DASHBOARD=$(echo "$CHANGED_FILES" | grep -q "typescript/job-automation" && echo "true" || echo "false")
