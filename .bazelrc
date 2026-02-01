@@ -1,0 +1,64 @@
+# =============================================================================
+# BAZEL CONFIGURATION
+# =============================================================================
+# Google3-style monorepo build configuration
+
+# =============================================================================
+# COMMON SETTINGS
+# =============================================================================
+common --enable_platform_specific_config
+
+# =============================================================================
+# BUILD SETTINGS
+# =============================================================================
+build --jobs=auto
+build --verbose_failures
+build --show_timestamps
+
+# Reproducible builds
+build --incompatible_strict_action_env
+build --action_env=PATH
+build --action_env=HOME
+
+# =============================================================================
+# TEST SETTINGS
+# =============================================================================
+test --test_output=errors
+test --test_summary=terse
+test --test_verbose_timeout_warnings
+
+# =============================================================================
+# CI CONFIGURATION
+# =============================================================================
+build:ci --disk_cache=.bazel-cache
+build:ci --repository_cache=.bazel-cache/repos
+build:ci --color=no
+build:ci --curses=no
+build:ci --show_progress_rate_limit=10
+build:ci --loading_phase_threads=1
+
+# Faster CI builds (local execution)
+build:ci --spawn_strategy=local
+build:ci --strategy=Genrule=local
+
+# =============================================================================
+# RELEASE CONFIGURATION
+# =============================================================================
+build:release --compilation_mode=opt
+build:release --define=release=true
+
+# =============================================================================
+# QUERY CONFIGURATION
+# =============================================================================
+query --output=label
+query --keep_going
+
+# =============================================================================
+# LOCAL DEVELOPMENT
+# =============================================================================
+build:local --disk_cache=~/.cache/bazel
+build:local --color=yes
+build:local --curses=yes
+
+# Try importing local overrides
+try-import %workspace%/.bazelrc.local

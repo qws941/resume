@@ -1,0 +1,56 @@
+# Job Automation - Shared Services & Adapters
+#
+# This package contains shared business logic:
+# - adapters/: Platform adapters (Wanted, JobKorea, etc.)
+# - clients/: HTTP clients for external APIs
+# - contracts/: Data contracts and DTOs
+# - services/: Business logic (apply, session, auth, etc.)
+# - testing/: Shared test utilities
+
+package(default_visibility = ["//typescript/job-automation:__subpackages__"])
+
+# Adapters (platform-specific logic)
+filegroup(
+    name = "adapters",
+    srcs = glob(["adapters/*.js"]),
+)
+
+# HTTP clients
+filegroup(
+    name = "clients",
+    srcs = glob(["clients/**/*.js"]),
+)
+
+# Data contracts
+filegroup(
+    name = "contracts",
+    srcs = glob(["contracts/*.js"]),
+)
+
+# Business services
+filegroup(
+    name = "services",
+    srcs = glob(["services/**/*.js"]),
+    deps = [
+        ":adapters",
+        ":clients",
+        ":contracts",
+    ],
+)
+
+# Testing utilities
+filegroup(
+    name = "testing",
+    srcs = glob(["testing/*.js"]),
+)
+
+# All shared code (convenience target)
+filegroup(
+    name = "all",
+    srcs = [
+        ":adapters",
+        ":clients",
+        ":contracts",
+        ":services",
+    ],
+)

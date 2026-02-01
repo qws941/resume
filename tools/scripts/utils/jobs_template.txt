@@ -1,0 +1,5 @@
+# Job Batch Import Template
+# Format: job_id|title|company|location
+# Example:
+# 330219|클라우드 보안 설계 및 운영|코웨이|서울 구로구
+# 329831|클라우드 보안 엔지니어 (5년 이상)|스푼랩스|서울 강남구

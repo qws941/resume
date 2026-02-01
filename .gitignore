@@ -1,0 +1,106 @@
+.gemini/
+gha-creds-*.json
+.env
+.dev.vars
+.claude.json
+data/
+# Exception: allow i18n translations
+!typescript/portfolio-worker/src/scripts/data/
+# Exception: allow resume data (SSoT and applications)
+!typescript/data/
+!typescript/data/resumes/
+!typescript/data/resumes/master/
+!typescript/data/resumes/applications/
+!typescript/data/resumes/applications/**
+# But keep generated files ignored
+typescript/data/resumes/generated/
+
+# Legacy/AI tool metadata
+.todos.md
+.user
+
+# Dependencies
+node_modules/
+
+# Test artifacts
+coverage/
+playwright-report/
+test-results/
+.serena/
+lighthouse-report.json
+
+# Generated databases
+in-memoria.db
+in-memoria-vectors.db/
+
+# Generated outputs
+shinhan_filled.pptx
+
+# resumes/generated/ churn files (keep stable exports like resume_*.pdf)
+resumes/generated/ta_filled*.pptx
+resumes/generated/ta_preview*.png
+resumes/generated/shinhan*.pptx
+resumes/generated/*.bak
+resumes/generated/*_backup_*
+
+# Temporary files
+*.tmp
+*.temp
+*~
+*.swp
+*.swo
+*.bak
+*.backup
+*.backup-*
+*.old
+.env.backup*
+
+# Debug artifacts
+*.heapsnapshot
+Heap-*.heapsnapshot
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+.ruff_cache/
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+missfont.log
+cmd/resume-cli/resume-cli
+resume-cli
+
+# Shrimp task manager data
+infrastructure/todo/
+
+# OpenCode LSP
+.serena.json
+
+# Docker environment
+.docker.env
+
+# Infisical (keep .infisical.json for project config, exclude secrets)
+.env.infisical
+secrets.env
+
+# Session reports
+docs/sessions/*.md
+*.session-summary.md
+*.recovery-status.json
+
+# AI tool artifacts
+.opencode/
+.playwright-mcp/
+.sisyphus/
+_bmad-output/
+todo/
+
+# Wrangler cache
+.wrangler/
+.google_oath2.json
+.venv/

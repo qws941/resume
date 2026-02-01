@@ -1,0 +1,8 @@
+# Job Automation - MCP Server
+# Stealth crawlers, job application automation
+
+jclee@jclee.me
+
+# Security-sensitive
+per-file src/crawlers/** = jclee@jclee.me
+per-file src/shared/services/session/** = jclee@jclee.me

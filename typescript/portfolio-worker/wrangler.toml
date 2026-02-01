@@ -1,0 +1,31 @@
+name = "resume"
+main = "worker.js"
+compatibility_date = "2024-10-03"
+account_id = "a8d9c67f586acdd15eebcc65ca3aa5bb"
+
+# Static assets (fonts, images)
+[assets]
+directory = "./assets"
+binding = "ASSETS"
+
+# Staging environment
+[env.staging]
+name = "resume-staging"
+vars = { ENVIRONMENT = "staging", LOKI_URL = "https://grafana.jclee.me/api/datasources/proxy/uid/cfakfiakcs0zka/loki/api/v1/push" }
+[[env.staging.d1_databases]]
+binding = "DB"
+database_name = "resume-staging-db"
+database_id = "3d4321e8-9753-480b-b6f6-8b8ae6dc0749"
+
+# Production environment (default)
+[env.production]
+name = "resume"
+vars = { ENVIRONMENT = "production", LOKI_URL = "https://grafana.jclee.me/api/datasources/proxy/uid/cfakfiakcs0zka/loki/api/v1/push" }
+routes = [
+  { pattern = "resume.jclee.me", custom_domain = true }
+]
+# NOTE: job.jclee.me now served by job-automation-mcp/workers/ (modular architecture)
+[[env.production.d1_databases]]
+binding = "DB"
+database_name = "resume-prod-db"
+database_id = "6c723024-2527-490d-8ffd-38604b923166"

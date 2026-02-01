@@ -1,0 +1,11 @@
+[Unit]
+Description=Daily Resume Platform Sync
+Requires=resume-sync.service
+
+[Timer]
+OnCalendar=*-*-* 09:00:00
+Persistent=true
+RandomizedDelaySec=300
+
+[Install]
+WantedBy=timers.target

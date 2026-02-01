@@ -1,0 +1,9 @@
+# Cloudflare Terraform State
+*.tfstate
+*.tfstate.*
+.terraform/
+.terraform.lock.hcl
+
+# Sensitive files
+*.tfvars
+!*.tfvars.example

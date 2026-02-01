@@ -1,0 +1,10 @@
+{
+  "scripts": {
+    "build": "node generate-worker.js",
+    "start": "wrangler dev"
+  },
+  "devDependencies": {
+    "esbuild": "^0.27.2",
+    "html-minifier-terser": "^7.2.0"
+  }
+}

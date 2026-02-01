@@ -1,0 +1,301 @@
+# =============================================================================
+# TERRAFORM - INFRASTRUCTURE AS CODE PIPELINE
+# =============================================================================
+# Manages Cloudflare infrastructure:
+#   - DNS records
+#   - Workers configuration
+#   - KV namespaces
+#   - D1 databases
+#
+# Triggers:
+#   - PR: terraform plan (comment on PR)
+#   - Push to master: terraform apply (auto-approve)
+#   - Manual: plan or apply with target selection
+# =============================================================================
+
+name: Terraform
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - 'infrastructure/cloudflare/**'
+      - '.github/workflows/terraform.yml'
+  pull_request:
+    branches: [master]
+    paths:
+      - 'infrastructure/cloudflare/**'
+      - '.github/workflows/terraform.yml'
+  workflow_dispatch:
+    inputs:
+      action:
+        description: 'Terraform action'
+        required: true
+        default: 'plan'
+        type: choice
+        options:
+          - plan
+          - apply
+          - destroy
+      target:
+        description: 'Target resource (optional, e.g., cloudflare_worker_script.resume)'
+        required: false
+        type: string
+
+env:
+  TF_VERSION: '1.6.0'
+  TF_WORKING_DIR: 'infrastructure/cloudflare'
+  # Cloudflare provider configuration
+  CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+  CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+
+# Prevent concurrent Terraform operations
+concurrency:
+  group: terraform-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  # ===========================================================================
+  # TERRAFORM PLAN
+  # ===========================================================================
+  plan:
+    name: Terraform Plan
+    runs-on: ubuntu-latest
+    outputs:
+      has_changes: ${{ steps.plan.outputs.has_changes }}
+      plan_exitcode: ${{ steps.plan.outputs.exitcode }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ env.TF_VERSION }}
+          terraform_wrapper: false
+
+      - name: Terraform Format Check
+        id: fmt
+        run: terraform fmt -check -recursive
+        working-directory: ${{ env.TF_WORKING_DIR }}
+        continue-on-error: true
+
+      - name: Terraform Init
+        id: init
+        run: |
+          terraform init \
+            -backend-config="address=${{ secrets.TF_STATE_URL }}" \
+            -backend-config="lock_address=${{ secrets.TF_STATE_URL }}/lock" \
+            -backend-config="unlock_address=${{ secrets.TF_STATE_URL }}/lock" \
+            -backend-config="username=${{ secrets.TF_STATE_USERNAME }}" \
+            -backend-config="password=${{ secrets.TF_STATE_PASSWORD }}"
+        working-directory: ${{ env.TF_WORKING_DIR }}
+
+      - name: Terraform Validate
+        id: validate
+        run: terraform validate -no-color
+        working-directory: ${{ env.TF_WORKING_DIR }}
+
+      - name: Terraform Plan
+        id: plan
+        run: |
+          set +e
+          
+          # Build target argument if specified
+          TARGET_ARG=""
+          if [ -n "${{ inputs.target }}" ]; then
+            TARGET_ARG="-target=${{ inputs.target }}"
+          fi
+          
+          terraform plan -detailed-exitcode -no-color -out=tfplan $TARGET_ARG 2>&1 | tee plan_output.txt
+          EXITCODE=$?
+          
+          # Exit codes: 0 = no changes, 1 = error, 2 = changes present
+          echo "exitcode=$EXITCODE" >> $GITHUB_OUTPUT
+          
+          if [ $EXITCODE -eq 2 ]; then
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+          else
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+          fi
+          
+          # Fail on actual errors
+          if [ $EXITCODE -eq 1 ]; then
+            exit 1
+          fi
+        working-directory: ${{ env.TF_WORKING_DIR }}
+
+      - name: Upload Plan
+        uses: actions/upload-artifact@v4
+        with:
+          name: terraform-plan
+          path: |
+            ${{ env.TF_WORKING_DIR }}/tfplan
+            ${{ env.TF_WORKING_DIR }}/plan_output.txt
+          retention-days: 7
+
+      - name: Comment on PR
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const fs = require('fs');
+            const planOutput = fs.readFileSync('${{ env.TF_WORKING_DIR }}/plan_output.txt', 'utf8');
+            
+            // Truncate if too long
+            const maxLength = 60000;
+            const truncatedPlan = planOutput.length > maxLength 
+              ? planOutput.substring(0, maxLength) + '\n\n... (truncated)'
+              : planOutput;
+            
+            const hasChanges = '${{ steps.plan.outputs.has_changes }}' === 'true';
+            const emoji = hasChanges ? '⚠️' : '✅';
+            const status = hasChanges ? 'Changes Detected' : 'No Changes';
+            
+            const body = `## Terraform Plan ${emoji}
+            
+            **Status:** ${status}
+            **Workspace:** \`${{ env.TF_WORKING_DIR }}\`
+            
+            <details>
+            <summary>Click to expand plan output</summary>
+            
+            \`\`\`hcl
+            ${truncatedPlan}
+            \`\`\`
+            
+            </details>
+            
+            ---
+            *Plan generated by GitHub Actions*`;
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: body
+            });
+
+  # ===========================================================================
+  # TERRAFORM APPLY
+  # ===========================================================================
+  apply:
+    name: Terraform Apply
+    runs-on: ubuntu-latest
+    needs: [plan]
+    if: |
+      (github.event_name == 'push' && github.ref == 'refs/heads/master' && needs.plan.outputs.has_changes == 'true') ||
+      (github.event_name == 'workflow_dispatch' && inputs.action == 'apply')
+    environment:
+      name: production/infrastructure
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ env.TF_VERSION }}
+
+      - name: Download Plan
+        uses: actions/download-artifact@v4
+        with:
+          name: terraform-plan
+          path: ${{ env.TF_WORKING_DIR }}
+
+      - name: Terraform Init
+        run: |
+          terraform init \
+            -backend-config="address=${{ secrets.TF_STATE_URL }}" \
+            -backend-config="lock_address=${{ secrets.TF_STATE_URL }}/lock" \
+            -backend-config="unlock_address=${{ secrets.TF_STATE_URL }}/lock" \
+            -backend-config="username=${{ secrets.TF_STATE_USERNAME }}" \
+            -backend-config="password=${{ secrets.TF_STATE_PASSWORD }}"
+        working-directory: ${{ env.TF_WORKING_DIR }}
+
+      - name: Terraform Apply
+        run: terraform apply -auto-approve tfplan
+        working-directory: ${{ env.TF_WORKING_DIR }}
+
+      - name: Post Apply Summary
+        run: |
+          echo "## Terraform Apply Complete ✅" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Infrastructure changes have been applied." >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Commit:** \`${{ github.sha }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "**Actor:** @${{ github.actor }}" >> $GITHUB_STEP_SUMMARY
+
+  # ===========================================================================
+  # DRIFT DETECTION (Scheduled)
+  # ===========================================================================
+  drift-detection:
+    name: Drift Detection
+    runs-on: ubuntu-latest
+    if: github.event_name == 'schedule'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ env.TF_VERSION }}
+
+      - name: Terraform Init
+        run: |
+          terraform init \
+            -backend-config="address=${{ secrets.TF_STATE_URL }}" \
+            -backend-config="lock_address=${{ secrets.TF_STATE_URL }}/lock" \
+            -backend-config="unlock_address=${{ secrets.TF_STATE_URL }}/lock" \
+            -backend-config="username=${{ secrets.TF_STATE_USERNAME }}" \
+            -backend-config="password=${{ secrets.TF_STATE_PASSWORD }}"
+        working-directory: ${{ env.TF_WORKING_DIR }}
+
+      - name: Check for Drift
+        id: drift
+        run: |
+          set +e
+          terraform plan -detailed-exitcode -no-color 2>&1 | tee drift_output.txt
+          EXITCODE=$?
+          
+          if [ $EXITCODE -eq 2 ]; then
+            echo "drift_detected=true" >> $GITHUB_OUTPUT
+            echo "::warning::Infrastructure drift detected!"
+          else
+            echo "drift_detected=false" >> $GITHUB_OUTPUT
+          fi
+        working-directory: ${{ env.TF_WORKING_DIR }}
+
+      - name: Create Issue for Drift
+        if: steps.drift.outputs.drift_detected == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const driftOutput = fs.readFileSync('${{ env.TF_WORKING_DIR }}/drift_output.txt', 'utf8');
+            
+            github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: '⚠️ Infrastructure Drift Detected',
+              body: `## Infrastructure Drift Detected
+              
+              Terraform detected differences between the state and actual infrastructure.
+              
+              <details>
+              <summary>Drift Details</summary>
+              
+              \`\`\`hcl
+              ${driftOutput.substring(0, 60000)}
+              \`\`\`
+              
+              </details>
+              
+              **Action Required:** Review and either update Terraform configuration or apply to reconcile.
+              
+              ---
+              *Detected by scheduled drift detection*`,
+              labels: ['infrastructure', 'drift', 'needs-review']
+            });

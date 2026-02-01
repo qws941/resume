@@ -1,0 +1,73 @@
+{
+  "name": "resume",
+  "version": "1.0.117",
+  "description": "Personal resume management system with multi-format output",
+  "main": "typescript/portfolio-worker/worker.js",
+  "workspaces": [
+    "typescript/portfolio-worker",
+    "typescript/job-automation",
+    "typescript/cli",
+    "typescript/data"
+  ],
+  "scripts": {
+    "strip-exif": "exiftool -all= -overwrite_original web/*.png web/*.webp 2>/dev/null || echo 'exiftool not found - skipping'",
+    "sync:data": "node tools/scripts/utils/sync-resume-data.js",
+    "sync:pptx": "python3 tools/scripts/build/generate_shinhan_pptx.py",
+    "sync:all": "npm run sync:data && npm run sync:pptx",
+    "build": "cd typescript/portfolio-worker && node generate-worker.js",
+    "build:full": "npm run build && npm run cli:build",
+    "build:all": "npm run build:full",
+    "version:bump": "npm version patch --no-git-tag-version",
+    "deploy": "npm run version:bump && npm run build:full && node typescript/cli/bin/run.js deploy --worker-file typescript/portfolio-worker/worker.js --dir typescript/job-automation/workers --env production",
+    "cli:build": "echo 'No build needed for Node CLI'",
+    "cli:verify": "node typescript/cli/bin/run.js verify",
+    "test": "cd typescript/job-automation && npm test",
+    "test:e2e": "playwright test",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "lint:agents": "bash tools/scripts/verification/verify-agents-compliance.sh",
+    "typecheck": "tsc --project jsconfig.json --noEmit",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "dev": "cd web && wrangler dev",
+    "deploy:wrangler": "npm run version:bump && npm run build:full && cd web && wrangler deploy",
+    "cli:install": "echo 'Run: npm link typescript/cli'",
+    "docker:build:dev": "docker build --target builder -t resume:dev .",
+    "docker:run": "docker run -p 3000:3000 --env-file .docker.env resume:latest",
+    "docker:run:dev": "docker run -p 3000:3000 -e NODE_ENV=development -v $(pwd)/web:/app/web resume:latest",
+    "docker:compose": "docker-compose up -d",
+    "docker:compose:dev": "NODE_ENV=development docker-compose up",
+    "docker:compose:prod": "docker-compose --profile production up -d",
+    "docker:logs": "docker-compose logs -f",
+    "docker:stop": "docker-compose down",
+    "docker:clean": "docker rmi resume:latest resume:dev 2>/dev/null || true"
+  },
+  "keywords": [
+    "resume",
+    "portfolio",
+    "cloudflare-workers",
+    "jamstack"
+  ],
+  "author": "Jaecheol Lee <qws941@kakao.com>",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.22.1"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.57.0",
+    "@sentry/browser": "^10.32.1",
+    "@sentry/cli": "^2.58.4",
+    "@types/jest": "^30.0.0",
+    "@types/node": "^24.10.4",
+    "eslint": "^9.39.2",
+    "html-minifier-terser": "^7.2.0",
+    "jest": "^30.2.0",
+    "prettier": "^3.7.4",
+    "sharp": "^0.34.5",
+    "typescript": "^5.9.3",
+    "wrangler": "^4.54.0"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}

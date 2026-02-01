@@ -1,0 +1,94 @@
+# Shared CI/CD Configuration
+# Common variables, cache settings, and reusable job templates
+
+variables:
+  NODE_VERSION: "20"
+  GO_VERSION: "1.23"
+  WORKER_NAME: "resume"
+
+# Cache configurations
+.node-cache: &node-cache
+  key: node-${CI_COMMIT_REF_SLUG}
+  paths:
+    - node_modules/
+    - .npm/
+  policy: pull-push
+
+.go-cache: &go-cache
+  key: go-${CI_COMMIT_REF_SLUG}
+  paths:
+    - .go/pkg/mod/
+    - .go/build-cache/
+  policy: pull-push
+
+# Default before_script for Node.js jobs
+.node-setup:
+  before_script:
+    - |
+      unset npm_config_prefix 2>/dev/null || true
+      if [ -f "$HOME/.nvm/nvm.sh" ]; then
+        export NVM_DIR="$HOME/.nvm"
+        source "$NVM_DIR/nvm.sh" --no-use
+        nvm use 20 --silent 2>/dev/null || nvm use default --silent 2>/dev/null || true
+      fi
+
+# Default before_script for Go jobs
+.go-setup:
+  before_script:
+    - |
+      export GOPATH="${CI_PROJECT_DIR}/.go"
+      export GOCACHE="${CI_PROJECT_DIR}/.go/build-cache"
+      export PATH="${GOPATH}/bin:${PATH}"
+      mkdir -p "${GOPATH}" "${GOCACHE}"
+      go version
+
+# Rule templates for change-based triggers
+.rules-web:
+  rules:
+    - changes:
+        - web/**/*
+        - package.json
+        - package-lock.json
+      when: always
+    - when: manual
+      allow_failure: true
+
+.rules-cli:
+  rules:
+    - changes:
+        - cmd/**/*
+        - go.mod
+        - go.sum
+      when: always
+    - when: manual
+      allow_failure: true
+
+.rules-mcp:
+  rules:
+    - changes:
+        - job-automation-mcp/**/*
+      when: always
+    - when: manual
+      allow_failure: true
+
+.rules-always:
+  rules:
+    - when: always
+
+# Notification template
+.notify-template:
+  script:
+    - |
+      APP_VERSION=$(cat VERSION 2>/dev/null || echo "unknown")
+      curl -s -X POST "https://n8n.jclee.me/webhook/gitlab-push" \
+        -H "Content-Type: application/json" \
+        -d "{
+          \"event\": \"${CI_JOB_NAME}\",
+          \"version\": \"$APP_VERSION\",
+          \"commit_sha\": \"${CI_COMMIT_SHORT_SHA}\",
+          \"author\": \"${GITLAB_USER_NAME}\",
+          \"status\": \"${CI_JOB_STATUS}\",
+          \"pipeline_id\": \"${CI_PIPELINE_ID}\",
+          \"pipeline_url\": \"https://gitlab.jclee.me/${CI_PROJECT_PATH}/-/pipelines/${CI_PIPELINE_ID}\",
+          \"timestamp\": \"$(date -u +'%Y-%m-%dT%H:%M:%SZ')\"
+        }" && echo "Notification sent"

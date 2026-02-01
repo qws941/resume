@@ -1,0 +1,172 @@
+{
+  "name": "Resume Portfolio - Health Check Monitor (OAuth2)",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 5
+            }
+          ]
+        }
+      },
+      "id": "schedule-trigger",
+      "name": "Every 5 Minutes",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [250, 300]
+    },
+    {
+      "parameters": {
+        "url": "https://resume.jclee.me/health",
+        "method": "GET",
+        "options": {
+          "timeout": 10000
+        }
+      },
+      "id": "http-healthcheck",
+      "name": "Check Resume Health",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [450, 300],
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "combineOperation": "any"
+          },
+          "conditions": [
+            {
+              "id": "condition-http-error",
+              "leftValue": "={{ $json.statusCode }}",
+              "rightValue": 200,
+              "operator": {
+                "type": "number",
+                "operation": "notEquals"
+              }
+            },
+            {
+              "id": "condition-timeout",
+              "leftValue": "={{ $json.error }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "if-error",
+      "name": "Is Down?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [650, 300]
+    },
+    {
+      "parameters": {
+        "resource": "message",
+        "operation": "post",
+        "channel": "#monitoring",
+        "text": "🚨 Resume Portfolio Down",
+        "attachments": [],
+        "blocksUi": {
+          "blocksValues": [
+            {
+              "type": "section",
+              "fields": {
+                "fieldsValues": [
+                  {
+                    "type": "markdown",
+                    "text": "=*URL:*\nhttps://resume.jclee.me"
+                  },
+                  {
+                    "type": "markdown",
+                    "text": "=*Status:*\n{{ $('Check Resume Health').item.json.statusCode || 'Timeout' }}"
+                  },
+                  {
+                    "type": "markdown",
+                    "text": "=*Time:*\n{{ $now.toISO() }}"
+                  },
+                  {
+                    "type": "markdown",
+                    "text": "=*Error:*\n{{ $('Check Resume Health').item.json.error || 'HTTP ' + $('Check Resume Health').item.json.statusCode }}"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "context",
+              "elements": {
+                "elementsValues": [
+                  {
+                    "type": "markdown",
+                    "text": "Triggered by n8n Health Check Monitor"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "otherOptions": {}
+      },
+      "id": "slack-oauth",
+      "name": "Send Slack Alert (OAuth2)",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.3,
+      "position": [850, 200],
+      "credentials": {
+        "slackOAuth2Api": {
+          "id": "1",
+          "name": "Slack OAuth2 API"
+        }
+      },
+      "notes": "Uses Slack OAuth2 credential registered in n8n"
+    }
+  ],
+  "connections": {
+    "Every 5 Minutes": {
+      "main": [
+        [
+          {
+            "node": "Check Resume Health",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Resume Health": {
+      "main": [
+        [
+          {
+            "node": "Is Down?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is Down?": {
+      "main": [
+        [
+          {
+            "node": "Send Slack Alert (OAuth2)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null
+}

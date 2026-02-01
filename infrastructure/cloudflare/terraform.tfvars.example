@@ -1,0 +1,5 @@
+# Example tfvars - copy to terraform.tfvars and fill in values
+cloudflare_api_key    = ""
+cloudflare_email      = ""
+cloudflare_account_id = ""
+zone_id               = ""

@@ -1,0 +1,19 @@
+# Resume CLI - Deployment Tool
+load("@rules_shell//shell:sh_binary.bzl", "sh_binary")
+
+package(default_visibility = ["//typescript:__subpackages__"])
+
+filegroup(
+    name = "sources",
+    srcs = glob(
+        ["**/*.js", "**/*.json"],
+        exclude = ["node_modules/**"],
+    ),
+)
+
+# CLI binary
+sh_binary(
+    name = "cli",
+    srcs = ["bin/run.js"],
+    data = [":sources"],
+)
