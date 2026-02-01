@@ -2,7 +2,7 @@
 
 > Parent: [../AGENTS.md](../AGENTS.md)
 
-**Generated:** 2026-01-11
+**Generated:** 2026-02-01
 
 ## OVERVIEW
 
