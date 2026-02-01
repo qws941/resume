@@ -1008,6 +1008,39 @@ export default {
       }
 
       // ============================================================
+      // LINK CLICK TRACKING ENDPOINT
+      // ============================================================
+      if (url.pathname === '/api/track' && request.method === 'POST') {
+        try {
+          const trackingData = await request.json();
+          
+          // Validate tracking data structure
+          if (!trackingData || typeof trackingData !== 'object') {
+            throw new Error('Invalid tracking object');
+          }
+          if (!trackingData.event) {
+            throw new Error('Missing event field');
+          }
+          
+          // Log to Loki for observability
+          ctx.waitUntil(logToLoki(env, \`Track: \${trackingData.event} - \${trackingData.type || 'N/A'}\`, 'INFO', {
+            path: '/api/track',
+            event: trackingData.event,
+            type: trackingData.type,
+            language: trackingData.language,
+            href: trackingData.href || ''
+          }));
+          
+          metrics.requests_success++;
+          return new Response('', { status: 204 }); // No Content (fire-and-forget)
+        } catch (err) {
+          ctx.waitUntil(logToLoki(env, \`Tracking error: \${err.message}\`, 'ERROR'));
+          return new Response('', { status: 204 }); // Still return 204 for fire-and-forget
+        }
+      }
+
+
+      // ============================================================
       // ANALYTICS ENDPOINT (A/B Testing Data)
       // ============================================================
       if (url.pathname === '/api/analytics' && request.method === 'POST') {
@@ -1084,6 +1117,68 @@ export default {
           });
         }
       }
+
+      // ============================================================
+      // METRICS AGGREGATION ENDPOINT (GET) - NEW FOR PHASE 6b
+      // ============================================================
+      if (url.pathname === '/api/metrics' && request.method === 'GET') {
+        try {
+          const metricsResponse = {
+            status: 'healthy',
+            timestamp: new Date().toISOString(),
+            
+            // HTTP Metrics
+            http: {
+              requests_total: metrics.requests_total,
+              requests_success: metrics.requests_success,
+              requests_error: metrics.requests_error,
+              error_rate: metrics.requests_total > 0 
+                ? (metrics.requests_error / metrics.requests_total * 100).toFixed(2) + '%'
+                : '0%',
+              response_time_ms: metrics.response_times.length > 0 
+                ? Math.round(metrics.response_times.reduce((a, b) => a + b) / metrics.response_times.length)
+                : 0
+            },
+            
+            // Web Vitals Stats
+            vitals: metrics.vitals_received > 0 ? {
+              count: metrics.vitals_received,
+              avg_lcp_ms: metrics.vitals_received > 0 ? Math.round(metrics.vitals_sum.lcp / metrics.vitals_received) : 0,
+              avg_fid_ms: metrics.vitals_received > 0 ? Math.round(metrics.vitals_sum.fid / metrics.vitals_received) : 0,
+              avg_cls: metrics.vitals_received > 0 ? (metrics.vitals_sum.cls / metrics.vitals_received).toFixed(3) : '0'
+            } : null,
+            
+            // Tracking Events Summary
+            tracking: {
+              note: 'For detailed tracking data, query Loki logs with filter path=/api/track'
+            }
+          };
+          
+          ctx.waitUntil(logToLoki(env, \`Metrics GET: \${metrics.requests_total} requests, \${metrics.vitals_received} vitals\`, 'INFO', {
+            path: '/api/metrics',
+            method: 'GET',
+            requests_total: metrics.requests_total
+          }));
+          
+          return new Response(JSON.stringify(metricsResponse), {
+            headers: {
+              ...SECURITY_HEADERS,
+              'Content-Type': 'application/json',
+              'Cache-Control': 'public, max-age=60'
+            }
+          });
+        } catch (err) {
+          ctx.waitUntil(logToLoki(env, \`Metrics GET error: \${err.message}\`, 'ERROR'));
+          return new Response(JSON.stringify({ error: 'Failed to retrieve metrics', status: 'error' }), {
+            status: 500,
+            headers: {
+              ...SECURITY_HEADERS,
+              'Content-Type': 'application/json'
+            }
+          });
+        }
+      }
+
 
       if (url.pathname === '/robots.txt') {
         metrics.requests_success++;

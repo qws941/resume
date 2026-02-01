@@ -435,37 +435,44 @@
       console.error('Web Vitals tracking failed:', e);
     }
 
-    // Track key user interactions (for conversion funnel)
-    document.addEventListener('click', (e) => {
-      const target = e.target.closest('a');
-      if (target) {
-        const href = target.getAttribute('href');
+    // Custom Metrics Tracking System (Phase 6b)
+    (function initTracking() {
+      const TRACKING_ENDPOINT = '/api/track';
+      
+      // Track link clicks with data-track attribute
+      document.addEventListener('click', function(e) {
+        const trackAttr = e.target.closest('[data-track]');
+        if (!trackAttr) return;
         
-        // Track resume downloads
-        if (href && href.includes('resume') && href.includes('download')) {
-          navigator.sendBeacon('/api/event', JSON.stringify({
-            event: 'resume_download',
-            format: href.includes('pdf') ? 'PDF' : 'DOCX'
-          }));
-        }
+        const trackType = trackAttr.dataset.track;
+        const href = trackAttr.href || 'unknown';
         
-        // Track GitHub clicks
-        if (href && href.includes('github.com')) {
-          navigator.sendBeacon('/api/event', JSON.stringify({
-            event: 'github_click',
-            url: href
+        // Send tracking event (fire and forget)
+        navigator.sendBeacon(TRACKING_ENDPOINT, JSON.stringify({
+          event: 'link_click',
+          type: trackType,
+          href: href,
+          timestamp: new Date().toISOString(),
+          language: document.documentElement.lang || 'ko'
+        }));
+      }, { capture: true });
+      
+      // Track page visibility for session duration
+      let sessionStart = Date.now();
+      document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+          const sessionDuration = Math.round((Date.now() - sessionStart) / 1000);
+          navigator.sendBeacon(TRACKING_ENDPOINT, JSON.stringify({
+            event: 'session_end',
+            duration: sessionDuration,
+            language: document.documentElement.lang || 'ko'
           }));
+        } else {
+          sessionStart = Date.now();
         }
-        
-        // Track contact interactions
-        if (href && (href.startsWith('mailto:') || href.includes('contact'))) {
-          navigator.sendBeacon('/api/event', JSON.stringify({
-            event: 'contact_click',
-            method: href.startsWith('mailto:') ? 'email' : 'form'
-          }));
-        }
-      }
-    }, { capture: true });
+      });
+    })();
+    
     </script>
 
     <!-- JSON-LD Structured Data: Breadcrumb List -->

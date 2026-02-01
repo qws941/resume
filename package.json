@@ -1,6 +1,6 @@
 {
   "name": "resume",
-  "version": "1.0.124",
+  "version": "1.0.126",
   "description": "Personal resume management system with multi-format output",
   "main": "typescript/portfolio-worker/worker.js",
   "workspaces": [

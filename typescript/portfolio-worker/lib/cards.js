@@ -490,31 +490,31 @@ function generateContactGrid(contactData) {
                     <div class="contact-item reveal-on-scroll" role="listitem">
                         <div class="contact-label">Email</div>
                         <div class="contact-value">
-                            <a href="mailto:${escapeHtml(contactData.email)}" aria-label="Send email to ${escapeHtml(contactData.email)}">${escapeHtml(contactData.email)}</a>
+                            <a href="mailto:${escapeHtml(contactData.email)}" data-track="email" aria-label="Send email to ${escapeHtml(contactData.email)}">${escapeHtml(contactData.email)}</a>
                         </div>
                     </div>
                     <div class="contact-item reveal-on-scroll" role="listitem">
                         <div class="contact-label">Phone</div>
                         <div class="contact-value">
-                            <a href="tel:${escapeHtml(contactData.phone)}" aria-label="Call ${escapeHtml(contactData.phone)}">${escapeHtml(contactData.phone)}</a>
+                            <a href="tel:${escapeHtml(contactData.phone)}" data-track="phone" aria-label="Call ${escapeHtml(contactData.phone)}">${escapeHtml(contactData.phone)}</a>
                         </div>
                     </div>
                     <div class="contact-item reveal-on-scroll" role="listitem">
                         <div class="contact-label">GitHub</div>
                         <div class="contact-value">
-                            <a href="${escapeHtml(contactData.github)}" target="_blank" rel="noopener noreferrer" aria-label="Visit GitHub profile (opens in new tab)">${escapeHtml(githubDisplay)}</a>
+                            <a href="${escapeHtml(contactData.github)}" data-track="github" target="_blank" rel="noopener noreferrer" aria-label="Visit GitHub profile (opens in new tab)">${escapeHtml(githubDisplay)}</a>
                         </div>
                     </div>
                     <div class="contact-item reveal-on-scroll" role="listitem">
                         <div class="contact-label">Website</div>
                         <div class="contact-value">
-                            <a href="${escapeHtml(contactData.website)}" target="_blank" rel="noopener noreferrer" aria-label="Visit website (opens in new tab)">${escapeHtml(websiteDisplay)}</a>
+                            <a href="${escapeHtml(contactData.website)}" data-track="website" target="_blank" rel="noopener noreferrer" aria-label="Visit website (opens in new tab)">${escapeHtml(websiteDisplay)}</a>
                         </div>
                     </div>
                     <div class="contact-item reveal-on-scroll" role="listitem">
                         <div class="contact-label">Monitoring</div>
                         <div class="contact-value">
-                            <a href="${escapeHtml(contactData.monitoring)}" target="_blank" rel="noopener noreferrer" aria-label="View Grafana monitoring dashboard (opens in new tab)">${escapeHtml(monitoringDisplay)}</a>
+                            <a href="${escapeHtml(contactData.monitoring)}" data-track="monitoring" target="_blank" rel="noopener noreferrer" aria-label="View Grafana monitoring dashboard (opens in new tab)">${escapeHtml(monitoringDisplay)}</a>
                         </div>
                     </div>
                 </div>
