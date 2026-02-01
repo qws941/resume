@@ -1,5 +1,5 @@
 // @ts-check
-const { test, expect } = require('@playwright/test');
+const { test, expect } = require("@playwright/test");
 
 /**
  * Mobile E2E Tests
@@ -19,23 +19,23 @@ const { test, expect } = require('@playwright/test');
  * - Viewport-specific layouts
  */
 
-test.describe('Mobile Responsiveness', () => {
-  test('should load page successfully', async ({ page }) => {
-    await page.goto('/');
+test.describe("Mobile Responsiveness", () => {
+  test("should load page successfully", async ({ page }) => {
+    await page.goto("/");
     await expect(page).toHaveTitle(/이재철/);
 
     // Check main content is visible (use first() to avoid strict mode violation)
-    const mainContent = page.locator('#main-content, main, body').first();
+    const mainContent = page.locator("#main-content, main, body").first();
     await expect(mainContent).toBeVisible();
   });
 
-  test('should have touch-friendly interactive elements', async ({ page }) => {
-    await page.goto('/');
-    await page.waitForLoadState('networkidle');
+  test("should have touch-friendly interactive elements", async ({ page }) => {
+    await page.goto("/");
+    await page.waitForLoadState("networkidle");
 
     // Get all interactive elements (buttons and primary links)
-    const buttons = await page.locator('button:visible').all();
-    const navLinks = await page.locator('nav a:visible, .nav a:visible').all();
+    const buttons = await page.locator("button:visible").all();
+    const navLinks = await page.locator("nav a:visible, .nav a:visible").all();
 
     const interactiveElements = [...buttons, ...navLinks];
 
@@ -72,9 +72,9 @@ test.describe('Mobile Responsiveness', () => {
     expect(tooSmallCount).toBeLessThanOrEqual(allowedSmall);
   });
 
-  test('should not have horizontal overflow', async ({ page }) => {
-    await page.goto('/');
-    await page.waitForLoadState('networkidle');
+  test("should not have horizontal overflow", async ({ page }) => {
+    await page.goto("/");
+    await page.waitForLoadState("networkidle");
 
     // Check document width doesn't exceed viewport width
     const viewportWidth = page.viewportSize()?.width || 0;
@@ -92,12 +92,12 @@ test.describe('Mobile Responsiveness', () => {
     expect(documentWidth).toBeLessThanOrEqual(viewportWidth + 1);
   });
 
-  test('should have readable text sizes', async ({ page }) => {
-    await page.goto('/');
-    await page.waitForLoadState('networkidle');
+  test("should have readable text sizes", async ({ page }) => {
+    await page.goto("/");
+    await page.waitForLoadState("networkidle");
 
     // Check main body text is at least 14px (minimum readable)
-    const bodyTexts = await page.locator('p, li, span').all();
+    const bodyTexts = await page.locator("p, li, span").all();
 
     if (bodyTexts.length > 0) {
       let tooSmallCount = 0;
@@ -119,9 +119,9 @@ test.describe('Mobile Responsiveness', () => {
     }
   });
 
-  test('should have working navigation', async ({ page }) => {
-    await page.goto('/');
-    await page.waitForLoadState('networkidle');
+  test("should have working navigation", async ({ page }) => {
+    await page.goto("/");
+    await page.waitForLoadState("networkidle");
 
     // Check if nav exists
     const nav = page.locator('nav, .nav, [role="navigation"]').first();
@@ -130,7 +130,7 @@ test.describe('Mobile Responsiveness', () => {
       await expect(nav).toBeVisible();
 
       // Check navigation links
-      const navLinks = nav.locator('a[href]');
+      const navLinks = nav.locator("a[href]");
       const linkCount = await navLinks.count();
 
       expect(linkCount).toBeGreaterThan(0);
@@ -140,43 +140,43 @@ test.describe('Mobile Responsiveness', () => {
         const firstLink = navLinks.first();
         await expect(firstLink).toBeVisible();
 
-        const href = await firstLink.getAttribute('href');
+        const href = await firstLink.getAttribute("href");
         expect(href).toBeTruthy();
       }
     }
   });
 
-  test('should load images with proper alt text', async ({ page }) => {
-    await page.goto('/');
-    await page.waitForLoadState('networkidle');
+  test("should load images with proper alt text", async ({ page }) => {
+    await page.goto("/");
+    await page.waitForLoadState("networkidle");
 
-    const images = await page.locator('img').all();
+    const images = await page.locator("img").all();
 
     for (const img of images) {
       // Images should have alt attribute (can be empty for decorative)
-      const alt = await img.getAttribute('alt');
+      const alt = await img.getAttribute("alt");
       expect(alt).toBeDefined();
 
       // Images should have src
-      const src = await img.getAttribute('src');
+      const src = await img.getAttribute("src");
       expect(src).toBeTruthy();
     }
   });
 
-  test('should have proper viewport meta tag', async ({ page }) => {
-    await page.goto('/');
+  test("should have proper viewport meta tag", async ({ page }) => {
+    await page.goto("/");
 
     const viewportMeta = await page
       .locator('meta[name="viewport"]')
-      .getAttribute('content');
+      .getAttribute("content");
 
     expect(viewportMeta).toBeTruthy();
-    expect(viewportMeta).toContain('width=device-width');
+    expect(viewportMeta).toContain("width=device-width");
   });
 
-  test('should be scrollable', async ({ page }) => {
-    await page.goto('/');
-    await page.waitForLoadState('networkidle');
+  test("should be scrollable", async ({ page }) => {
+    await page.goto("/");
+    await page.waitForLoadState("networkidle");
 
     // Check if page has scrollable content
     const pageHeight = await page.evaluate(() => document.body.scrollHeight);
@@ -197,12 +197,12 @@ test.describe('Mobile Responsiveness', () => {
     }
   });
 
-  test('should handle touch interactions', async ({ page }) => {
-    await page.goto('/');
-    await page.waitForLoadState('networkidle');
+  test("should handle touch interactions", async ({ page }) => {
+    await page.goto("/");
+    await page.waitForLoadState("networkidle");
 
     // Find a clickable element (button or link)
-    const clickable = page.locator('button, a[href]').first();
+    const clickable = page.locator("button, a[href]").first();
 
     if ((await clickable.count()) > 0) {
       // Should be able to tap/click
@@ -216,20 +216,19 @@ test.describe('Mobile Responsiveness', () => {
         // Use click instead of touchscreen.tap (works for mobile viewports without hasTouch)
         await clickable.click();
 
-        // Wait for any navigation or interaction
-        await page.waitForTimeout(500);
+        // Wait for page to stabilize after click (not arbitrary timeout)
+        await page.waitForLoadState("domcontentloaded");
 
         // Page should still be responsive
-        const bodyVisible = await page.locator('body').isVisible();
-        expect(bodyVisible).toBe(true);
+        await expect(page.locator("body")).toBeVisible();
       }
     }
   });
 });
 
 // Tablet-specific tests (iPad only)
-test.describe('Tablet Features', () => {
-  test('should handle orientation changes', async ({ page }) => {
+test.describe("Tablet Features", () => {
+  test("should handle orientation changes", async ({ page }) => {
     // Skip if not iPad viewport (width >= 768px)
     const viewport = page.viewportSize();
     if (!viewport || viewport.width < 768) {
@@ -237,8 +236,8 @@ test.describe('Tablet Features', () => {
       return;
     }
 
-    await page.goto('/');
-    await page.waitForLoadState('networkidle');
+    await page.goto("/");
+    await page.waitForLoadState("networkidle");
 
     // Simulate landscape orientation
     await page.setViewportSize({
@@ -249,7 +248,7 @@ test.describe('Tablet Features', () => {
     await page.waitForTimeout(500);
 
     // Check page still renders correctly
-    const mainContent = page.locator('#main-content, main, body').first();
+    const mainContent = page.locator("#main-content, main, body").first();
     await expect(mainContent).toBeVisible();
 
     // No horizontal overflow in landscape
@@ -266,12 +265,12 @@ test.describe('Tablet Features', () => {
 });
 
 // Performance check for mobile
-test.describe('Mobile Performance', () => {
-  test('should load within reasonable time', async ({ page }) => {
+test.describe("Mobile Performance", () => {
+  test("should load within reasonable time", async ({ page }) => {
     const startTime = Date.now();
 
-    await page.goto('/');
-    await page.waitForLoadState('domcontentloaded');
+    await page.goto("/");
+    await page.waitForLoadState("domcontentloaded");
 
     const loadTime = Date.now() - startTime;
 
@@ -279,20 +278,20 @@ test.describe('Mobile Performance', () => {
     expect(loadTime).toBeLessThan(3000);
   });
 
-  test('should not block main thread excessively', async ({ page }) => {
-    await page.goto('/');
-    await page.waitForLoadState('networkidle');
+  test("should not block main thread excessively", async ({ page }) => {
+    await page.goto("/");
+    await page.waitForLoadState("networkidle");
 
     // Check for long tasks (blocking main thread > 50ms)
     const longTasks = await page.evaluate(() => {
       return new Promise((resolve) => {
-        if ('PerformanceObserver' in window) {
+        if ("PerformanceObserver" in window) {
           const observer = new PerformanceObserver((list) => {
             resolve(list.getEntries().length);
             observer.disconnect();
           });
 
-          observer.observe({ entryTypes: ['longtask'] });
+          observer.observe({ entryTypes: ["longtask"] });
 
           // Timeout after 2 seconds
           setTimeout(() => {
