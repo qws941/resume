@@ -205,8 +205,11 @@ test.describe("Mobile Responsiveness", () => {
     await page.goto("/");
     await page.waitForLoadState("networkidle");
 
-    // Find a clickable element (button or link)
-    const clickable = page.locator("button, a[href]").first();
+    // Find a clickable element (button or link), excluding skip-link which is hidden
+    // Skip-links are positioned off-screen and cannot be scrolled to on mobile
+    const clickable = page
+      .locator("button:not(.skip-link), a[href]:not(.skip-link)")
+      .first();
 
     if ((await clickable.count()) > 0) {
       // Should be able to tap/click
