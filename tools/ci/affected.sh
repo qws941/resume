@@ -40,7 +40,7 @@ EOF
 fi
 
 echo "=== Changed Files ==="
-echo "$CHANGED_FILES" | head -20
+echo "$CHANGED_FILES" | head -20 || true
 TOTAL_CHANGED=$(echo "$CHANGED_FILES" | wc -l)
 [ "$TOTAL_CHANGED" -gt 20 ] && echo "... and $((TOTAL_CHANGED - 20)) more"
 echo ""
