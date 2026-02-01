@@ -1,5 +1,5 @@
 // Cloudflare Worker - Auto-generated (IMPROVED VERSION)
-// Generated: 2026-02-01T09:31:08.298Z
+// Generated: 2026-02-01T09:31:26.965Z
 // Features: Template caching, JSDoc types, link helper, constants, rate limiting
 
 const INDEX_HTML = `<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>이재철 - AIOps / ML Platform Engineer</title><meta name="description" content="AIOps/ML Platform 엔지니어 이재철 | Observability 스택 설계, AI 에이전트 운영, 금융권 인프라 구축"><meta name="keywords" content="AIOps, ML Platform Engineer, Observability, Grafana, Prometheus, Loki, Splunk, 자동화, 금융 인프라, 이재철"><meta name="author" content="이재철 (Jaecheol Lee)"><meta name="robots" content="index, follow"><link rel="canonical" href="https://resume.jclee.me"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="alternate" hreflang="ko-KR" href="https://resume.jclee.me"><link rel="alternate" hreflang="en-US" href="https://resume.jclee.me/en/"><link rel="alternate" hreflang="x-default" href="https://resume.jclee.me"><meta property="og:type" content="profile"><meta property="og:url" content="https://resume.jclee.me"><meta property="og:title" content="이재철 - AIOps / ML Platform Engineer"><meta property="og:description" content="AIOps/ML Platform 엔지니어 | Observability 스택 설계, AI 에이전트 15+ 운영, 금융권 인프라 구축"><meta property="og:image" content="https://resume.jclee.me/og-image.webp"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:type" content="image/webp"><meta property="og:image:alt" content="Jaecheol Lee - AIOps & Observability Engineer Portfolio"><meta property="og:image" content="https://resume.jclee.me/og-image.webp"><meta property="og:image:type" content="image/webp"><meta property="og:site_name" content="Jaecheol Lee Resume"><meta property="og:locale" content="ko_KR"><meta property="og:locale:alternate" content="en_US"><meta property="profile:first_name" content="Jaecheol"><meta property="profile:last_name" content="Lee"><meta property="profile:username" content="qws941"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:url" content="https://resume.jclee.me"><meta name="twitter:title" content="이재철 - AIOps / ML Platform Engineer"><meta name="twitter:description" content="AIOps/ML Platform 엔지니어 | Observability 스택 설계, 자동화, 금융권 인프라"><meta name="twitter:image" content="https://resume.jclee.me/og-image.webp"><meta name="twitter:image:alt" content="Jaecheol Lee Professional Resume and Portfolio"><meta name="twitter:creator" content="@qws941"><meta name="twitter:site" content="@qws941"><script type="application/ld+json">{
@@ -1321,9 +1321,9 @@ const metrics = {
   "requests_error": 0,
   "response_time_sum": 0,
   "vitals_received": 0,
-  "worker_start_time": 1769938268299,
+  "worker_start_time": 1769938286966,
   "version": "1.0.118",
-  "deployed_at": "2026-02-01T09:31:08.298Z"
+  "deployed_at": "2026-02-01T09:31:26.965Z"
 };
 
 // Histogram bucket boundaries (Prometheus standard)
@@ -2052,7 +2052,7 @@ export default {
         const health = {
           status: 'healthy',
           version: '1.0.118',
-          deployed_at: '2026-02-01T09:31:08.298Z',
+          deployed_at: '2026-02-01T09:31:26.965Z',
           uptime_seconds: uptime,
           metrics: {
             requests_total: metrics.requests_total,
