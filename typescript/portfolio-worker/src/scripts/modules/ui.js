@@ -30,7 +30,12 @@ function initNavScrollEffect() {
 
   window.addEventListener('scroll', () => {
     const currentScroll = window.pageYOffset;
-    nav.style.boxShadow = currentScroll > 100 ? 'var(--shadow-brutal)' : 'none';
+    // Add 'scrolled' class when scrolled > 100px
+    if (currentScroll > 100) {
+      nav.classList.add('scrolled');
+    } else {
+      nav.classList.remove('scrolled');
+    }
   });
 }
 
