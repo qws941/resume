@@ -20,7 +20,7 @@
     "experienceStart": "2017.02",
     "grade": null,
     "expertise": ["AIOps", "Observability", "ML Platform", "자동화"],
-    "profileStatement": "AIOps와 ML Platform을 설계하는 8년 차 인프라 엔지니어 | Observability 스택 구축 전문 | AI 에이전트 15+ 운영"
+    "profileStatement": "8년 차 인프라 엔지니어 | Observability, 보안, 자동화"
   },
   "current": {
     "company": "(주)아이티센 CTS",
@@ -343,7 +343,7 @@
     "badge": "AIOps / ML Platform Engineer",
     "title": "이재철",
     "titleEn": "AIOps & ML Platform Engineer",
-    "subtitle": "Observability 스택 설계 전문가 | Grafana/Prometheus/Loki/Splunk\nAI 에이전트 15+ 운영 | 금융권 AIOps 인프라 구축 경험"
+    "subtitle": "Grafana/Prometheus/Loki 기반 모니터링 구축 경험\n금융권 보안 인프라 운영"
   },
   "sectionDescriptions": {
     "resume": "금융·제조·교육·통신 산업 보안 인프라 구축 및 운영 경험.",
@@ -396,4 +396,3 @@
     "monitoring": "https://grafana.jclee.me/public-dashboards/8c91649fe829cb4905edf4a60579d0a0"
   }
 }
-
