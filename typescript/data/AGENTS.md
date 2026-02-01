@@ -1,7 +1,7 @@
 # AGENTS.md: SHARED DATA KNOWLEDGE BASE
 
-**Generated:** 2026-01-30
-**Commit:** 0b7a931e
+**Generated:** 2026-02-01
+**Commit:** 0b3bac8
 **Branch:** master
 
 ## OVERVIEW
@@ -22,13 +22,13 @@ typescript/data/
 
 ## WHERE TO LOOK
 
-| Task                | Location                          | Notes                                     |
-| ------------------- | --------------------------------- | ----------------------------------------- |
-| **Global Data**     | `resumes/master/resume_data.json` | SSoT for automation & portfolio sync.      |
-| **Human Source**    | `resumes/master/resume_master.md` | Primary Markdown for CV generation.       |
-| **Project Specs**   | `resumes/technical/{project}/`    | Architecture, DR, SOC deep-dives.         |
-| **Company Tailoring**| `resumes/applications/`           | Role-specific resume variants.            |
-| **Legacy Records**  | `resumes/archive/`                | Historical version snapshots.             |
+| Task                  | Location                          | Notes                                 |
+| --------------------- | --------------------------------- | ------------------------------------- |
+| **Global Data**       | `resumes/master/resume_data.json` | SSoT for automation & portfolio sync. |
+| **Human Source**      | `resumes/master/resume_master.md` | Primary Markdown for CV generation.   |
+| **Project Specs**     | `resumes/technical/{project}/`    | Architecture, DR, SOC deep-dives.     |
+| **Company Tailoring** | `resumes/applications/`           | Role-specific resume variants.        |
+| **Legacy Records**    | `resumes/archive/`                | Historical version snapshots.         |
 
 ## CONVENTIONS
 
