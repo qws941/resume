@@ -8,6 +8,7 @@
     "wanted-resume": "src/cli.js"
   },
   "scripts": {
+    "build": "echo 'Pure ESM - no build required'",
     "start": "node src/index.js",
     "dev": "node --watch src/index.js",
     "test": "node --test src/shared",
