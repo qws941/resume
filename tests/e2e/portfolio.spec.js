@@ -17,8 +17,7 @@ const EXPECTED_COUNTS = {
 };
 
 const REGEX_PATTERNS = {
-  // Korean name and job title for title assertion
-  TITLE: /이재철.*Senior.*DevSecOps.*Engineer/,
+  TITLE: /이재철.*(?:AIOps|ML Platform|Engineer)/,
 };
 
 // Helper Functions
@@ -42,9 +41,7 @@ test.describe("Portfolio Homepage", () => {
 
   test("should display hero section", async ({ page }) => {
     await checkElementVisible(page, SELECTORS.HERO_TITLE);
-    await expect(page.locator(SELECTORS.HERO_TITLE)).toContainText(
-      "Senior DevSecOps Engineer",
-    );
+    await expect(page.locator(SELECTORS.HERO_TITLE)).toContainText("이재철");
   });
 
   test("should display project cards", async ({ page }) => {

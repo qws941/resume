@@ -52,30 +52,14 @@ test.describe("Navigation Scroll Effect", () => {
 
     const nav = page.locator(".nav");
 
-    // Initially no shadow
-    const initialShadow = await nav.evaluate(
-      (el) => window.getComputedStyle(el).boxShadow,
-    );
+    // Initially no scrolled class
+    await expect(nav).not.toHaveClass(/scrolled/);
 
-    // Scroll down past 100px
+    // Scroll down to trigger scroll handler
     await page.evaluate(() => window.scrollTo(0, 200));
 
-    // Wait for shadow transition to complete (CSS transition is 0.3s)
-    await page.waitForFunction(
-      (initial) => {
-        const nav = document.querySelector(".nav");
-        if (!nav) return false;
-        const current = window.getComputedStyle(nav).boxShadow;
-        return current !== initial && current !== "none";
-      },
-      initialShadow,
-      { timeout: 2000 },
-    );
-
-    const scrolledShadow = await nav.evaluate(
-      (el) => window.getComputedStyle(el).boxShadow,
-    );
-    expect(scrolledShadow).not.toBe(initialShadow);
+    // Wait for scrolled class to be added
+    await expect(nav).toHaveClass(/scrolled/, { timeout: 2000 });
   });
 });
 
