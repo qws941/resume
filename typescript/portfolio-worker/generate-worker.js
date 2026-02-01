@@ -161,6 +161,11 @@ const _N8N_WEBHOOK_BASE =
       name: "ogImageBuffer",
     },
     {
+      path: path.join(__dirname, "og-image-en.webp"),
+      encoding: null,
+      name: "ogImageEnBuffer",
+    },
+    {
       path: path.join(
         __dirname,
         "..",
@@ -218,12 +223,14 @@ const _N8N_WEBHOOK_BASE =
     robotsTxt,
     sitemapXml,
     ogImageBuffer,
+    ogImageEnBuffer,
     resumePdfBuffer,
     dashboardHtmlRaw,
   } = fileContents;
 
   const projectData = JSON.parse(projectDataRaw);
   const ogImageBase64 = ogImageBuffer.toString("base64");
+  const ogImageEnBase64 = ogImageEnBuffer.toString("base64");
   const resumePdfBase64 = resumePdfBuffer.toString("base64");
 
   logger.debug(`index.html size: ${indexHtmlRaw.length} bytes`);
@@ -397,6 +404,7 @@ const MAIN_JS = \`${mainJs}\`;
 const ROBOTS_TXT = \`${robotsTxt}\`;
 const SITEMAP_XML = \`${sitemapXml}\`;
 const OG_IMAGE_BASE64 = '${ogImageBase64}';
+const OG_IMAGE_EN_BASE64 = '${ogImageEnBase64}';
 const RESUME_PDF_BASE64 = '${resumePdfBase64}';
 
 // Security headers
@@ -1099,6 +1107,18 @@ export default {
 
       if (url.pathname === '/og-image.webp') {
         const imageBuffer = Uint8Array.from(atob(OG_IMAGE_BASE64), c => c.charCodeAt(0));
+        metrics.requests_success++;
+        return new Response(imageBuffer, {
+          headers: {
+            ...SECURITY_HEADERS,
+            'Content-Type': 'image/webp',
+            'Cache-Control': 'public, max-age=31536000, immutable'
+          }
+        });
+      }
+
+      if (url.pathname === '/og-image-en.webp') {
+        const imageBuffer = Uint8Array.from(atob(OG_IMAGE_EN_BASE64), c => c.charCodeAt(0));
         metrics.requests_success++;
         return new Response(imageBuffer, {
           headers: {
