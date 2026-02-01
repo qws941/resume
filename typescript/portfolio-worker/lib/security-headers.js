@@ -6,8 +6,8 @@ const CLOUDFLARE_SCRIPT_HASHES = [
 
 // Cloudflare Web Analytics domains
 const CLOUDFLARE_ANALYTICS = {
-  script: 'https://static.cloudflareinsights.com',
-  connect: 'https://cloudflareinsights.com',
+  script: "https://static.cloudflareinsights.com",
+  connect: "https://cloudflareinsights.com",
 };
 
 /**
@@ -16,15 +16,15 @@ const CLOUDFLARE_ANALYTICS = {
  */
 const CACHE_STRATEGIES = {
   // HTML pages - short cache with revalidation
-  HTML: 'public, max-age=3600, must-revalidate',
+  HTML: "public, max-age=3600, must-revalidate",
   // Static assets (images, fonts) - long cache, immutable
-  STATIC: 'public, max-age=31536000, immutable',
+  STATIC: "public, max-age=31536000, immutable",
   // Documents (PDF, DOCX) - medium cache
-  DOCUMENT: 'public, max-age=86400',
+  DOCUMENT: "public, max-age=86400",
   // API endpoints - no cache
-  API: 'no-cache, no-store, must-revalidate',
+  API: "no-cache, no-store, must-revalidate",
   // Service Worker - always revalidate
-  SW: 'max-age=0, must-revalidate',
+  SW: "max-age=0, must-revalidate",
 };
 
 /**
@@ -34,22 +34,22 @@ const CACHE_STRATEGIES = {
  * @returns {Object} Security headers object
  */
 function generateSecurityHeaders(scriptHashes, styleHashes) {
-  const cspScriptSrc = `script-src 'self' ${scriptHashes.join(' ')} ${CLOUDFLARE_SCRIPT_HASHES.join(' ')} https://browser.sentry-cdn.com ${CLOUDFLARE_ANALYTICS.script}`;
-  const cspStyleSrc = `style-src 'self' ${styleHashes.join(' ')}`;
-  const cspStyleSrcElem = `style-src-elem 'self' ${styleHashes.join(' ')}`;
+  const cspScriptSrc = `script-src 'self' ${scriptHashes.join(" ")} ${CLOUDFLARE_SCRIPT_HASHES.join(" ")} https://browser.sentry-cdn.com https://www.googletagmanager.com ${CLOUDFLARE_ANALYTICS.script}`;
+  const cspStyleSrc = `style-src 'self' ${styleHashes.join(" ")}`;
+  const cspStyleSrcElem = `style-src-elem 'self' ${styleHashes.join(" ")}`;
   const cspConnectSrc = `connect-src 'self' https://ingest.sentry.io ${CLOUDFLARE_ANALYTICS.connect}`;
 
   return {
-    'Content-Type': 'text/html;charset=UTF-8',
-    'Content-Security-Policy': `${cspScriptSrc}; ${cspStyleSrc}; ${cspStyleSrcElem}; ${cspConnectSrc}; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests`,
-    'Strict-Transport-Security': 'max-age=63072000; includeSubDomains; preload',
-    'X-Content-Type-Options': 'nosniff',
-    'X-Frame-Options': 'DENY',
-    'X-XSS-Protection': '1; mode=block',
-    'Referrer-Policy': 'strict-origin-when-cross-origin',
-    'Cache-Control': CACHE_STRATEGIES.HTML,
-    'Permissions-Policy':
-      'camera=(), microphone=(), geolocation=(), payment=()',
+    "Content-Type": "text/html;charset=UTF-8",
+    "Content-Security-Policy": `${cspScriptSrc}; ${cspStyleSrc}; ${cspStyleSrcElem}; ${cspConnectSrc}; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests`,
+    "Strict-Transport-Security": "max-age=63072000; includeSubDomains; preload",
+    "X-Content-Type-Options": "nosniff",
+    "X-Frame-Options": "DENY",
+    "X-XSS-Protection": "1; mode=block",
+    "Referrer-Policy": "strict-origin-when-cross-origin",
+    "Cache-Control": CACHE_STRATEGIES.HTML,
+    "Permissions-Policy":
+      "camera=(), microphone=(), geolocation=(), payment=()",
   };
 }
 
@@ -60,7 +60,7 @@ function generateSecurityHeaders(scriptHashes, styleHashes) {
  */
 function getCacheHeaders(resourceType) {
   const cacheControl = CACHE_STRATEGIES[resourceType] || CACHE_STRATEGIES.HTML;
-  return { 'Cache-Control': cacheControl };
+  return { "Cache-Control": cacheControl };
 }
 
 module.exports = { generateSecurityHeaders, getCacheHeaders, CACHE_STRATEGIES };
