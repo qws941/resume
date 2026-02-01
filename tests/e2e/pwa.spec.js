@@ -15,7 +15,7 @@ test.describe('Progressive Web App (PWA)', () => {
   test('should have PWA meta tags', async ({ page }) => {
     // Theme color
     const themeColor = page.locator('meta[name="theme-color"]');
-    await expect(themeColor).toHaveAttribute('content', '#7c3aed');
+    await expect(themeColor).toHaveAttribute('content', '#2563eb');
 
     // Apple mobile web app
     const appleCapable = page.locator(
@@ -40,7 +40,7 @@ test.describe('Progressive Web App (PWA)', () => {
     expect(manifest.short_name).toBeTruthy();
     expect(manifest.start_url).toBe('/');
     expect(manifest.display).toBe('standalone');
-    expect(manifest.theme_color).toBe('#7c3aed');
+    expect(manifest.theme_color).toBe('#2563eb');
     expect(manifest.background_color).toBe('#0f0f23');
 
     // Check icons

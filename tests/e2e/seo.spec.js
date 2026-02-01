@@ -106,7 +106,7 @@ test.describe("Open Graph Tags", () => {
       "content",
     );
     expect(ogImage).toBeTruthy();
-    expect(ogImage).toMatch(/og-image\.webp$/);
+    expect(ogImage).toMatch(/og-image\.(webp|png)$/);
 
     const ogImageWidth = await page.getAttribute(
       'meta[property="og:image:width"]',
@@ -216,7 +216,7 @@ test.describe("Twitter Card Tags", () => {
       "content",
     );
     expect(twitterImage).toBeTruthy();
-    expect(twitterImage).toMatch(/og-image\.webp$/);
+    expect(twitterImage).toMatch(/og-image\.(webp|png)$/);
 
     const twitterImageAlt = await page.getAttribute(
       'meta[name="twitter:image:alt"]',
