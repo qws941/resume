@@ -251,7 +251,7 @@ jobs:
     name: E2E Tests
     runs-on: ubuntu-latest
     needs: [analyze]
-    if: ${{ !inputs.skip_tests && (needs.analyze.outputs.portfolio_affected == 'true' || needs.analyze.outputs.job_dashboard_affected == 'true') }}
+    if: ${{ !inputs.skip_tests }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -321,8 +321,8 @@ jobs:
   build-portfolio:
     name: Build Portfolio Worker
     runs-on: ubuntu-latest
-    needs: [lint, typecheck, test-unit, analyze]
-    if: ${{ always() && !failure() && !cancelled() && (needs.analyze.outputs.portfolio_affected == 'true' || needs.analyze.outputs.data_affected == 'true' || github.event_name == 'workflow_dispatch') }}
+    needs: [lint, typecheck, test-unit]
+    if: ${{ always() && !failure() && !cancelled() }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -353,8 +353,8 @@ jobs:
   build-job-dashboard:
     name: Build Job Dashboard Worker
     runs-on: ubuntu-latest
-    needs: [lint, typecheck, test-unit, analyze]
-    if: ${{ always() && !failure() && !cancelled() && (needs.analyze.outputs.job_dashboard_affected == 'true' || github.event_name == 'workflow_dispatch') }}
+    needs: [lint, typecheck, test-unit]
+    if: ${{ always() && !failure() && !cancelled() }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -386,8 +386,8 @@ jobs:
   deploy-portfolio:
     name: Deploy Portfolio
     runs-on: ubuntu-latest
-    needs: [build-portfolio, test-e2e, security-scan, analyze]
-    if: ${{ always() && !failure() && !cancelled() && github.ref == 'refs/heads/master' && (needs.analyze.outputs.portfolio_affected == 'true' || needs.analyze.outputs.data_affected == 'true' || github.event_name == 'workflow_dispatch') }}
+    needs: [build-portfolio, test-e2e, security-scan]
+    if: ${{ always() && !failure() && !cancelled() && github.ref == 'refs/heads/master' }}
     environment:
       name: production/portfolio
       url: ${{ env.PORTFOLIO_URL }}
@@ -421,8 +421,8 @@ jobs:
   deploy-job-dashboard:
     name: Deploy Job Dashboard
     runs-on: ubuntu-latest
-    needs: [build-job-dashboard, test-e2e, security-scan, analyze]
-    if: ${{ always() && !failure() && !cancelled() && github.ref == 'refs/heads/master' && (needs.analyze.outputs.job_dashboard_affected == 'true' || github.event_name == 'workflow_dispatch') }}
+    needs: [build-job-dashboard, test-e2e, security-scan]
+    if: ${{ always() && !failure() && !cancelled() && github.ref == 'refs/heads/master' }}
     environment:
       name: production/job-dashboard
       url: ${{ env.JOB_DASHBOARD_URL }}
