@@ -582,6 +582,45 @@
       });
     }
     </script>
+    <!-- Custom Metrics Tracking System (Phase 6b) -->
+    <script>
+    (function initTracking() {
+      const TRACKING_ENDPOINT = '/api/track';
+      
+      // Track link clicks with data-track attribute
+      document.addEventListener('click', function(e) {
+        const trackAttr = e.target.closest('[data-track]');
+        if (!trackAttr) return;
+        
+        const trackType = trackAttr.dataset.track;
+        const href = trackAttr.href || 'unknown';
+        
+        // Send tracking event (fire and forget)
+        navigator.sendBeacon(TRACKING_ENDPOINT, JSON.stringify({
+          event: 'link_click',
+          type: trackType,
+          href: href,
+          timestamp: new Date().toISOString(),
+          language: document.documentElement.lang || 'en'
+        }));
+      }, { capture: true });
+      
+      // Track page visibility for session duration
+      let sessionStart = Date.now();
+      document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+          const sessionDuration = Math.round((Date.now() - sessionStart) / 1000);
+          navigator.sendBeacon(TRACKING_ENDPOINT, JSON.stringify({
+            event: 'session_end',
+            duration: sessionDuration,
+            language: document.documentElement.lang || 'en'
+          }));
+        } else {
+          sessionStart = Date.now();
+        }
+      });
+    })();
+    </script>
 
 </body>
 </html>
