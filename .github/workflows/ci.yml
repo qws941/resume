@@ -1,0 +1,545 @@
+# =============================================================================
+# RESUME MONOREPO - GITHUB ACTIONS CI/CD PIPELINE
+# =============================================================================
+# Production URLs:
+#   - Portfolio: https://resume.jclee.me
+#   - Job Dashboard: https://job.jclee.me
+#
+# Required Secrets:
+#   - CLOUDFLARE_API_TOKEN: Cloudflare API token with Workers permissions
+#   - CLOUDFLARE_ACCOUNT_ID: Cloudflare account ID
+#   - N8N_WEBHOOK_URL: (Optional) Notification webhook
+#   - AUTH_SYNC_SECRET: Job platform auth sync secret
+#   - ENCRYPTION_KEY: Session encryption key
+# =============================================================================
+
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [master, develop]
+  pull_request:
+    branches: [master]
+  workflow_dispatch:
+    inputs:
+      deploy_target:
+        description: 'Deploy target (portfolio, job-dashboard, all)'
+        required: false
+        default: 'all'
+        type: choice
+        options:
+          - all
+          - portfolio
+          - job-dashboard
+      skip_tests:
+        description: 'Skip tests (emergency deploy only)'
+        required: false
+        default: false
+        type: boolean
+
+env:
+  NODE_VERSION: '20'
+  PLAYWRIGHT_VERSION: '1.57.0'
+  PORTFOLIO_URL: 'https://resume.jclee.me'
+  JOB_DASHBOARD_URL: 'https://job.jclee.me'
+
+# Prevent concurrent deployments to same environment
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  # ===========================================================================
+  # STAGE: ANALYZE - Affected Target Analysis
+  # ===========================================================================
+  analyze:
+    name: Analyze Affected Targets
+    runs-on: ubuntu-latest
+    outputs:
+      portfolio_affected: ${{ steps.affected.outputs.portfolio }}
+      job_dashboard_affected: ${{ steps.affected.outputs.job_dashboard }}
+      data_affected: ${{ steps.affected.outputs.data }}
+      infra_affected: ${{ steps.affected.outputs.infra }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Determine affected targets
+        id: affected
+        run: |
+          chmod +x tools/ci/affected.sh
+          ./tools/ci/affected.sh origin/${{ github.base_ref || 'master' }}
+          
+          # Parse affected targets
+          if [ -f .affected/affected_targets.json ]; then
+            PORTFOLIO=$(jq -r '.portfolio // false' .affected/affected_targets.json)
+            JOB_DASHBOARD=$(jq -r '.job_dashboard // false' .affected/affected_targets.json)
+            DATA=$(jq -r '.data // false' .affected/affected_targets.json)
+            INFRA=$(jq -r '.infra // false' .affected/affected_targets.json)
+          else
+            # Fallback: check changed files manually
+            CHANGED_FILES=$(git diff --name-only origin/${{ github.base_ref || 'master' }}...HEAD 2>/dev/null || git diff --name-only HEAD~1)
+            
+            PORTFOLIO=$(echo "$CHANGED_FILES" | grep -q "typescript/portfolio-worker\|typescript/data" && echo "true" || echo "false")
+            JOB_DASHBOARD=$(echo "$CHANGED_FILES" | grep -q "typescript/job-automation" && echo "true" || echo "false")
+            DATA=$(echo "$CHANGED_FILES" | grep -q "typescript/data" && echo "true" || echo "false")
+            INFRA=$(echo "$CHANGED_FILES" | grep -q "infrastructure/" && echo "true" || echo "false")
+          fi
+          
+          echo "portfolio=$PORTFOLIO" >> $GITHUB_OUTPUT
+          echo "job_dashboard=$JOB_DASHBOARD" >> $GITHUB_OUTPUT
+          echo "data=$DATA" >> $GITHUB_OUTPUT
+          echo "infra=$INFRA" >> $GITHUB_OUTPUT
+          
+          echo "📊 Affected targets:"
+          echo "  - Portfolio: $PORTFOLIO"
+          echo "  - Job Dashboard: $JOB_DASHBOARD"
+          echo "  - Data: $DATA"
+          echo "  - Infrastructure: $INFRA"
+
+      - name: Upload affected analysis
+        uses: actions/upload-artifact@v4
+        with:
+          name: affected-targets
+          path: .affected/
+          retention-days: 1
+          if-no-files-found: ignore
+
+  # ===========================================================================
+  # STAGE: VALIDATE - Linting & Type Checking
+  # ===========================================================================
+  lint:
+    name: ESLint
+    runs-on: ubuntu-latest
+    needs: [analyze]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci --prefer-offline --no-audit
+
+      - name: Run ESLint
+        run: |
+          echo "=== Running ESLint ==="
+          npm run lint 2>&1 | tee eslint-results.txt || true
+          
+          ERRORS=$(grep -oP '\(\K[0-9]+(?= errors?\))' eslint-results.txt | tail -1 || echo "0")
+          WARNINGS=$(grep -oP '[0-9]+(?= warnings?\))' eslint-results.txt | tail -1 || echo "0")
+          
+          echo "Lint: ${ERRORS:-0} errors, ${WARNINGS:-0} warnings"
+          
+          # Quality gate: Errors = fail
+          if [ "${ERRORS:-0}" -gt "0" ]; then
+            echo "❌ ESLint found errors - failing"
+            exit 1
+          fi
+          
+          # Quality gate: Max 110 warnings (current baseline)
+          if [ "${WARNINGS:-0}" -gt "110" ]; then
+            echo "❌ Too many ESLint warnings (${WARNINGS} > 110) - failing"
+            exit 1
+          fi
+          
+          echo "✅ Lint passed"
+
+      - name: Upload lint results
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eslint-results
+          path: eslint-results.txt
+          retention-days: 7
+
+  typecheck:
+    name: TypeScript Check
+    runs-on: ubuntu-latest
+    needs: [analyze]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci --prefer-offline --no-audit
+
+      - name: Download affected analysis
+        uses: actions/download-artifact@v4
+        with:
+          name: affected-targets
+          path: .affected/
+        continue-on-error: true
+
+      - name: Run TypeScript check (affected)
+        run: |
+          echo "=== Running TypeScript Check ==="
+          node tools/ci/run-affected.js typecheck || npm run typecheck
+
+  # ===========================================================================
+  # STAGE: TEST - Unit & E2E Tests
+  # ===========================================================================
+  test-unit:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+    needs: [analyze]
+    if: ${{ !inputs.skip_tests }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci --prefer-offline --no-audit
+
+      - name: Download affected analysis
+        uses: actions/download-artifact@v4
+        with:
+          name: affected-targets
+          path: .affected/
+        continue-on-error: true
+
+      - name: Run unit tests
+        run: |
+          echo "=== Running Unit Tests ==="
+          node tools/ci/run-affected.js test:coverage || npm test
+
+      - name: Upload coverage
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage/
+          retention-days: 7
+          if-no-files-found: ignore
+
+  test-e2e:
+    name: E2E Tests
+    runs-on: ubuntu-latest
+    needs: [analyze]
+    if: ${{ !inputs.skip_tests && (needs.analyze.outputs.portfolio_affected == 'true' || needs.analyze.outputs.job_dashboard_affected == 'true') }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci --prefer-offline --no-audit
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Run E2E tests
+        run: npm run test:e2e
+        env:
+          PLAYWRIGHT_BASE_URL: ${{ env.PORTFOLIO_URL }}
+
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7
+          if-no-files-found: ignore
+
+  security-scan:
+    name: Security Scan
+    runs-on: ubuntu-latest
+    needs: [analyze]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Run gitleaks
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci --prefer-offline --no-audit
+
+      - name: Run npm audit
+        run: npm audit --audit-level=high || echo "::warning::npm audit found vulnerabilities"
+        continue-on-error: true
+
+  # ===========================================================================
+  # STAGE: BUILD
+  # ===========================================================================
+  build-portfolio:
+    name: Build Portfolio Worker
+    runs-on: ubuntu-latest
+    needs: [lint, typecheck, test-unit, analyze]
+    if: ${{ always() && !failure() && !cancelled() && (needs.analyze.outputs.portfolio_affected == 'true' || needs.analyze.outputs.data_affected == 'true' || github.event_name == 'workflow_dispatch') }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci --prefer-offline --no-audit
+
+      - name: Sync resume data
+        run: npm run sync:data || true
+
+      - name: Build portfolio worker
+        run: npm run build
+        working-directory: typescript/portfolio-worker
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: portfolio-worker
+          path: typescript/portfolio-worker/worker.js
+          retention-days: 7
+
+  build-job-dashboard:
+    name: Build Job Dashboard Worker
+    runs-on: ubuntu-latest
+    needs: [lint, typecheck, test-unit, analyze]
+    if: ${{ always() && !failure() && !cancelled() && (needs.analyze.outputs.job_dashboard_affected == 'true' || github.event_name == 'workflow_dispatch') }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci --prefer-offline --no-audit
+
+      - name: Build job dashboard worker
+        run: npm run build
+        working-directory: typescript/job-automation/workers
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: job-dashboard-worker
+          path: typescript/job-automation/workers/dist/
+          retention-days: 7
+          if-no-files-found: ignore
+
+  # ===========================================================================
+  # STAGE: DEPLOY
+  # ===========================================================================
+  deploy-portfolio:
+    name: Deploy Portfolio
+    runs-on: ubuntu-latest
+    needs: [build-portfolio, test-e2e, security-scan, analyze]
+    if: ${{ always() && !failure() && !cancelled() && github.ref == 'refs/heads/master' && (needs.analyze.outputs.portfolio_affected == 'true' || needs.analyze.outputs.data_affected == 'true' || github.event_name == 'workflow_dispatch') }}
+    environment:
+      name: production/portfolio
+      url: ${{ env.PORTFOLIO_URL }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci --prefer-offline --no-audit
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: portfolio-worker
+          path: typescript/portfolio-worker/
+
+      - name: Deploy to Cloudflare Workers
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          workingDirectory: typescript/portfolio-worker
+          command: deploy
+
+  deploy-job-dashboard:
+    name: Deploy Job Dashboard
+    runs-on: ubuntu-latest
+    needs: [build-job-dashboard, test-e2e, security-scan, analyze]
+    if: ${{ always() && !failure() && !cancelled() && github.ref == 'refs/heads/master' && (needs.analyze.outputs.job_dashboard_affected == 'true' || github.event_name == 'workflow_dispatch') }}
+    environment:
+      name: production/job-dashboard
+      url: ${{ env.JOB_DASHBOARD_URL }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci --prefer-offline --no-audit
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: job-dashboard-worker
+          path: typescript/job-automation/workers/dist/
+        continue-on-error: true
+
+      - name: Deploy to Cloudflare Workers
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          workingDirectory: typescript/job-automation/workers
+          command: deploy
+
+  # ===========================================================================
+  # STAGE: VERIFY
+  # ===========================================================================
+  verify-deployment:
+    name: Verify Deployment
+    runs-on: ubuntu-latest
+    needs: [deploy-portfolio, deploy-job-dashboard]
+    if: ${{ always() && (needs.deploy-portfolio.result == 'success' || needs.deploy-job-dashboard.result == 'success') }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Verify Portfolio Health
+        if: ${{ needs.deploy-portfolio.result == 'success' }}
+        run: |
+          echo "=== Verifying Portfolio Deployment ==="
+          
+          # Health check
+          HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" "${{ env.PORTFOLIO_URL }}/health")
+          if [ "$HTTP_CODE" != "200" ]; then
+            echo "❌ Health check failed: HTTP $HTTP_CODE"
+            exit 1
+          fi
+          echo "✅ Health check passed"
+          
+          # Content verification
+          CONTENT=$(curl -s "${{ env.PORTFOLIO_URL }}")
+          if ! echo "$CONTENT" | grep -q "Jaechang Lee"; then
+            echo "❌ Content verification failed"
+            exit 1
+          fi
+          echo "✅ Content verification passed"
+          
+          # Security headers
+          HEADERS=$(curl -sI "${{ env.PORTFOLIO_URL }}")
+          if ! echo "$HEADERS" | grep -qi "content-security-policy"; then
+            echo "⚠️ Missing CSP header"
+          fi
+          if ! echo "$HEADERS" | grep -qi "x-frame-options"; then
+            echo "⚠️ Missing X-Frame-Options header"
+          fi
+          echo "✅ Security headers check completed"
+
+      - name: Verify Job Dashboard Health
+        if: ${{ needs.deploy-job-dashboard.result == 'success' }}
+        run: |
+          echo "=== Verifying Job Dashboard Deployment ==="
+          
+          # Health check
+          HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" "${{ env.JOB_DASHBOARD_URL }}/health")
+          if [ "$HTTP_CODE" != "200" ]; then
+            echo "⚠️ Job Dashboard health check returned HTTP $HTTP_CODE"
+          else
+            echo "✅ Job Dashboard health check passed"
+          fi
+
+  # ===========================================================================
+  # STAGE: NOTIFY
+  # ===========================================================================
+  notify:
+    name: Notify
+    runs-on: ubuntu-latest
+    needs: [verify-deployment]
+    if: always()
+    steps:
+      - name: Determine status
+        id: status
+        run: |
+          if [ "${{ needs.verify-deployment.result }}" == "success" ]; then
+            echo "status=success" >> $GITHUB_OUTPUT
+            echo "emoji=✅" >> $GITHUB_OUTPUT
+          elif [ "${{ needs.verify-deployment.result }}" == "skipped" ]; then
+            echo "status=skipped" >> $GITHUB_OUTPUT
+            echo "emoji=⏭️" >> $GITHUB_OUTPUT
+          else
+            echo "status=failure" >> $GITHUB_OUTPUT
+            echo "emoji=❌" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Send webhook notification
+        if: ${{ env.N8N_WEBHOOK_URL != '' }}
+        env:
+          N8N_WEBHOOK_URL: ${{ secrets.N8N_WEBHOOK_URL }}
+        run: |
+          curl -X POST "$N8N_WEBHOOK_URL" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "status": "${{ steps.status.outputs.status }}",
+              "repository": "${{ github.repository }}",
+              "branch": "${{ github.ref_name }}",
+              "commit": "${{ github.sha }}",
+              "commit_message": "${{ github.event.head_commit.message }}",
+              "actor": "${{ github.actor }}",
+              "run_url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}",
+              "portfolio_url": "${{ env.PORTFOLIO_URL }}",
+              "job_dashboard_url": "${{ env.JOB_DASHBOARD_URL }}"
+            }' || echo "Webhook notification failed (non-critical)"
+
+      - name: Post summary
+        run: |
+          echo "## Deployment Summary ${{ steps.status.outputs.emoji }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Property | Value |" >> $GITHUB_STEP_SUMMARY
+          echo "|----------|-------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Status | ${{ steps.status.outputs.status }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Branch | ${{ github.ref_name }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Commit | \`${{ github.sha }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| Actor | @${{ github.actor }} |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### URLs" >> $GITHUB_STEP_SUMMARY
+          echo "- Portfolio: ${{ env.PORTFOLIO_URL }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Job Dashboard: ${{ env.JOB_DASHBOARD_URL }}" >> $GITHUB_STEP_SUMMARY

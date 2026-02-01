@@ -1,0 +1,8 @@
+# Third-Party Dependencies
+# All dependency changes require review
+
+# Primary maintainer
+jclee@jclee.me
+
+# Security-sensitive changes
+per-file licenses/* = jclee@jclee.me

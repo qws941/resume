@@ -1,0 +1,371 @@
+{
+  "resumeDownload": {
+    "pdfUrl": "https://resume.jclee.me/resume.pdf",
+    "docxUrl": "https://gitlab.jclee.me/jclee/resume/-/raw/master/resumes/master/archive/resume_final.docx",
+    "mdUrl": "https://gitlab.jclee.me/jclee/resume/-/raw/master/resumes/master/resume_final.md"
+  },
+  "resume": [
+    {
+      "icon": "🏦",
+      "title": "(주)아이티센 CTS",
+      "description": "대한민국 최초 ATS 보안 운영 체계를 구축하고 24/7 관제 중. Splunk SIEM 로그 분석 및 인시던트 대응, FortiGate 정책 운영",
+      "period": "2025.03 ~ 현재",
+      "stats": [
+        "보안관제",
+        "컴플라이언스",
+        "DR"
+      ],
+      "highlight": true,
+      "completePdfUrl": "https://gitlab.jclee.me/jclee/resume/-/raw/master/resumes/technical/nextrade/exports/Nextrade_Full_Documentation.pdf"
+    },
+    {
+      "icon": "🏗️",
+      "title": "(주)가온누리정보시스템",
+      "description": "국내 최초 ATS 보안 인프라를 설계하고 금융위 본인가 심사를 통과시켰다. FortiGate HA 이중화 아키텍처 구축, 99.9% 가용성 달성",
+      "period": "2024.03 ~ 2025.02",
+      "stats": [
+        "아키텍처",
+        "망분리",
+        "인허가"
+      ],
+      "highlight": false
+    },
+    {
+      "icon": "📈",
+      "title": "(주)콴텍투자일임",
+      "description": "AI 주식투자 서비스의 Observability 인프라를 구축하고 금융위 테스트베드 승인을 획득했다. AWS CloudWatch + Prometheus 기반 모니터링 파이프라인 구축, 서버 20대 운영, 가용성 99.5% 달성",
+      "period": "2022.08 ~ 2024.02",
+      "stats": [
+        "AWS",
+        "정책설계",
+        "안정운영"
+      ],
+      "highlight": false
+    },
+    {
+      "icon": "☁️",
+      "title": "(주)펀엔씨",
+      "description": "AWS VPC/EKS 기반 클라우드 인프라를 구축하고 Kubernetes 클러스터를 운영했다. CI/CD 파이프라인 자동화로 배포 시간 70% 단축",
+      "period": "2022.05 ~ 2022.07",
+      "stats": [
+        "AWS",
+        "K8s",
+        "DevOps"
+      ],
+      "highlight": false
+    },
+    {
+      "icon": "🎓",
+      "title": "(주)조인트리",
+      "description": "VMware NSX-T 마이크로세그멘테이션을 구축하여 네트워크 보안 정책 200+개 적용. 보안솔루션 5종 통합 설치 완료",
+      "period": "2021.09 ~ 2022.04",
+      "stats": [
+        "NSX-T",
+        "보안통합",
+        "SI"
+      ],
+      "highlight": false
+    },
+    {
+      "icon": "📞",
+      "title": "(주)메타넷엠플랫폼",
+      "description": "COVID-19 대응 재택근무 인프라를 구축하여 500명 동시 접속 VPN 환경 운영. Ansible 자동화로 서버 프로비저닝 시간 80% 단축",
+      "period": "2019.12 ~ 2021.08",
+      "stats": [
+        "VPN/NAC",
+        "Ansible",
+        "Python"
+      ],
+      "highlight": false
+    },
+    {
+      "icon": "✈️",
+      "title": "(주)엠티데이타",
+      "description": "IT 인프라 1,000대를 운영하며 MTTR 30분 달성, 헬프데스크 월 500건 처리",
+      "period": "2017.02 ~ 2018.10",
+      "stats": [
+        "서버운영",
+        "방화벽",
+        "망분리"
+      ],
+      "highlight": false
+    }
+  ],
+  "projects": [
+    {
+      "icon": "🤖",
+      "title": "AIOps Agent Platform",
+      "tech": "Go, Python, MCP Protocol, Prometheus, n8n, Vector DB",
+      "description": "17개 MCP 서버를 통합 운영하는 AI 에이전트 오케스트레이션 플랫폼을 구축했다. 5개 LLM 프로바이더 통합, 자동 장애 복구, 실시간 모니터링 대시보드 구현.",
+      "tagline": "AI 에이전트 오케스트레이션 플랫폼",
+      "metrics": {
+        "agents": "17개 MCP 서버 운영",
+        "integrations": "5개 LLM 프로바이더 통합",
+        "uptime": "24/7 무중단 운영"
+      },
+      "related_skills": [
+        "Go",
+        "Python",
+        "MCP Protocol",
+        "Prometheus",
+        "n8n",
+        "Vector DB"
+      ],
+      "businessImpact": "개발 생산성 40% 향상"
+    },
+    {
+      "icon": "📊",
+      "title": "Enterprise Observability Platform",
+      "tech": "Grafana, Prometheus, Loki, Tempo, Traefik, Docker",
+      "description": "Grafana/Prometheus/Loki/Tempo 기반 엔터프라이즈급 Observability 플랫폼을 구축했다. 메트릭, 로그, 트레이스 통합 모니터링으로 MTTR 90% 단축.",
+      "tagline": "Full-Stack Observability Platform",
+      "metrics": {
+        "dashboards": "12개 커스텀 대시보드 운영",
+        "monitored_services": "20+ 서비스 모니터링",
+        "alerts": "50+ 알림 규칙 설정"
+      },
+      "related_skills": [
+        "Grafana",
+        "Prometheus",
+        "Loki",
+        "Tempo",
+        "Traefik",
+        "Docker"
+      ],
+      "businessImpact": "장애 탐지 시간 90% 단축"
+    },
+    {
+      "icon": "🔥",
+      "title": "Security AIOps Pipeline",
+      "tech": "Node.js, Splunk, FortiGate, Python, Ansible",
+      "description": "FortiGate → Splunk SIEM 실시간 연동 파이프라인을 구축하고 이상 탐지 자동화를 구현했다. 보안 이벤트 실시간 수집 및 자동 알림.",
+      "tagline": "Security Event Pipeline with AIOps",
+      "metrics": {
+        "firewalls": "3대 방화벽 연동",
+        "daily_events": "보안 이벤트 실시간 처리",
+        "policy_deploy_time": "정책 배포 5분 → 30초"
+      },
+      "related_skills": [
+        "Node.js",
+        "Splunk",
+        "FortiGate",
+        "Python",
+        "Ansible"
+      ],
+      "businessImpact": "보안 관제 효율 80% 향상"
+    },
+    {
+      "icon": "🔄",
+      "title": "IT Operations Automation Platform",
+      "tech": "n8n, PostgreSQL, Redis, Docker, API Integration",
+      "description": "n8n 기반 AIOps 워크플로우 자동화 플랫폼을 구축했다. 인시던트 대응, 자동 복구, 알림 에스컬레이션 30+ 워크플로우 운영.",
+      "tagline": "AIOps Workflow Automation Platform",
+      "metrics": {
+        "workflows": "30+ 워크플로우 운영",
+        "executions_per_day": "일 500회 자동 실행",
+        "reliability": "99.9% 가용성"
+      },
+      "related_skills": [
+        "n8n",
+        "PostgreSQL",
+        "Redis",
+        "Docker",
+        "API Integration"
+      ],
+      "businessImpact": "반복 업무 주 10시간 절감"
+    },
+    {
+      "icon": "🏢",
+      "title": "GitLab 셀프호스팅",
+      "tech": "GitLab EE, Docker, Traefik, CI/CD, Git",
+      "description": "GitLab EE 셀프호스팅 환경을 구축하고 50+ 프로젝트를 운영하며 CI/CD 파이프라인을 24/7 가동 중이다.",
+      "tagline": "GitLab EE 셀프호스팅 운영",
+      "metrics": {
+        "repositories": "50+ 프로젝트 관리",
+        "ci_pipelines": "월 200+ 파이프라인 실행",
+        "backup_frequency": "일 2회 자동 백업"
+      },
+      "related_skills": [
+        "GitLab EE",
+        "Docker",
+        "Traefik",
+        "CI/CD",
+        "Git"
+      ]
+    }
+  ],
+  "certifications": [
+    {
+      "name": "CCNP",
+      "issuer": "Cisco Systems",
+      "date": "2020.08"
+    },
+    {
+      "name": "RHCSA",
+      "issuer": "Red Hat",
+      "date": "2019.01"
+    },
+    {
+      "name": "CompTIA Linux+",
+      "issuer": "CompTIA",
+      "date": "2019.02"
+    },
+    {
+      "name": "LPIC Level 1",
+      "issuer": "Linux Professional Institute",
+      "date": "2019.02"
+    },
+    {
+      "name": "사무자동화산업기사",
+      "issuer": "한국산업인력공단",
+      "date": "2019.12"
+    },
+    {
+      "name": "리눅스마스터 2급",
+      "issuer": "한국정보통신진흥협회",
+      "date": "2019.01"
+    }
+  ],
+  "skills": {
+    "aiops": {
+      "title": "AIOps & ML Platform",
+      "icon": "Brain",
+      "items": [
+        "LLM Integration",
+        "AI Agent Orchestration",
+        "MCP Protocol",
+        "Prompt Engineering",
+        "Vector DB",
+        "RAG Pipeline"
+      ]
+    },
+    "observability_aiops": {
+      "title": "Observability & AIOps",
+      "icon": "Activity",
+      "items": [
+        "Grafana Stack",
+        "Prometheus",
+        "Loki",
+        "Tempo",
+        "Splunk",
+        "ELK",
+        "Anomaly Detection",
+        "Alert Automation"
+      ]
+    },
+    "cloud": [
+      "AWS EC2",
+      "VPC",
+      "IAM",
+      "S3",
+      "EKS",
+      "Docker",
+      "Kubernetes",
+      "Cloudflare Workers",
+      "GCP",
+      "Linux",
+      "인프라"
+    ],
+    "devops": [
+      "GitLab CI/CD",
+      "GitHub Actions",
+      "Container Registry",
+      "Docker Compose",
+      "Terraform",
+      "Jenkins",
+      "Git",
+      "DevOps"
+    ],
+    "automation": [
+      "Python",
+      "Shell",
+      "Bash",
+      "Ansible",
+      "n8n",
+      "API Integration"
+    ],
+    "database": [
+      "PostgreSQL",
+      "MySQL",
+      "Redis",
+      "SQL"
+    ],
+    "programming": [
+      "Python",
+      "Go",
+      "Java",
+      "SQL",
+      "Shell"
+    ],
+    "security": [
+      "FortiGate",
+      "WAF",
+      "IPS",
+      "NAC",
+      "DLP",
+      "EDR"
+    ],
+    "compliance": [
+      "금융감독원 감사 대응",
+      "ISMS-P",
+      "ISO27001",
+      "금융위 본인가"
+    ]
+  },
+  "hero": {
+    "badge": "AIOps / ML Platform Engineer",
+    "title": "이재철",
+    "titleEn": "AIOps & ML Platform Engineer",
+    "subtitle": "Observability 스택 설계 전문가 | Grafana/Prometheus/Loki/Splunk\nAI 에이전트 15+ 운영 | 금융권 AIOps 인프라 구축 경험"
+  },
+  "sectionDescriptions": {
+    "resume": "금융·제조·교육·통신 산업 보안 인프라 구축 및 운영 경험.",
+    "projects": "직접 구축하고 운영 중인 개인 인프라. 실시간 모니터링 및 자동화 CI/CD 적용.",
+    "infrastructure": "실제 운영 중인 홈랩 인프라입니다. 모든 서비스는 24/7 가동됩니다.",
+    "skills": "실무에서 활용 가능한 기술 및 도구",
+    "certifications": "전문성 입증을 위한 자격 증명",
+    "contact": "새로운 프로젝트나 기술 논의를 환영합니다. 아래 연락처로 편하게 연락해 주세요."
+  },
+  "achievements": [
+    "금융·제조·교육·통신 산업 인프라 프로젝트 경력 (2017~)",
+    "FortiGate/VMware NSX-T 보안 정책 자동화 도구 개발 (Python/Go)",
+    "Kubernetes 기반 모니터링 스택 구축 (Grafana/Prometheus/Loki)"
+  ],
+  "infrastructure": [
+    {
+      "icon": "📊",
+      "title": "Grafana",
+      "description": "Prometheus + Loki 기반 풀스택 모니터링. 실시간 메트릭과 로그 수집.",
+      "status": "running",
+      "url": "https://grafana.jclee.me/public-dashboards/8c91649fe829cb4905edf4a60579d0a0"
+    },
+    {
+      "icon": "🦊",
+      "title": "GitLab",
+      "description": "Self-hosted Git 서버. CI/CD 파이프라인 및 Container Registry 운영.",
+      "status": "running",
+      "url": "https://gitlab.jclee.me"
+    },
+    {
+      "icon": "🔄",
+      "title": "n8n",
+      "description": "워크플로우 자동화 플랫폼. 배포 알림, 데이터 동기화, 스케줄 작업.",
+      "status": "running",
+      "url": "https://n8n.jclee.me"
+    },
+    {
+      "icon": "📈",
+      "title": "Portfolio Metrics",
+      "description": "이 포트폴리오의 실시간 성능 메트릭. Prometheus 포맷으로 노출.",
+      "status": "running",
+      "url": "https://resume.jclee.me/metrics"
+    }
+  ],
+  "contact": {
+    "email": "qws941@kakao.com",
+    "phone": "010-5757-9592",
+    "github": "https://github.com/qws941",
+    "website": "https://resume.jclee.me",
+    "monitoring": "https://grafana.jclee.me/public-dashboards/8c91649fe829cb4905edf4a60579d0a0"
+  }
+}

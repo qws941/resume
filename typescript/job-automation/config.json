@@ -1,0 +1,30 @@
+{
+  "autoApply": {
+    "enabled": true,
+    "maxDailyApplications": 5,
+    "minMatchScore": 60,
+    "excludeCompanies": [],
+    "preferredCompanies": []
+  },
+  "notifications": {
+    "slack": {
+      "enabled": true,
+      "webhookUrl": "",
+      "channel": "#job-alerts",
+      "notifyOn": {
+        "highMatchJob": true,
+        "statusChange": true,
+        "dailyReport": true,
+        "autoApplyResult": true
+      }
+    },
+    "email": {
+      "enabled": false,
+      "address": ""
+    }
+  },
+  "schedule": {
+    "enabled": true,
+    "cron": "0 9 * * 1-5"
+  }
+}

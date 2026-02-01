@@ -1,0 +1,960 @@
+# =============================================================================
+# RESUME MONOREPO - GITLAB CI/CD PIPELINE
+# =============================================================================
+# Production URLs:
+#   - Portfolio: https://resume.jclee.me
+#   - Job Dashboard: https://job.jclee.me
+#
+# Required CI Variables:
+#   - CLOUDFLARE_API_TOKEN: Cloudflare API token with Workers permissions
+#   - CLOUDFLARE_ACCOUNT_ID: Cloudflare account ID
+#   - N8N_WEBHOOK_URL: (Optional) Notification webhook
+#   - AUTH_SYNC_SECRET: Job platform auth sync secret
+#   - ENCRYPTION_KEY: Session encryption key
+# =============================================================================
+
+image: node:20-slim
+
+# Security templates disabled - requires GitLab Ultimate license
+# include:
+#   - template: Security/SAST.gitlab-ci.yml
+#   - template: Security/Dependency-Scanning.gitlab-ci.yml
+
+variables:
+  NODE_VERSION: "20"
+  PLAYWRIGHT_VERSION: "1.57.0"
+  FF_USE_FASTZIP: "true"
+  ARTIFACT_COMPRESSION_LEVEL: fast
+  TRANSFER_METER_FREQUENCY: 5s
+  # Security scanning config
+  SAST_EXCLUDED_PATHS: "node_modules,docs,tests,coverage,playwright-report"
+  DS_EXCLUDED_PATHS: "docs,tests,playwright-report"
+  # Deployment URLs
+  PORTFOLIO_URL: "https://resume.jclee.me"
+  JOB_DASHBOARD_URL: "https://job.jclee.me"
+
+# =============================================================================
+# STAGES
+# =============================================================================
+stages:
+  - analyze # Bazel affected-target analysis
+  - validate
+  - test
+  - build
+  - terraform
+  - deploy
+  - verify
+  - notify
+  - maintenance
+
+# =============================================================================
+# WORKFLOW RULES - Path-based triggers
+# =============================================================================
+workflow:
+  rules:
+    # MR pipelines
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    # Branch pipelines
+    - if: '$CI_COMMIT_BRANCH == "master"'
+    - if: '$CI_COMMIT_BRANCH == "develop"'
+    # Scheduled pipelines
+    - if: '$CI_PIPELINE_SOURCE == "schedule"'
+    # Manual triggers
+    - if: '$CI_PIPELINE_SOURCE == "web"'
+
+# =============================================================================
+# STAGE: ANALYZE - Bazel Affected Target Analysis
+# =============================================================================
+analyze:affected:
+  stage: analyze
+  image: node:20-slim
+  before_script:
+    - apt-get update -qq && apt-get install -y -qq git curl
+  script:
+    - echo "=== Affected Target Analysis ==="
+    - chmod +x tools/ci/affected.sh
+    - ./tools/ci/affected.sh origin/${CI_MERGE_REQUEST_TARGET_BRANCH_NAME:-master}
+    - cat .affected/affected_targets.json || true
+  artifacts:
+    paths:
+      - .affected/
+    expire_in: 1 hour
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: '$CI_COMMIT_BRANCH == "develop"'
+    - if: '$CI_COMMIT_BRANCH == "master"'
+
+# =============================================================================
+# CACHE & DEFAULTS
+# =============================================================================
+default:
+  tags:
+    - docker
+  interruptible: true
+  cache:
+    - key:
+        files:
+          - package-lock.json
+        prefix: ${CI_COMMIT_REF_SLUG}
+      paths:
+        - node_modules/
+        - typescript/*/node_modules/
+        - .npm/
+      policy: pull-push
+    - key: node-cache-fallback-${CI_DEFAULT_BRANCH}
+      paths:
+        - node_modules/
+        - .npm/
+      policy: pull
+      when: always
+
+# Templates
+.node_setup:
+  before_script:
+    - npm config set cache .npm --global
+    - npm ci --prefer-offline --no-audit
+
+.rules:portfolio:
+  rules:
+    - changes:
+        - typescript/portfolio-worker/**/*
+        - typescript/data/**/*
+        - package.json
+        - package-lock.json
+      when: always
+    - when: never
+
+.rules:job-dashboard:
+  rules:
+    - changes:
+        - typescript/job-automation/**/*
+        - package.json
+        - package-lock.json
+      when: always
+    - when: never
+
+.rules:always:
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: '$CI_COMMIT_BRANCH == "master"'
+    - if: '$CI_COMMIT_BRANCH == "develop"'
+
+# =============================================================================
+# STAGE: VALIDATE
+# =============================================================================
+lint:
+  stage: validate
+  extends:
+    - .node_setup
+    - .rules:always
+  script:
+    - echo "=== Running ESLint ==="
+    - npm run lint 2>&1 | tee eslint-results.txt; LINT_EXIT=${PIPESTATUS[0]}
+    - |
+      ERRORS=$(grep -oP '\(\K[0-9]+(?= errors?\))' eslint-results.txt | tail -1 || echo "0")
+      WARNINGS=$(grep -oP '[0-9]+(?= warnings?\))' eslint-results.txt | tail -1 || echo "0")
+      echo "Lint: ${ERRORS:-0} errors, ${WARNINGS:-0} warnings"
+      # Quality gate: Errors = fail
+      if [ "${ERRORS:-0}" -gt "0" ]; then
+        echo "❌ ESLint found errors - failing"
+        exit 1
+      fi
+      # Quality gate: Max 110 warnings (current baseline, reduce to 0 over time)
+      if [ "${WARNINGS:-0}" -gt "110" ]; then
+        echo "❌ Too many ESLint warnings (${WARNINGS} > 110) - failing"
+        exit 1
+      fi
+      echo "✅ Lint passed"
+  artifacts:
+    when: on_failure
+    paths:
+      - eslint-results.txt
+    expire_in: 1 day
+
+typecheck:
+  stage: validate
+  extends:
+    - .node_setup
+    - .rules:always
+  needs: ["analyze:affected"]
+  script:
+    - echo "=== Running TypeScript Check (Affected) ==="
+    - node tools/ci/run-affected.js typecheck
+
+# =============================================================================
+# STAGE: TEST
+# =============================================================================
+test:unit:
+  stage: test
+  extends:
+    - .node_setup
+    # - .rules:always # Removed to allow manual triggers or specific logic if needed, but keeping for now via inheritance
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: '$CI_COMMIT_BRANCH == "master"'
+    - if: '$CI_COMMIT_BRANCH == "develop"'
+  needs: ["analyze:affected"]
+  script:
+    - echo "=== Running Unit Tests (Affected) ==="
+    - node tools/ci/run-affected.js test:coverage
+    # Coverage check momentarily disabled until coverage aggregation is fixed for monorepo
+    - |
+      echo "=== Coverage Summary ==="
+      if [ -f coverage/coverage-summary.json ]; then
+        node -p "const c=require('./coverage/coverage-summary.json').total; console.log('Lines: '+c.lines.pct+'% | Branches: '+c.branches.pct+'% | Functions: '+c.functions.pct+'%')"
+      else
+        echo "⚠️ Coverage report not found - skipping threshold check"
+      fi
+  coverage: '/All files[^|]*\|[^|]*\s+([\d\.]+)/'
+  artifacts:
+    when: always
+    paths:
+      - coverage/
+    reports:
+      junit: junit.xml
+      coverage_report:
+        coverage_format: cobertura
+        path: coverage/cobertura-coverage.xml
+    expire_in: 7 days
+
+test:e2e:
+  stage: test
+  image: mcr.microsoft.com/playwright:v${PLAYWRIGHT_VERSION}-noble
+  variables:
+    HOME: /root
+  cache:
+    key:
+      files:
+        - package-lock.json
+      prefix: e2e-${CI_COMMIT_REF_SLUG}
+    paths:
+      - node_modules/
+      - .npm/
+    policy: pull-push
+  before_script:
+    - npm config set cache .npm --global
+    - npm ci --prefer-offline --no-audit
+  script:
+    - echo "=== Running E2E Tests ==="
+    - npm run build
+    - npm run test:e2e
+  allow_failure: false # E2E failure now blocks deployment (safe due to webServer fix)
+  # Artifacts temporarily disabled due to GitLab server artifact upload 500 error
+  # artifacts:
+  #   when: always
+  #   paths:
+  #     - test-results/
+  #     - playwright-report/
+  #   expire_in: 7 days
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: '$CI_COMMIT_BRANCH == "master"'
+
+# Secret scanning with gitleaks
+# Note: gitleaks image is minimal (no shell), use entrypoint directly
+security:secrets:
+  stage: test
+  image:
+    name: zricethezav/gitleaks:latest
+    entrypoint: [""]
+  script:
+    - echo "=== Secret Scanning (gitleaks) ==="
+    - /gitleaks detect --source . --verbose --redact --no-git || true
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: '$CI_COMMIT_BRANCH == "master"'
+  allow_failure: true # Set to false after baseline is clean
+
+security:audit:
+  stage: test
+  extends:
+    - .node_setup
+    - .rules:always
+  allow_failure: true
+  script:
+    - echo "=== Security Audit ==="
+    - |
+      # Use Node.js for JSON parsing (no jq needed)
+      npm audit --json 2>/dev/null > audit.json || echo '{"metadata":{"vulnerabilities":{"critical":0,"high":0}}}' > audit.json
+      CRITICAL=$(node -p "const a=require('./audit.json'); a?.metadata?.vulnerabilities?.critical || 0")
+      HIGH=$(node -p "const a=require('./audit.json'); a?.metadata?.vulnerabilities?.high || 0")
+      echo "Critical: $CRITICAL, High: $HIGH"
+      if [ "$CRITICAL" -gt "0" ]; then
+        echo "CRITICAL vulnerabilities found!"
+        exit 1
+      fi
+      if [ "$HIGH" -gt "5" ]; then
+        echo "Too many HIGH vulnerabilities"
+        exit 1
+      fi
+      rm -f audit.json
+
+# =============================================================================
+# STAGE: BUILD
+# =============================================================================
+build:portfolio:
+  stage: build
+  extends: .node_setup
+  needs: ["lint", "typecheck"]
+  script:
+    - echo "=== Building Portfolio Worker ==="
+    - npm run sync:data # Copy resume data from typescript/data/resumes/master
+    - echo "Node version:" && node --version
+    - echo "npm version:" && npm --version
+    - export DEPLOYED_AT=$(date -u +'%Y-%m-%dT%H:%M:%SZ')
+    - export VERSION=$(node -p "require('./package.json').version")
+    - export COMMIT_SHA=${CI_COMMIT_SHORT_SHA}
+    - echo "VERSION=$VERSION, COMMIT=$COMMIT_SHA"
+    - cd typescript/portfolio-worker
+    - npm install --legacy-peer-deps
+    - echo "Checking required files..."
+    - ls -la index.html data.json 2>/dev/null || echo "Some files may be missing, checking build..."
+    - echo "Checking i18n translations..."
+    - ls -la src/scripts/data/translations.js 2>/dev/null || { echo "translations.js MISSING!"; exit 1; }
+    - echo "Running generate-worker.js..."
+    - node generate-worker.js 2>&1 || { echo "generate-worker.js failed with exit code $?"; exit 1; }
+    - ls -la worker.js 2>/dev/null || { echo "worker.js not found"; exit 1; }
+    - echo "worker.js size:" && wc -c worker.js
+    - echo "Built successfully"
+  # Artifacts temporarily disabled due to GitLab server artifact upload 500 error
+  # artifacts:
+  #   paths:
+  #     - typescript/portfolio-worker/worker.js
+  #   expire_in: 30 days
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "master"'
+      when: on_success
+
+build:job-dashboard:
+  stage: build
+  extends: .node_setup
+  needs: ["lint"]
+  script:
+    - echo "=== Building Job Dashboard Worker ==="
+    - cd typescript/job-automation/workers
+    - npm install
+    - echo "Job dashboard build ready"
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "master"'
+      when: on_success
+
+# Build metrics collection
+build:metrics:
+  stage: build
+  extends: .node_setup
+  needs:
+    - job: build:portfolio
+      optional: true
+    - job: build:job-dashboard
+      optional: true
+  script:
+    - echo "=== Build Metrics ==="
+    - |
+      # Collect build artifact sizes
+      PORTFOLIO_SIZE=0
+      JOB_DASH_SIZE=0
+
+      if [ -f typescript/portfolio-worker/worker.js ]; then
+        PORTFOLIO_SIZE=$(wc -c < typescript/portfolio-worker/worker.js)
+        echo "Portfolio Worker: ${PORTFOLIO_SIZE} bytes"
+      fi
+
+      # Count dependencies
+      DEP_COUNT=$(node -p "Object.keys(require('./package.json').dependencies || {}).length")
+      DEV_DEP_COUNT=$(node -p "Object.keys(require('./package.json').devDependencies || {}).length")
+
+      # Generate metrics JSON
+      cat > build-metrics.json << EOF
+      {
+        "timestamp": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+        "commit": "${CI_COMMIT_SHA}",
+        "branch": "${CI_COMMIT_REF_NAME}",
+        "pipeline": "${CI_PIPELINE_ID}",
+        "artifacts": {
+          "portfolio_worker_bytes": ${PORTFOLIO_SIZE}
+        },
+        "dependencies": {
+          "production": ${DEP_COUNT},
+          "dev": ${DEV_DEP_COUNT}
+        }
+      }
+      EOF
+      cat build-metrics.json
+  artifacts:
+    paths:
+      - build-metrics.json
+    expire_in: 90 days
+    reports:
+      metrics: build-metrics.json
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "master"'
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+
+# =============================================================================
+# STAGE: DEPLOY
+# =============================================================================
+deploy:portfolio:
+  stage: deploy
+  extends: .node_setup
+  before_script:
+    - |
+      if [ -z "${CLOUDFLARE_API_TOKEN}" ]; then
+        echo "❌ ERROR: CLOUDFLARE_API_TOKEN not set in CI/CD variables"
+        echo "→ Go to Settings → CI/CD → Variables and add it"
+        echo "→ Generate token at: https://dash.cloudflare.com/profile/api-tokens"
+        exit 1
+      fi
+    - npm config set cache .npm --global
+    - npm ci --prefer-offline --no-audit
+  needs:
+    - job: build:portfolio
+    - job: test:unit
+    - job: security:audit
+      optional: true
+  environment:
+    name: production/portfolio
+    url: https://resume.jclee.me
+  script:
+    - echo "=== Deploying Portfolio ==="
+    - cd typescript/portfolio-worker
+    - npx wrangler deploy --env production
+    - sleep 10
+    - echo "Portfolio deployed"
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "master"'
+      when: on_success
+
+deploy:job-dashboard:
+  stage: deploy
+  extends: .node_setup
+  before_script:
+    - |
+      if [ -z "${CLOUDFLARE_API_TOKEN}" ]; then
+        echo "❌ ERROR: CLOUDFLARE_API_TOKEN not set in CI/CD variables"
+        echo "→ Go to Settings → CI/CD → Variables and add it"
+        echo "→ Generate token at: https://dash.cloudflare.com/profile/api-tokens"
+        exit 1
+      fi
+    - npm config set cache .npm --global
+    - npm ci --prefer-offline --no-audit
+  needs:
+    - job: build:job-dashboard
+    - job: test:unit
+    - job: security:audit
+      optional: true
+  environment:
+    name: production/job-dashboard
+    url: https://job.jclee.me
+  script:
+    - echo "=== Deploying Job Dashboard ==="
+    - cd typescript/job-automation/workers
+    - npx wrangler deploy --env production
+    - echo "Job Dashboard deployed"
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "master"'
+      when: on_success
+
+deploy:all:
+  stage: deploy
+  extends: .node_setup
+  needs:
+    - job: build:portfolio
+    - job: build:job-dashboard
+    - job: test:unit
+    - job: security:audit
+      optional: true
+  environment:
+    name: production
+    url: https://resume.jclee.me
+  script:
+    - echo "=== Deploying All Workers ==="
+    - |
+      cd typescript/portfolio-worker
+      npx wrangler deploy --env production
+      cd ../../typescript/job-automation/workers
+      npx wrangler deploy --env production
+    - echo "All deployments complete"
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "master"'
+      when: manual
+
+# =============================================================================
+# STAGE: VERIFY
+# =============================================================================
+verify:health:
+  stage: verify
+  image: curlimages/curl:latest
+  needs:
+    - job: deploy:portfolio
+      optional: true
+    - job: deploy:job-dashboard
+      optional: true
+    - job: deploy:all
+      optional: true
+  script:
+    - echo "=== Production Health Checks ==="
+    - |
+      MAX_RETRIES=5
+      RETRY=0
+      while [ $RETRY -lt $MAX_RETRIES ]; do
+        RESPONSE=$(curl -s ${PORTFOLIO_URL}/health || echo '{"status":"error"}')
+        STATUS=$(echo "$RESPONSE" | grep -o '"status":"[^"]*"' | cut -d'"' -f4)
+        if [ "$STATUS" = "healthy" ]; then
+          echo "Portfolio: HEALTHY"
+          echo "$RESPONSE"
+          break
+        fi
+        RETRY=$((RETRY + 1))
+        echo "Retry $RETRY/$MAX_RETRIES..."
+        sleep 5
+      done
+      if [ $RETRY -eq $MAX_RETRIES ]; then
+        echo "Portfolio health check failed"
+        exit 1
+      fi
+    - |
+      JOB_RESPONSE=$(curl -s ${JOB_DASHBOARD_URL}/api/health)
+      echo "Job Dashboard: $JOB_RESPONSE"
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "master"'
+      when: on_success
+
+verify:content:
+  stage: verify
+  image: curlimages/curl:latest
+  needs:
+    - job: deploy:portfolio
+      optional: true
+    - job: deploy:all
+      optional: true
+  script:
+    - echo "=== Verifying Production Content ==="
+    - |
+      HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" ${PORTFOLIO_URL})
+      if [ "$HTTP_CODE" != "200" ]; then
+        echo "Main page returned HTTP $HTTP_CODE"
+        exit 1
+      fi
+      echo "Main page: HTTP $HTTP_CODE"
+    - |
+      CONTENT=$(curl -s ${PORTFOLIO_URL})
+      for KEYWORD in "Infrastructure" "DevOps" "Kubernetes"; do
+        if echo "$CONTENT" | grep -q "$KEYWORD"; then
+          echo "Found: $KEYWORD"
+        else
+          echo "Missing keyword: $KEYWORD"
+          exit 1
+        fi
+      done
+      echo "Content verification passed"
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "master"'
+      when: on_success
+
+verify:security:
+  stage: verify
+  image: curlimages/curl:latest
+  needs:
+    - job: deploy:portfolio
+      optional: true
+    - job: deploy:all
+      optional: true
+  script:
+    - echo "=== Checking Security Headers ==="
+    - |
+      HEADERS=$(curl -sI ${PORTFOLIO_URL})
+      MISSING=""
+
+      for HEADER in "content-security-policy" "x-frame-options" "x-content-type-options" "strict-transport-security"; do
+        if echo "$HEADERS" | grep -qi "$HEADER"; then
+          echo "$HEADER: PRESENT"
+        else
+          echo "$HEADER: MISSING"
+          MISSING="$MISSING $HEADER"
+        fi
+      done
+
+      if [ -n "$MISSING" ]; then
+        echo "Warning: Missing security headers:$MISSING"
+      fi
+  allow_failure: true
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "master"'
+
+verify:performance:
+  stage: verify
+  image: curlimages/curl:latest
+  needs:
+    - job: deploy:portfolio
+      optional: true
+    - job: deploy:all
+      optional: true
+  script:
+    - echo "=== Performance Verification ==="
+    - |
+      RESPONSE_TIME=$(curl -s -o /dev/null -w "%{time_total}" ${PORTFOLIO_URL}/)
+      RESPONSE_MS=$(echo "$RESPONSE_TIME * 1000" | awk '{printf "%.0f", $1 * 1000}')
+      echo "Response Time: ${RESPONSE_MS}ms"
+
+      if [ "$RESPONSE_MS" -gt 2000 ]; then
+        echo "WARNING: Response time > 2000ms"
+      elif [ "$RESPONSE_MS" -gt 1000 ]; then
+        echo "NOTICE: Response time > 1000ms"
+      else
+        echo "OK: Response time < 1000ms"
+      fi
+    - |
+      echo "=== Checking Compression ==="
+      ENCODING=$(curl -sI -H "Accept-Encoding: gzip, br" ${PORTFOLIO_URL}/ | grep -i "content-encoding" || echo "none")
+      echo "Content-Encoding: $ENCODING"
+    - |
+      echo "=== Checking Metrics Endpoint ==="
+      if curl -sf ${PORTFOLIO_URL}/metrics > /dev/null 2>&1; then
+        METRICS=$(curl -s ${PORTFOLIO_URL}/metrics)
+        REQ_COUNT=$(echo "$METRICS" | grep "http_requests_total" | grep -oP '\d+' | tail -1 || echo "N/A")
+        echo "Metrics: OK (Total Requests: $REQ_COUNT)"
+      else
+        echo "Metrics: Not available"
+      fi
+  allow_failure: true
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "master"'
+
+verify:api-endpoints:
+  stage: verify
+  image: curlimages/curl:latest
+  needs:
+    - job: deploy:portfolio
+      optional: true
+    - job: deploy:all
+      optional: true
+  script:
+    - echo "=== API Endpoint Verification ==="
+    - |
+      echo "Checking robots.txt..."
+      if curl -sf ${PORTFOLIO_URL}/robots.txt | grep -qi "user-agent"; then
+        echo "robots.txt: OK"
+      else
+        echo "robots.txt: Missing or invalid"
+      fi
+    - |
+      echo "Checking sitemap.xml..."
+      if curl -sf ${PORTFOLIO_URL}/sitemap.xml | grep -qi "<urlset"; then
+        URL_COUNT=$(curl -sf ${PORTFOLIO_URL}/sitemap.xml | grep -c "<url>" || echo "0")
+        echo "sitemap.xml: OK ($URL_COUNT URLs)"
+      else
+        echo "sitemap.xml: Missing or invalid"
+      fi
+    - |
+      echo "Checking OG image..."
+      OG_STATUS=$(curl -sI ${PORTFOLIO_URL}/og-image.webp | head -1 | grep -oP '\d{3}' || echo "000")
+      if [ "$OG_STATUS" = "200" ]; then
+        echo "OG Image: OK"
+      else
+        echo "OG Image: HTTP $OG_STATUS"
+      fi
+    - |
+      echo "Checking Web Vitals endpoint..."
+      VITALS_STATUS=$(curl -s -X POST ${PORTFOLIO_URL}/api/vitals \
+        -H "Content-Type: application/json" \
+        -d '{"lcp":1000,"fid":50,"cls":0.05}' \
+        -w "%{http_code}" -o /dev/null || echo "000")
+      if [ "$VITALS_STATUS" = "200" ]; then
+        echo "Vitals Endpoint: OK"
+      else
+        echo "Vitals Endpoint: HTTP $VITALS_STATUS"
+      fi
+  allow_failure: true
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "master"'
+
+verify:full:
+  stage: verify
+  image: node:20-slim
+  needs:
+    - job: deploy:portfolio
+      optional: true
+    - job: deploy:all
+      optional: true
+  before_script:
+    - apt-get update -qq && apt-get install -y -qq curl bc
+    - chmod +x tools/scripts/verification/verify-deployment-v2.sh
+  script:
+    - echo "=== Full Deployment Verification ==="
+    - ./tools/scripts/verification/verify-deployment-v2.sh || exit 0
+  allow_failure: true # Set to false after baseline is stable
+  artifacts:
+    when: always
+    paths:
+      - verification-report.txt
+    expire_in: 7 days
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "master"'
+
+# =============================================================================
+# STAGE: NOTIFY
+# =============================================================================
+notify:success:
+  stage: notify
+  image: curlimages/curl:latest
+  needs:
+    - job: verify:health
+      optional: true
+    - job: verify:content
+      optional: true
+  script:
+    - |
+      if [ -z "$N8N_WEBHOOK_URL" ]; then
+        echo "N8N_WEBHOOK_URL not configured, skipping"
+        exit 0
+      fi
+
+      curl -X POST "$N8N_WEBHOOK_URL" \
+        -H "Content-Type: application/json" \
+        -d "{
+          \"event\": \"deployment\",
+          \"status\": \"success\",
+          \"version\": \"${CI_COMMIT_TAG:-${CI_COMMIT_SHORT_SHA}}\",
+          \"commit_sha\": \"${CI_COMMIT_SHORT_SHA}\",
+          \"commit_message\": \"$(echo "$CI_COMMIT_MESSAGE" | head -1 | sed 's/"/\\"/g')\",
+          \"author\": \"${GITLAB_USER_NAME}\",
+          \"deployed_at\": \"$(date -u +'%Y-%m-%dT%H:%M:%SZ')\",
+          \"pipeline_id\": \"${CI_PIPELINE_ID}\",
+          \"pipeline_url\": \"${CI_PIPELINE_URL}\",
+          \"project\": \"${CI_PROJECT_PATH}\",
+          \"branch\": \"${CI_COMMIT_BRANCH}\",
+          \"urls\": {
+            \"portfolio\": \"${PORTFOLIO_URL}\",
+            \"job_dashboard\": \"${JOB_DASHBOARD_URL}\"
+          },
+          \"source\": \"gitlab-ci\"
+        }"
+      echo "Success notification sent"
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "master"'
+  when: on_success
+
+notify:failure:
+  stage: notify
+  image: curlimages/curl:latest
+  script:
+    - |
+      if [ -z "$N8N_WEBHOOK_URL" ]; then
+        echo "N8N_WEBHOOK_URL not configured"
+        exit 0
+      fi
+
+      curl -X POST "$N8N_WEBHOOK_URL" \
+        -H "Content-Type: application/json" \
+        -d "{
+          \"event\": \"deployment\",
+          \"status\": \"failed\",
+          \"commit_sha\": \"${CI_COMMIT_SHORT_SHA}\",
+          \"commit_message\": \"$(echo "$CI_COMMIT_MESSAGE" | head -1 | sed 's/"/\\"/g')\",
+          \"author\": \"${GITLAB_USER_NAME}\",
+          \"pipeline_id\": \"${CI_PIPELINE_ID}\",
+          \"pipeline_url\": \"${CI_PIPELINE_URL}\",
+          \"project\": \"${CI_PROJECT_PATH}\",
+          \"branch\": \"${CI_COMMIT_BRANCH}\",
+          \"failed_job\": \"${CI_JOB_NAME}\",
+          \"source\": \"gitlab-ci\"
+        }"
+      echo "Failure notification sent"
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "master"'
+  when: on_failure
+
+# =============================================================================
+# STAGE: MAINTENANCE - Scheduled Jobs
+# =============================================================================
+auth:refresh:sessions:
+  stage: maintenance
+  image: node:20-slim
+  variables:
+    DEBIAN_FRONTEND: noninteractive
+  before_script:
+    - apt-get update && apt-get install -y xvfb curl
+    - npm ci --prefer-offline --no-audit
+    - cd typescript/job-automation/scripts && npm install playwright
+    - npx playwright install chromium --with-deps
+  script:
+    - echo "=== Refreshing Job Platform Sessions ==="
+    - cd typescript/job-automation/scripts
+    - |
+      # Refresh Wanted (direct login)
+      node auth-sync.js --platform wanted --headless || echo "Wanted refresh failed"
+
+      # Refresh JobKorea (persistent context)
+      xvfb-run -a --server-args="-screen 0 1920x1080x24" node auth-persistent.js jobkorea --headless || echo "JobKorea refresh failed"
+
+      # Refresh Saramin (persistent context)
+      xvfb-run -a --server-args="-screen 0 1920x1080x24" node auth-persistent.js saramin --headless || echo "Saramin refresh failed"
+    - echo "Session refresh complete"
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "schedule"'
+      when: always
+    - if: '$CI_PIPELINE_SOURCE == "web"'
+      when: manual
+  allow_failure: true
+
+# Profile sync when SSOT changes
+profile:sync:
+  stage: maintenance
+  image: curlimages/curl:latest
+  script:
+    - echo "=== Syncing Profile from SSOT via Worker API ==="
+    - |
+      # Read SSOT data
+      SSOT_DATA=$(cat typescript/data/resumes/master/resume_data.json)
+
+      # Call Worker API to trigger profile sync
+      RESPONSE=$(curl -s -X POST "${JOB_DASHBOARD_URL}/api/automation/profile-sync" \
+        -H "Content-Type: application/json" \
+        -H "X-Admin-Token: ${ADMIN_TOKEN}" \
+        -d "{
+          \"ssotData\": ${SSOT_DATA},
+          \"platforms\": [\"wanted\", \"jobkorea\", \"saramin\"],
+          \"dryRun\": ${APPLY_PROFILE_SYNC:-false},
+          \"callbackUrl\": \"${N8N_PROFILE_SYNC_WEBHOOK}\"
+        }")
+
+      echo "Response: $RESPONSE"
+
+      # Check success
+      SUCCESS=$(echo "$RESPONSE" | grep -o '"success":true' || echo "")
+      if [ -z "$SUCCESS" ]; then
+        echo "Profile sync failed"
+        exit 1
+      fi
+
+      echo "Profile sync dispatched successfully"
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "master"'
+      changes:
+        - typescript/data/resumes/master/resume_data.json
+      when: on_success
+    - if: '$CI_PIPELINE_SOURCE == "web"'
+      when: manual
+  allow_failure: true
+
+# =============================================================================
+# STAGE: TERRAFORM - Infrastructure as Code
+# =============================================================================
+.terraform:base:
+  image: hashicorp/terraform:1.7
+  variables:
+    TF_ROOT: infrastructure/cloudflare
+  before_script:
+    - cd $TF_ROOT
+    - terraform init
+      -backend-config="address=https://gitlab.jclee.me/api/v4/projects/${CI_PROJECT_ID}/terraform/state/cloudflare"
+      -backend-config="lock_address=https://gitlab.jclee.me/api/v4/projects/${CI_PROJECT_ID}/terraform/state/cloudflare/lock"
+      -backend-config="unlock_address=https://gitlab.jclee.me/api/v4/projects/${CI_PROJECT_ID}/terraform/state/cloudflare/lock"
+      -backend-config="username=gitlab-ci-token"
+      -backend-config="password=${CI_JOB_TOKEN}"
+
+terraform:plan:
+  extends: .terraform:base
+  stage: terraform
+  script:
+    - terraform plan -out=plan.tfplan
+    - terraform show -no-color plan.tfplan > plan.txt
+  artifacts:
+    paths:
+      - $TF_ROOT/plan.tfplan
+      - $TF_ROOT/plan.txt
+    expire_in: 1 week
+    reports:
+      terraform: $TF_ROOT/plan.json
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      changes:
+        - infrastructure/cloudflare/**/*
+    - if: '$CI_COMMIT_BRANCH == "master"'
+      changes:
+        - infrastructure/cloudflare/**/*
+
+terraform:apply:
+  extends: .terraform:base
+  stage: terraform
+  script:
+    - terraform apply -auto-approve
+  dependencies:
+    - terraform:plan
+  environment:
+    name: infrastructure/cloudflare
+    url: https://resume.jclee.me
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "master"'
+      changes:
+        - infrastructure/cloudflare/**/*
+      when: on_success
+
+terraform:drift:
+  extends: .terraform:base
+  stage: maintenance
+  script:
+    - terraform plan -detailed-exitcode || DRIFT=$?
+    - |
+      if [ "$DRIFT" = "2" ]; then
+        echo "Drift detected in Cloudflare infrastructure"
+        exit 1
+      fi
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "schedule"'
+  allow_failure: true
+
+# =============================================================================
+# MERGE REQUEST - Dynamic Status Check
+# =============================================================================
+mr:check:
+  stage: notify
+  script:
+    - |
+      echo "## MR Pipeline Summary"
+      echo ""
+      echo "Branch: ${CI_COMMIT_REF_NAME}"
+      echo "Commit: ${CI_COMMIT_SHORT_SHA}"
+      echo ""
+      echo "All required checks passed. Ready for review."
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      when: on_success
+
+# =============================================================================
+# ROLLBACK (Emergency)
+# =============================================================================
+rollback:portfolio:
+  stage: deploy
+  extends: .node_setup
+  environment:
+    name: production/portfolio
+    url: https://resume.jclee.me
+  script:
+    - echo "=== Rolling Back Portfolio ==="
+    - |
+      # Get previous deployment version from wrangler
+      cd typescript/portfolio-worker
+      echo "Rolling back to previous version..."
+      npx wrangler rollback --env production
+    - echo "Rollback complete"
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "master"'
+      when: manual
+  allow_failure: true
+
+rollback:job-dashboard:
+  stage: deploy
+  extends: .node_setup
+  environment:
+    name: production/job-dashboard
+    url: https://job.jclee.me
+  script:
+    - echo "=== Rolling Back Job Dashboard ==="
+    - cd typescript/job-automation/workers
+    - npx wrangler rollback --env production
+    - echo "Rollback complete"
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "master"'
+      when: manual
+  allow_failure: true

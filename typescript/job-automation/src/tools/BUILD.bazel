@@ -1,0 +1,67 @@
+# Job Automation - MCP Tools
+#
+# This package contains MCP tool implementations:
+# - auth.js: Authentication management
+# - resume.js: Resume CRUD operations
+# - resume-sync.js: Platform-specific resume sync
+# - unified-resume-sync.js: Unified sync orchestration
+# - search-jobs.js: Job search across platforms
+# - get-job-detail.js: Job posting detail retrieval
+# - profile.js: User profile management
+# - optimize-resume.js: AI resume optimization
+
+package(default_visibility = ["//typescript/job-automation/src:__pkg__"])
+
+# Authentication tools
+filegroup(
+    name = "auth",
+    srcs = [
+        "auth.js",
+        "auth-integrated.js",
+    ],
+)
+
+# Resume management tools
+filegroup(
+    name = "resume",
+    srcs = [
+        "resume.js",
+        "resume-sync.js",
+        "unified-resume-sync.js",
+    ],
+    data = [
+        "//typescript/data:resume_data",
+    ],
+)
+
+# Job search tools
+filegroup(
+    name = "search",
+    srcs = [
+        "search-jobs.js",
+        "search-keyword.js",
+        "get-job-detail.js",
+        "get-categories.js",
+        "get-company.js",
+    ],
+)
+
+# Profile & optimization tools
+filegroup(
+    name = "profile",
+    srcs = [
+        "profile.js",
+        "optimize-resume.js",
+    ],
+)
+
+# All tools (convenience target)
+filegroup(
+    name = "all",
+    srcs = [
+        ":auth",
+        ":resume",
+        ":search",
+        ":profile",
+    ],
+)

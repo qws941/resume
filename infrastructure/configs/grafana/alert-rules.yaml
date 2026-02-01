@@ -1,0 +1,342 @@
+apiVersion: 1
+
+groups:
+  - orgId: 1
+    name: Resume Portfolio Alerts
+    folder: Production
+    interval: 1m
+    rules:
+      # ===== CRITICAL ALERTS (Immediate Action Required) =====
+
+      - uid: resume_service_down
+        title: Resume Portfolio Service Down
+        condition: A
+        data:
+          - refId: A
+            relativeTimeRange:
+              from: 60
+              to: 0
+            datasourceUid: prometheus
+            model:
+              expr: up{job="resume"} == 0
+              refId: A
+        noDataState: Alerting
+        execErrState: Alerting
+        for: 1m
+        annotations:
+          description: "Resume portfolio service is not responding to health checks"
+          summary: "🚨 CRITICAL: Resume portfolio service is DOWN"
+          runbook_url: "https://github.com/YOUR_ORG/resume/wiki/Runbook-Service-Down"
+        labels:
+          severity: critical
+          service: resume-portfolio
+          team: infrastructure
+          escalation: primary
+        isPaused: false
+
+      - uid: resume_high_error_rate
+        title: High Error Rate - Resume Portfolio
+        condition: C
+        data:
+          - refId: A
+            relativeTimeRange:
+              from: 300
+              to: 0
+            datasourceUid: prometheus
+            model:
+              expr: sum(rate(http_requests_total{job="resume",status=~"5.."}[5m]))
+              refId: A
+          - refId: B
+            relativeTimeRange:
+              from: 300
+              to: 0
+            datasourceUid: prometheus
+            model:
+              expr: sum(rate(http_requests_total{job="resume"}[5m]))
+              refId: B
+          - refId: C
+            relativeTimeRange:
+              from: 0
+              to: 0
+            datasourceUid: __expr__
+            model:
+              type: math
+              expression: (A / B) * 100
+              refId: C
+          - refId: D
+            relativeTimeRange:
+              from: 0
+              to: 0
+            datasourceUid: __expr__
+            model:
+              type: threshold
+              expression: C
+              conditions:
+                - evaluator:
+                    type: gt
+                    params: [5]
+                  operator:
+                    type: and
+                  reducer:
+                    type: last
+        noDataState: OK
+        execErrState: Alerting
+        for: 5m
+        annotations:
+          description: 'Error rate for resume portfolio is {{ printf "%.2f" $values.C.Value }}% (threshold: 5%)'
+          summary: "🔴 High error rate detected in resume portfolio"
+          grafana_dashboard: "https://grafana.jclee.me/d/resume-portfolio"
+        labels:
+          severity: critical
+          service: resume-portfolio
+          team: infrastructure
+          escalation: primary
+        isPaused: false
+
+      - uid: resume_error_log_spike
+        title: Error Log Spike - Resume Portfolio
+        condition: A
+        data:
+          - refId: A
+            relativeTimeRange:
+              from: 300
+              to: 0
+            datasourceUid: loki
+            model:
+              expr: sum(count_over_time({job="resume-worker"} |~ "(?i)error" [5m])) > 50
+              refId: A
+        noDataState: OK
+        execErrState: OK
+        for: 3m
+        annotations:
+          description: "More than 50 error logs detected in the last 5 minutes"
+          summary: "🔴 Error log spike in resume portfolio"
+        labels:
+          severity: critical
+          service: resume-portfolio
+          team: infrastructure
+          escalation: primary
+        isPaused: false
+
+      # ===== WARNING ALERTS (Investigation Required) =====
+
+      - uid: resume_high_latency
+        title: High p95 Latency - Resume Portfolio
+        condition: A
+        data:
+          - refId: A
+            relativeTimeRange:
+              from: 600
+              to: 0
+            datasourceUid: prometheus
+            model:
+              expr: histogram_quantile(0.95, rate(http_request_duration_seconds_bucket{job="resume"}[5m])) > 0.3
+              refId: A
+        noDataState: OK
+        execErrState: OK
+        for: 10m
+        annotations:
+          description: "p95 response time is above 300ms threshold for 10 minutes"
+          summary: "🟡 High latency detected in resume portfolio"
+        labels:
+          severity: warning
+          service: resume-portfolio
+          team: infrastructure
+          escalation: secondary
+        isPaused: false
+
+      - uid: resume_worker_cpu_high
+        title: Worker CPU Time High - Resume Portfolio
+        condition: A
+        data:
+          - refId: A
+            relativeTimeRange:
+              from: 600
+              to: 0
+            datasourceUid: prometheus
+            model:
+              expr: avg(cloudflare_worker_cpu_time_ms{job="resume"}) > 40
+              refId: A
+        noDataState: OK
+        execErrState: OK
+        for: 15m
+        annotations:
+          description: "Worker CPU time averaging above 40ms (limit: 50ms for free tier)"
+          summary: "🟡 Worker CPU approaching limit"
+        labels:
+          severity: warning
+          service: resume-portfolio
+          team: infrastructure
+          escalation: secondary
+        isPaused: false
+
+      - uid: resume_cache_hit_low
+        title: Low Cache Hit Rate - Resume Portfolio
+        condition: A
+        data:
+          - refId: A
+            relativeTimeRange:
+              from: 1800
+              to: 0
+            datasourceUid: prometheus
+            model:
+              expr: avg(cloudflare_cache_hit_ratio{job="resume"}) < 0.7
+              refId: A
+        noDataState: OK
+        execErrState: OK
+        for: 30m
+        annotations:
+          description: 'Cache hit rate below 70% for 30 minutes (current: {{ printf "%.1f" $values.A.Value }}%)'
+          summary: "🟡 Low cache hit rate - possible cache bypass or misconfiguration"
+        labels:
+          severity: warning
+          service: resume-portfolio
+          team: infrastructure
+          escalation: secondary
+        isPaused: false
+
+      - uid: resume_zero_requests
+        title: Resume Portfolio - No Traffic
+        condition: A
+        data:
+          - refId: A
+            relativeTimeRange:
+              from: 600
+              to: 0
+            datasourceUid: prometheus
+            model:
+              expr: sum(rate(http_requests_total{job="resume"}[10m])) == 0
+              refId: A
+        noDataState: OK
+        execErrState: OK
+        for: 15m
+        annotations:
+          description: "Resume portfolio has received zero requests in the last 15 minutes"
+          summary: "🟡 No traffic to resume portfolio"
+        labels:
+          severity: warning
+          service: resume-portfolio
+          team: infrastructure
+          escalation: secondary
+        isPaused: false
+
+      # ===== INFO ALERTS (Monitoring Only) =====
+
+      - uid: resume_web_vitals_lcp_poor
+        title: Poor LCP Score - Resume Portfolio
+        condition: A
+        data:
+          - refId: A
+            relativeTimeRange:
+              from: 3600
+              to: 0
+            datasourceUid: prometheus
+            model:
+              expr: avg(web_vitals_lcp_ms{job="resume"}) > 4000
+              refId: A
+        noDataState: OK
+        execErrState: OK
+        for: 1h
+        annotations:
+          description: "LCP (Largest Contentful Paint) averaging above 4 seconds - poor user experience"
+          summary: "📊 Poor Web Vitals LCP score"
+        labels:
+          severity: info
+          service: resume-portfolio
+          team: infrastructure
+          escalation: none
+        isPaused: false
+
+contactPoints:
+  - orgId: 1
+    name: Primary On-Call
+    receivers:
+      - uid: resume_slack_critical
+        type: slack
+        settings:
+          url: ${SLACK_WEBHOOK_URL}
+          recipient: "#alerts-critical"
+          title: "{{ .CommonLabels.severity | toUpper }}: {{ .CommonAnnotations.summary }}"
+          text: |
+            {{ .CommonAnnotations.description }}
+
+            📊 Dashboard: {{ .CommonAnnotations.grafana_dashboard }}
+            📖 Runbook: {{ .CommonAnnotations.runbook_url }}
+
+            Labels:
+            {{ range .CommonLabels.SortedPairs }}
+            • {{ .Name }}: {{ .Value }}
+            {{ end }}
+
+            ⏰ Started: {{ .StartsAt.Format "2006-01-02 15:04:05 MST" }}
+          color: '{{ if eq .CommonLabels.severity "critical" }}danger{{ else if eq .CommonLabels.severity "warning" }}warning{{ else }}good{{ end }}'
+        disableResolveMessage: false
+
+  - orgId: 1
+    name: Secondary On-Call
+    receivers:
+      - uid: resume_slack_warning
+        type: slack
+        settings:
+          url: ${SLACK_WEBHOOK_URL}
+          recipient: "#alerts-warning"
+          title: "{{ .CommonLabels.severity | toUpper }}: {{ .CommonAnnotations.summary }}"
+          text: |
+            {{ .CommonAnnotations.description }}
+
+            {{ range .CommonLabels.SortedPairs }}
+            • {{ .Name }}: {{ .Value }}
+            {{ end }}
+        disableResolveMessage: false
+
+  - orgId: 1
+    name: Info Notifications
+    receivers:
+      - uid: resume_slack_info
+        type: slack
+        settings:
+          url: ${SLACK_WEBHOOK_URL}
+          recipient: "#alerts-info"
+          title: "ℹ️ {{ .CommonAnnotations.summary }}"
+          text: "{{ .CommonAnnotations.description }}"
+        disableResolveMessage: false
+
+policies:
+  # Root policy
+  - orgId: 1
+    receiver: Primary On-Call
+    group_by:
+      - alertname
+      - severity
+    group_wait: 10s
+    group_interval: 1m
+    repeat_interval: 1h
+    routes:
+      # Critical escalation - Primary on-call
+      - receiver: Primary On-Call
+        matchers:
+          - severity = critical
+          - escalation = primary
+        group_wait: 0s
+        group_interval: 1m
+        repeat_interval: 1h
+        continue: false
+
+      # Warning escalation - Secondary on-call
+      - receiver: Secondary On-Call
+        matchers:
+          - severity = warning
+          - escalation = secondary
+        group_wait: 30s
+        group_interval: 5m
+        repeat_interval: 4h
+        continue: false
+
+      # Info notifications - No escalation
+      - receiver: Info Notifications
+        matchers:
+          - severity = info
+        group_wait: 1m
+        group_interval: 30m
+        repeat_interval: 24h
+        continue: false

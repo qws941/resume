@@ -1,0 +1,5 @@
+# User-specific configuration (contains secrets)
+config.json
+
+# Configured workflows (generated from templates)
+configured/

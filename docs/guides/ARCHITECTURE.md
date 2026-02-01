@@ -1,0 +1,345 @@
+# Architecture Guide
+
+## System Overview
+
+### Why Source-to-Worker Pipeline?
+
+**Design Goal**: Single-file deployment with zero runtime dependencies
+
+**Benefits**:
+
+- ⚡ **Zero cold start**: All HTML/CSS embedded in worker code
+- 🌍 **Global edge deployment**: Runs on 300+ Cloudflare data centers
+- 🔒 **Security**: CSP hashes calculated at build time, no inline risks
+- 📦 **Simplicity**: One `worker.js` file contains entire site
+- 💰 **Cost**: Free tier (100k requests/day)
+
+**Trade-off**: Cannot edit HTML directly in production - must rebuild and redeploy
+
+## Build Pipeline Architecture
+
+### Critical Worker Generation Workflow
+
+Source files (HTML/CSS/JSON) are transformed into a single deployable `worker.js`.
+
+**Phase 1: CSS Separation** (Completed 2025-11-07)
+
+- `web/styles.css` contains all CSS (758 lines)
+- `web/index.html` has CSS placeholder: `<!-- CSS_PLACEHOLDER -->`
+- Build script injects CSS at build time
+
+**Phase 2: Data-Driven Templates** (Completed 2025-11-07)
+
+- `web/data.json` contains all project data (resume cards + project cards)
+- `web/index.html` has placeholders: `<!-- RESUME_CARDS_PLACEHOLDER -->` and `<!-- PROJECT_CARDS_PLACEHOLDER -->`
+- Build script generates HTML from JSON at build time
+
+### Build Pipeline (3 phases)
+
+1. **Edit Content**: Modify `web/data.json` (project data) OR `web/index.html` (structure) OR `web/styles.css` (styling)
+2. **Generate Worker**: Run `npm run build` (performs 6 transformations)
+3. **Deploy**: Push to `master` branch (GitLab CI/CD auto-deploys) OR run `wrangler deploy` manually
+
+### 6 Critical Transformations
+
+`web/generate-worker.js` performs these operations:
+
+1. **CSS Injection**: Reads `styles.css`, replaces `<!-- CSS_PLACEHOLDER -->` (758 lines → inline CSS)
+2. **Data Injection**: Reads `data.json`, generates HTML cards from templates (resume + projects)
+3. **HTML Minification**: 15% size reduction using `html-minifier-terser` (whitespace removal, tag optimization)
+4. **CSP Hash Generation**: Extracts `<script>` and `<style>` tags, generates SHA-256 hashes (CRITICAL: no trim())
+5. **Template Literal Escaping**: Escapes backticks (`) and dollar signs ($) for safe JavaScript embedding
+6. **Deployment Timestamp**: Injects `DEPLOYED_AT` from environment variable (ISO 8601 UTC)
+
+### Worker Routing
+
+- `/` → Embedded index.html (minified)
+- `/health` → Health check JSON (status, metrics, uptime)
+- `/metrics` → Prometheus exposition format
+- `/api/vitals` → Web Vitals POST endpoint (Loki logging)
+
+### Template Functions
+
+`web/generate-worker.js` contains:
+
+- `generateResumeCards(data)`: Creates resume project cards from `data.resume` array
+- `generateProjectCards(data)`: Creates portfolio project cards from `data.projects` array
+- Special handling:
+  - Grafana project: Multiple dashboard links
+  - Highlighted cards: Use `completePdfUrl` instead of `pdfUrl`/`docxUrl`
+  - GitLab URLs: All download links use `CONFIG.GITLAB_BASE_URL` prefix
+
+### CSP Hash Calculation
+
+**CRITICAL**: CSP hashes MUST be calculated from **original HTML before escaping**
+
+- **DO NOT use `.trim()`** on extracted inline scripts/styles before hashing
+- Browsers calculate CSP hashes with **exact whitespace** as rendered in HTML
+- Commit f67b5eb fixed this: removed `trim()` from hash calculation to match browser behavior
+
+## Content Hierarchy
+
+### Source Files
+
+- **master/resume_master.md**: Single source of truth (complete career history)
+- **master/resume_final.md**: Compressed submission version (downloadable from portfolio)
+- **company-specific/**: Tailored resumes derived from master
+- **web/data.json**: Portfolio project data (resume cards + project cards)
+- **web/styles.css**: All CSS styles (758 lines)
+- **web/index.html**: HTML structure with placeholders (200 lines)
+- **resume/nextrade/**: Technical documentation (Architecture, DR, SOC) for download
+
+### Generated Files (do not edit directly)
+
+- **web/worker.js**: Cloudflare Worker with embedded HTML (30.57 KB, auto-generated)
+
+### Data Structure
+
+`web/data.json` format:
+
+```json
+{
+  "resume": [
+    {
+      "icon": "🏦",
+      "title": "Project Title",
+      "description": "Project description",
+      "stats": ["Tag1", "Tag2"],
+      "highlight": true,  // Optional, for featured projects
+      "pdfUrl": "...",    // For standard resume cards
+      "docxUrl": "...",   // For standard resume cards
+      "completePdfUrl": "..."  // For highlighted resume cards
+    }
+  ],
+  "projects": [
+    {
+      "icon": "🔥",
+      "title": "Project Title",
+      "tech": "Tech Stack",
+      "description": "Description",
+      "liveUrl": "...",   // For standard projects
+      "gitlabUrl": "...", // For standard projects
+      "dashboards": [...], // For Grafana project with multiple links
+      "documentationUrl": "..."  // For projects with docs
+    }
+  ]
+}
+```
+
+All versions must maintain consistency in:
+
+- Career dates and timeline
+- Quantitative metrics (format: "50% 시간 단축 (8시간 → 4시간)")
+- Technical stack keywords
+
+## Observability Architecture
+
+### Monitoring Endpoints
+
+**1. Health Check** (`/health`):
+
+```bash
+curl https://resume.jclee.me/health
+```
+
+Returns JSON with service status, version, deployment time, uptime, and metrics.
+
+**2. Prometheus Metrics** (`/metrics`):
+
+```bash
+curl https://resume.jclee.me/metrics
+```
+
+Returns Prometheus exposition format for Grafana integration.
+
+**3. Web Vitals Collection** (`/api/vitals`):
+
+```bash
+curl -X POST https://resume.jclee.me/api/vitals \
+  -H "Content-Type: application/json" \
+  -d '{"lcp": 1250, "fid": 50, "cls": 0.05}'
+```
+
+Accepts POST requests with Web Vitals data (LCP, FID, CLS, FCP, TTFB), logs to Grafana Loki.
+
+### Loki Integration
+
+- All requests logged to `https://grafana.jclee.me/loki/api/v1/push`
+- Fire-and-forget async logging (non-blocking, doesn't delay response)
+- Log labels: `job="resume-worker"`, `level="INFO|ERROR"`, `path="/..."`, `method="GET"`
+- Failed Loki writes are silently caught (logged to console but don't block request)
+
+## Web Portfolio Design
+
+**Current Design** (Updated 2025-10-18):
+
+- Minimal 1-column layout with premium visual effects
+- Dark mode toggle with localStorage persistence
+- Responsive: 5 breakpoints (1200px/1024px/768px/640px/375px)
+- SEO: Meta tags, Open Graph, Twitter Card, canonical URL
+- Accessibility: ARIA labels, semantic HTML, 44px touch targets
+- Animations: Scroll fade-in, counter animations, hover effects with cubic-bezier easing
+- Nextrade technical documentation download section (4 docs with PDF/DOCX options)
+
+**Typography**:
+
+- Hero title: Playfair Display 4.8rem
+- Section titles: Playfair Display 3.2rem
+- Body: Inter with -0.01em letter-spacing
+
+**Color System**:
+
+- Primary gradient: `#7c3aed → #5b21b6 → #2563eb` (darker purple/blue for better contrast)
+- Gold gradient: `#f59e0b → #d97706`
+- Shadows: Enhanced opacity (0.35-0.5) for depth
+
+**Security Headers**:
+
+- Content-Security-Policy with SHA-256 hashes (NO `unsafe-inline`)
+- Strict-Transport-Security with HSTS preload
+- X-Content-Type-Options: nosniff
+- X-Frame-Options: DENY
+- X-XSS-Protection: 1; mode=block
+- Referrer-Policy: strict-origin-when-cross-origin
+
+## Performance & Security
+
+### Performance Budgets (Lighthouse CI)
+
+- **Performance**: ≥90 score
+- **Accessibility**: ≥95 score
+- **Best Practices**: ≥95 score
+- **SEO**: ≥95 score
+
+**Web Vitals Targets**:
+
+- LCP (Largest Contentful Paint): <2.5s
+- FID (First Input Delay): <100ms
+- CLS (Cumulative Layout Shift): <0.1
+- FCP (First Contentful Paint): <1.8s
+- TTFB (Time to First Byte): <0.8s
+
+### Security Headers
+
+Enhanced Content Security Policy with SHA-256 hashes (no `unsafe-inline`):
+
+```
+Content-Security-Policy:
+  default-src 'self';
+  font-src 'self' https://fonts.gstatic.com;
+  style-src 'self' 'sha256-...' https://fonts.googleapis.com;
+  script-src 'self' 'sha256-...';
+  img-src 'self' data:;
+  connect-src 'self' https://grafana.jclee.me
+```
+
+## Dependencies
+
+### Runtime Requirements
+
+- **Node.js**: >=20.0.0 (enforced in package.json engines)
+- **npm**: Package manager (comes with Node.js)
+
+### Key DevDependencies
+
+- `wrangler@^4.42.2`: Cloudflare Workers CLI and local dev server
+- `@playwright/test@^1.56.0`: E2E testing framework (Chromium, Firefox, WebKit)
+- `jest@^30.2.0`: Unit testing framework (CommonJS config)
+- `eslint@^9.37.0`: Linting (flat config: `eslint.config.cjs`)
+- `prettier@^3.6.2`: Code formatting
+- `html-minifier-terser@^7.2.0`: HTML minification in build pipeline
+- `sharp@^0.34.4`: Image processing utilities
+
+### Configuration Files
+
+- `jest.config.cjs`: Jest 30 CommonJS configuration
+- `eslint.config.cjs`: ESLint 9 flat config (modern syntax)
+- `playwright.config.js`: Playwright E2E test configuration
+- `web/wrangler.toml`: Cloudflare Workers deployment config
+
+## Git Repository
+
+**Primary**: GitLab (ssh://git@192.168.50.100:2222/jclee/resume.git)
+**Mirror**: GitHub (http://gitlab.jclee.me/jclee/resume.git) - **PRIVATE** as of 2025-11-18
+
+**Remotes Configuration**:
+
+```bash
+origin  ssh://git@192.168.50.100:2222/jclee/resume.git  # GitLab
+github  http://gitlab.jclee.me/jclee/resume.git           # GitHub (Private)
+```
+
+**Multi-Push Workflow**:
+
+```bash
+# Push to both remotes
+git push origin master  # GitLab
+git push github master  # GitHub
+```
+
+**IMPORTANT - GitHub Private Repository**:
+
+- GitHub repository changed to PRIVATE on 2025-11-18
+- Raw file URLs (in `web/data.json`) still work for authenticated users
+- Public resume site (https://resume.jclee.me) continues to work normally via Cloudflare Workers
+- PDF/DOCX download links in portfolio require GitHub authentication
+- Alternative: Consider hosting resume files on Cloudflare R2 or GitLab Pages for public access
+
+## CI/CD Pipeline
+
+### GitLab CI/CD (`.gitlab-ci.yml/deploy.yml`)
+
+**Trigger**: Push to `master` branch on GitHub
+
+**Workflow**:
+
+1. **deploy-worker**:
+   - Checkout code
+   - Install Node.js 20 and Wrangler
+   - Set `DEPLOYED_AT` environment variable (ISO 8601 UTC timestamp)
+   - Generate worker.js with embedded timestamp
+   - Deploy using `cloudflare/wrangler-action@v3`
+
+2. **generate-deployment-notes**:
+   - Fetch latest commit message
+   - Call Gemini API to summarize commit for deployment log
+   - Print concise 1-2 sentence summary
+
+3. **notify-slack** (optional, if `SLACK_WEBHOOK_URL` secret exists):
+   - Send rich Slack notification with deployment status
+   - Include commit info, links to live site and workflow
+   - Uses Slack Block Kit for formatting
+
+**Required Secrets**:
+
+- `CLOUDFLARE_API_TOKEN`
+- `CLOUDFLARE_ACCOUNT_ID`
+- `GEMINI_API_KEY`
+- `SLACK_WEBHOOK_URL` (optional)
+
+### GitLab CI/CD (`.gitlab-ci.yml`)
+
+**Trigger**: Tag creation (semantic versioning: `v1.0.0`)
+
+**Pipeline** (Release-Only):
+
+1. **validate**: Tag format validation
+2. **build**: Create release package (.tar.gz)
+3. **release**: Publish GitLab release
+4. **notify**: Send Slack notification (optional)
+
+**Usage**:
+
+```bash
+git tag -a v1.0.0 -m "Release v1.0.0"
+git push origin v1.0.0
+```
+
+**Note**: Regular commits do NOT trigger GitLab CI/CD (release-only pipeline)
+
+**Verification**:
+
+```bash
+curl -I https://resume.jclee.me  # Expect HTTP 200
+curl https://resume.jclee.me/health  # Check deployment timestamp
+```

@@ -1,0 +1,636 @@
+# GitHub Actions: Deployment Verification Workflow
+# Purpose: Standalone verification workflow for deployment validation
+# Triggers: Manual dispatch, called from deploy.yml
+# Based on: tools/scripts/verification/verify-deployment-v2.sh (361 lines)
+
+name: Verify Deployment
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to verify'
+        required: false
+        default: 'production'
+        type: choice
+        options:
+          - production
+          - staging
+      portfolio_url:
+        description: 'Portfolio URL to verify (default: https://resume.jclee.me)'
+        required: false
+        default: 'https://resume.jclee.me'
+      job_dashboard_url:
+        description: 'Job Dashboard URL to verify (default: https://job.jclee.me)'
+        required: false
+        default: 'https://job.jclee.me'
+      timeout_seconds:
+        description: 'Timeout for each curl request in seconds'
+        required: false
+        default: '30'
+
+  workflow_call:
+    inputs:
+      portfolio_url:
+        description: 'Portfolio URL to verify'
+        required: false
+        type: string
+        default: 'https://resume.jclee.me'
+      job_dashboard_url:
+        description: 'Job Dashboard URL to verify'
+        required: false
+        type: string
+        default: 'https://job.jclee.me'
+      timeout_seconds:
+        description: 'Timeout for each curl request'
+        required: false
+        type: string
+        default: '30'
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  verify-portfolio:
+    name: Verify Portfolio (${{ matrix.check }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        check:
+          - health
+          - security-headers
+          - content-integrity
+          - performance
+          - api-endpoints
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            .github
+
+      - name: Set URLs
+        id: urls
+        shell: bash
+        run: |
+          PORTFOLIO_URL="${{ inputs.portfolio_url || 'https://resume.jclee.me' }}"
+          JOB_DASHBOARD_URL="${{ inputs.job_dashboard_url || 'https://job.jclee.me' }}"
+          TIMEOUT="${{ inputs.timeout_seconds || '30' }}"
+          
+          echo "portfolio_url=$PORTFOLIO_URL" >> $GITHUB_OUTPUT
+          echo "job_dashboard_url=$JOB_DASHBOARD_URL" >> $GITHUB_OUTPUT
+          echo "timeout=$TIMEOUT" >> $GITHUB_OUTPUT
+          
+          echo "📍 Portfolio URL: $PORTFOLIO_URL"
+          echo "📍 Job Dashboard URL: $JOB_DASHBOARD_URL"
+          echo "📍 Timeout: ${TIMEOUT}s"
+
+      # ==================== HEALTH CHECKS ====================
+      - name: "Check: Portfolio Health Endpoint"
+        if: matrix.check == 'health'
+        shell: bash
+        run: |
+          set +e
+          PORTFOLIO_URL="${{ steps.urls.outputs.portfolio_url }}"
+          TIMEOUT="${{ steps.urls.outputs.timeout }}"
+          RETRIES=5
+          DELAY=5
+          
+          echo "🏥 Checking Portfolio Health..."
+          
+          for i in $(seq 1 $RETRIES); do
+            echo "  Attempt $i/$RETRIES..."
+            HEALTH=$(curl -sf --max-time "$TIMEOUT" "$PORTFOLIO_URL/health" 2>/dev/null)
+            
+            if [ $? -eq 0 ]; then
+              STATUS=$(echo "$HEALTH" | jq -r '.status // "unknown"' 2>/dev/null)
+              VERSION=$(echo "$HEALTH" | jq -r '.version // "unknown"' 2>/dev/null)
+              DEPLOYED_AT=$(echo "$HEALTH" | jq -r '.deployed_at // "unknown"' 2>/dev/null)
+              
+              if [ "$STATUS" = "healthy" ]; then
+                echo "✅ Portfolio Health: $STATUS (v$VERSION, deployed: ${DEPLOYED_AT:0:19})"
+                
+                # Check deployment age
+                if [ "$DEPLOYED_AT" != "unknown" ]; then
+                  DEPLOYED_EPOCH=$(date -d "$DEPLOYED_AT" +%s 2>/dev/null || echo "0")
+                  NOW_EPOCH=$(date +%s)
+                  AGE_HOURS=$(( (NOW_EPOCH - DEPLOYED_EPOCH) / 3600 ))
+                  
+                  if [ $AGE_HOURS -gt 168 ]; then
+                    echo "⚠️  Deployment Age: ${AGE_HOURS}h old (>7 days)"
+                  else
+                    echo "✅ Deployment Age: ${AGE_HOURS}h old"
+                  fi
+                fi
+                exit 0
+              fi
+            fi
+            
+            if [ $i -lt $RETRIES ]; then
+              echo "  Retrying in ${DELAY}s..."
+              sleep $DELAY
+            fi
+          done
+          
+          echo "❌ Portfolio Health: Endpoint unreachable after $RETRIES attempts"
+          exit 1
+
+      - name: "Check: Job Dashboard Health Endpoint"
+        if: matrix.check == 'health'
+        shell: bash
+        run: |
+          set +e
+          JOB_DASHBOARD_URL="${{ steps.urls.outputs.job_dashboard_url }}"
+          TIMEOUT="${{ steps.urls.outputs.timeout }}"
+          
+          echo "🏥 Checking Job Dashboard Health..."
+          
+          if JOB_HEALTH=$(curl -sf --max-time "$TIMEOUT" "$JOB_DASHBOARD_URL/api/health" 2>/dev/null); then
+            JOB_STATUS=$(echo "$JOB_HEALTH" | jq -r '.status // "unknown"' 2>/dev/null)
+            JOB_VERSION=$(echo "$JOB_HEALTH" | jq -r '.version // "unknown"' 2>/dev/null)
+            DB_STATUS=$(echo "$JOB_HEALTH" | jq -r '.database // "unknown"' 2>/dev/null)
+            
+            if [ "$JOB_STATUS" = "ok" ]; then
+              echo "✅ Job Dashboard Health: $JOB_STATUS (v$JOB_VERSION, DB: $DB_STATUS)"
+              exit 0
+            else
+              echo "⚠️  Job Dashboard Status: $JOB_STATUS (may be optional)"
+              exit 0
+            fi
+          else
+            echo "⚠️  Job Dashboard Health: Endpoint unreachable (may be optional)"
+            exit 0
+          fi
+
+      - name: "Check: HTTP Response Time"
+        if: matrix.check == 'health'
+        shell: bash
+        run: |
+          set +e
+          PORTFOLIO_URL="${{ steps.urls.outputs.portfolio_url }}"
+          TIMEOUT="${{ steps.urls.outputs.timeout }}"
+          
+          echo "⏱️  Measuring HTTP Response Time..."
+          
+          RESPONSE_TIME=$(curl -sf -o /dev/null -w "%{time_total}" --max-time "$TIMEOUT" "$PORTFOLIO_URL/" 2>/dev/null || echo "0")
+          RESPONSE_MS=$(echo "$RESPONSE_TIME * 1000" | bc | cut -d. -f1)
+          
+          if [ "$RESPONSE_MS" -lt 500 ]; then
+            echo "✅ Response Time: ${RESPONSE_MS}ms (<500ms)"
+            exit 0
+          elif [ "$RESPONSE_MS" -lt 1000 ]; then
+            echo "⚠️  Response Time: ${RESPONSE_MS}ms (500-1000ms)"
+            exit 0
+          else
+            echo "❌ Response Time: ${RESPONSE_MS}ms (>1000ms)"
+            exit 1
+          fi
+
+      # ==================== SECURITY HEADERS ====================
+      - name: "Check: Content Security Policy (CSP)"
+        if: matrix.check == 'security-headers'
+        shell: bash
+        run: |
+          set +e
+          PORTFOLIO_URL="${{ steps.urls.outputs.portfolio_url }}"
+          TIMEOUT="${{ steps.urls.outputs.timeout }}"
+          
+          echo "🔒 Checking Content Security Policy..."
+          
+          HEADERS=$(curl -sI --max-time "$TIMEOUT" "$PORTFOLIO_URL/" 2>/dev/null)
+          
+          if echo "$HEADERS" | grep -qi "content-security-policy"; then
+            CSP=$(echo "$HEADERS" | grep -i "content-security-policy" | head -1)
+            
+            if echo "$CSP" | grep -q "script-src.*sha256"; then
+              echo "✅ CSP: Strict (SHA-256 hashes)"
+              exit 0
+            elif echo "$CSP" | grep -q "script-src.*unsafe-inline"; then
+              echo "⚠️  CSP: Uses unsafe-inline"
+              exit 0
+            else
+              echo "✅ CSP: Present"
+              exit 0
+            fi
+          else
+            echo "❌ CSP: Missing"
+            exit 1
+          fi
+
+      - name: "Check: HSTS Header"
+        if: matrix.check == 'security-headers'
+        shell: bash
+        run: |
+          set +e
+          PORTFOLIO_URL="${{ steps.urls.outputs.portfolio_url }}"
+          TIMEOUT="${{ steps.urls.outputs.timeout }}"
+          
+          echo "🔒 Checking HSTS Header..."
+          
+          HEADERS=$(curl -sI --max-time "$TIMEOUT" "$PORTFOLIO_URL/" 2>/dev/null)
+          
+          if echo "$HEADERS" | grep -qi "strict-transport-security"; then
+            HSTS=$(echo "$HEADERS" | grep -i "strict-transport-security" | head -1)
+            
+            if echo "$HSTS" | grep -q "preload"; then
+              echo "✅ HSTS: With preload"
+              exit 0
+            else
+              echo "⚠️  HSTS: Without preload"
+              exit 0
+            fi
+          else
+            echo "❌ HSTS: Missing"
+            exit 1
+          fi
+
+      - name: "Check: X-Content-Type-Options Header"
+        if: matrix.check == 'security-headers'
+        shell: bash
+        run: |
+          set +e
+          PORTFOLIO_URL="${{ steps.urls.outputs.portfolio_url }}"
+          TIMEOUT="${{ steps.urls.outputs.timeout }}"
+          
+          echo "🔒 Checking X-Content-Type-Options Header..."
+          
+          HEADERS=$(curl -sI --max-time "$TIMEOUT" "$PORTFOLIO_URL/" 2>/dev/null)
+          
+          if echo "$HEADERS" | grep -qi "x-content-type-options.*nosniff"; then
+            echo "✅ X-Content-Type-Options: nosniff"
+            exit 0
+          else
+            echo "❌ X-Content-Type-Options: Missing or incorrect"
+            exit 1
+          fi
+
+      - name: "Check: X-Frame-Options Header"
+        if: matrix.check == 'security-headers'
+        shell: bash
+        run: |
+          set +e
+          PORTFOLIO_URL="${{ steps.urls.outputs.portfolio_url }}"
+          TIMEOUT="${{ steps.urls.outputs.timeout }}"
+          
+          echo "🔒 Checking X-Frame-Options Header..."
+          
+          HEADERS=$(curl -sI --max-time "$TIMEOUT" "$PORTFOLIO_URL/" 2>/dev/null)
+          
+          if echo "$HEADERS" | grep -qi "x-frame-options"; then
+            XFRAME=$(echo "$HEADERS" | grep -i "x-frame-options" | head -1 | tr -d '\r')
+            echo "✅ X-Frame-Options: ${XFRAME#*: }"
+            exit 0
+          else
+            echo "⚠️  X-Frame-Options: Missing (CSP frame-ancestors may cover)"
+            exit 0
+          fi
+
+      # ==================== CONTENT INTEGRITY ====================
+      - name: "Check: Page Title"
+        if: matrix.check == 'content-integrity'
+        shell: bash
+        run: |
+          set +e
+          PORTFOLIO_URL="${{ steps.urls.outputs.portfolio_url }}"
+          TIMEOUT="${{ steps.urls.outputs.timeout }}"
+          
+          echo "📄 Checking Page Title..."
+          
+          HTML=$(curl -sf --max-time "$TIMEOUT" "$PORTFOLIO_URL/" 2>/dev/null)
+          
+          if TITLE=$(echo "$HTML" | grep -oP '<title>\K[^<]+' | head -1); then
+            if [ -n "$TITLE" ] && [ ${#TITLE} -gt 10 ]; then
+              echo "✅ Page Title: ${TITLE:0:50}..."
+              exit 0
+            else
+              echo "⚠️  Page Title: Too short or missing"
+              exit 0
+            fi
+          else
+            echo "❌ Page Title: Missing"
+            exit 1
+          fi
+
+      - name: "Check: Open Graph Meta Tags"
+        if: matrix.check == 'content-integrity'
+        shell: bash
+        run: |
+          set +e
+          PORTFOLIO_URL="${{ steps.urls.outputs.portfolio_url }}"
+          TIMEOUT="${{ steps.urls.outputs.timeout }}"
+          
+          echo "📄 Checking Open Graph Meta Tags..."
+          
+          HTML=$(curl -sf --max-time "$TIMEOUT" "$PORTFOLIO_URL/" 2>/dev/null)
+          
+          OG_COUNT=0
+          [ $(echo "$HTML" | grep -c 'property="og:title"') -gt 0 ] && ((OG_COUNT++))
+          [ $(echo "$HTML" | grep -c 'property="og:description"') -gt 0 ] && ((OG_COUNT++))
+          [ $(echo "$HTML" | grep -c 'property="og:image"') -gt 0 ] && ((OG_COUNT++))
+          [ $(echo "$HTML" | grep -c 'property="og:url"') -gt 0 ] && ((OG_COUNT++))
+          
+          if [ $OG_COUNT -ge 4 ]; then
+            echo "✅ Open Graph: $OG_COUNT/4 tags"
+            exit 0
+          elif [ $OG_COUNT -ge 2 ]; then
+            echo "⚠️  Open Graph: $OG_COUNT/4 tags"
+            exit 0
+          else
+            echo "❌ Open Graph: $OG_COUNT/4 tags"
+            exit 1
+          fi
+
+      - name: "Check: OG Image Accessibility"
+        if: matrix.check == 'content-integrity'
+        shell: bash
+        run: |
+          set +e
+          PORTFOLIO_URL="${{ steps.urls.outputs.portfolio_url }}"
+          TIMEOUT="${{ steps.urls.outputs.timeout }}"
+          
+          echo "📄 Checking OG Image Accessibility..."
+          
+          if curl -sfI --max-time "$TIMEOUT" "$PORTFOLIO_URL/og-image.webp" 2>/dev/null | grep -q "200"; then
+            OG_SIZE=$(curl -sI --max-time "$TIMEOUT" "$PORTFOLIO_URL/og-image.webp" 2>/dev/null | grep -i "content-length" | awk '{print $2}' | tr -d '\r')
+            OG_KB=$((${OG_SIZE:-0} / 1024))
+            echo "✅ OG Image: Accessible (${OG_KB}KB)"
+            exit 0
+          else
+            echo "❌ OG Image: Not accessible"
+            exit 1
+          fi
+
+      # ==================== PERFORMANCE METRICS ====================
+      - name: "Check: Prometheus Metrics Endpoint"
+        if: matrix.check == 'performance'
+        shell: bash
+        run: |
+          set +e
+          PORTFOLIO_URL="${{ steps.urls.outputs.portfolio_url }}"
+          TIMEOUT="${{ steps.urls.outputs.timeout }}"
+          
+          echo "📊 Checking Prometheus Metrics Endpoint..."
+          
+          if METRICS=$(curl -sf --max-time "$TIMEOUT" "$PORTFOLIO_URL/metrics" 2>/dev/null); then
+            METRIC_COUNT=0
+            echo "$METRICS" | grep -q "http_requests_total" && ((METRIC_COUNT++))
+            echo "$METRICS" | grep -q "http_response_time" && ((METRIC_COUNT++))
+            echo "$METRICS" | grep -q "vitals_received" && ((METRIC_COUNT++))
+            
+            if [ $METRIC_COUNT -ge 2 ]; then
+              REQ_TOTAL=$(echo "$METRICS" | grep "http_requests_total" | grep -oP '\d+' | tail -1 || echo "N/A")
+              echo "✅ Metrics Endpoint: $METRIC_COUNT metrics, $REQ_TOTAL total requests"
+              exit 0
+            else
+              echo "⚠️  Metrics Endpoint: Only $METRIC_COUNT/3 metrics found"
+              exit 0
+            fi
+          else
+            echo "⚠️  Metrics Endpoint: Not accessible"
+            exit 0
+          fi
+
+      - name: "Check: Gzip/Brotli Compression"
+        if: matrix.check == 'performance'
+        shell: bash
+        run: |
+          set +e
+          PORTFOLIO_URL="${{ steps.urls.outputs.portfolio_url }}"
+          TIMEOUT="${{ steps.urls.outputs.timeout }}"
+          
+          echo "📊 Checking Compression..."
+          
+          ENCODING=$(curl -sI -H "Accept-Encoding: gzip, br" --max-time "$TIMEOUT" "$PORTFOLIO_URL/" 2>/dev/null | grep -i "content-encoding" | head -1 | tr -d '\r')
+          
+          if echo "$ENCODING" | grep -qi "br"; then
+            echo "✅ Compression: Brotli"
+            exit 0
+          elif echo "$ENCODING" | grep -qi "gzip"; then
+            echo "✅ Compression: Gzip"
+            exit 0
+          else
+            echo "⚠️  Compression: None detected"
+            exit 0
+          fi
+
+      - name: "Check: Cache-Control Headers"
+        if: matrix.check == 'performance'
+        shell: bash
+        run: |
+          set +e
+          PORTFOLIO_URL="${{ steps.urls.outputs.portfolio_url }}"
+          TIMEOUT="${{ steps.urls.outputs.timeout }}"
+          
+          echo "📊 Checking Cache-Control Headers..."
+          
+          CACHE_CONTROL=$(curl -sI --max-time "$TIMEOUT" "$PORTFOLIO_URL/" 2>/dev/null | grep -i "cache-control" | head -1 | tr -d '\r')
+          
+          if echo "$CACHE_CONTROL" | grep -qi "max-age"; then
+            echo "✅ Cache-Control: ${CACHE_CONTROL#*: }"
+            exit 0
+          else
+            echo "⚠️  Cache-Control: Not set"
+            exit 0
+          fi
+
+      # ==================== API ENDPOINTS ====================
+      - name: "Check: Web Vitals Endpoint"
+        if: matrix.check == 'api-endpoints'
+        shell: bash
+        run: |
+          set +e
+          PORTFOLIO_URL="${{ steps.urls.outputs.portfolio_url }}"
+          TIMEOUT="${{ steps.urls.outputs.timeout }}"
+          
+          echo "🔗 Checking Web Vitals Endpoint..."
+          
+          VITALS_DATA='{"lcp":1250,"fid":50,"cls":0.05,"url":"/","timestamp":'$(date +%s000)'}'
+          if HTTP_CODE=$(curl -sf -X POST --max-time "$TIMEOUT" "$PORTFOLIO_URL/api/vitals" \
+            -H "Content-Type: application/json" \
+            -d "$VITALS_DATA" \
+            -w "%{http_code}" \
+            -o /dev/null 2>/dev/null); then
+            if [ "$HTTP_CODE" = "200" ]; then
+              echo "✅ Vitals Endpoint: HTTP $HTTP_CODE"
+              exit 0
+            else
+              echo "⚠️  Vitals Endpoint: HTTP $HTTP_CODE"
+              exit 0
+            fi
+          else
+            echo "⚠️  Vitals Endpoint: Not responding"
+            exit 0
+          fi
+
+      - name: "Check: robots.txt"
+        if: matrix.check == 'api-endpoints'
+        shell: bash
+        run: |
+          set +e
+          PORTFOLIO_URL="${{ steps.urls.outputs.portfolio_url }}"
+          TIMEOUT="${{ steps.urls.outputs.timeout }}"
+          
+          echo "🔗 Checking robots.txt..."
+          
+          if curl -sf --max-time "$TIMEOUT" "$PORTFOLIO_URL/robots.txt" 2>/dev/null | grep -qi "user-agent"; then
+            echo "✅ robots.txt: Present and valid"
+            exit 0
+          else
+            echo "⚠️  robots.txt: Missing or invalid"
+            exit 0
+          fi
+
+      - name: "Check: sitemap.xml"
+        if: matrix.check == 'api-endpoints'
+        shell: bash
+        run: |
+          set +e
+          PORTFOLIO_URL="${{ steps.urls.outputs.portfolio_url }}"
+          TIMEOUT="${{ steps.urls.outputs.timeout }}"
+          
+          echo "🔗 Checking sitemap.xml..."
+          
+          if curl -sf --max-time "$TIMEOUT" "$PORTFOLIO_URL/sitemap.xml" 2>/dev/null | grep -qi "<urlset"; then
+            URL_COUNT=$(curl -sf --max-time "$TIMEOUT" "$PORTFOLIO_URL/sitemap.xml" 2>/dev/null | grep -c "<url>" || echo "0")
+            echo "✅ sitemap.xml: $URL_COUNT URLs"
+            exit 0
+          else
+            echo "⚠️  sitemap.xml: Missing or invalid"
+            exit 0
+          fi
+
+  verify-job-dashboard:
+    name: Verify Job Dashboard (${{ matrix.check }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        check:
+          - health
+          - endpoints
+    steps:
+      - name: Set URLs
+        id: urls
+        shell: bash
+        run: |
+          JOB_DASHBOARD_URL="${{ inputs.job_dashboard_url || 'https://job.jclee.me' }}"
+          TIMEOUT="${{ inputs.timeout_seconds || '30' }}"
+          
+          echo "job_dashboard_url=$JOB_DASHBOARD_URL" >> $GITHUB_OUTPUT
+          echo "timeout=$TIMEOUT" >> $GITHUB_OUTPUT
+          
+          echo "📍 Job Dashboard URL: $JOB_DASHBOARD_URL"
+          echo "📍 Timeout: ${TIMEOUT}s"
+
+      - name: "Check: Job Dashboard Health"
+        if: matrix.check == 'health'
+        shell: bash
+        run: |
+          set +e
+          JOB_DASHBOARD_URL="${{ steps.urls.outputs.job_dashboard_url }}"
+          TIMEOUT="${{ steps.urls.outputs.timeout }}"
+          RETRIES=5
+          DELAY=5
+          
+          echo "🏥 Checking Job Dashboard Health..."
+          
+          for i in $(seq 1 $RETRIES); do
+            echo "  Attempt $i/$RETRIES..."
+            if JOB_HEALTH=$(curl -sf --max-time "$TIMEOUT" "$JOB_DASHBOARD_URL/api/health" 2>/dev/null); then
+              JOB_STATUS=$(echo "$JOB_HEALTH" | jq -r '.status // "unknown"' 2>/dev/null)
+              JOB_VERSION=$(echo "$JOB_HEALTH" | jq -r '.version // "unknown"' 2>/dev/null)
+              DB_STATUS=$(echo "$JOB_HEALTH" | jq -r '.database // "unknown"' 2>/dev/null)
+              
+              if [ "$JOB_STATUS" = "ok" ]; then
+                echo "✅ Job Dashboard Health: $JOB_STATUS (v$JOB_VERSION, DB: $DB_STATUS)"
+                exit 0
+              fi
+            fi
+            
+            if [ $i -lt $RETRIES ]; then
+              echo "  Retrying in ${DELAY}s..."
+              sleep $DELAY
+            fi
+          done
+          
+          echo "⚠️  Job Dashboard Health: May be offline or still starting"
+          exit 0
+
+      - name: "Check: Response Time"
+        if: matrix.check == 'health'
+        shell: bash
+        run: |
+          set +e
+          JOB_DASHBOARD_URL="${{ steps.urls.outputs.job_dashboard_url }}"
+          TIMEOUT="${{ steps.urls.outputs.timeout }}"
+          
+          echo "⏱️  Measuring Response Time..."
+          
+          RESPONSE_TIME=$(curl -sf -o /dev/null -w "%{time_total}" --max-time "$TIMEOUT" "$JOB_DASHBOARD_URL/" 2>/dev/null || echo "0")
+          RESPONSE_MS=$(echo "$RESPONSE_TIME * 1000" | bc | cut -d. -f1)
+          
+          if [ "$RESPONSE_MS" -lt 500 ]; then
+            echo "✅ Response Time: ${RESPONSE_MS}ms (<500ms)"
+            exit 0
+          elif [ "$RESPONSE_MS" -lt 1000 ]; then
+            echo "⚠️  Response Time: ${RESPONSE_MS}ms (500-1000ms)"
+            exit 0
+          else
+            echo "❌ Response Time: ${RESPONSE_MS}ms (>1000ms)"
+            exit 1
+          fi
+
+      - name: "Check: API Endpoints"
+        if: matrix.check == 'endpoints'
+        shell: bash
+        run: |
+          set +e
+          JOB_DASHBOARD_URL="${{ steps.urls.outputs.job_dashboard_url }}"
+          TIMEOUT="${{ steps.urls.outputs.timeout }}"
+          
+          echo "🔗 Checking API Endpoints..."
+          
+          # Check main endpoint
+          if curl -sf --max-time "$TIMEOUT" -o /dev/null "$JOB_DASHBOARD_URL/" 2>/dev/null; then
+            echo "✅ Main Endpoint: HTTP 200"
+          else
+            echo "⚠️  Main Endpoint: Not accessible"
+          fi
+          
+          # Check jobs endpoint
+          if curl -sf --max-time "$TIMEOUT" -o /dev/null "$JOB_DASHBOARD_URL/api/jobs" 2>/dev/null; then
+            echo "✅ Jobs API Endpoint: HTTP 200"
+          else
+            echo "⚠️  Jobs API Endpoint: Not accessible"
+          fi
+
+  summary:
+    name: Verification Summary
+    runs-on: ubuntu-latest
+    if: always()
+    needs: [verify-portfolio, verify-job-dashboard]
+    steps:
+      - name: Check Status
+        shell: bash
+        run: |
+          echo "🎯 Verification Summary"
+          echo "======================="
+          echo ""
+          echo "Portfolio Verification: ${{ needs.verify-portfolio.result }}"
+          echo "Job Dashboard Verification: ${{ needs.verify-job-dashboard.result }}"
+          echo ""
+          
+          if [ "${{ needs.verify-portfolio.result }}" = "success" ] && [ "${{ needs.verify-job-dashboard.result }}" = "success" ]; then
+            echo "✅ All verification checks passed!"
+            exit 0
+          elif [ "${{ needs.verify-portfolio.result }}" = "success" ]; then
+            echo "⚠️  Portfolio verified, but Job Dashboard may have issues"
+            exit 0
+          else
+            echo "⚠️  Some verification checks failed or were skipped"
+            exit 1
+          fi

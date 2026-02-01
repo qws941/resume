@@ -1,0 +1,174 @@
+.web:validate:lint:
+  stage: validate
+  extends: .node-setup
+  cache:
+    key: node-${CI_COMMIT_REF_SLUG}
+    paths:
+      - node_modules/
+      - .npm/
+  script:
+    - npm install --prefer-offline
+    - npm run lint
+
+.web:validate:security:
+  stage: validate
+  extends: .node-setup
+  cache:
+    key: node-${CI_COMMIT_REF_SLUG}
+    paths:
+      - node_modules/
+      - .npm/
+  script:
+    - npm install --prefer-offline
+    - npm audit --audit-level=high || echo "High severity vulnerabilities found"
+  allow_failure: true
+  artifacts:
+    when: always
+    paths:
+      - npm-audit.json
+    expire_in: 7 days
+
+.web:test:
+  stage: test
+  extends: .node-setup
+  cache:
+    key: node-${CI_COMMIT_REF_SLUG}
+    paths:
+      - node_modules/
+      - .npm/
+  script:
+    - npm install --prefer-offline
+    - npm run test:coverage
+  artifacts:
+    when: always
+    paths:
+      - test-results/
+      - coverage/
+    expire_in: 7 days
+  coverage: '/All files[^|]*\|[^|]*\s+([\d\.]+)/'
+
+.web:build:
+  stage: build
+  extends: .node-setup
+  cache:
+    key: node-${CI_COMMIT_REF_SLUG}
+    paths:
+      - node_modules/
+      - .npm/
+  script:
+    - apt-get update -qq && apt-get install -y -qq libimage-exiftool-perl jq > /dev/null 2>&1
+    - npm install --prefer-offline
+    - APP_VERSION=$(jq -r .version package.json)
+    - echo "$APP_VERSION" > VERSION
+    - npm run strip-exif
+    - cd web && node generate-worker.js
+    - |
+      WORKER_SIZE=$(stat -c%s worker.js)
+      WORKER_SIZE_KB=$((WORKER_SIZE / 1024))
+      echo "Worker size: ${WORKER_SIZE_KB}KB"
+      if [ $WORKER_SIZE -gt 921600 ]; then
+        echo "Worker size exceeds 900KB limit!"
+        exit 1
+      fi
+  artifacts:
+    paths:
+      - web/worker.js
+      - package.json
+      - VERSION
+    expire_in: 1 day
+
+.web:deploy:staging:
+  stage: deploy-staging
+  extends: .go-setup
+  script:
+    - cd cmd/resume-cli && go build -o ../../resume-cli . && cd ../..
+    - ./resume-cli deploy --worker-file web/worker.js --env staging
+  environment:
+    name: staging
+    url: https://resume-staging.jclee.workers.dev
+
+.web:verify:staging:
+  stage: verify-staging
+  image: curlimages/curl:latest
+  script:
+    - sleep 10
+    - |
+      RESPONSE=$(curl -s https://resume-staging.jclee.workers.dev/health)
+      STATUS=$(echo "$RESPONSE" | tr -d '\n ' | grep -o '"status":"[^"]*"' | cut -d'"' -f4)
+      if [ "$STATUS" != "healthy" ]; then
+        echo "Staging health check failed: $STATUS"
+        exit 1
+      fi
+    - |
+      HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" https://resume-staging.jclee.workers.dev)
+      if [ "$HTTP_CODE" != "200" ]; then
+        echo "Staging returned HTTP $HTTP_CODE"
+        exit 1
+      fi
+
+.web:verify:staging:e2e:
+  stage: verify-staging
+  image: mcr.microsoft.com/playwright:v1.52.0-jammy
+  script:
+    - npm install --prefer-offline
+    - npx playwright install chromium --with-deps || true
+    - PLAYWRIGHT_BASE_URL=https://resume-staging.jclee.workers.dev npm run test:e2e
+  artifacts:
+    when: always
+    paths:
+      - playwright-report/
+      - test-results/
+    expire_in: 7 days
+
+.web:deploy:production:
+  stage: deploy-production
+  extends: .go-setup
+  script:
+    - cd cmd/resume-cli && go build -o ../../resume-cli . && cd ../..
+    - ./resume-cli deploy --worker-file web/worker.js --env production
+  environment:
+    name: production
+    url: https://resume.jclee.me
+
+.web:verify:production:
+  stage: verify-production
+  image: curlimages/curl:latest
+  script:
+    - |
+      RESPONSE=$(curl -s https://resume.jclee.me/health)
+      STATUS=$(echo "$RESPONSE" | tr -d '\n ' | grep -o '"status":"[^"]*"' | cut -d'"' -f4)
+      if [ "$STATUS" != "healthy" ]; then
+        echo "Health check failed: $STATUS"
+        exit 1
+      fi
+    - |
+      HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" https://resume.jclee.me)
+      if [ "$HTTP_CODE" != "200" ]; then
+        echo "Main page returned HTTP $HTTP_CODE"
+        exit 1
+      fi
+
+.web:rollback:
+  stage: rollback
+  extends: .go-setup
+  when: on_failure
+  script:
+    - PREVIOUS_COMMIT=$(git rev-parse HEAD~1)
+    - git checkout $PREVIOUS_COMMIT
+    - npm install --prefer-offline
+    - npm run build
+    - cd cmd/resume-cli && go build -o ../../resume-cli . && cd ../..
+    - ./resume-cli deploy --worker-file web/worker.js --env production
+    - |
+      curl -s -X POST "https://n8n.jclee.me/webhook/gitlab-push" \
+        -H "Content-Type: application/json" \
+        -d "{
+          \"event\": \"rollback\",
+          \"rolled_back_to\": \"$PREVIOUS_COMMIT\",
+          \"commit_sha\": \"${CI_COMMIT_SHORT_SHA}\",
+          \"pipeline_url\": \"https://gitlab.jclee.me/${CI_PROJECT_PATH}/-/pipelines/${CI_PIPELINE_ID}\"
+        }"
+  environment:
+    name: production
+    url: https://resume.jclee.me
+    action: stop

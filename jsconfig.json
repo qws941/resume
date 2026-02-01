@@ -1,0 +1,53 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "checkJs": false,
+    "allowJs": true,
+    "noEmit": true,
+    "strict": false,
+    "strictNullChecks": false,
+    "strictFunctionTypes": true,
+    "noImplicitAny": false,
+    "noImplicitThis": true,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "noFallthroughCasesInSwitch": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "declaration": false,
+    "declarationMap": false,
+    "sourceMap": false,
+    "baseUrl": ".",
+    "paths": {
+      "@lib/*": ["typescript/portfolio-worker/lib/*"],
+      "@tests/*": ["tests/*"]
+    },
+    "types": ["node", "jest", "@playwright/test"]
+  },
+  "include": [
+    "typescript/cli/**/*.js",
+    "typescript/portfolio-worker/lib/**/*.js",
+    "typescript/portfolio-worker/src/**/*.js",
+    "typescript/job-automation/src/**/*.js",
+    "typescript/data/**/*.js",
+    "tools/scripts/**/*.js"
+  ],
+  "exclude": [
+    "**/node_modules/**",
+    "coverage",
+    "playwright-report",
+    "test-results",
+    "typescript/portfolio-worker/worker.js",
+    "typescript/portfolio-worker/sw.js",
+    "typescript/portfolio-worker/sentry-config.js",
+    "typescript/portfolio-worker/src/scripts/modules/**",
+    "typescript/job-automation/platforms/**",
+    "tests/**",
+    ".wrangler",
+    "wanted-mcp"
+  ]
+}
