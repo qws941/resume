@@ -77,7 +77,7 @@ chmod +x n8n/deploy-workflow.sh
 [INFO] Webhook URL: https://n8n.jclee.me/webhook/resume-deploy
 
 [INFO] Configure GitHub webhook:
-[INFO]   Repository: http://gitlab.jclee.me/jclee/resume
+[INFO]   Repository: https://github.com/qws941/resume
 [INFO]   Settings → Webhooks → Add webhook
 [INFO]   Payload URL: https://n8n.jclee.me/webhook/resume-deploy
 [INFO]   Content type: application/json
@@ -91,7 +91,7 @@ chmod +x n8n/deploy-workflow.sh
 ### 4. Configure GitHub Webhook
 
 ```bash
-# Go to: http://gitlab.jclee.me/jclee/resume/settings/hooks
+# Go to: https://github.com/qws941/resume/settings/hooks
 # Click: Add webhook
 
 # Payload URL: https://n8n.jclee.me/webhook/resume-deploy
@@ -336,7 +336,7 @@ curl -s https://resume.jclee.me/metrics | grep -E '^(requests|errors|response_ti
 curl https://n8n.jclee.me/webhook/resume-deploy
 
 # 2. Check GitHub webhook deliveries
-# Visit: http://gitlab.jclee.me/jclee/resume/settings/hooks
+# Visit: https://github.com/qws941/resume/settings/hooks
 # Click on webhook → Recent Deliveries
 
 # 3. Check n8n logs
@@ -545,5 +545,5 @@ curl -X DELETE https://n8n.jclee.me/api/v1/workflows/{workflow-id} \
 
 - **n8n Instance**: https://n8n.jclee.me
 - **Documentation**: ~/apps/resume/docs/
-- **Issues**: http://gitlab.jclee.me/jclee/resume/issues
+- **Issues**: https://github.com/qws941/resume/issues
 - **Contact**: qws941@kakao.com

@@ -32,7 +32,7 @@
 
 ### 2. GitHub Deployment Webhook (`02-github-deployment-webhook.json`)
 
-**Purpose**: Receive GitLab CI/CD deployment notifications
+**Purpose**: Receive GitHub Actions deployment notifications
 
 **Features**:
 
@@ -49,8 +49,8 @@
 4. HTTP Request → Log to Loki
 5. Google Sheets → Deployment history
 
-**GitLab CI/CD Integration**:
-See updated `.gitlab-ci.yml/deploy.yml` (lines 149-180)
+**GitHub Actions Integration**:
+See updated `.github/workflows/deploy.yml/deploy.yml` (lines 149-180)
 
 **Webhook Payload**:
 
@@ -286,12 +286,12 @@ curl -X POST https://n8n.jclee.me/webhook/resume-deploy \
 # - New row in Google Sheets "Deployment Log"
 # - Loki log entry (check Grafana)
 
-# Automatic test via GitLab CI/CD
+# Automatic test via GitHub Actions
 git commit --allow-empty -m "test: n8n webhook integration"
 git push origin master
 
 # Expected:
-# - GitLab CI/CD runs successfully
+# - GitHub Actions runs successfully
 # - n8n webhook triggered
 # - All 3 outputs logged
 ```
@@ -358,7 +358,7 @@ git push origin master
 
 1. `N8N_WEBHOOK_URL` secret is set in GitHub
 2. Webhook URL is accessible (public endpoint)
-3. GitLab CI/CD step runs successfully
+3. GitHub Actions step runs successfully
 
 **Solution**:
 
@@ -371,7 +371,7 @@ curl -X POST https://n8n.jclee.me/webhook/resume-deploy \
 # Check n8n executions
 # n8n → Workflows → GitHub Deployment Webhook → Executions
 
-# Check GitLab CI/CD logs
+# Check GitHub Actions logs
 # GitHub → Actions → Latest workflow run → "Notify n8n Webhook" step
 ```
 
@@ -408,7 +408,7 @@ curl -X POST https://n8n.jclee.me/webhook/resume-deploy \
 **Related Documentation**:
 
 - `docs/N8N-MONITORING-WORKFLOWS.md` - Detailed workflow guide
-- `.gitlab-ci.yml/deploy.yml` - GitLab CI/CD integration
+- `.github/workflows/deploy.yml/deploy.yml` - GitHub Actions integration
 - `web/generate-worker.js` - Worker build script
 
 ---

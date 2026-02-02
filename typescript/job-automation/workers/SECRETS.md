@@ -1,8 +1,8 @@
 # Secrets & CI/CD Configuration
 
-## GitLab CI/CD Variables
+## GitHub Actions Variables
 
-Set these in GitLab → Settings → CI/CD → Variables:
+Set these in GitHub → Settings → Secrets and variables → Actions:
 
 | Variable                | Type     | Protected | Masked | Description                        |
 | ----------------------- | -------- | --------- | ------ | ---------------------------------- |

@@ -14,7 +14,7 @@
 
 ## 🚀 워크플로우 구조
 
-### 1. CI 워크플로우 (`.gitlab-ci.yml/ci.yml`)
+### 1. CI 워크플로우 (`.github/workflows/deploy.yml/ci.yml`)
 
 **트리거**: Pull Request, develop 브랜치 push
 
@@ -102,7 +102,7 @@ lint → typecheck → test-unit → test-e2e → test-coverage → build → se
 
 ---
 
-### 2. Deploy 워크플로우 (`.gitlab-ci.yml/deploy-enhanced.yml`)
+### 2. Deploy 워크플로우 (`.github/workflows/deploy.yml/deploy-enhanced.yml`)
 
 **트리거**: master 브랜치 push, 수동 실행
 
@@ -361,7 +361,7 @@ wrangler rollback
 
 ## 📈 모니터링
 
-### GitLab CI/CD
+### GitHub Actions
 
 #### 워크플로우 상태 확인:
 ```
@@ -444,8 +444,8 @@ git push origin master
 
 ## 📚 참고 자료
 
-### GitLab CI/CD
-- [GitLab CI/CD 문서](https://docs.github.com/en/actions)
+### GitHub Actions
+- [GitHub Actions 문서](https://docs.github.com/en/actions)
 - [Workflow 문법](https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions)
 
 ### Cloudflare Workers

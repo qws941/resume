@@ -245,7 +245,7 @@ Link related skills in project cards:
 {
   "title": "Grafana",
   "related_skills": ["Prometheus", "Loki", "Traefik"],
-  "related_projects": ["N8N Automation", "GitLab CI/CD"]
+  "related_projects": ["N8N Automation", "GitHub Actions"]
 }
 ```
 
@@ -380,7 +380,7 @@ File Operations:
   ✅ glob(pattern: "**/*.js")
 
 Git Operations:
-  ✅ Use gitlab_* MCP tools
+  ✅ Use git_* MCP tools
 
 Testing:
   ❌ bash("npm test")
@@ -432,24 +432,26 @@ npm run test:e2e:headed
 
 ## 📈 Progress Tracking
 
-| Category  | Tasks  | Completed | %         |
-| --------- | ------ | --------- | --------- |
-| CRITICAL  | 3      | 3         | **100%**  |
-| HIGH      | 6      | 6         | **100%**  |
-| MEDIUM    | 6      | 6         | **100%**  |
-| LOW       | 5      | 5         | **100%**  |
-| **TOTAL** | **20** | **20**    | **100%**  |
+| Category  | Tasks  | Completed | %        |
+| --------- | ------ | --------- | -------- |
+| CRITICAL  | 3      | 3         | **100%** |
+| HIGH      | 6      | 6         | **100%** |
+| MEDIUM    | 6      | 6         | **100%** |
+| LOW       | 5      | 5         | **100%** |
+| **TOTAL** | **20** | **20**    | **100%** |
 
 **Updated**: 2025-12-22 17:15 KST
 
 ### ✅ ALL TASKS COMPLETED
 
 #### Critical (3/3)
+
 - ✅ C1: Console Logging → logger.js 사용
 - ✅ C2: Resume Content Consolidation → master/resume_master.md
 - ✅ C3: Metrics Guide → docs/METRICS_IMPROVEMENT_GUIDE.md
 
 #### High Priority (6/6)
+
 - ✅ H1: Mobile E2E Tests → tests/e2e/mobile.spec.js
 - ✅ H2: Accessibility Compliance → ARIA labels, keyboard navigation
 - ✅ H3: Project Card Descriptions → tagline, metrics, skills, impact
@@ -458,6 +460,7 @@ npm run test:e2e:headed
 - ✅ H6: Career Narrative Section → 3 phases + future direction
 
 #### Medium Priority (6/6)
+
 - ✅ M1: Design System v2.0 → docs/DESIGN_SYSTEM.md (644 lines)
 - ✅ M2: Security & Performance Tests → CSP, HSTS, Lighthouse CI
 - ✅ M3: Worker Size Optimization → 292KB (under 500KB budget)
@@ -466,6 +469,7 @@ npm run test:e2e:headed
 - ✅ M6: Technical Stack Presentation → businessImpact field
 
 #### Low Priority (5/5)
+
 - ✅ L1: QUICK_START.md → docs/guides/QUICK_START.md (243 lines)
 - ✅ L2: ARCHITECTURE_DEEP_DIVE.md → docs/guides/ARCHITECTURE_DEEP_DIVE.md
 - ✅ L3: TROUBLESHOOTING.md → docs/guides/TROUBLESHOOTING.md
@@ -475,29 +479,34 @@ npm run test:e2e:headed
 ### Improvements Summary (2025-12-22)
 
 #### Code Quality
+
 - ✅ 213 unit tests, 98% coverage
 - ✅ TypeScript type checking (jsconfig.json)
 - ✅ ESLint 9 + Prettier formatting
 - ✅ Modular architecture (web/lib/)
 
 #### Performance
+
 - ✅ Worker size: 292KB (optimized)
 - ✅ Resource-specific caching strategy
 - ✅ Lighthouse CI integration
 - ✅ Web Vitals monitoring
 
 #### Security
+
 - ✅ CSP with SHA-256 hashes
 - ✅ HSTS preload
 - ✅ Security headers (X-Frame-Options, X-XSS-Protection)
 
 #### Documentation
+
 - ✅ QUICK_START.md (3-minute setup)
 - ✅ ARCHITECTURE_DEEP_DIVE.md (complete system design)
 - ✅ TROUBLESHOOTING.md (common issues)
 - ✅ DESIGN_SYSTEM.md (CSS tokens, components)
 
 #### Features
+
 - ✅ Project cards with metrics, skills, business impact
 - ✅ Career narrative section (3 phases)
 - ✅ 4 JSON-LD schemas for SEO
@@ -510,16 +519,18 @@ npm run test:e2e:headed
 All 20 improvement tasks have been completed successfully.
 
 ### Final Metrics
-| Metric | Value |
-|--------|-------|
-| Tests | 213 passing |
-| Coverage | 98% |
-| Worker Size | 292KB |
-| Lighthouse Score | 95+ |
-| Schema Types | 4 |
-| Documentation | 5 guides |
+
+| Metric           | Value       |
+| ---------------- | ----------- |
+| Tests            | 213 passing |
+| Coverage         | 98%         |
+| Worker Size      | 292KB       |
+| Lighthouse Score | 95+         |
+| Schema Types     | 4           |
+| Documentation    | 5 guides    |
 
 ### Next Phase (Optional)
+
 - Performance monitoring with Grafana
 - A/B testing for resume variants
 - Multi-language support (EN/KO)

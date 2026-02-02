@@ -245,7 +245,7 @@ npx playwright show-trace test-results/path-to-trace.zip
 
 ### Lighthouse CI
 
-**Configuration**: `.gitlab-ci.yml/lighthouse-ci.yml`
+**Configuration**: `.github/workflows/deploy.yml/lighthouse-ci.yml`
 
 **Budgets**:
 - Performance: ≥90 score
@@ -295,14 +295,14 @@ npm run format
 
 ### CI/CD Pipeline
 
-GitLab CI/CD runs tests automatically:
+GitHub Actions runs tests automatically:
 
 1. **Unit Tests** → Must pass (blocks deployment)
 2. **E2E Tests** → Must pass (blocks deployment)
 3. **Lighthouse** → Warning only (doesn't block)
 
 **View Results**:
-- GitLab CI/CD tab
+- GitHub Actions tab
 - PR status checks
 - Deployment logs
 
@@ -339,7 +339,7 @@ npm run build && npm run test:e2e
 npm run build && npm run test:e2e
 ```
 
-**CI Fix**: Ensure GitLab CI/CD workflow includes build step:
+**CI Fix**: Ensure GitHub Actions workflow includes build step:
 ```yaml
 - name: Generate Worker
   run: npm run build

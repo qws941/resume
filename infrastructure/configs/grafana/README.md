@@ -409,5 +409,5 @@ When updating the dashboard:
 For issues or questions:
 
 - Email: qws941@kakao.com
-- GitHub Issues: http://gitlab.jclee.me/jclee/resume/issues
+- GitHub Issues: https://github.com/qws941/resume/issues
 - Grafana Dashboard: https://grafana.jclee.me/d/resume-portfolio

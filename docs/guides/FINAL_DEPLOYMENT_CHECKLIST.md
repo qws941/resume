@@ -292,7 +292,7 @@ All systems are go. The project is ready for production deployment.
 **If deployment issues occur:**
 1. Check Sentry dashboard for errors
 2. Review Cloudflare Workers logs
-3. Check GitLab CI/CD for CI/CD status
+3. Check GitHub Actions for CI/CD status
 4. Review deployment logs
 5. Execute rollback if necessary
 

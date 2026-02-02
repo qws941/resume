@@ -194,9 +194,9 @@ Use tmux monitoring for:
 - Debugging deployment issues
 - Monitoring resource usage
 
-### GitLab CI/CD
+### GitHub Actions
 
-GitLab CI/CD provides its own logging. Tmux monitoring is for:
+GitHub Actions provides its own logging. Tmux monitoring is for:
 - **Local deployments**
 - **Development workflow**
 - **Debugging before pushing**

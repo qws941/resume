@@ -1,4 +1,5 @@
 # Manual Deployment Guide - Resume Portfolio
+
 **Created**: 2025-11-11T21:21:45Z
 **Status**: ⚠️ Automated deployment blocked - manual intervention required
 **Features Ready**: Open Graph image + Web Vitals tracking
@@ -8,17 +9,20 @@
 ## 🚨 Current Situation
 
 ### ✅ Completed Work
+
 - **Code**: All features complete and tested (commits: 1159cc7, 7148d48, 3eda1d5)
 - **Tests**: 10/10 E2E tests passing
-- **Repository**: Committed to GitLab (primary)
+- **Repository**: Committed to GitHub
 - **Build**: worker.js generated (150.06 KB)
 
 ### ❌ Deployment Blockers
+
 1. **GitHub SSH**: `Permission denied (publickey)` - SSH key invalid/expired
 2. **GitHub HTTPS**: `Invalid username or token` - Stored credentials expired
 3. **Wrangler Local**: `Unable to authenticate request [code: 10001]` - API token invalid/insufficient
 
 ### 📊 Impact
+
 - **Production version**: 2025-11-08T14:42:20Z (3 days old)
 - **Missing features**: Open Graph social preview + Web Vitals tracking
 - **Users affected**: Anyone sharing resume site on social media
@@ -30,10 +34,12 @@
 **NEW**: Three helper scripts for streamlined deployment:
 
 ### 1. Quick Deploy (Recommended)
+
 ```bash
 # One-command deployment with all checks
 ./scripts/deployment/quick-deploy.sh
 ```
+
 - Checks prerequisites (Node.js, npm, git)
 - Runs all tests (unit + E2E)
 - Builds worker.js with timestamp
@@ -42,10 +48,12 @@
 - **Requires**: `CLOUDFLARE_API_TOKEN` environment variable
 
 ### 2. Deployment Helper
+
 ```bash
 # Step-by-step deployment with progress indicators
 ./scripts/deployment/deploy-helper.sh
 ```
+
 - 6-stage deployment pipeline
 - Color-coded progress output
 - Git status validation
@@ -53,10 +61,12 @@
 - **Requires**: `CLOUDFLARE_API_TOKEN` environment variable
 
 ### 3. Verification Only
+
 ```bash
 # Verify existing deployment (7 comprehensive checks)
 ./scripts/verification/verify-deployment.sh
 ```
+
 - Deployment timestamp check
 - Open Graph image validation
 - OG meta tags verification
@@ -67,6 +77,7 @@
 - **No credentials required** (read-only checks)
 
 **Usage Example**:
+
 ```bash
 # Set API token (get from Cloudflare Dashboard)
 export CLOUDFLARE_API_TOKEN=your_token_here
@@ -89,6 +100,7 @@ This enables automatic CI/CD deployment on every push to `master`.
 #### Step 1: Generate New GitHub Personal Access Token (PAT)
 
 1. Go to GitHub Settings:
+
    ```
    https://github.com/settings/tokens
    ```
@@ -118,7 +130,7 @@ echo "https://qws941:YOUR_PAT@github.com" > ~/.git-credentials
 chmod 600 ~/.git-credentials
 
 # Test credentials
-git ls-remote http://gitlab.jclee.me/jclee/resume.git
+git ls-remote https://github.com/qws941/resume.git
 ```
 
 #### Step 3: Push to GitHub
@@ -129,14 +141,14 @@ cd /home/jclee/applications/resume
 # Push to GitHub via HTTPS
 git push github-https master
 
-# Expected result: GitLab CI/CD workflow starts
-# Monitor at: http://gitlab.jclee.me/jclee/resume/actions
+# Expected result: GitHub Actions workflow starts
+# Monitor at: https://github.com/qws941/resume/actions
 ```
 
 #### Step 4: Verify Deployment
 
 ```bash
-# Wait 2-3 minutes for GitLab CI/CD to complete, then:
+# Wait 2-3 minutes for GitHub Actions to complete, then:
 
 # Check deployment timestamp
 curl -s https://resume.jclee.me/health | jq -r '.deployed_at'
@@ -162,11 +174,13 @@ Use this if you need immediate deployment without fixing GitHub auth.
 #### Step 1: Get Fresh Cloudflare API Token
 
 1. Log in to Cloudflare Dashboard:
+
    ```
    https://dash.cloudflare.com/
    ```
 
 2. Navigate to:
+
    ```
    My Profile (top right) → API Tokens
    ```
@@ -293,7 +307,7 @@ cd /home/jclee/applications/resume
 # Push to GitHub via SSH
 git push github master
 
-# Expected result: GitLab CI/CD workflow starts
+# Expected result: GitHub Actions workflow starts
 ```
 
 #### Step 6: Verify Deployment
@@ -307,15 +321,18 @@ Same as Option 1, Step 4 above.
 After successful deployment using any option:
 
 ### 1. Deployment Timestamp
+
 ```bash
 curl -s https://resume.jclee.me/health | jq '.'
 ```
+
 **Expected**:
+
 ```json
 {
   "status": "healthy",
   "version": "1.0.0",
-  "deployed_at": "2025-11-11T21:11:43.356Z",  // Should be recent
+  "deployed_at": "2025-11-11T21:11:43.356Z", // Should be recent
   "uptime_seconds": 123,
   "metrics": {
     "requests_total": 5,
@@ -327,6 +344,7 @@ curl -s https://resume.jclee.me/health | jq '.'
 ```
 
 ### 2. Open Graph Image
+
 ```bash
 # Check HTTP headers
 curl -I https://resume.jclee.me/og-image.png
@@ -338,30 +356,37 @@ ls -lh /tmp/og-test.png  # Should be ~84 KB
 ```
 
 ### 3. Open Graph Meta Tags
+
 ```bash
 curl -s https://resume.jclee.me | grep -A5 'og:image'
 ```
+
 **Expected**:
+
 ```html
-<meta property="og:image" content="https://resume.jclee.me/og-image.png">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
-<meta property="og:image:type" content="image/png">
+<meta property="og:image" content="https://resume.jclee.me/og-image.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:type" content="image/png" />
 ```
 
 ### 4. Web Vitals Tracking Script
+
 ```bash
 curl -s https://resume.jclee.me | grep -c "observeLCP\|observeFID\|observeCLS"
 ```
+
 **Expected**: 3 (one match for each observer function)
 
 ### 5. Web Vitals Endpoint
+
 ```bash
 curl -X POST https://resume.jclee.me/api/vitals \
   -H "Content-Type: application/json" \
   -d '{"lcp":1250,"fid":50,"cls":0.05,"fcp":800,"ttfb":200,"url":"/","timestamp":1699000000000,"userAgent":"curl-test"}' \
   -w "\nHTTP Status: %{http_code}\n"
 ```
+
 **Expected**: HTTP Status: 200
 
 ### 6. Social Media Previews
@@ -369,58 +394,69 @@ curl -X POST https://resume.jclee.me/api/vitals \
 Test the Open Graph image on social media validators:
 
 **Twitter Card Validator**:
+
 ```
 https://cards-dev.twitter.com/validator
 ```
+
 - Enter: `https://resume.jclee.me`
 - Should show: 1200x630 image with your name and title
 
 **Facebook Sharing Debugger**:
+
 ```
 https://developers.facebook.com/tools/debug/
 ```
+
 - Enter: `https://resume.jclee.me`
 - Click "Debug" → "Scrape Again" to refresh cache
 - Should show: OG image preview
 
 **LinkedIn Post Inspector**:
+
 ```
 https://www.linkedin.com/post-inspector/
 ```
+
 - Enter: `https://resume.jclee.me`
 - Should show: Rich preview with OG image
 
 ### 7. CSP Hashes (Security Check)
+
 ```bash
 curl -I https://resume.jclee.me | grep "Content-Security-Policy"
 ```
+
 **Expected**: Should contain 2 script hashes and 1 style hash (no unsafe-inline)
 
 ---
 
 ## 🐛 Troubleshooting
 
-### Issue: "GitLab CI/CD didn't trigger"
+### Issue: "GitHub Actions didn't trigger"
 
 **Solution**:
+
 ```bash
-# Check GitLab CI/CD status
-# Go to: http://gitlab.jclee.me/jclee/resume/actions
+# Check GitHub Actions status
+# Go to: https://github.com/qws941/resume/actions
 
 # If no workflow run:
-# 1. Check if .gitlab-ci.yml/deploy.yml exists in repo
+# 1. Check if .github/workflows/deploy.yml exists in repo
 # 2. Verify push reached GitHub: git log origin/master
-# 3. Check GitLab CI/CD enabled: Settings → Actions → General
+# 3. Check GitHub Actions enabled: Settings → Actions → General
 ```
 
 ### Issue: "Deployment timestamp didn't update"
 
 **Possible causes**:
-1. Deployment failed (check GitLab CI/CD logs)
+
+1. Deployment failed (check GitHub Actions logs)
 2. Browser cache (hard refresh: Ctrl+Shift+R)
 3. Cloudflare cache (wait 1-2 minutes)
 
 **Solution**:
+
 ```bash
 # Force cache bypass
 curl -H "Cache-Control: no-cache" https://resume.jclee.me/health
@@ -433,11 +469,13 @@ npx wrangler deployments list  # Get deployment ID
 ### Issue: "OG image returns 404"
 
 **Possible causes**:
+
 1. worker.js wasn't regenerated (`npm run build` skipped)
 2. Deployment failed silently
 3. Route not properly configured
 
 **Solution**:
+
 ```bash
 cd /home/jclee/applications/resume
 
@@ -455,11 +493,13 @@ npm run deploy  # Or use wrangler deploy
 ### Issue: "Web Vitals not being logged"
 
 **Possible causes**:
+
 1. No user traffic yet (vitals require real user interactions)
 2. Loki integration issue
 3. Tracking script not loaded
 
 **Solution**:
+
 ```bash
 # Test vitals endpoint manually
 curl -X POST https://resume.jclee.me/api/vitals \
@@ -476,6 +516,7 @@ curl -X POST https://resume.jclee.me/api/vitals \
 **Cause**: Social platforms cache OG images aggressively (1-7 days)
 
 **Solution**:
+
 ```bash
 # Force cache refresh on each platform:
 
@@ -494,18 +535,21 @@ curl -X POST https://resume.jclee.me/api/vitals \
 
 ## 📚 Reference Documentation
 
-**GitLab CI/CD Workflow**:
-- File: `.gitlab-ci.yml/deploy.yml`
+**GitHub Actions Workflow**:
+
+- File: `.github/workflows/deploy.yml`
 - Jobs: test → build → deploy-worker → verify-deployment
 - Secrets required: `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`
 
 **Worker Generation**:
+
 - Script: `web/generate-worker.js`
 - Input: `web/index.html`, `web/styles.css`, `web/data.json`, `web/og-image.png`
 - Output: `web/worker.js` (150.06 KB)
 - Process: CSS injection, data injection, OG embedding, minification, CSP hashing
 
 **Commits**:
+
 - 1159cc7: "feat(seo): Add Open Graph image for social sharing"
 - 7148d48: "feat(analytics): Add Web Vitals tracking implementation"
 - 3eda1d5: "docs: Update deployment status - OG image & Web Vitals awaiting deployment"
@@ -515,16 +559,19 @@ curl -X POST https://resume.jclee.me/api/vitals \
 ## 💡 Recommendations
 
 ### Immediate (Today)
+
 1. ✅ **Deploy to production** using one of the three options above
 2. ✅ **Verify all 7 checks** in the verification checklist
 3. ✅ **Test social media previews** on Twitter, Facebook, LinkedIn
 
 ### Short-term (This Week)
+
 1. 📱 **Monitor Web Vitals data** in Grafana Loki (wait for organic traffic)
 2. 🔄 **Set up credential rotation reminder** (PAT expires in 90 days)
 3. 📊 **Baseline performance metrics**: Document initial LCP, FID, CLS values
 
 ### Long-term (This Month)
+
 1. 🔐 **Implement Grok AI resume improvements**:
    - Add specific dates: "19개월 (2023.01~2024.07)"
    - Expand acronyms: "EPP (Endpoint Protection Platform)"
@@ -539,20 +586,23 @@ curl -X POST https://resume.jclee.me/api/vitals \
 **If stuck after trying all options**:
 
 1. **Check deployment status**:
+
    ```bash
    cat docs/DEPLOYMENT_STATUS.md
    ```
 
 2. **Review error logs**:
+
    ```bash
    # Wrangler logs
    ls -lt ~/.config/.wrangler/logs/ | head -5
 
-   # GitLab CI/CD logs
-   # http://gitlab.jclee.me/jclee/resume/actions
+   # GitHub Actions logs
+   # https://github.com/qws941/resume/actions
    ```
 
 3. **Verify local build**:
+
    ```bash
    npm run build
    npm test
@@ -563,7 +613,7 @@ curl -X POST https://resume.jclee.me/api/vitals \
 
 4. **Contact**:
    - Email: qws941@kakao.com
-   - GitHub Issues: http://gitlab.jclee.me/jclee/resume/issues
+   - GitHub Issues: https://github.com/qws941/resume/issues
 
 ---
 

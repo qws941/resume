@@ -35,7 +35,7 @@ terraform import cloudflare_workers_route.job_dashboard $ZONE_ID/<route-id>
 | ------------ | ------------------------- |
 | versions.tf  | Provider requirements     |
 | variables.tf | Input variables           |
-| backend.tf   | GitLab HTTP state backend |
+| backend.tf   | Local state backend       |
 | workers.tf   | Worker scripts and routes |
 | dns.tf       | DNS records               |
 | kv.tf        | KV namespace data sources |
@@ -44,7 +44,7 @@ terraform import cloudflare_workers_route.job_dashboard $ZONE_ID/<route-id>
 
 ## CI/CD Integration
 
-Pipeline jobs defined in `.gitlab-ci.yml`:
+Pipeline jobs defined in `.github/workflows/deploy.yml`:
 
 - **terraform:plan** - Runs on MRs, shows diff
 - **terraform:apply** - Runs on master, auto-applies
@@ -52,17 +52,15 @@ Pipeline jobs defined in `.gitlab-ci.yml`:
 
 ## State Management
 
-State stored in GitLab HTTP backend:
+State stored locally:
 
 ```hcl
-backend "http" {
-  address        = "https://gitlab.jclee.me/api/v4/projects/1/terraform/state/cloudflare"
-  lock_address   = "https://gitlab.jclee.me/api/v4/projects/1/terraform/state/cloudflare/lock"
-  unlock_address = "https://gitlab.jclee.me/api/v4/projects/1/terraform/state/cloudflare/lock"
+terraform {
+  backend "local" {}
 }
 ```
 
-Credentials via CI variables: `TF_HTTP_USERNAME`, `TF_HTTP_PASSWORD`.
+For team environments, consider Terraform Cloud or S3 backend.
 
 ## Workflow
 
@@ -73,11 +71,11 @@ Credentials via CI variables: `TF_HTTP_USERNAME`, `TF_HTTP_PASSWORD`.
 │                                                                 │
 │  1. Developer edits *.tf files                                  │
 │           ↓                                                     │
-│  2. Push to feature branch → Create MR                          │
+│  2. Push to feature branch → Create PR                           │
 │           ↓                                                     │
-│  3. terraform:plan runs → Plan visible in MR                    │
+│  3. terraform:plan runs → Plan visible in PR                     │
 │           ↓                                                     │
-│  4. Review plan → Approve MR → Merge to master                  │
+│  4. Review plan → Approve PR → Merge to master                   │
 │           ↓                                                     │
 │  5. terraform:apply runs → Infrastructure updated               │
 │           ↓                                                     │
@@ -90,8 +88,8 @@ Credentials via CI variables: `TF_HTTP_USERNAME`, `TF_HTTP_PASSWORD`.
 
 | Layer         | Managed By | Changes Via             |
 | ------------- | ---------- | ----------------------- |
-| DNS records   | Terraform  | \*.tf files → GitLab MR |
+| DNS records   | Terraform  | \*.tf files → GitHub PR |
 | KV namespaces | Read-only  | Wrangler (create only)  |
 | D1 databases  | Read-only  | Wrangler (create only)  |
-| Worker routes | Terraform  | workers.tf → GitLab MR  |
+| Worker routes | Terraform  | workers.tf → GitHub PR  |
 | Worker code   | Wrangler   | npm run deploy          |

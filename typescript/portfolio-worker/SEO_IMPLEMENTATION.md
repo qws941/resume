@@ -226,7 +226,7 @@ typescript/portfolio-worker/
 - Grafana, Prometheus, Loki
 - n8n Workflow Automation
 - FortiGate Security
-- GitLab CI/CD
+- GitHub Actions
 
 ## 🛠️ Maintenance
 

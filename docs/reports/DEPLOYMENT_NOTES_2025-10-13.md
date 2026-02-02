@@ -305,7 +305,7 @@ All features working as expected. Potential future enhancements:
 ## 🔗 Related Resources
 
 - **Live Site**: https://resume.jclee.me
-- **GitHub Repository**: http://gitlab.jclee.me/jclee/resume
+- **GitHub Repository**: https://github.com/qws941/resume
 - **Cloudflare Dashboard**: Cloudflare Workers console
 - **Grafana Monitoring**: https://grafana.jclee.me
 

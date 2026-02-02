@@ -369,7 +369,7 @@ npm run monitor:logs
 
 ### Getting Help
 1. Check documentation first
-2. Review GitLab CI/CD logs
+2. Review GitHub Actions logs
 3. Check Cloudflare Workers logs
 4. Review error messages carefully
 5. Search GitHub issues

@@ -186,7 +186,7 @@ Total commits: **5**
 5. `7582efe` - Add REST API deployment script
 
 All commits pushed to:
-- ✅ GitLab (ssh://git@192.168.50.215:2222/jclee/resume.git)
+- ✅ GitLab (https://github.com/qws941/resume.git)
 - ❌ GitHub (token expired - not critical)
 
 ---
@@ -273,8 +273,8 @@ Consider updating `package.json` to use the new API deployment method:
 - **Live Site**: https://resume.jclee.me
 - **Health Check**: https://resume.jclee.me/health
 - **Metrics**: https://resume.jclee.me/metrics
-- **GitLab**: ssh://git@192.168.50.215:2222/jclee/resume.git
-- **GitHub**: http://gitlab.jclee.me/jclee/resume
+- **GitLab**: https://github.com/qws941/resume.git
+- **GitHub**: https://github.com/qws941/resume
 
 ---
 

@@ -39,7 +39,7 @@ resume/
 │       └── lib/                   # Stateless modules (security-headers.js)
 ├── tools/                         # Build, deploy, CI scripts
 │   ├── scripts/build/             # npm script wrappers
-│   └── ci/                        # affected.sh, GitLab CI helpers
+│   └── ci/                        # affected.sh, CI helpers
 ├── tests/                         # Jest unit + Playwright E2E
 ├── infrastructure/                # Grafana/Loki/Prometheus/n8n
 ├── third_party/                   # npm deps (One Version Rule)
@@ -156,7 +156,7 @@ source ~/.env && cd typescript/portfolio-worker && \
   npx wrangler deploy --env production
 ```
 
-**Historical Note:** GitLab CI configuration was removed. Some docs may reference old pipeline stages.
+**Historical Note:** GitHub Actions configuration was removed. Some docs may reference old pipeline stages.
 
 ## TESTING
 

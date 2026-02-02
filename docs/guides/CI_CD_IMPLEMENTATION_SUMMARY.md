@@ -7,7 +7,7 @@
 
 ## 🎯 구현 내용
 
-### 1. CI 워크플로우 (`.gitlab-ci.yml/ci.yml`)
+### 1. CI 워크플로우 (`.github/workflows/deploy.yml/ci.yml`)
 
 **목적**: Pull Request 및 develop 브랜치 변경사항 자동 검증
 
@@ -29,7 +29,7 @@
 
 ---
 
-### 2. Deploy 워크플로우 (`.gitlab-ci.yml/deploy-enhanced.yml`)
+### 2. Deploy 워크플로우 (`.github/workflows/deploy.yml/deploy-enhanced.yml`)
 
 **목적**: master 브랜치 변경사항 자동 배포 및 검증
 
@@ -128,12 +128,12 @@
 ## 📁 생성된 파일
 
 ### 워크플로우 (2개)
-1. `.gitlab-ci.yml/ci.yml` (350+ 줄)
+1. `.github/workflows/deploy.yml/ci.yml` (350+ 줄)
    - CI 자동화
    - 7개 작업
    - 병렬 실행
 
-2. `.gitlab-ci.yml/deploy-enhanced.yml` (400+ 줄)
+2. `.github/workflows/deploy.yml/deploy-enhanced.yml` (400+ 줄)
    - 배포 자동화
    - 6개 작업
    - 순차 실행
@@ -224,7 +224,7 @@ git push origin master
 
 ## 🔍 모니터링
 
-### GitLab CI/CD
+### GitHub Actions
 ```
 Repository → Actions → 워크플로우 선택
 ```

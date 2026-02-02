@@ -12,7 +12,7 @@ Get up and running with the resume portfolio project in under 3 minutes.
 
 ```bash
 # Clone repository
-git clone ssh://git@192.168.50.100:2222/jclee/resume.git
+git clone https://github.com/qws941/resume.git
 cd resume
 
 # Install dependencies
@@ -66,7 +66,7 @@ vim web/data.json
   "tech": "Node.js, Docker",
   "description": "Description here",
   "liveUrl": "https://example.com",
-  "gitlabUrl": "https://gitlab.jclee.me/user/repo"
+  "githubUrl": "https://github.com/qws941/resume"
 }
 
 # 2. Rebuild
@@ -83,7 +83,7 @@ npm test && npm run test:e2e
 git add .
 git commit -m "feat: add new project"
 git push origin master
-# GitLab CI/CD will auto-deploy to https://resume.jclee.me
+# GitHub Actions will auto-deploy to https://resume.jclee.me
 ```
 
 ## Essential Commands Cheat Sheet
@@ -100,7 +100,7 @@ npm run lint           # Lint check
 
 # Deployment
 npm run deploy         # Build + deploy via REST API
-git push origin master # Auto-deploy via GitLab CI/CD
+git push origin master # Auto-deploy via GitHub Actions
 
 # Health check
 curl https://resume.jclee.me/health
@@ -229,7 +229,7 @@ npm run deploy     # Deploy with new hashes
 ## Getting Help
 
 - **Questions**: Check `docs/` directory for guides
-- **Issues**: GitHub Issues or GitLab Issues
+- **Issues**: https://github.com/qws941/resume/issues
 - **Architecture**: `docs/guides/ARCHITECTURE.md`
 - **Testing**: `docs/guides/TESTING_GUIDE.md`
 - **Deployment**: `docs/deployment/README.md` (coming soon)

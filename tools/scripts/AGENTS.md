@@ -13,7 +13,7 @@ Ensures consistency across PDF generation, Cloudflare deployments, and observabi
 - `build/`: Content generation (PDF, PPTX), icon processing, and image optimization.
 - `deployment/`: Shipping artifacts to Cloudflare and provisioning Grafana configurations.
 - `monitoring/`: Production service monitoring and deployment tracking.
-- `setup/`: Bootstrapping infrastructure (GitLab CI/CD, n8n workflows).
+- `setup/`: Bootstrapping infrastructure (GitHub Actions, n8n workflows).
 - `utils/`: Data synchronization, versioning, and job search automation logic.
 - `verification/`: Post-deployment health checks and compliance verification.
 
@@ -25,7 +25,7 @@ Ensures consistency across PDF generation, Cloudflare deployments, and observabi
 | **Full Deployment**     | **`scripts/deployment/quick-deploy.sh`**       | Atomic test, build, deploy, verify |
 | **Grafana Sync**        | `scripts/deployment/deploy-grafana-configs.sh` | Updates dashboards/alerts via API  |
 | **Resume Sync**         | `scripts/utils/sync-resume-data.js`            | Syncs master JSON to derived apps  |
-| **CI/CD Setup**         | `scripts/setup/auto-setup-gitlab-cicd.sh`      | Configures LXC 101 runners         |
+| **CI/CD Setup**         | `scripts/setup/auto-setup-cicd.sh`             | Configures LXC 101 runners         |
 | **Health Verification** | `scripts/verification/verify-deployment.sh`    | Checks headers, metrics, and OG    |
 
 ## CONVENTIONS

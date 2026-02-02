@@ -2,7 +2,7 @@
 
 ## Overview
 
-The resume portfolio now includes Slack notifications for deployment events via GitLab CI/CD.
+The resume portfolio now includes Slack notifications for deployment events via GitHub Actions.
 
 ## Features
 
@@ -84,7 +84,7 @@ jobs:
 Modify the webhook URL to point to a different channel.
 
 ### Add More Information
-Edit `.gitlab-ci.yml/deploy.yml` and add fields to the `slack_payload.json`:
+Edit `.github/workflows/deploy.yml/deploy.yml` and add fields to the `slack_payload.json`:
 
 ```json
 {
@@ -118,7 +118,7 @@ Only notify on failures:
    - Should be: `if: secrets.SLACK_WEBHOOK_URL != ''` (for secrets)
 
 3. **Check workflow logs**
-   - GitLab CI/CD → Latest workflow run → `notify-slack` job
+   - GitHub Actions → Latest workflow run → `notify-slack` job
 
 ### Invalid payload error
 
@@ -136,4 +136,4 @@ Only notify on failures:
 
 - [Slack Incoming Webhooks](https://api.slack.com/messaging/webhooks)
 - [Slack Block Kit Builder](https://app.slack.com/block-kit-builder)
-- [GitLab CI/CD Secrets](https://docs.github.com/en/actions/security-guides/encrypted-secrets)
+- [GitHub Actions Secrets](https://docs.github.com/en/actions/security-guides/encrypted-secrets)

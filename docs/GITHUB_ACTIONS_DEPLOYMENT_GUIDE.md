@@ -384,7 +384,7 @@ After triggering first deployment, verify:
 
 For more details, see:
 - `docs/GITHUB_ACTIONS_SECRETS.md` - Detailed secrets configuration
-- `.gitlab-ci.yml` - Original GitLab CI configuration (for reference)
+- `.github/workflows/deploy.yml` - Original GitHub Actions configuration (for reference)
 - `.github/workflows/` - All workflow definitions
 
 ---

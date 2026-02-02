@@ -65,7 +65,7 @@ scripts/
 1. **Create Subdirectories**: `scripts/{deploy,ci,assets,utils}`
 2. **Move Files**: Categorize scripts into new folders
 3. **Update References**: `package.json` scripts need updates (31 references)
-4. **Update CI**: `.gitlab-ci.yml` and GitHub workflows need updates
+4. **Update CI**: `.github/workflows/deploy.yml` and GitHub workflows need updates
 5. **Update Docs**: Documentation references need updates
 
 **Constraint**: `package.json` relies heavily on flat `scripts/` path.

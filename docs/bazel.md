@@ -148,7 +148,7 @@ build:local --disk_cache=~/.cache/bazel
 
 ## CI/CD Integration
 
-### GitLab CI
+### GitHub Actions
 
 The `analyze:affected` stage runs on merge requests:
 

@@ -7,7 +7,7 @@
 ## OVERVIEW
 
 Terraform IaC for Cloudflare resources: Workers, DNS, KV namespaces, D1 databases.
-GitOps workflow with GitLab CI integration.
+GitOps workflow with GitHub Actions integration.
 
 ## STRUCTURE
 
@@ -15,7 +15,7 @@ GitOps workflow with GitLab CI integration.
 cloudflare/
 ├── versions.tf              # Provider requirements (cloudflare ~> 4.0)
 ├── variables.tf             # Input variables (account_id, zone_id, api_token)
-├── backend.tf               # GitLab HTTP state backend
+├── backend.tf               # Terraform Cloud state backend (local fallback)
 ├── workers.tf               # Worker scripts and routes
 ├── dns.tf                   # DNS records (A, CNAME, TXT)
 ├── kv.tf                    # KV namespace data sources (read-only)
@@ -34,24 +34,24 @@ cloudflare/
 | View KV namespace | `kv.tf`       | Read-only data source          |
 | View D1 database  | `d1.tf`       | Read-only data source          |
 | Change provider   | `versions.tf` | Cloudflare provider version    |
-| Configure backend | `backend.tf`  | GitLab HTTP state              |
+| Configure backend | `backend.tf`  | Local/Cloud state              |
 
 ## CONVENTIONS
 
-- **GitOps**: All changes via MR; `terraform:plan` runs on MR, `terraform:apply` on master merge.
-- **State Lock**: GitLab HTTP backend with locking; credentials via CI variables.
+- **GitOps**: All changes via PR; GitHub Actions runs plan on PR, apply on master merge.
+- **State Lock**: Terraform Cloud backend or local state with locking.
 - **Import First**: Existing resources must be imported before managing.
 - **Read-Only Resources**: KV/D1 managed by Wrangler; Terraform only reads.
 
 ## ANTI-PATTERNS
 
-| Anti-Pattern              | Why                        | Do Instead                          |
-| ------------------------- | -------------------------- | ----------------------------------- |
-| Create KV/D1 in Terraform | Wrangler creates these     | Use `data` sources only             |
-| Skip import               | Duplicate resource errors  | Import existing before apply        |
-| Local state               | Drift between developers   | Use GitLab HTTP backend             |
-| Hardcode credentials      | Security violation         | Use `terraform.tfvars` (gitignored) |
-| Manual DNS edits          | Drift from Terraform state | Edit `dns.tf` and apply             |
+| Anti-Pattern              | Why                        | Do Instead                             |
+| ------------------------- | -------------------------- | -------------------------------------- |
+| Create KV/D1 in Terraform | Wrangler creates these     | Use `data` sources only                |
+| Skip import               | Duplicate resource errors  | Import existing before apply           |
+| Local state               | Drift between developers   | Use Terraform Cloud or versioned state |
+| Hardcode credentials      | Security violation         | Use `terraform.tfvars` (gitignored)    |
+| Manual DNS edits          | Drift from Terraform state | Edit `dns.tf` and apply                |
 
 ## COMMANDS
 
@@ -80,7 +80,7 @@ terraform plan -detailed-exitcode
 
 | Job               | Trigger       | Purpose             |
 | ----------------- | ------------- | ------------------- |
-| `terraform:plan`  | MR created    | Show plan in MR     |
+| `terraform:plan`  | PR created    | Show plan in PR     |
 | `terraform:apply` | Merge master  | Auto-apply changes  |
 | `terraform:drift` | Weekly (cron) | Detect config drift |
 
@@ -88,8 +88,8 @@ terraform plan -detailed-exitcode
 
 | Layer         | Managed By | Changes Via              |
 | ------------- | ---------- | ------------------------ |
-| DNS records   | Terraform  | `dns.tf` + GitLab MR     |
-| Worker routes | Terraform  | `workers.tf` + GitLab MR |
+| DNS records   | Terraform  | `dns.tf` + GitHub PR     |
+| Worker routes | Terraform  | `workers.tf` + GitHub PR |
 | Worker code   | Wrangler   | `npm run deploy`         |
 | KV namespaces | Wrangler   | Create only              |
 | D1 databases  | Wrangler   | Create only              |
@@ -105,12 +105,19 @@ terraform plan -detailed-exitcode
 
 ## STATE BACKEND
 
-```hcl
-backend "http" {
-  address        = "https://gitlab.jclee.me/api/v4/projects/1/terraform/state/cloudflare"
-  lock_address   = "https://gitlab.jclee.me/api/v4/projects/1/terraform/state/cloudflare/lock"
-  unlock_address = "https://gitlab.jclee.me/api/v4/projects/1/terraform/state/cloudflare/lock"
-}
-```
+State managed locally or via Terraform Cloud:
 
-CI variables: `TF_HTTP_USERNAME` (gitlab-ci-token), `TF_HTTP_PASSWORD` (CI job token).
+```hcl
+# Local backend (default)
+terraform {
+  backend "local" {}
+}
+
+# Or Terraform Cloud (recommended for teams)
+# terraform {
+#   cloud {
+#     organization = "your-org"
+#     workspaces { name = "cloudflare" }
+#   }
+# }
+```

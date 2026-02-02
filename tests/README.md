@@ -110,9 +110,9 @@ test('should load page', async ({ page }) => {
 
 ## CI/CD Integration
 
-### GitLab CI/CD
+### GitHub Actions
 
-Add to `.gitlab-ci.yml/test.yml`:
+Add to `.github/workflows/deploy.yml/test.yml`:
 
 ```yaml
 name: Tests

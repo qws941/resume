@@ -2,7 +2,7 @@
 
 **Last Updated**: 2025-11-26
 **Project**: Resume Portfolio (https://resume.jclee.me)
-**Repository**: https://gitlab.jclee.me/apps/resume
+**Repository**: https://github.com/qws941/resume
 
 ---
 
@@ -15,7 +15,7 @@ This directory contains all infrastructure configurations, monitoring dashboards
 - **Application**: Cloudflare Workers (serverless, global CDN)
 - **Monitoring**: Grafana + Prometheus + Loki (hosted on Proxmox pve3 (192.168.50.100))
 - **Automation**: n8n workflows (health checks, deployments)
-- **CI/CD**: GitLab CI/CD + GitLab CI/CD
+- **CI/CD**: GitHub Actions + GitHub Actions
 
 ---
 
@@ -52,13 +52,13 @@ infrastructure/
 
 ### Monitoring URLs
 
-| Service        | URL                                 | Access      | Purpose                 |
-| -------------- | ----------------------------------- | ----------- | ----------------------- |
-| **Grafana**    | https://grafana.jclee.me            | ✅ Public   | Dashboard visualization |
-| **Prometheus** | 192.168.50.100:9090                 | 🔒 Internal | Metrics storage         |
-| **Loki**       | grafana.jclee.me/loki/...           | 🔒 Proxy    | Log aggregation         |
-| **n8n**        | 192.168.50.100:5678                 | 🔒 Internal | Workflow automation     |
-| **GitLab**     | https://gitlab.jclee.me/apps/resume | ✅ Public   | Source repository       |
+| Service        | URL                              | Access      | Purpose                 |
+| -------------- | -------------------------------- | ----------- | ----------------------- |
+| **Grafana**    | https://grafana.jclee.me         | ✅ Public   | Dashboard visualization |
+| **Prometheus** | 192.168.50.100:9090              | 🔒 Internal | Metrics storage         |
+| **Loki**       | grafana.jclee.me/loki/...        | 🔒 Proxy    | Log aggregation         |
+| **n8n**        | 192.168.50.100:5678              | 🔒 Internal | Workflow automation     |
+| **GitHub**     | https://github.com/qws941/resume | ✅ Public   | Source repository       |
 
 > ⚠️ **Internal Services**: Prometheus, Loki, n8n are internal-only (no public DNS).
 > Access via internal IP or Grafana proxy. See [Access Guide](#internal-service-access) below.
@@ -387,7 +387,7 @@ curl https://resume.jclee.me/metrics | grep error
 ### Previous Versions
 
 - **2025-11-26**: Initial consolidation
-- **2025-11-23**: Initial GitLab CI/CD pipeline integration
+- **2025-11-23**: Initial GitHub Actions pipeline integration
 - **2025-11-20**: Added n8n health check workflows
 - **2025-11-19**: Created workflow configurations
 
@@ -419,7 +419,7 @@ For issues or questions:
 
 3. **Contact**:
    - Email: qws941@kakao.com
-   - GitLab Issues: https://gitlab.jclee.me/apps/resume/-/issues
+   - GitHub Issues: https://github.com/qws941/resume/issues
 
 ---
 

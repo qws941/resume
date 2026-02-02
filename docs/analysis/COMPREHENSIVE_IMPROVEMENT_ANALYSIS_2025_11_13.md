@@ -894,7 +894,7 @@ Python 자동화, FortiGate 방화벽 관리, Nextrade 증권거래소, Zero Tru
 
 \`\`\`bash
 # Clone repository
-git clone http://gitlab.jclee.me/jclee/resume.git
+git clone https://github.com/qws941/resume.git
 cd resume
 
 # Install dependencies
