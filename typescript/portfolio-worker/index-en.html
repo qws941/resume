@@ -23,6 +23,7 @@
     <script
       src="https://browser.sentry-cdn.com/8.45.1/bundle.tracing.min.js"
       crossorigin="anonymous"
+      defer
     ></script>
     <script src="/sentry-config.js"></script>
 
@@ -275,14 +276,5 @@
 
     <!-- Scripts -->
     <script src="/main.js" defer></script>
-    <script>
-      if ("serviceWorker" in navigator) {
-        window.addEventListener("load", function () {
-          navigator.serviceWorker.register("/sw.js").catch(function (err) {
-            console.error("SW registration failed:", err);
-          });
-        });
-      }
-    </script>
   </body>
 </html>

@@ -47,7 +47,8 @@ Allow: /
 # Disallow: /private/
 # Disallow: /admin/
 
-# API endpoints - allow indexing for SEO
+# API endpoints - disallow indexing
 User-agent: *
-Allow: /api/
+Disallow: /api/
+Disallow: /dashboard
 

@@ -177,11 +177,6 @@ const _N8N_WEBHOOK_BASE =
       encoding: null,
       name: "resumePdfBuffer",
     },
-    {
-      path: path.join(__dirname, "dashboard.html"),
-      encoding: "utf-8",
-      name: "dashboardHtmlRaw",
-    },
   ];
 
   const fileContents = readAllFiles(filesToRead);
@@ -225,7 +220,6 @@ const _N8N_WEBHOOK_BASE =
     ogImageBuffer,
     ogImageEnBuffer,
     resumePdfBuffer,
-    dashboardHtmlRaw,
   } = fileContents;
 
   const projectData = JSON.parse(projectDataRaw);
@@ -301,12 +295,6 @@ const _N8N_WEBHOOK_BASE =
   });
   logger.log("✓ HTML minified\n");
 
-  // PHASE 2: Extract CSP hashes from MINIFIED HTML (must match browser's hash)
-  const { scriptHashes, styleHashes } = extractInlineHashes(indexHtml);
-  logger.log(
-    `✓ CSP hashes extracted: ${scriptHashes.length} scripts, ${styleHashes.length} styles\n`,
-  );
-
   // PHASE 3: Escape template literals for safe JavaScript embedding
   indexHtml = indexHtml
     .replace(ESCAPE_PATTERNS.BACKTICK, "\\`")
@@ -345,18 +333,19 @@ const _N8N_WEBHOOK_BASE =
     .replace(ESCAPE_PATTERNS.DOLLAR, "\\$");
   logger.log("✓ English HTML processed\n");
 
-  // PHASE 4: Process Dashboard HTML (Minify + Escape)
-  let dashboardHtml = await minify(dashboardHtmlRaw, {
-    collapseWhitespace: true,
-    removeComments: true,
-    minifyCSS: true,
-    minifyJS: true,
-  });
-
-  dashboardHtml = dashboardHtml
-    .replace(ESCAPE_PATTERNS.BACKTICK, "\\`")
-    .replace(ESCAPE_PATTERNS.DOLLAR, "\\$");
-  logger.log("✓ Dashboard HTML processed\n");
+  // PHASE 2: Extract CSP hashes from MINIFIED HTML (must match browser's hash)
+  // Extract from both Korean and English HTML, then merge unique hashes
+  const koHashes = extractInlineHashes(indexHtml);
+  const enHashes = extractInlineHashes(indexEnHtml);
+  const scriptHashes = [
+    ...new Set([...koHashes.scriptHashes, ...enHashes.scriptHashes]),
+  ];
+  const styleHashes = [
+    ...new Set([...koHashes.styleHashes, ...enHashes.styleHashes]),
+  ];
+  logger.log(
+    `✓ CSP hashes extracted: ${scriptHashes.length} scripts, ${styleHashes.length} styles\n`,
+  );
 
   // Security headers (using imported module)
   const SECURITY_HEADERS = securityHeadersModule.generateSecurityHeaders(
@@ -392,7 +381,6 @@ const _N8N_WEBHOOK_BASE =
 
 const INDEX_HTML = \`${indexHtml}\`;
 const INDEX_EN_HTML = \`${indexEnHtml}\`;
-const DASHBOARD_HTML = \`${dashboardHtml}\`;
 
 const MANIFEST_JSON = \`${manifestJson}\`;
 const SERVICE_WORKER = \`${serviceWorker}\`;
@@ -582,7 +570,7 @@ export default {
       if (clientData.count > RATE_LIMIT_CONFIG.maxRequests) {
         return new Response(JSON.stringify({ error: 'Too Many Requests' }), {
           status: 429,
-          headers: { 'Content-Type': 'application/json', ...SECURITY_HEADERS }
+          headers: { ...SECURITY_HEADERS, 'Content-Type': 'application/json' }
         });
       }
     }
@@ -595,26 +583,7 @@ export default {
         return env.ASSETS.fetch(new Request(assetUrl, request));
       }
 
-      // Routing
-      // Handle job.jclee.me domain -> Serve Dashboard at Root
-      if (url.hostname === 'job.jclee.me') {
-        // Serve dashboard at root for job.jclee.me
-        if (url.pathname === '/' || url.pathname === '/dashboard') {
-          const response = new Response(DASHBOARD_HTML, { 
-            headers: {
-              ...SECURITY_HEADERS,
-              'Content-Type': 'text/html; charset=utf-8'
-            }
-          });
-          metrics.requests_success++;
-          return response;
-        }
-        // Allow API routes to pass through
-        if (!url.pathname.startsWith('/api/')) {
-           // Redirect other paths to root dashboard or handle 404
-           return new Response('Not Found', { status: 404 });
-        }
-      }
+       // Routing
 
       if (url.pathname === '/') {
         const response = new Response(INDEX_HTML, { headers: SECURITY_HEADERS });
@@ -640,18 +609,6 @@ export default {
           method: request.method
         }));
 
-        return response;
-      }
-
-      // Dashboard Route
-      if (url.pathname === '/dashboard') {
-        const response = new Response(DASHBOARD_HTML, { 
-          headers: {
-            ...SECURITY_HEADERS,
-            'Content-Type': 'text/html; charset=utf-8'
-          }
-        });
-        metrics.requests_success++;
         return response;
       }
 
@@ -767,118 +724,6 @@ export default {
         metrics.requests_success++;
         return new Response(JSON.stringify({ stats }), {
           headers: { 'Content-Type': 'application/json' }
-        });
-      }
-
-      if (url.pathname === '/api/stats') {
-        try {
-           const webhookBase = (typeof env !== 'undefined' && env.N8N_WEBHOOK_BASE) || "https://n8n.jclee.me/webhook";
-           const n8nStats = await fetch(\`\${webhookBase}/dashboard-stats\`);
-           if (n8nStats.ok) {
-              const data = await n8nStats.json();
-              metrics.requests_success++;
-              return new Response(JSON.stringify(data), {
-                headers: { 'Content-Type': 'application/json', ...SECURITY_HEADERS }
-              });
-            }
-         } catch { /* n8n unreachable - use fallback stats */ }
-
-        let stats = {
-          totalApplications: 0,
-          successRate: 0,
-          aiStats: { aiMatchCount: 0 },
-          byStatus: { pending: 0, applied: 0, interview: 0, rejected: 0 }
-        };
-
-        // Try to fetch from D1 if bound
-        try {
-          if (typeof env.DB !== 'undefined') {
-            const result = await env.DB.prepare(\`
-              SELECT 
-                COUNT(*) as total,
-                SUM(CASE WHEN status = 'interview' THEN 1 ELSE 0 END) as interview,
-                SUM(CASE WHEN status = 'rejected' THEN 1 ELSE 0 END) as rejected,
-                SUM(CASE WHEN status = 'applied' THEN 1 ELSE 0 END) as applied,
-                SUM(CASE WHEN status = 'saved' THEN 1 ELSE 0 END) as pending
-              FROM job_applications
-            \`).first();
-            
-            if (result) {
-              stats.totalApplications = result.total;
-              stats.byStatus.pending = result.pending;
-              stats.byStatus.applied = result.applied;
-              stats.byStatus.interview = result.interview;
-              stats.byStatus.rejected = result.rejected;
-              
-              if (result.applied + result.interview + result.rejected > 0) {
-                stats.successRate = Math.round((result.interview / (result.applied + result.interview + result.rejected)) * 100);
-              }
-            }
-          } else {
-             // Fallback Mock Data
-             stats = {
-              totalApplications: 142,
-              successRate: 15,
-              aiStats: { aiMatchCount: 120 },
-              byStatus: { pending: 12, applied: 45, interview: 8, rejected: 77 }
-            };
-          }
-        } catch (e) {
-          console.error('D1 Error:', e);
-          // Keep default stats or mock on error
-        }
-
-        metrics.requests_success++;
-        return new Response(JSON.stringify(stats), {
-          headers: { 'Content-Type': 'application/json', ...SECURITY_HEADERS }
-        });
-      }
-
-      if (url.pathname === '/api/status') {
-        metrics.requests_success++;
-        return new Response(JSON.stringify({
-          aiStatus: 'operational',
-          crawlerStatus: 'operational',
-          dbStatus: (typeof env.DB !== 'undefined') ? 'connected' : 'mock-mode',
-          automationStatus: 'idle'
-        }), {
-          headers: { 'Content-Type': 'application/json', ...SECURITY_HEADERS }
-        });
-      }
-
-      if (url.pathname === '/api/applications') {
-        let apps = [];
-        try {
-          if (typeof env.DB !== 'undefined') {
-            const { results } = await env.DB.prepare(\`
-              SELECT * FROM job_applications ORDER BY created_at DESC LIMIT 10
-            \`).all();
-            
-            // Map D1 rows to API format
-            apps = results.map(row => ({
-              source: row.platform,
-              position: row.title,
-              company: row.company,
-              status: row.status,
-              createdAt: row.created_at,
-              matchScore: row.match_score || 0
-            }));
-          } else {
-             // Fallback Mock Data
-             apps = [
-                { source: 'wanted', position: 'DevSecOps Engineer', company: 'Toss', status: 'interview', createdAt: new Date().toISOString(), matchScore: 92 },
-                { source: 'linkedin', position: 'Security Engineer', company: 'Google Korea', status: 'applied', createdAt: new Date().toISOString(), matchScore: 88 },
-                { source: 'saramin', position: 'Cloud Engineer', company: 'Samsung SDS', status: 'rejected', createdAt: new Date().toISOString(), matchScore: 75 },
-                { source: 'jobkorea', position: 'DevOps', company: 'Kakao', status: 'pending', createdAt: new Date().toISOString(), matchScore: 82 }
-              ];
-          }
-        } catch (e) {
-           console.error('D1 Apps Error:', e);
-        }
-
-        metrics.requests_success++;
-        return new Response(JSON.stringify({ applications: apps }), {
-          headers: { 'Content-Type': 'application/json', ...SECURITY_HEADERS }
         });
       }
 
