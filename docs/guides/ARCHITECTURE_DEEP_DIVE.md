@@ -64,12 +64,12 @@ Complete technical architecture documentation for the Resume Portfolio System.
 
 ### Trade-offs
 
-| Benefit | Trade-off |
-|---------|-----------|
-| Zero cold start | Cannot edit HTML in production |
-| Global edge deployment | Must rebuild for any change |
-| Single-file simplicity | Larger worker size (~300KB) |
-| CSP hash security | Build step required |
+| Benefit                | Trade-off                      |
+| ---------------------- | ------------------------------ |
+| Zero cold start        | Cannot edit HTML in production |
+| Global edge deployment | Must rebuild for any change    |
+| Single-file simplicity | Larger worker size (~300KB)    |
+| CSP hash security      | Build step required            |
 
 ---
 
@@ -117,16 +117,16 @@ Complete technical architecture documentation for the Resume Portfolio System.
 
 ### Build Transformations
 
-| Step | Input | Output | Purpose |
-|------|-------|--------|---------|
-| 1 | `data.json` | Validated data | Schema validation |
-| 2 | Resume data | HTML cards | Generate resume section |
-| 3 | Project data | HTML cards | Generate projects with metrics |
-| 4 | `styles.css` | Inline CSS | Embed in HTML |
-| 5 | Full HTML | Minified HTML | 15% size reduction |
-| 6 | Inline scripts | SHA-256 hashes | CSP security |
-| 7 | Template | Escaped string | Safe JS embedding |
-| 8 | ISO timestamp | Embedded date | Deployment tracking |
+| Step | Input          | Output         | Purpose                        |
+| ---- | -------------- | -------------- | ------------------------------ |
+| 1    | `data.json`    | Validated data | Schema validation              |
+| 2    | Resume data    | HTML cards     | Generate resume section        |
+| 3    | Project data   | HTML cards     | Generate projects with metrics |
+| 4    | `styles.css`   | Inline CSS     | Embed in HTML                  |
+| 5    | Full HTML      | Minified HTML  | 15% size reduction             |
+| 6    | Inline scripts | SHA-256 hashes | CSP security                   |
+| 7    | Template       | Escaped string | Safe JS embedding              |
+| 8    | ISO timestamp  | Embedded date  | Deployment tracking            |
 
 ### Module Structure
 
@@ -153,41 +153,41 @@ web/lib/
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
-    
+
     // Route handling
     switch (url.pathname) {
-      case '/':
+      case "/":
         return serveHTML(indexHtml, securityHeaders);
-      case '/health':
+      case "/health":
         return serveHealth(metrics);
-      case '/metrics':
+      case "/metrics":
         return servePrometheus(metrics);
-      case '/api/vitals':
+      case "/api/vitals":
         return handleVitals(request);
       default:
         return serveStatic(url.pathname);
     }
-  }
+  },
 };
 ```
 
 ### Routing Table
 
-| Path | Method | Handler | Response |
-|------|--------|---------|----------|
-| `/` | GET | `serveHTML` | Portfolio HTML |
-| `/health` | GET | `serveHealth` | JSON health status |
-| `/metrics` | GET | `servePrometheus` | Prometheus format |
-| `/api/vitals` | POST | `handleVitals` | Web Vitals collection |
-| `/sw.js` | GET | `serveStatic` | Service Worker |
-| `/*.pdf` | GET | `serveDocument` | PDF downloads |
-| `/*` | GET | `serveStatic` | Static assets |
+| Path          | Method | Handler           | Response              |
+| ------------- | ------ | ----------------- | --------------------- |
+| `/`           | GET    | `serveHTML`       | Portfolio HTML        |
+| `/health`     | GET    | `serveHealth`     | JSON health status    |
+| `/metrics`    | GET    | `servePrometheus` | Prometheus format     |
+| `/api/vitals` | POST   | `handleVitals`    | Web Vitals collection |
+| `/sw.js`      | GET    | `serveStatic`     | Service Worker        |
+| `/*.pdf`      | GET    | `serveDocument`   | PDF downloads         |
+| `/*`          | GET    | `serveStatic`     | Static assets         |
 
 ### Response Headers
 
 ```javascript
 const securityHeaders = {
-  'Content-Security-Policy': `
+  "Content-Security-Policy": `
     default-src 'self';
     script-src 'self' 'sha256-...' https://browser.sentry-cdn.com;
     style-src 'self' 'sha256-...' https://fonts.googleapis.com;
@@ -195,11 +195,11 @@ const securityHeaders = {
     img-src 'self' data:;
     connect-src 'self' https://grafana.jclee.me https://*.sentry.io;
   `,
-  'Strict-Transport-Security': 'max-age=31536000; includeSubDomains; preload',
-  'X-Content-Type-Options': 'nosniff',
-  'X-Frame-Options': 'DENY',
-  'X-XSS-Protection': '1; mode=block',
-  'Referrer-Policy': 'strict-origin-when-cross-origin'
+  "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+  "X-Content-Type-Options": "nosniff",
+  "X-Frame-Options": "DENY",
+  "X-XSS-Protection": "1; mode=block",
+  "Referrer-Policy": "strict-origin-when-cross-origin",
 };
 ```
 
@@ -228,7 +228,7 @@ const securityHeaders = {
       "related_projects": ["Monitoring Platform", "Workflow Automation"],
       "businessImpact": "70% reduction in development time",
       "liveUrl": "https://grafana.jclee.me/...",
-      "gitlabUrl": "https://gitlab.jclee.me/..."
+      "githubUrl": "https://github.com/qws941/resume/..."
     }
   ]
 }
@@ -263,23 +263,27 @@ HTML Cards (embedded in worker.js)
 
 ### Resource-Specific Cache Headers
 
-| Resource Type | Cache-Control | Max-Age | Purpose |
-|---------------|---------------|---------|---------|
-| HTML | `public, max-age=3600` | 1 hour | Fresh content |
-| Static (JS/CSS/Images) | `public, max-age=31536000, immutable` | 1 year | Long-term cache |
-| API (`/health`, `/metrics`) | `no-cache, no-store` | 0 | Real-time data |
-| Service Worker | `no-cache, must-revalidate` | 0 | Always fresh |
-| Documents (PDF/DOCX) | `public, max-age=86400` | 1 day | Moderate cache |
+| Resource Type               | Cache-Control                         | Max-Age | Purpose         |
+| --------------------------- | ------------------------------------- | ------- | --------------- |
+| HTML                        | `public, max-age=3600`                | 1 hour  | Fresh content   |
+| Static (JS/CSS/Images)      | `public, max-age=31536000, immutable` | 1 year  | Long-term cache |
+| API (`/health`, `/metrics`) | `no-cache, no-store`                  | 0       | Real-time data  |
+| Service Worker              | `no-cache, must-revalidate`           | 0       | Always fresh    |
+| Documents (PDF/DOCX)        | `public, max-age=86400`               | 1 day   | Moderate cache  |
 
 ### Implementation
 
 ```javascript
 // web/lib/cache-headers.js
 function getCacheHeaders(pathname) {
-  if (pathname === '/sw.js') {
+  if (pathname === "/sw.js") {
     return CACHE_HEADERS.SERVICE_WORKER;
   }
-  if (pathname.startsWith('/api/') || pathname === '/health' || pathname === '/metrics') {
+  if (
+    pathname.startsWith("/api/") ||
+    pathname === "/health" ||
+    pathname === "/metrics"
+  ) {
     return CACHE_HEADERS.API;
   }
   if (/\.(pdf|docx)$/i.test(pathname)) {
@@ -301,16 +305,16 @@ function getCacheHeaders(pathname) {
 ```
 Content-Security-Policy:
   default-src 'self';
-  script-src 'self' 
+  script-src 'self'
     'sha256-abc123...'  # Inline scripts (build-time hashes)
     https://browser.sentry-cdn.com;
-  style-src 'self' 
+  style-src 'self'
     'sha256-def456...'  # Inline styles (build-time hashes)
     https://fonts.googleapis.com;
   font-src 'self' https://fonts.gstatic.com;
   img-src 'self' data:;
-  connect-src 'self' 
-    https://grafana.jclee.me 
+  connect-src 'self'
+    https://grafana.jclee.me
     https://*.sentry.io;
   frame-ancestors 'none';
   base-uri 'self';
@@ -324,29 +328,29 @@ Content-Security-Policy:
 function extractCSPHashes(html) {
   const scriptHashes = [];
   const styleHashes = [];
-  
+
   // Extract inline scripts
   const scriptRegex = /<script[^>]*>([\s\S]*?)<\/script>/gi;
   let match;
   while ((match = scriptRegex.exec(html)) !== null) {
     const content = match[1]; // NO .trim() - browsers use exact whitespace
-    const hash = crypto.createHash('sha256').update(content).digest('base64');
+    const hash = crypto.createHash("sha256").update(content).digest("base64");
     scriptHashes.push(`'sha256-${hash}'`);
   }
-  
+
   return { scriptHashes, styleHashes };
 }
 ```
 
 ### Security Headers Summary
 
-| Header | Value | Purpose |
-|--------|-------|---------|
-| `Strict-Transport-Security` | `max-age=31536000; includeSubDomains; preload` | Force HTTPS |
-| `X-Content-Type-Options` | `nosniff` | Prevent MIME sniffing |
-| `X-Frame-Options` | `DENY` | Prevent clickjacking |
-| `X-XSS-Protection` | `1; mode=block` | XSS filter |
-| `Referrer-Policy` | `strict-origin-when-cross-origin` | Control referrer |
+| Header                      | Value                                          | Purpose               |
+| --------------------------- | ---------------------------------------------- | --------------------- |
+| `Strict-Transport-Security` | `max-age=31536000; includeSubDomains; preload` | Force HTTPS           |
+| `X-Content-Type-Options`    | `nosniff`                                      | Prevent MIME sniffing |
+| `X-Frame-Options`           | `DENY`                                         | Prevent clickjacking  |
+| `X-XSS-Protection`          | `1; mode=block`                                | XSS filter            |
+| `Referrer-Policy`           | `strict-origin-when-cross-origin`              | Control referrer      |
 
 ---
 
@@ -393,16 +397,20 @@ resume_error_rate{job="resume"} 0.002
 
 ```json
 {
-  "streams": [{
-    "stream": {
-      "job": "resume-worker",
-      "level": "INFO"
-    },
-    "values": [[
-      "1703235600000000000",
-      "{\"path\":\"/\",\"method\":\"GET\",\"status\":200,\"duration_ms\":45}"
-    ]]
-  }]
+  "streams": [
+    {
+      "stream": {
+        "job": "resume-worker",
+        "level": "INFO"
+      },
+      "values": [
+        [
+          "1703235600000000000",
+          "{\"path\":\"/\",\"method\":\"GET\",\"status\":200,\"duration_ms\":45}"
+        ]
+      ]
+    }
+  ]
 }
 ```
 
@@ -434,26 +442,26 @@ resume_error_rate{job="resume"} 0.002
 
 ### Test Coverage Requirements
 
-| Module | Coverage | Tests |
-|--------|----------|-------|
-| `cards.js` | 100% | 25 |
-| `config.js` | 100% | 12 |
-| `templates.js` | 100% | 15 |
-| `validators.js` | 100% | 20 |
-| `security-headers.js` | 100% | 18 |
-| `cache-headers.js` | 100% | 15 |
-| `utils.js` | 100% | 20 |
-| **Total** | **98%** | **213** |
+| Module                | Coverage | Tests   |
+| --------------------- | -------- | ------- |
+| `cards.js`            | 100%     | 25      |
+| `config.js`           | 100%     | 12      |
+| `templates.js`        | 100%     | 15      |
+| `validators.js`       | 100%     | 20      |
+| `security-headers.js` | 100%     | 18      |
+| `cache-headers.js`    | 100%     | 15      |
+| `utils.js`            | 100%     | 20      |
+| **Total**             | **98%**  | **213** |
 
 ### E2E Test Categories
 
-| Category | Tests | Purpose |
-|----------|-------|---------|
-| Visual | 8 | Screenshot comparison |
-| Accessibility | 6 | ARIA, keyboard navigation |
-| Mobile | 12 | Touch targets, responsive |
-| Performance | 4 | Lighthouse CI |
-| Security | 4 | CSP, headers |
+| Category      | Tests | Purpose                   |
+| ------------- | ----- | ------------------------- |
+| Visual        | 8     | Screenshot comparison     |
+| Accessibility | 6     | ARIA, keyboard navigation |
+| Mobile        | 12    | Touch targets, responsive |
+| Performance   | 4     | Lighthouse CI             |
+| Security      | 4     | CSP, headers              |
 
 ---
 
@@ -463,7 +471,7 @@ resume_error_rate{job="resume"} 0.002
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                    GitLab CI/CD                                │
+│                    GitHub Actions                                │
 │  ┌─────────────┐  ┌─────────────┐  ┌─────────────────────────┐  │
 │  │   Build     │→ │    Test     │→ │       Deploy            │  │
 │  │ npm run     │  │ npm test    │  │ wrangler deploy         │  │
@@ -481,13 +489,13 @@ resume_error_rate{job="resume"} 0.002
 
 ### Environment Variables
 
-| Variable | Purpose | Required |
-|----------|---------|----------|
-| `CLOUDFLARE_API_TOKEN` | Deployment auth | Yes |
-| `CLOUDFLARE_ACCOUNT_ID` | Account identifier | Yes |
-| `DEPLOYED_AT` | Build timestamp | Auto-set |
-| `SLACK_WEBHOOK_URL` | Notifications | Optional |
-| `GEMINI_API_KEY` | AI summaries | Optional |
+| Variable                | Purpose            | Required |
+| ----------------------- | ------------------ | -------- |
+| `CLOUDFLARE_API_TOKEN`  | Deployment auth    | Yes      |
+| `CLOUDFLARE_ACCOUNT_ID` | Account identifier | Yes      |
+| `DEPLOYED_AT`           | Build timestamp    | Auto-set |
+| `SLACK_WEBHOOK_URL`     | Notifications      | Optional |
+| `GEMINI_API_KEY`        | AI summaries       | Optional |
 
 ---
 
@@ -509,12 +517,12 @@ resume_error_rate{job="resume"} 0.002
 
 ### Size Budget
 
-| Component | Size | Budget |
-|-----------|------|--------|
-| Worker.js | 292KB | <500KB |
-| HTML (minified) | ~50KB | <100KB |
-| CSS (inline) | ~30KB | <50KB |
-| Total | ~300KB | <500KB |
+| Component       | Size   | Budget |
+| --------------- | ------ | ------ |
+| Worker.js       | 292KB  | <500KB |
+| HTML (minified) | ~50KB  | <100KB |
+| CSS (inline)    | ~30KB  | <50KB  |
+| Total           | ~300KB | <500KB |
 
 ---
 

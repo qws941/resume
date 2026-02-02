@@ -23,7 +23,7 @@ Generate hierarchical AGENTS.md files for the resume project using the `/init-de
   - **Entry points**: CLI (`typescript/cli/bin/run.js`), Portfolio Worker (`typescript/portfolio-worker/worker.js`), Job Automation MCP Server (`typescript/job-automation/src/index.js`)
   - **Conventions**: ESM with explicit extensions, kebab-case files, UPPER_SNAKE_CASE constants, JSDoc typing
   - **Anti-patterns**: Never edit `worker.js` directly (generated), avoid cross-package imports, use `BaseCrawler` for automation
-  - **Build/CI**: Bazel orchestrates npm, GitLab CI with 7 stages, Cloudflare Workers deployment
+  - **Build/CI**: Bazel orchestrates npm, GitHub Actions with 7 stages, Cloudflare Workers deployment
   - **Tests**: Jest (unit/integration), Playwright (E2E), Node.js test runner for job-automation
 
 ### In Progress

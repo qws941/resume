@@ -196,11 +196,11 @@ module.exports = { validateEnv };
 
 #### 3.2 CI/CD 개선
 
-**현재**: GitLab CI 사용
+**현재**: GitHub Actions 사용
 
 **개선안**:
 ```yaml
-# .gitlab-ci.yml에 추가
+# .github/workflows/deploy.yml에 추가
 performance-test:
   stage: test
   script:

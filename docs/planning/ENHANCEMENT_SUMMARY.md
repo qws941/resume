@@ -48,7 +48,7 @@
 
 ⚙️ Automation & Development (9개)
    Python, Node.js, Flask, Shell Script, Ansible, Terraform,
-   Jenkins, GitLab CI/CD, GitHub Actions
+   Jenkins, GitHub Actions, GitHub Actions
 
 🌐 Networking (9개)
    OSPF, BGP, VLAN, VxLAN, MPLS, Load Balancing,
@@ -477,7 +477,7 @@ Body: Inter (산세리프) - 본문, 설명
 - **Certifications**: https://resume.jclee.me#certifications
 
 ### Repository
-- **GitHub**: http://gitlab.jclee.me/jclee/resume
+- **GitHub**: https://github.com/qws941/resume
 - **Latest Commit**: `64b8bc5`
 - **CI/CD**: GitHub Actions
 

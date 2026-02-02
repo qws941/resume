@@ -293,7 +293,7 @@ Based on Grok AI analysis of resume content:
 1. Check `~/.config/.wrangler/logs/` for error details
 2. Run `./scripts/verification/verify-deployment.sh` to diagnose
 3. See troubleshooting in `MANUAL_DEPLOYMENT_GUIDE.md`
-4. Check GitHub Actions logs: http://gitlab.jclee.me/jclee/resume/actions
+4. Check GitHub Actions logs: https://github.com/qws941/resume/actions
 
 **If verification fails**:
 - Wait 2-3 minutes for Cloudflare propagation

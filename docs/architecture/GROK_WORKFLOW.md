@@ -184,7 +184,7 @@ const recommendation = await mcp__grok__chat_completion({
     - Sometimes auth issues (code: 10001)
     - More features (dev server, logs)
 
-    Context: GitLab CI/CD deployment, need reliability.
+    Context: GitHub Actions deployment, need reliability.
     Recommend best approach and explain trade-offs.`
   }],
   model: "grok-2-latest"

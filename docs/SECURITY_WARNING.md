@@ -10,7 +10,6 @@ The following keys were found exposed in `.env` or history and MUST be rotated i
 | Service        | Key Name             | Action            | Status     |
 | -------------- | -------------------- | ----------------- | ---------- |
 | **Grafana**    | `GRAFANA_API_KEY`    | Revoke & Re-issue | 🔴 Pending |
-| **GitLab**     | `GITLAB_TOKEN`       | Revoke & Re-issue | 🔴 Pending |
 | **Slack**      | `SLACK_APP_TOKEN`    | Revoke & Re-issue | 🔴 Pending |
 | **n8n**        | `N8N_API_KEY`        | Revoke & Re-issue | 🔴 Pending |
 | **Evolution**  | `EVOLUTION_API_KEY`  | Revoke & Re-issue | 🔴 Pending |

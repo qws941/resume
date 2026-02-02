@@ -38,7 +38,7 @@ Source files (HTML/CSS/JSON) are transformed into a single deployable `worker.js
 
 1. **Edit Content**: Modify `web/data.json` (project data) OR `web/index.html` (structure) OR `web/styles.css` (styling)
 2. **Generate Worker**: Run `npm run build` (performs 6 transformations)
-3. **Deploy**: Push to `master` branch (GitLab CI/CD auto-deploys) OR run `wrangler deploy` manually
+3. **Deploy**: Push to `master` branch (GitHub Actions auto-deploys) OR run `wrangler deploy` manually
 
 ### 6 Critical Transformations
 
@@ -67,7 +67,7 @@ Source files (HTML/CSS/JSON) are transformed into a single deployable `worker.js
 - Special handling:
   - Grafana project: Multiple dashboard links
   - Highlighted cards: Use `completePdfUrl` instead of `pdfUrl`/`docxUrl`
-  - GitLab URLs: All download links use `CONFIG.GITLAB_BASE_URL` prefix
+  - GitHub URLs: All download links use `CONFIG.GITHUB_BASE_URL` prefix
 
 ### CSP Hash Calculation
 
@@ -118,7 +118,7 @@ Source files (HTML/CSS/JSON) are transformed into a single deployable `worker.js
       "tech": "Tech Stack",
       "description": "Description",
       "liveUrl": "...",   // For standard projects
-      "gitlabUrl": "...", // For standard projects
+      "githubUrl": "...", // For standard projects
       "dashboards": [...], // For Grafana project with multiple links
       "documentationUrl": "..."  // For projects with docs
     }
@@ -259,35 +259,31 @@ Content-Security-Policy:
 
 ## Git Repository
 
-**Primary**: GitLab (ssh://git@192.168.50.100:2222/jclee/resume.git)
-**Mirror**: GitHub (http://gitlab.jclee.me/jclee/resume.git) - **PRIVATE** as of 2025-11-18
+**Primary**: GitHub (https://github.com/qws941/resume.git) - **PRIVATE** as of 2025-11-18
 
 **Remotes Configuration**:
 
 ```bash
-origin  ssh://git@192.168.50.100:2222/jclee/resume.git  # GitLab
-github  http://gitlab.jclee.me/jclee/resume.git           # GitHub (Private)
+origin  https://github.com/qws941/resume.git  # GitHub (Primary)
 ```
 
-**Multi-Push Workflow**:
+**Push Workflow**:
 
 ```bash
-# Push to both remotes
-git push origin master  # GitLab
-git push github master  # GitHub
+git push origin master  # GitHub
 ```
 
 **IMPORTANT - GitHub Private Repository**:
 
-- GitHub repository changed to PRIVATE on 2025-11-18
+- GitHub repository is PRIVATE (since 2025-11-18)
 - Raw file URLs (in `web/data.json`) still work for authenticated users
-- Public resume site (https://resume.jclee.me) continues to work normally via Cloudflare Workers
+- Public resume site (https://resume.jclee.me) works via Cloudflare Workers
 - PDF/DOCX download links in portfolio require GitHub authentication
-- Alternative: Consider hosting resume files on Cloudflare R2 or GitLab Pages for public access
+- Alternative: Consider hosting resume files on Cloudflare R2 for public access
 
 ## CI/CD Pipeline
 
-### GitLab CI/CD (`.gitlab-ci.yml/deploy.yml`)
+### GitHub Actions (`.github/workflows/deploy.yml/deploy.yml`)
 
 **Trigger**: Push to `master` branch on GitHub
 
@@ -317,7 +313,7 @@ git push github master  # GitHub
 - `GEMINI_API_KEY`
 - `SLACK_WEBHOOK_URL` (optional)
 
-### GitLab CI/CD (`.gitlab-ci.yml`)
+### GitHub Actions (`.github/workflows/deploy.yml`)
 
 **Trigger**: Tag creation (semantic versioning: `v1.0.0`)
 
@@ -325,7 +321,7 @@ git push github master  # GitHub
 
 1. **validate**: Tag format validation
 2. **build**: Create release package (.tar.gz)
-3. **release**: Publish GitLab release
+3. **release**: Publish GitHub release
 4. **notify**: Send Slack notification (optional)
 
 **Usage**:
@@ -335,7 +331,7 @@ git tag -a v1.0.0 -m "Release v1.0.0"
 git push origin v1.0.0
 ```
 
-**Note**: Regular commits do NOT trigger GitLab CI/CD (release-only pipeline)
+**Note**: Regular commits do NOT trigger GitHub Actions (release-only pipeline)
 
 **Verification**:
 

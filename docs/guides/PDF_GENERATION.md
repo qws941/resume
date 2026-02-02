@@ -30,6 +30,7 @@ chmod +x scripts/build/pdf-generator.sh
 ```
 
 **Output**:
+
 ```
 === Resume PDF Generation ===
 Version: 1.0.3
@@ -67,6 +68,7 @@ Technical documentation:
 ### Option 1: Native Pandoc (Recommended)
 
 **Install on Rocky Linux 9**:
+
 ```bash
 sudo yum install pandoc texlive-xetex texlive-collection-fontsrecommended
 
@@ -75,6 +77,7 @@ pandoc --version
 ```
 
 **Required packages**:
+
 - `pandoc` - Document converter
 - `texlive-xetex` - XeLaTeX PDF engine (Korean font support)
 - `texlive-collection-fontsrecommended` - Font collection
@@ -160,6 +163,7 @@ LINESTRETCH="1.3"                   # Line spacing
 ```
 
 **PDF metadata**:
+
 ```bash
 --metadata title="Resume - Jaecheol Lee"
 --metadata author="Jaecheol Lee"
@@ -167,6 +171,7 @@ LINESTRETCH="1.3"                   # Line spacing
 ```
 
 **PDF features**:
+
 - Table of contents (TOC) with 3 levels
 - Section numbering
 - Colored hyperlinks (blue)
@@ -186,6 +191,7 @@ declare -A RESUME_VARIANTS=(
 ```
 
 **Generate**:
+
 ```bash
 ./scripts/build/pdf-generator.sh company
 ```
@@ -202,6 +208,7 @@ readonly FONT_MONO="D2Coding"            # Monospace (code blocks)
 ```
 
 **Check available fonts**:
+
 ```bash
 fc-list :lang=ko | grep -i "nanum\|noto\|d2coding"
 ```
@@ -254,6 +261,7 @@ git lfs track
 ```
 
 **Expected output**:
+
 ```
 Tracking "*.pdf"
 Tracking "*.png"
@@ -279,6 +287,7 @@ git push origin master
 ```
 
 **Check LFS status**:
+
 ```bash
 git lfs ls-files          # List LFS-tracked files
 git lfs status            # Show LFS file status
@@ -296,11 +305,11 @@ git lfs fetch --recent    # Download recent LFS objects
 ```
 
 **Storage locations**:
-- **GitLab LFS**: Primary (gitlab.jclee.me)
-- **GitHub LFS**: Mirror (gitlab.jclee.me/jclee/resume)
+
+- **GitHub LFS**: Primary (github.com/qws941/resume)
 
 **Storage limits**:
-- GitLab: Unlimited (self-hosted)
+
 - GitHub: 1GB storage, 1GB bandwidth/month (free tier)
 
 ## 🔄 CI/CD Integration
@@ -322,7 +331,7 @@ git push origin master
 
 ### Automated Workflow (Proposed)
 
-**Add to `.gitlab-ci.yml/deploy.yml`**:
+**Add to `.github/workflows/deploy.yml/deploy.yml`**:
 
 ```yaml
 name: Deploy Resume Portfolio
@@ -331,9 +340,9 @@ on:
   push:
     branches: [master]
     paths:
-      - 'master/*.md'
-      - 'toss/*.md'
-      - 'resume/nextrade/*.md'
+      - "master/*.md"
+      - "toss/*.md"
+      - "resume/nextrade/*.md"
 
 jobs:
   generate-pdfs:
@@ -355,7 +364,7 @@ jobs:
 
       - name: Commit PDFs
         run: |
-          git config user.name "GitLab CI/CD"
+          git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
           git add **/*.pdf
           git commit -m "chore: auto-generate PDFs [skip ci]" || exit 0
@@ -424,6 +433,7 @@ npm run version:bump
 ### Adding New Font
 
 **Install font**:
+
 ```bash
 # Download font
 wget https://fonts.example.com/NewFont.ttf
@@ -437,6 +447,7 @@ fc-list | grep -i "newfont"
 ```
 
 **Use in script**:
+
 ```bash
 # Edit scripts/build/pdf-generator.sh
 readonly FONT_NEW="NewFont"
@@ -450,6 +461,7 @@ readonly FONT_NEW="NewFont"
 **Issue**: `pandoc: xelatex not found`
 
 **Solution**:
+
 ```bash
 sudo yum install texlive-xetex texlive-collection-latex
 ```
@@ -457,6 +469,7 @@ sudo yum install texlive-xetex texlive-collection-latex
 **Issue**: `! Font NanumGothic not found`
 
 **Solution**:
+
 ```bash
 # Install Korean fonts
 sudo yum install google-noto-sans-cjk-ttc-fonts
@@ -469,6 +482,7 @@ fc-list :lang=ko
 **Issue**: Docker permission denied
 
 **Solution**:
+
 ```bash
 sudo usermod -aG docker $USER
 newgrp docker
@@ -477,6 +491,7 @@ newgrp docker
 **Issue**: PDF too large (>5MB)
 
 **Solution**:
+
 ```bash
 # Optimize PDF
 gs -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dPDFSETTINGS=/ebook \
@@ -506,4 +521,4 @@ gs -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dPDFSETTINGS=/ebook \
 - **Documentation**: This guide
 - **Script Issues**: Check `scripts/build/pdf-generator.sh` comments
 - **Questions**: qws941@kakao.com
-- **Repository**: https://gitlab.jclee.me/jclee/resume
+- **Repository**: https://github.com/qws941/resume

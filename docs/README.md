@@ -51,6 +51,6 @@ docs/
 
 ## Notes
 
-- Historical docs may reference removed GitLab CI configuration (migrated to GitHub Actions)
+- Historical docs may reference removed GitHub Actions configuration (migrated to GitHub Actions)
 - Session notes in `sessions/` and `thoughts/` are ephemeral
 - Vendor docs in `_vendor/` are external references (bmad methodology)

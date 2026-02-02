@@ -15,7 +15,7 @@ Deploy the resume monorepo to production (Cloudflare Workers)
 
 ## Progress
 ### Done
-- [x] Analyzed CI/CD architecture (GitLab CI + GitHub Actions)
+- [x] Analyzed CI/CD architecture (GitHub Actions + GitHub Actions)
 - [x] Identified deployment targets: `portfolio-worker`, `job-automation`
 - [x] Documented pipeline stages and required variables
 
@@ -34,7 +34,7 @@ Deploy the resume monorepo to production (Cloudflare Workers)
 3. Verify health checks on production URLs
 
 ## Critical Context
-- **GitLab CI deploy commands**:
+- **GitHub Actions deploy commands**:
   - Portfolio: `pnpm wrangler deploy --config apps/portfolio-worker/wrangler.toml --env production`
   - Job: `pnpm wrangler deploy --config apps/job-automation/wrangler.toml --env production`
 - **Bazel target**: `//tools:deploy` (may also work)
@@ -44,7 +44,7 @@ Deploy the resume monorepo to production (Cloudflare Workers)
 
 ## File Operations
 ### Read
-- `.gitlab-ci.yml`
+- `.github/workflows/deploy.yml`
 - `.github/workflows/ci.yml`
 - `.github/workflows/deploy-enhanced.yml`
 - `.github/workflows/lighthouse-ci.yml`

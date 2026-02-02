@@ -282,7 +282,7 @@
 
 - Languages: Python, Shell Script, PowerShell, Node.js, TypeScript, JavaScript
 - IaC: Ansible, Terraform, CloudFormation
-- CI/CD: Jenkins, GitLab CI, GitLab CI/CD, Watchtower
+- CI/CD: Jenkins, GitHub Actions, GitHub Actions, Watchtower
 - 모니터링: Prometheus, Grafana, Loki, ELK Stack, Tempo, Splunk
 
 ### AI/ML 및 자동화

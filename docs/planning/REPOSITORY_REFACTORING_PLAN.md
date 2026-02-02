@@ -136,7 +136,7 @@ echo "infrastructure/monitoring/*.log" >> .gitignore
 ```
 
 **Files affected**: Update paths in:
-- `.gitlab-ci.yml` (CI/CD pipeline)
+- `.github/workflows/deploy.yml` (CI/CD pipeline)
 - `scripts/deployment/deploy-*.sh` (deployment scripts)
 - `web/generate-worker.js` (if it references configs)
 
@@ -194,7 +194,7 @@ EOF
 **Critical**: Update all hardcoded paths
 
 **Files to update**:
-1. `.gitlab-ci.yml` - CI/CD paths
+1. `.github/workflows/deploy.yml` - CI/CD paths
 2. `OpenCode.md` - Documentation paths
 3. `README.md` - Link updates
 4. `scripts/*.sh` - Script path references
@@ -203,7 +203,7 @@ EOF
 
 **Example updates**:
 ```yaml
-# .gitlab-ci.yml
+# .github/workflows/deploy.yml
 before_script:
   - source infrastructure/configs/env-prod.sh  # Was: configs/env-prod.sh
 ```
@@ -218,7 +218,7 @@ CONFIG_DIR="infrastructure/configs"  # Was: configs/
 ## ⚠️ Risk Assessment
 
 ### High Risk
-- ❌ **Breaking CI/CD**: .gitlab-ci.yml path changes
+- ❌ **Breaking CI/CD**: .github/workflows/deploy.yml path changes
 - ❌ **Breaking deployments**: scripts/ path references
 - ❌ **Breaking builds**: web/generate-worker.js if it reads configs
 
@@ -254,7 +254,7 @@ Before merging refactoring:
 - [ ] OpenCode.md paths updated
 
 **Infrastructure**:
-- [ ] GitLab CI/CD pipeline passes
+- [ ] GitHub Actions pipeline passes
 - [ ] Monitoring configs accessible
 - [ ] n8n workflows importable
 
@@ -294,6 +294,6 @@ Before merging refactoring:
 ## 📚 References
 
 - Current OpenCode.md structure guidance
-- GitLab CI/CD documentation
+- GitHub Actions documentation
 - n8n workflow best practices
 - Cloudflare Workers deployment guide

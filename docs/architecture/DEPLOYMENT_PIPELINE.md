@@ -26,7 +26,7 @@ Automated deployment pipeline for resume portfolio with **6-stage workflow**:
 ## Trigger
 
 **Event**: Push to `master` branch
-**File**: `.gitlab-ci.yml`
+**File**: `.github/workflows/deploy.yml`
 
 ## Pipeline Stages
 
@@ -294,12 +294,12 @@ http_requests_total{job="resume"} 1234
 ### View Workflow Logs
 
 ```bash
-# GitLab CLI
-glab ci list --limit 5
-glab ci view <pipeline-id>
+# GitHub CLI
+gh run list --limit 5
+gh run view <run-id>
 
 # Or visit:
-http://gitlab.jclee.me/jclee/resume/-/pipelines
+https://github.com/qws941/resume/-/pipelines
 ```
 
 ## Artifacts Retention
@@ -336,7 +336,7 @@ git push origin master
 
 ### During Deployment
 
-1. ✅ Monitor GitLab CI/CD pipeline
+1. ✅ Monitor GitHub Actions pipeline
 2. ✅ Check Slack notification (if configured)
 3. ✅ Verify health endpoint after deployment
 
@@ -428,22 +428,22 @@ wrangler deploy
 
 ## Troubleshooting
 
-### GitLab CI/CD Pipeline Not Triggering
+### GitHub Actions Pipeline Not Triggering
 
 **Symptom**: Push to master, no pipeline run
 
 **Causes**:
 
-- `.gitlab-ci.yml` syntax error
+- `.github/workflows/deploy.yml` syntax error
 - CI/CD disabled in repo settings
 
 **Solution**:
 
 ```bash
 # Validate pipeline syntax
-yamllint .gitlab-ci.yml
+yamllint .github/workflows/deploy.yml
 
-# Check GitLab CI/CD status
+# Check GitHub Actions status
 # Settings → CI/CD → General pipelines
 ```
 
@@ -461,7 +461,7 @@ yamllint .gitlab-ci.yml
 
 ### Test Failures in CI (But Pass Locally)
 
-**Symptom**: Tests fail in GitLab CI/CD but pass locally
+**Symptom**: Tests fail in GitHub Actions but pass locally
 
 **Common causes**:
 
@@ -485,7 +485,7 @@ yamllint .gitlab-ci.yml
 
 **Documentation**:
 
-- Workflow file: `.gitlab-ci.yml/deploy.yml`
+- Workflow file: `.github/workflows/deploy.yml/deploy.yml`
 - Build script: `web/generate-worker.js`
 - Test suite: `tests/unit/generate-worker.test.js`
 
@@ -498,13 +498,13 @@ yamllint .gitlab-ci.yml
 
 **Logs**:
 
-- GitLab CI/CD: http://gitlab.jclee.me/jclee/resume/-/pipelines
+- GitHub Actions: https://github.com/qws941/resume/-/pipelines
 - Cloudflare Workers: Cloudflare Dashboard → Workers → Logs
 - Grafana Loki: https://grafana.jclee.me/explore
 
 ---
 
 **Maintained by**: Jaecheol Lee
-**CI/CD Platform**: GitLab CI/CD (self-hosted)
+**CI/CD Platform**: GitHub Actions (self-hosted)
 **Deployment Target**: Cloudflare Workers
 **Status**: ✅ Production-Ready

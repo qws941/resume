@@ -58,12 +58,6 @@
                 │  │  n8n             │  │
                 │  │  n8n.jclee.me    │  │
                 │  └──────────────────┘  │
-                │                        │
-                │  ┌──────────────────┐  │
-                │  │  GitLab          │  │
-                │  │  gitlab.jclee.me │  │
-                │  │  Port: 2222      │  │
-                │  └──────────────────┘  │
                 └────────────────────────┘
 ```
 
@@ -71,13 +65,12 @@
 
 일부 서비스는 **내부망 전용**이며 외부 DNS가 등록되어 있지 않습니다.
 
-| Service    | External DNS           | Internal Access              | Recommended               |
-| ---------- | ---------------------- | ---------------------------- | ------------------------- |
-| Grafana    | ✅ grafana.jclee.me    | 192.168.50.100:3000          | External DNS 사용         |
-| Prometheus | ❌ prometheus.jclee.me | 192.168.50.100:9090          | Grafana Explore 패널 사용 |
-| Loki       | ❌ loki.jclee.me       | 192.168.50.100:3100          | Grafana Explore 패널 사용 |
-| n8n        | ✅ n8n.jclee.me        | 192.168.50.100:5678          | External DNS 사용         |
-| GitLab     | ✅ gitlab.jclee.me     | 192.168.50.100:80, SSH: 2222 | External DNS 사용         |
+| Service    | External DNS           | Internal Access     | Recommended               |
+| ---------- | ---------------------- | ------------------- | ------------------------- |
+| Grafana    | ✅ grafana.jclee.me    | 192.168.50.100:3000 | External DNS 사용         |
+| Prometheus | ❌ prometheus.jclee.me | 192.168.50.100:9090 | Grafana Explore 패널 사용 |
+| Loki       | ❌ loki.jclee.me       | 192.168.50.100:3100 | Grafana Explore 패널 사용 |
+| n8n        | ✅ n8n.jclee.me        | 192.168.50.100:5678 | External DNS 사용         |
 
 **접근 방법**:
 
@@ -355,93 +348,6 @@ curl -X GET "https://n8n.jclee.me/api/v1/workflows" \
   -H "X-N8N-API-KEY: your_api_key"
 ```
 
-### 6. GitLab (Version Control)
-
-**URL**: https://gitlab.jclee.me
-**SSH Port**: 2222
-**Location**: Proxmox pve3 (192.168.50.100)
-**Purpose**: Primary Git repository
-
-**Repository Structure**:
-
-```
-gitlab.jclee.me/jclee/resume (Primary)
-  ├── master (protected branch)
-  │
-gitlab.jclee.me/jclee/resume (Mirror)
-  └── master (auto-synced)
-```
-
-**Git Configuration**:
-
-```bash
-# Primary repository (GitLab)
-git remote add origin ssh://git@gitlab.jclee.me:2222/jclee/resume.git
-
-# Mirror repository (GitHub)
-git remote add github http://gitlab.jclee.me/jclee/resume.git
-
-# Push to both
-git push origin master
-git push github master
-```
-
-## 🔐 Security
-
-### SSL/TLS Certificates
-
-**Cloudflare Workers**:
-
-- Automatic SSL/TLS (Cloudflare Universal SSL)
-- HTTPS-only (no HTTP)
-- TLS 1.3 support
-
-**Synology Services**:
-
-- Let's Encrypt certificates
-- Auto-renewal via Synology Certificate Manager
-- Wildcard cert: `*.jclee.me`
-
-### Security Headers
-
-**Content Security Policy (CSP)**:
-
-```
-default-src 'self';
-font-src 'self' https://fonts.gstatic.com;
-style-src 'self' 'sha256-...' https://fonts.googleapis.com;
-script-src 'self' 'sha256-...';
-img-src 'self' data:;
-connect-src 'self' https://grafana.jclee.me
-```
-
-**Additional Headers**:
-
-- `X-Content-Type-Options: nosniff`
-- `X-Frame-Options: DENY`
-- `X-XSS-Protection: 1; mode=block`
-- `Referrer-Policy: strict-origin-when-cross-origin`
-- `Strict-Transport-Security: max-age=31536000`
-
-### Access Control
-
-**Grafana**:
-
-- Authentication required
-- RBAC (Role-Based Access Control)
-- Session timeout: 24 hours
-
-**Prometheus**:
-
-- Private network only (192.168.50.0/24)
-- Exposed via reverse proxy (nginx)
-
-**n8n**:
-
-- API key authentication
-- Webhook HMAC signatures
-- IP whitelist (optional)
-
 ## 📈 Performance Metrics
 
 ### Current Performance (2025-11-20)
@@ -533,7 +439,7 @@ cd n8n
 
 **Daily Backups**:
 
-- Worker.js source code (GitLab + GitHub)
+- Worker.js source code (GitHub)
 - Configuration files (`.env`, `wrangler.toml`)
 - Monitoring dashboards (Grafana JSON exports)
 
@@ -545,7 +451,7 @@ cd n8n
 
 **Monthly Backups**:
 
-- Full GitLab repository archive
+- Full GitHub repository archive
 - Complete Grafana configuration
 - Infrastructure documentation
 
@@ -558,7 +464,7 @@ cd n8n
 
 1. Verify Cloudflare Workers status
 2. Check Synology NAS health
-3. Restore worker.js from GitLab
+3. Restore worker.js from GitHub
 4. Deploy via Wrangler CLI
 5. Verify health endpoint
 6. Monitor Grafana dashboard
@@ -569,7 +475,6 @@ cd n8n
 - [Prometheus Best Practices](https://prometheus.io/docs/practices/)
 - [Grafana Dashboard Guide](https://grafana.com/docs/grafana/latest/dashboards/)
 - [n8n Workflow Documentation](https://docs.n8n.io/)
-- [GitLab CI/CD Pipeline](https://docs.gitlab.com/ee/ci/)
 
 ## 📝 Change Log
 
@@ -604,7 +509,6 @@ cd n8n
 | **Prometheus** | 🔒 Internal Only            | 192.168.50.100:9090       | Metrics only via Grafana datasource |
 | **Loki**       | 🔒 Grafana Proxy            | grafana.jclee.me/loki/... | Log queries via Grafana proxy       |
 | **n8n**        | 🔒 Internal Only            | 192.168.50.100:5678       | Workflow automation (internal only) |
-| **GitLab**     | ✅ https://gitlab.jclee.me  | 192.168.50.100:2222 (SSH) | Source repository                   |
 
 **Access Methods**:
 
@@ -618,5 +522,4 @@ cd n8n
 - **Grafana**: https://grafana.jclee.me (✅ Public)
 - **Prometheus**: 192.168.50.100:9090 (🔒 Internal)
 - **n8n**: 192.168.50.100:5678 (🔒 Internal)
-- **GitLab**: https://gitlab.jclee.me
-- **GitLab (Primary)**: http://gitlab.jclee.me/jclee/resume
+- **GitHub**: https://github.com/qws941/resume

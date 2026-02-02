@@ -90,10 +90,10 @@ infisical secrets generate-example-env --env=prod > .env.infisical
 }
 ```
 
-### GitLab CI/CD 연동
+### GitHub Actions 연동
 
 ```yaml
-# .gitlab-ci.yml
+# .github/workflows/deploy.yml
 variables:
   INFISICAL_TOKEN: $INFISICAL_SERVICE_TOKEN
 

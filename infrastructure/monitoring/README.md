@@ -282,4 +282,4 @@ For issues or questions:
 - Check logs: `curl https://resume.jclee.me/metrics`
 - Check health: `curl https://resume.jclee.me/health | jq`
 - Infrastructure status: `https://grafana.jclee.me`
-- Project repository: `https://gitlab.jclee.me/apps/resume`
+- Project repository: `https://github.com/qws941/resume/apps/resume`

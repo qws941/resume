@@ -74,14 +74,14 @@ Metrics:
 
 ### Workflow 2: GitHub Deployment Webhook (Priority 2)
 
-**Purpose**: Receive GitLab CI/CD deployment notifications and broadcast to Slack/Loki.
+**Purpose**: Receive GitHub Actions deployment notifications and broadcast to Slack/Loki.
 
 **n8n Template Reference**: Custom webhook processing based on [Building Your First WhatsApp Chatbot](https://n8n.io/workflows/2465) pattern
 
 **Nodes**:
 1. **Webhook** (POST /resume-deploy)
 2. **Set** (Extract deployment data)
-3. **HTTP Request** (Fetch GitLab CI/CD run details)
+3. **HTTP Request** (Fetch GitHub Actions run details)
 4. **Slack** (Send deployment notification)
 5. **HTTP Request** (Send logs to Loki)
 
@@ -110,11 +110,11 @@ Message: {{ $json.commit_message }}
 Author: {{ $json.author }}
 Time: {{ $json.deployed_at }}
 
-🔗 http://gitlab.jclee.me/jclee/resume/actions/runs/{{ $json.workflow_run_id }}
+🔗 https://github.com/qws941/resume/actions/runs/{{ $json.workflow_run_id }}
 🌐 https://resume.jclee.me
 ```
 
-**GitLab CI/CD Integration** (`.gitlab-ci.yml/deploy.yml`):
+**GitHub Actions Integration** (`.github/workflows/deploy.yml/deploy.yml`):
 ```yaml
 - name: Notify n8n
   if: always()
@@ -283,7 +283,7 @@ return [{json: {
 2. **Slack** (`nodes-base.slack`) - Alert notifications
 3. **Google Sheets** (`nodes-base.googleSheets`) - Data logging and aggregation
 4. **Schedule Trigger** (`nodes-base.scheduleTrigger`) - Cron-based automation
-5. **Webhook** (`nodes-base.webhook`) - Receive GitLab CI/CD events
+5. **Webhook** (`nodes-base.webhook`) - Receive GitHub Actions events
 6. **Gmail** (`nodes-base.gmail`) - Daily reports
 7. **Code** (`nodes-base.code`) - Custom JavaScript for data processing
 8. **IF** (`nodes-base.if`) - Conditional branching
@@ -319,11 +319,11 @@ Conditional Logic (IF Node)
 
 ### Phase 2: Deployment Integration (Week 2)
 - [ ] Create Workflow 2 (GitHub Deployment Webhook)
-- [ ] Update `.gitlab-ci.yml/deploy.yml` with n8n webhook
+- [ ] Update `.github/workflows/deploy.yml/deploy.yml` with n8n webhook
 - [ ] Add deployment notifications to Slack `#deployments`
 - [ ] Forward deployment logs to Loki
 
-**Success Criteria**: Slack notification on every GitLab CI/CD deployment.
+**Success Criteria**: Slack notification on every GitHub Actions deployment.
 
 ### Phase 3: Performance Analytics (Week 3)
 - [ ] Create Workflow 3 (Web Vitals Analytics)

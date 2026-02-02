@@ -281,7 +281,7 @@ The observability implementation is excellent and meets Constitutional Framework
 
 ## 8. Analysis Artifacts
 
-- **Lighthouse CI Run**: http://gitlab.jclee.me/jclee/resume/actions/runs/18590594771
+- **Lighthouse CI Run**: https://github.com/qws941/resume/actions/runs/18590594771
 - **Production Site**: https://resume.jclee.me
 - **Health Check**: https://resume.jclee.me/health
 - **Metrics**: https://resume.jclee.me/metrics

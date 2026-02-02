@@ -174,7 +174,7 @@ npm run build && npm run deploy
 
 ---
 
-### Issue: GitLab CI/CD Deployment Failed
+### Issue: GitHub Actions Deployment Failed
 
 **Error Message:**
 
@@ -182,11 +182,11 @@ npm run build && npm run deploy
 Error: Resource not accessible by integration
 ```
 
-**Cause:** Missing or incorrect GitLab CI/CD variables.
+**Cause:** Missing or incorrect GitHub Actions variables.
 
 **Solution:**
 
-1. Go to GitLab repository → Settings → CI/CD → Variables
+1. Go to GitHub repository → Settings → Secrets and variables → Actions
 2. Verify these variables exist:
    - `CLOUDFLARE_API_TOKEN`
    - `CLOUDFLARE_ACCOUNT_ID`
@@ -535,7 +535,7 @@ npm run build && npm test && npm run test:e2e && echo "All checks passed!"
 ## Getting Help
 
 1. **Check existing docs:** `docs/` directory
-2. **Search issues:** GitHub/GitLab issues
+2. **Search issues:** GitHub Issues
 3. **Check logs:** Cloudflare dashboard → Workers → Logs
 4. **Local debugging:** `npm run dev` + browser DevTools
 

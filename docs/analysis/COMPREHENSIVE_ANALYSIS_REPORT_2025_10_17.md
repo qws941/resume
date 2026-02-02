@@ -1091,7 +1091,7 @@ verification:
 
 - Live Site: https://resume.jclee.me
 - Grafana (target): https://grafana.jclee.me
-- GitHub: http://gitlab.jclee.me/jclee/resume
+- GitHub: https://github.com/qws941/resume
 - Cloudflare Status: https://cloudflare.com/status
 
 ### C. Tools Used

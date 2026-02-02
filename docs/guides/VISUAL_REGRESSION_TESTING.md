@@ -65,7 +65,7 @@ playwright test tests/e2e/visual.spec.js --update-snapshots
 Visual regression tests run automatically in CI/CD pipeline:
 
 ```yaml
-# .gitlab-ci.yml
+# .github/workflows/deploy.yml
 test:e2e:
   script:
     - npm run test:e2e
@@ -340,7 +340,7 @@ stages:
 
 3. **Automated Snapshot Updates** (on approved PRs)
    ```yaml
-   # .gitlab-ci.yml
+   # .github/workflows/deploy.yml
    update-snapshots:
      only:
        - merge_requests

@@ -95,7 +95,7 @@ If API token creation is not possible:
 - API tokens are more secure than Global API Keys (scoped permissions)
 - Never commit `.env` file to Git (already in `.gitignore`)
 - Token can be revoked anytime from Cloudflare dashboard
-- Use separate tokens for CI/CD (GitLab CI/CD) vs local development
+- Use separate tokens for CI/CD (GitHub Actions) vs local development
 
 ## Troubleshooting
 

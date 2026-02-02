@@ -108,4 +108,4 @@ X-Frame-Options: DENY
 
 - **Email**: qws941@kakao.com
 - **GitHub**: https://github.com/qws941
-- **GitLab**: https://gitlab.jclee.me/jclee/resume
+- **GitHub**: https://github.com/qws941/resume
