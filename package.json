@@ -31,7 +31,7 @@
     "format:check": "prettier --check .",
     "dev": "cd web && wrangler dev",
     "deploy:wrangler": "npm run version:bump && npm run build:full && cd web && wrangler deploy",
-    "cli:install": "echo 'Run: npm link typescript/cli'",
+    "cli:install": "echo 'CLI is available via npm workspace. No action needed.'",
     "docker:build:dev": "docker build --target builder -t resume:dev .",
     "docker:run": "docker run -p 3000:3000 --env-file .docker.env resume:latest",
     "docker:run:dev": "docker run -p 3000:3000 -e NODE_ENV=development -v $(pwd)/web:/app/web resume:latest",
