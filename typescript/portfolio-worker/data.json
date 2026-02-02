@@ -8,7 +8,7 @@
     {
       "icon": "",
       "title": "(주)아이티센 CTS",
-      "description": "ATS 보안 관제 및 Splunk 로그 분석 시스템 운영",
+      "description": "넥스트레이드 매매체결시스템 보안운영",
       "period": "2025.03 — Present",
       "stats": ["Splunk", "FortiGate", "Security"],
       "highlight": false,
@@ -36,6 +36,30 @@
       "description": "AWS 마이그레이션 및 Kubernetes(EKS) CI/CD 파이프라인 구축",
       "period": "2022.05 — 2022.07",
       "stats": ["AWS", "EKS", "CI/CD"],
+      "highlight": false
+    },
+    {
+      "icon": "",
+      "title": "(주)조인트리",
+      "description": "국민대학교 차세대 정보시스템 보안 강화 및 VMware NSX-T 네트워크 세그멘테이션 구축",
+      "period": "2021.09 — 2022.04",
+      "stats": ["VMware", "NSX-T", "Security"],
+      "highlight": false
+    },
+    {
+      "icon": "",
+      "title": "(주)메타넷엠플랫폼",
+      "description": "콜센터 인프라 운영 및 재택근무 VPN 환경 구축, Ansible 자동화",
+      "period": "2019.12 — 2021.08",
+      "stats": ["Ansible", "VPN", "Automation"],
+      "highlight": false
+    },
+    {
+      "icon": "",
+      "title": "(주)엠티데이타",
+      "description": "한국항공우주산업(KAI) IT 인프라 운영 및 헬프데스크",
+      "period": "2017.02 — 2018.10",
+      "stats": ["Linux", "Helpdesk", "Infrastructure"],
       "highlight": false
     }
   ],
@@ -72,7 +96,17 @@
     { "name": "CCNP", "issuer": "Cisco", "date": "2020.08" },
     { "name": "RHCSA", "issuer": "Red Hat", "date": "2019.01" },
     { "name": "CompTIA Linux+", "issuer": "CompTIA", "date": "2019.02" },
-    { "name": "LPIC-1", "issuer": "LPI", "date": "2019.02" }
+    { "name": "LPIC-1", "issuer": "LPI", "date": "2019.02" },
+    {
+      "name": "사무자동화산업기사",
+      "issuer": "한국산업인력공단",
+      "date": "2019.12"
+    },
+    {
+      "name": "리눅스마스터 2급",
+      "issuer": "한국정보통신진흥협회",
+      "date": "2019.01"
+    }
   ],
   "skills": {
     "observability": {
@@ -90,7 +124,7 @@
     "badge": "",
     "title": "이재철",
     "titleEn": "Jaecheol Lee",
-    "subtitle": "Infrastructure Engineer building reliable automation systems."
+    "subtitle": "모니터링 체계 구축과 운영 자동화에 관심이 있습니다."
   },
   "sectionDescriptions": {
     "resume": "",
