@@ -1,92 +1,80 @@
 /* ============================================
-   MINIMAL DESIGN SYSTEM
-   Apple-inspired clean aesthetic
+   NEON TERMINAL DESIGN SYSTEM
+   Dark-mode only aesthetic
    ============================================ */
 
 :root {
   /* ----------------------------------------
-     COLOR PALETTE - Neutral + Single Accent
+     NEON PALETTE
      ---------------------------------------- */
+  --bg-primary: #0c0c12;
+  --bg-secondary: #1a1a2e;
+  --bg-card: #16161e;
+  --bg-tertiary: #1f1f2e;
+  --bg-inverse: #e4e4e7;
 
-  /* Neutrals (Zinc scale) */
-  --color-black: #09090b;
-  --color-white: #ffffff;
+  --cyber-cyan: #00f0ff;
+  --cyber-magenta: #ff00ff;
+  --cyber-green: #00ff88;
 
-  --color-gray-50: #fafafa;
-  --color-gray-100: #f4f4f5;
-  --color-gray-200: #e4e4e7;
-  --color-gray-300: #d4d4d8;
-  --color-gray-400: #a1a1aa;
-  --color-gray-500: #71717a;
-  --color-gray-600: #52525b;
-  --color-gray-700: #3f3f46;
-  --color-gray-800: #27272a;
-  --color-gray-900: #18181b;
-  --color-gray-950: #09090b;
+  --text-primary: #e4e4e7;
+  --text-secondary: #a1a1aa;
+  --text-muted: #71717a;
+  --text-inverse: #0c0c12;
+
+  --glow-cyan: 0 0 20px rgba(0, 240, 255, 0.5);
+  --glow-magenta: 0 0 20px rgba(255, 0, 255, 0.5);
 
   /* ----------------------------------------
-     OKLCH COLOR SYSTEM - 2025 Multi-Accent
-     Perceptually uniform color space
+     SEMANTIC MAPPINGS
      ---------------------------------------- */
+  /* Mapping legacy variables to new neon palette */
+  --color-accent: var(--cyber-cyan);
+  --color-accent-light: #00ffff;
+  --color-accent-dark: #00b8cc;
+  --color-accent-subtle: rgba(0, 240, 255, 0.15);
 
-  /* Primary Accent - Blue (AIOps) */
-  --color-accent: oklch(0.55 0.22 250);
-  --color-accent-light: oklch(0.62 0.2 250);
-  --color-accent-dark: oklch(0.48 0.24 250);
-  --color-accent-subtle: oklch(0.95 0.03 250);
+  --color-accent-secondary: var(--cyber-magenta);
+  --color-accent-secondary-light: #ff55ff;
+  --color-accent-secondary-dark: #cc00cc;
+  --color-accent-secondary-subtle: rgba(255, 0, 255, 0.15);
 
-  /* Secondary Accent - Teal (Observability) */
-  --color-accent-secondary: oklch(0.65 0.15 175);
-  --color-accent-secondary-light: oklch(0.72 0.12 175);
-  --color-accent-secondary-dark: oklch(0.55 0.17 175);
-  --color-accent-secondary-subtle: oklch(0.95 0.03 175);
+  --color-accent-tertiary: var(--cyber-green);
+  --color-accent-tertiary-light: #00ffaa;
+  --color-accent-tertiary-dark: #00cc66;
+  --color-accent-tertiary-subtle: rgba(0, 255, 136, 0.15);
 
-  /* Tertiary Accent - Purple (ML Platform) */
-  --color-accent-tertiary: oklch(0.58 0.18 290);
-  --color-accent-tertiary-light: oklch(0.65 0.15 290);
-  --color-accent-tertiary-dark: oklch(0.5 0.2 290);
-  --color-accent-tertiary-subtle: oklch(0.95 0.03 290);
+  --color-success: var(--cyber-green);
+  --color-warning: #ffd700;
+  --color-error: #ff0055;
 
-  /* Status Colors */
-  --color-success: oklch(0.72 0.17 142);
-  --color-warning: oklch(0.8 0.15 85);
-  --color-error: oklch(0.6 0.22 25);
-
-  /* Gradient Tokens - Hero & Decorative */
-  --gradient-hero-light: linear-gradient(
-    135deg,
-    oklch(0.98 0.01 250) 0%,
-    oklch(0.96 0.02 280) 50%,
-    oklch(0.97 0.01 200) 100%
-  );
-  --gradient-hero-dark: linear-gradient(
-    135deg,
-    oklch(0.15 0.02 250) 0%,
-    oklch(0.13 0.03 280) 50%,
-    oklch(0.14 0.02 200) 100%
-  );
-  --gradient-accent: linear-gradient(
-    135deg,
-    oklch(0.55 0.22 250) 0%,
-    oklch(0.58 0.18 290) 100%
-  );
-  --gradient-glow: radial-gradient(
-    ellipse at center,
-    oklch(0.55 0.22 250 / 0.15) 0%,
-    transparent 70%
-  );
+  --border-primary: #2a2a3e;
+  --border-secondary: #3f3f5a;
+  --border-hover: var(--cyber-cyan);
 
   /* ----------------------------------------
-     TYPOGRAPHY
+     EFFECTS
      ---------------------------------------- */
-  --font-sans:
-    "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui,
-    sans-serif;
-  --font-mono:
-    "JetBrains Mono", "SF Mono", "Fira Code", Consolas, "Liberation Mono",
-    monospace;
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.5);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.5), 0 2px 4px -2px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -4px rgba(0, 0, 0, 0.5);
 
-  /* Fluid font sizes - clamp(min, preferred, max) */
+  --shadow-glow: var(--glow-cyan);
+  --shadow-glow-secondary: var(--glow-magenta);
+  --shadow-glow-tertiary: 0 0 20px rgba(0, 255, 136, 0.5);
+
+  --gradient-hero-light: linear-gradient(135deg, #0c0c12 0%, #1a1a2e 100%);
+  --gradient-hero-dark: linear-gradient(135deg, #0c0c12 0%, #1a1a2e 100%);
+  --gradient-accent: linear-gradient(135deg, var(--cyber-cyan) 0%, var(--cyber-magenta) 100%);
+  --gradient-glow: radial-gradient(ellipse at center, rgba(0, 240, 255, 0.15) 0%, transparent 70%);
+
+  /* ----------------------------------------
+     TYPOGRAPHY (Preserved)
+     ---------------------------------------- */
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', 'SF Mono', 'Fira Code', Consolas, 'Liberation Mono', monospace;
+
+  /* Fluid font sizes */
   --text-xs: clamp(0.7rem, 0.65rem + 0.25vw, 0.75rem);
   --text-sm: clamp(0.8rem, 0.75rem + 0.25vw, 0.875rem);
   --text-base: clamp(0.9rem, 0.85rem + 0.25vw, 1rem);
@@ -117,32 +105,32 @@
   --tracking-wide: 0.025em;
 
   /* ----------------------------------------
-     SPACING - 8px base grid
+     SPACING (Preserved)
      ---------------------------------------- */
   --space-0: 0;
-  --space-1: 0.25rem; /* 4px */
-  --space-2: 0.5rem; /* 8px */
-  --space-3: 0.75rem; /* 12px */
-  --space-4: 1rem; /* 16px */
-  --space-5: 1.25rem; /* 20px */
-  --space-6: 1.5rem; /* 24px */
-  --space-8: 2rem; /* 32px */
-  --space-10: 2.5rem; /* 40px */
-  --space-12: 3rem; /* 48px */
-  --space-16: 4rem; /* 64px */
-  --space-20: 5rem; /* 80px */
-  --space-24: 6rem; /* 96px */
-  --space-32: 8rem; /* 128px */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-20: 5rem;
+  --space-24: 6rem;
+  --space-32: 8rem;
 
   /* ----------------------------------------
-     LAYOUT
+     LAYOUT (Preserved)
      ---------------------------------------- */
   --container-max: 1100px;
   --container-narrow: 720px;
   --section-padding: var(--space-24);
 
   /* ----------------------------------------
-     BORDERS
+     BORDERS (Preserved)
      ---------------------------------------- */
   --radius-sm: 4px;
   --radius-md: 8px;
@@ -153,85 +141,17 @@
   --border-width: 1px;
 
   /* ----------------------------------------
-     SHADOWS - Subtle, minimal
-     ---------------------------------------- */
-  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  --shadow-md:
-    0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -2px rgba(0, 0, 0, 0.07);
-  --shadow-lg:
-    0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.08);
-
-  /* ----------------------------------------
-     TRANSITIONS
+     TRANSITIONS (Preserved)
      ---------------------------------------- */
   --transition-fast: 150ms ease;
   --transition-base: 200ms ease;
   --transition-slow: 300ms ease;
 
   /* ----------------------------------------
-     Z-INDEX
+     Z-INDEX (Preserved)
      ---------------------------------------- */
   --z-dropdown: 100;
   --z-sticky: 200;
   --z-nav: 1000;
   --z-modal: 2000;
-
-  /* ----------------------------------------
-     THEME COLORS (Light Mode)
-     ---------------------------------------- */
-  --bg-primary: #ffffff;
-  --bg-secondary: #fafafa;
-  --bg-tertiary: #f4f4f5;
-  --bg-inverse: #18181b;
-
-  --text-primary: #18181b;
-  --text-secondary: #52525b;
-  --text-muted: #71717a;
-  --text-inverse: #fafafa;
-
-  --border-primary: #e4e4e7;
-  --border-secondary: #d4d4d8;
-  --border-hover: #a1a1aa;
-}
-
-/* ============================================
-   DARK MODE - OKLCH
-   ============================================ */
-[data-theme="dark"] {
-  --bg-primary: oklch(0.13 0.005 250);
-  --bg-secondary: oklch(0.17 0.005 250);
-  --bg-tertiary: oklch(0.22 0.005 250);
-  --bg-inverse: oklch(0.98 0 0);
-
-  --text-primary: oklch(0.98 0 0);
-  --text-secondary: oklch(0.75 0.01 250);
-  --text-muted: oklch(0.55 0.01 250);
-  --text-inverse: oklch(0.17 0.005 250);
-
-  --border-primary: oklch(0.25 0.01 250);
-  --border-secondary: oklch(0.32 0.01 250);
-  --border-hover: oklch(0.42 0.01 250);
-
-  --color-accent: oklch(0.62 0.2 250);
-  --color-accent-light: oklch(0.7 0.17 250);
-  --color-accent-dark: oklch(0.55 0.22 250);
-  --color-accent-subtle: oklch(0.2 0.05 250);
-
-  --color-accent-secondary: oklch(0.7 0.13 175);
-  --color-accent-secondary-subtle: oklch(0.2 0.04 175);
-
-  --color-accent-tertiary: oklch(0.65 0.15 290);
-  --color-accent-tertiary-subtle: oklch(0.2 0.04 290);
-
-  --gradient-hero-light: var(--gradient-hero-dark);
-
-  --shadow-sm: 0 1px 2px 0 oklch(0 0 0 / 0.4);
-  --shadow-md:
-    0 4px 6px -1px oklch(0 0 0 / 0.5), 0 2px 4px -2px oklch(0 0 0 / 0.5);
-  --shadow-lg:
-    0 10px 15px -3px oklch(0 0 0 / 0.6), 0 4px 6px -4px oklch(0 0 0 / 0.6);
-
-  --shadow-glow: 0 0 20px oklch(0.55 0.22 250 / 0.3);
-  --shadow-glow-secondary: 0 0 20px oklch(0.65 0.15 175 / 0.3);
-  --shadow-glow-tertiary: 0 0 20px oklch(0.58 0.18 290 / 0.3);
 }
