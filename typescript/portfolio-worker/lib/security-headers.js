@@ -34,14 +34,26 @@ const CACHE_STRATEGIES = {
  * @returns {Object} Security headers object
  */
 function generateSecurityHeaders(scriptHashes, styleHashes) {
-  const cspScriptSrc = `script-src 'self' ${scriptHashes.join(" ")} ${CLOUDFLARE_SCRIPT_HASHES.join(" ")} https://www.googletagmanager.com https://browser.sentry-cdn.com ${CLOUDFLARE_ANALYTICS.script}`;
-  const cspStyleSrc = `style-src 'self' ${styleHashes.join(" ")}`;
-  const cspStyleSrcElem = `style-src-elem 'self' ${styleHashes.join(" ")}`;
-  const cspConnectSrc = `connect-src 'self' https://sentry.jclee.me ${CLOUDFLARE_ANALYTICS.connect}`;
+  const cspDirectives = [
+    "default-src 'none'",
+    `script-src 'self' ${scriptHashes.join(" ")} ${CLOUDFLARE_SCRIPT_HASHES.join(" ")} https://www.googletagmanager.com https://browser.sentry-cdn.com ${CLOUDFLARE_ANALYTICS.script}`,
+    `style-src 'self' ${styleHashes.join(" ")}`,
+    `style-src-elem 'self' ${styleHashes.join(" ")}`,
+    `connect-src 'self' https://sentry.jclee.me ${CLOUDFLARE_ANALYTICS.connect}`,
+    "img-src 'self' data: https:",
+    "font-src 'self'",
+    "manifest-src 'self'",
+    "worker-src 'self'",
+    "frame-ancestors 'none'",
+    "base-uri 'self'",
+    "form-action 'self'",
+    "object-src 'none'",
+    "upgrade-insecure-requests",
+  ];
 
   return {
     "Content-Type": "text/html;charset=UTF-8",
-    "Content-Security-Policy": `${cspScriptSrc}; ${cspStyleSrc}; ${cspStyleSrcElem}; ${cspConnectSrc}; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests`,
+    "Content-Security-Policy": cspDirectives.join("; "),
     "Strict-Transport-Security": "max-age=63072000; includeSubDomains; preload",
     "X-Content-Type-Options": "nosniff",
     "X-Frame-Options": "DENY",
