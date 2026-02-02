@@ -34,10 +34,10 @@ const CACHE_STRATEGIES = {
  * @returns {Object} Security headers object
  */
 function generateSecurityHeaders(scriptHashes, styleHashes) {
-  const cspScriptSrc = `script-src 'self' ${scriptHashes.join(" ")} ${CLOUDFLARE_SCRIPT_HASHES.join(" ")} https://browser.sentry-cdn.com https://www.googletagmanager.com ${CLOUDFLARE_ANALYTICS.script}`;
+  const cspScriptSrc = `script-src 'self' ${scriptHashes.join(" ")} ${CLOUDFLARE_SCRIPT_HASHES.join(" ")} https://www.googletagmanager.com ${CLOUDFLARE_ANALYTICS.script}`;
   const cspStyleSrc = `style-src 'self' ${styleHashes.join(" ")}`;
   const cspStyleSrcElem = `style-src-elem 'self' ${styleHashes.join(" ")}`;
-  const cspConnectSrc = `connect-src 'self' https://ingest.sentry.io ${CLOUDFLARE_ANALYTICS.connect}`;
+  const cspConnectSrc = `connect-src 'self' ${CLOUDFLARE_ANALYTICS.connect}`;
 
   return {
     "Content-Type": "text/html;charset=UTF-8",

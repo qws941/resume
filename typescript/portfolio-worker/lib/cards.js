@@ -59,28 +59,32 @@ function generateProjectCards(projectsData, dataHash) {
 
   const html = projectsData
     .map((project) => {
-      const link = project.liveUrl || project.gitlabUrl || "#";
+      const hasLink = project.liveUrl || project.gitlabUrl;
+      const link = project.liveUrl || project.gitlabUrl;
       const linkText = project.liveUrl
         ? "Live Demo"
         : project.gitlabUrl
           ? "GitHub"
           : "";
 
+      // Render as anchor tag only if link exists, otherwise use div
+      const titleContent = `${escapeHtml(project.title)}<span class="arrow">↗</span>`;
+      const titleElement = hasLink
+        ? `<a href="${escapeHtml(link)}" target="_blank" rel="noopener noreferrer" class="project-link-title" aria-label="View ${escapeHtml(project.title)} project">${titleContent}</a>`
+        : `<div class="project-link-title">${titleContent}</div>`;
+
       return `
-        <li class="project-item">
-            <div class="project-header">
-                <h3 class="project-title">
-                    <a href="${escapeHtml(link)}" target="_blank" rel="noopener noreferrer" class="project-link-title">
-                        ${escapeHtml(project.title)}
-                        <span class="arrow">↗</span>
-                    </a>
-                </h3>
-            </div>
-            <p class="project-description">${escapeHtml(project.description)}</p>
-            <div class="project-tech">
-                ${escapeHtml(project.tech)}
-            </div>
-        </li>`;
+         <li class="project-item">
+             <div class="project-header">
+                 <h3 class="project-title">
+                     ${titleElement}
+                 </h3>
+             </div>
+             <p class="project-description">${escapeHtml(project.description)}</p>
+             <div class="project-tech">
+                 ${escapeHtml(project.tech)}
+             </div>
+         </li>`;
     })
     .join("\n");
 

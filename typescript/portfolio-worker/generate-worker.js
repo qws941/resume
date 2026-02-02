@@ -141,11 +141,6 @@ const _N8N_WEBHOOK_BASE =
       name: "serviceWorker",
     },
     {
-      path: path.join(__dirname, "sentry-config.js"),
-      encoding: "utf-8",
-      name: "sentryConfig",
-    },
-    {
       path: path.join(__dirname, "robots.txt"),
       encoding: "utf-8",
       name: "robotsTxt",
@@ -154,6 +149,11 @@ const _N8N_WEBHOOK_BASE =
       path: path.join(__dirname, "sitemap.xml"),
       encoding: "utf-8",
       name: "sitemapXml",
+    },
+    {
+      path: path.join(__dirname, "sentry-config.js"),
+      encoding: "utf-8",
+      name: "sentryConfig",
     },
     {
       path: path.join(__dirname, "og-image.webp"),
@@ -219,9 +219,9 @@ const _N8N_WEBHOOK_BASE =
     projectDataRaw,
     manifestJson,
     serviceWorker,
-    sentryConfig,
     robotsTxt,
     sitemapXml,
+    sentryConfig,
     ogImageBuffer,
     ogImageEnBuffer,
     resumePdfBuffer,
@@ -240,7 +240,6 @@ const _N8N_WEBHOOK_BASE =
   );
   logger.debug(`manifest.json size: ${manifestJson.length} bytes`);
   logger.debug(`sw.js size: ${serviceWorker.length} bytes`);
-  logger.debug(`sentry-config.js size: ${sentryConfig.length} bytes`);
 
   logger.log("✓ Source files loaded\n");
 
@@ -397,8 +396,8 @@ const DASHBOARD_HTML = \`${dashboardHtml}\`;
 
 const MANIFEST_JSON = \`${manifestJson}\`;
 const SERVICE_WORKER = \`${serviceWorker}\`;
-const SENTRY_CONFIG = \`${sentryConfig}\`;
 const MAIN_JS = \`${mainJs}\`;
+const SENTRY_CONFIG = \`${sentryConfig}\`;
 
 // SEO files
 const ROBOTS_TXT = \`${robotsTxt}\`;

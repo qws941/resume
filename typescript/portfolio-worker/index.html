@@ -3,14 +3,14 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>이재철 - AIOps / ML Platform Engineer</title>
+    <title>이재철 - Infrastructure Engineer</title>
     <meta
       name="description"
-      content="이재철 - AIOps/ML Platform 엔지니어 | Observability 스택 설계, 자동화, 금융권 인프라"
+      content="이재철 - 인프라 엔지니어 | 금융·제조·공공 분야 인프라 설계 및 운영"
     />
     <meta
       name="keywords"
-      content="AIOps, ML Platform, Observability, Grafana, Prometheus, Loki, Splunk, 자동화, 금융 인프라, 이재철, AIOps 엔지니어"
+      content="Infrastructure, Observability, Grafana, Prometheus, Loki, Splunk, 자동화, 인프라, 이재철"
     />
     <meta name="author" content="이재철 (Jaecheol Lee)" />
     <meta name="robots" content="index, follow" />
@@ -18,6 +18,14 @@
       name="google-site-verification"
       content="2a5f8c3b7d4e9a1f6c2b5e8d1a4f7c0b9e3d6a9f2c5"
     />
+
+    <!-- Sentry Error Tracking -->
+    <script
+      src="https://browser.sentry-cdn.com/7.109.0/bundle.min.js"
+      integrity="sha384-+ZoRJkxRPyMzrP6hUpcabGSJJ9Zar1rxfBLFpMegGnKaEC2Djg6bYmmdi9ff2VsV"
+      crossorigin="anonymous"
+    ></script>
+    <script src="/sentry-config.js" defer></script>
 
     <!-- Google Analytics 4 -->
     <script
@@ -48,10 +56,10 @@
     <!-- Open Graph -->
     <meta property="og:type" content="profile" />
     <meta property="og:url" content="https://resume.jclee.me" />
-    <meta property="og:title" content="이재철 - AIOps / ML Platform Engineer" />
+    <meta property="og:title" content="이재철 - Infrastructure Engineer" />
     <meta
       property="og:description"
-      content="AIOps/ML Platform 엔지니어 | Observability 스택 설계, AI 에이전트 운영, 금융권 인프라 구축"
+      content="인프라 엔지니어 | 금융·제조·공공 분야 인프라 설계 및 운영"
     />
     <meta property="og:image" content="https://resume.jclee.me/og-image.webp" />
     <meta property="og:image:width" content="1200" />
@@ -59,7 +67,7 @@
     <meta property="og:image:type" content="image/webp" />
     <meta
       property="og:image:alt"
-      content="Jaecheol Lee - AIOps & Observability Engineer Portfolio"
+      content="Jaecheol Lee - Infrastructure Engineer Portfolio"
     />
     <meta property="og:site_name" content="Jaecheol Lee Resume" />
     <meta property="og:locale" content="ko_KR" />
@@ -71,13 +79,10 @@
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:url" content="https://resume.jclee.me" />
-    <meta
-      name="twitter:title"
-      content="이재철 - AIOps / ML Platform Engineer"
-    />
+    <meta name="twitter:title" content="이재철 - Infrastructure Engineer" />
     <meta
       name="twitter:description"
-      content="AIOps/ML Platform 엔지니어 | Observability 스택 설계, 자동화, 금융권 인프라"
+      content="인프라 엔지니어 | 금융·제조·공공 분야 인프라 설계 및 운영"
     />
     <meta
       name="twitter:image"
@@ -94,23 +99,21 @@
         "@id": "https://resume.jclee.me/#person",
         "name": "이재철",
         "alternateName": "Jaecheol Lee",
-        "jobTitle": "AIOps / ML Platform Engineer",
-        "description": "AIOps/ML Platform 엔지니어, Observability 스택 설계, AI 에이전트 운영, 금융권 인프라",
+        "jobTitle": "Infrastructure Engineer",
+        "description": "인프라 엔지니어, 금융·제조·공공 분야 인프라 설계 및 운영",
         "url": "https://resume.jclee.me",
         "email": "qws941@kakao.com",
         "telephone": "+82-10-5757-9592",
         "sameAs": ["https://github.com/qws941"],
         "knowsAbout": [
           "Observability",
-          "ML Platform",
           "Grafana",
           "Prometheus",
           "Loki",
           "Splunk",
           "n8n",
           "자동화",
-          "AIOps",
-          "금융 인프라"
+          "인프라"
         ],
         "worksFor": {
           "@type": "Organization",
@@ -265,12 +268,6 @@
 
     <!-- Scripts -->
     <script src="/main.js" defer></script>
-    <script src="/sentry-config.js" defer></script>
-    <script
-      src="https://browser.sentry-cdn.com/7.109.0/bundle.min.js"
-      integrity="sha384-r87PtLtqCNRN7WVYDoF6b24tH5mzHdp5/yxH2SOeuEBA43ZA0bIBOAhNjDaEveGK"
-      crossorigin="anonymous"
-    ></script>
     <script>
       if ("serviceWorker" in navigator) {
         window.addEventListener("load", function () {
