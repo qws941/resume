@@ -60,18 +60,9 @@ test.describe('Accessibility (a11y)', () => {
   });
 
   test('should have aria-labelledby on sections', async ({ page }) => {
-    await expect(page.locator('#resume')).toHaveAttribute(
-      'aria-labelledby',
-      'resume-heading',
-    );
-    await expect(page.locator('#projects')).toHaveAttribute(
-      'aria-labelledby',
-      'projects-heading',
-    );
-    await expect(page.locator('#contact')).toHaveAttribute(
-      'aria-labelledby',
-      'contact-heading',
-    );
+    await expect(page.locator('#resume')).toHaveAttribute('aria-labelledby', 'resume-heading');
+    await expect(page.locator('#projects')).toHaveAttribute('aria-labelledby', 'projects-heading');
+    await expect(page.locator('#contact')).toHaveAttribute('aria-labelledby', 'contact-heading');
   });
 
   test('theme toggle should have aria-pressed state', async ({ page }) => {
@@ -87,10 +78,7 @@ test.describe('Accessibility (a11y)', () => {
   test('download section should have role group', async ({ page }) => {
     const downloadSection = page.locator('.hero-download');
     await expect(downloadSection).toHaveAttribute('role', 'group');
-    await expect(downloadSection).toHaveAttribute(
-      'aria-label',
-      'Resume download options',
-    );
+    await expect(downloadSection).toHaveAttribute('aria-label', 'Resume download options');
   });
 
   test('contact grid should have list semantics', async ({ page }) => {
@@ -119,9 +107,7 @@ test.describe('Accessibility (a11y)', () => {
     }
   });
 
-  test('external links should indicate they open in new tab', async ({
-    page,
-  }) => {
+  test('external links should indicate they open in new tab', async ({ page }) => {
     const externalLinks = page.locator('a[target="_blank"]');
     const count = await externalLinks.count();
 
@@ -143,21 +129,15 @@ test.describe('Keyboard Navigation', () => {
 
   test('should be able to navigate with Tab key', async ({ page }) => {
     await page.keyboard.press('Tab');
-    const firstFocused = await page.evaluate(
-      () => document.activeElement?.tagName,
-    );
+    const firstFocused = await page.evaluate(() => document.activeElement?.tagName);
     expect(firstFocused).toBeTruthy();
 
-    const focusableElements = await page
-      .locator('a[href], button, [tabindex="0"]')
-      .count();
+    const focusableElements = await page.locator('a[href], button, [tabindex="0"]').count();
     expect(focusableElements).toBeGreaterThan(5);
 
     for (let i = 0; i < 5; i++) {
       await page.keyboard.press('Tab');
-      const focused = await page.evaluate(
-        () => document.activeElement?.tagName,
-      );
+      const focused = await page.evaluate(() => document.activeElement?.tagName);
       expect(focused).toBeTruthy();
     }
   });
@@ -198,9 +178,7 @@ test.describe('Color Contrast', () => {
 
     // Check hero title color
     const heroTitle = page.locator('.hero-title');
-    const color = await heroTitle.evaluate(
-      (el) => window.getComputedStyle(el).color,
-    );
+    const color = await heroTitle.evaluate((el) => window.getComputedStyle(el).color);
     const bgColor = await heroTitle.evaluate((el) => {
       let elem = el;
       while (elem) {
@@ -222,9 +200,7 @@ test.describe('Color Contrast', () => {
     await page.goto('/');
 
     const link = page.locator('.nav-link').first();
-    const linkColor = await link.evaluate(
-      (el) => window.getComputedStyle(el).color,
-    );
+    const linkColor = await link.evaluate((el) => window.getComputedStyle(el).color);
 
     // Link color should not be plain black or match body text exactly
     expect(linkColor).toBeTruthy();
@@ -261,7 +237,7 @@ test.describe('Focus Indicators', () => {
               break;
             }
           }
-        } catch (e) {}
+        } catch (_e) {}
         if (focusVisibleRuleExists) break;
       }
 
@@ -281,13 +257,10 @@ test.describe('Focus Indicators', () => {
     expect(focusResult.focusVisibleRuleExists).toBeTruthy();
 
     const hasComputedOutline =
-      focusResult.outlineStyle !== 'none' &&
-      parseInt(focusResult.outlineWidth) > 0;
+      focusResult.outlineStyle !== 'none' && parseInt(focusResult.outlineWidth) > 0;
     const hasBoxShadow = focusResult.boxShadow !== 'none';
 
-    expect(
-      focusResult.focusVisibleRuleExists || hasComputedOutline || hasBoxShadow,
-    ).toBeTruthy();
+    expect(focusResult.focusVisibleRuleExists || hasComputedOutline || hasBoxShadow).toBeTruthy();
   });
 
   test('buttons should have visible focus', async ({ page }) => {
@@ -296,17 +269,11 @@ test.describe('Focus Indicators', () => {
     const themeToggle = page.locator('.theme-toggle');
     await themeToggle.focus();
 
-    const outline = await themeToggle.evaluate(
-      (el) => window.getComputedStyle(el).outline,
-    );
-    const boxShadow = await themeToggle.evaluate(
-      (el) => window.getComputedStyle(el).boxShadow,
-    );
+    const outline = await themeToggle.evaluate((el) => window.getComputedStyle(el).outline);
+    const boxShadow = await themeToggle.evaluate((el) => window.getComputedStyle(el).boxShadow);
 
     // Should have visible focus indicator
-    expect(
-      (outline !== 'none' && outline !== '0px none') || boxShadow !== 'none',
-    ).toBeTruthy();
+    expect((outline !== 'none' && outline !== '0px none') || boxShadow !== 'none').toBeTruthy();
   });
 });
 
@@ -327,9 +294,7 @@ test.describe('Semantic HTML', () => {
     const count = await sectionTitles.count();
 
     for (let i = 0; i < count; i++) {
-      const tagName = await sectionTitles
-        .nth(i)
-        .evaluate((el) => el.tagName.toLowerCase());
+      const tagName = await sectionTitles.nth(i).evaluate((el) => el.tagName.toLowerCase());
       expect(tagName).toBe('h2');
     }
   });
@@ -369,9 +334,7 @@ test.describe('Screen Reader Text', () => {
     await expect(srOnly).toHaveText(/Toggle between light and dark mode/);
 
     // sr-only text should be visually hidden
-    const display = await srOnly.evaluate(
-      (el) => window.getComputedStyle(el).position,
-    );
+    const display = await srOnly.evaluate((el) => window.getComputedStyle(el).position);
     expect(display).toBe('absolute');
   });
 });

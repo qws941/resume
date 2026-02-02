@@ -23,10 +23,7 @@ import { fileURLToPath } from 'url';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const CONFIG = {
-  USER_DATA_DIR: path.join(
-    process.env.HOME || '/tmp',
-    '.opencode/browser-data',
-  ),
+  USER_DATA_DIR: path.join(process.env.HOME || '/tmp', '.opencode/browser-data'),
   SESSION_DIR: path.join(process.env.HOME || '/tmp', '.opencode/data'),
   JOB_WORKER_URL: process.env.JOB_WORKER_URL || 'https://job.jclee.me',
   AUTH_SYNC_SECRET: process.env.AUTH_SYNC_SECRET,
@@ -57,8 +54,7 @@ const PLATFORMS = {
 };
 
 function log(msg, type = 'info', platform = null) {
-  const prefix =
-    { info: 'ℹ️', success: '✅', warn: '⚠️', error: '❌' }[type] || '📝';
+  const prefix = { info: 'ℹ️', success: '✅', warn: '⚠️', error: '❌' }[type] || '📝';
   const tag = platform ? `[${platform.toUpperCase()}]` : '';
   console.log(`${new Date().toISOString()} ${prefix} ${tag} ${msg}`);
 }
@@ -137,14 +133,10 @@ async function runPlatform(platformKey, reset = false) {
           await sleep(2000);
 
           if (page.url().includes(platform.successIndicator)) {
-            log(
-              'Login successful! State saved for future runs.',
-              'success',
-              platformKey,
-            );
+            log('Login successful! State saved for future runs.', 'success', platformKey);
             break;
           }
-        } catch (e) {
+        } catch (_e) {
           // Navigation might fail, continue waiting
         }
 
@@ -159,7 +151,7 @@ async function runPlatform(platformKey, reset = false) {
     log('Extracting cookies...', 'info', platformKey);
     const cookies = await context.cookies();
     const relevantCookies = cookies.filter((c) =>
-      platform.cookieDomains.some((d) => c.domain.includes(d)),
+      platform.cookieDomains.some((d) => c.domain.includes(d))
     );
 
     if (relevantCookies.length === 0) {
@@ -167,9 +159,7 @@ async function runPlatform(platformKey, reset = false) {
       return null;
     }
 
-    const cookieString = relevantCookies
-      .map((c) => `${c.name}=${c.value}`)
-      .join('; ');
+    const cookieString = relevantCookies.map((c) => `${c.name}=${c.value}`).join('; ');
 
     const session = {
       platform: platformKey,
@@ -183,16 +173,9 @@ async function runPlatform(platformKey, reset = false) {
     if (!fs.existsSync(CONFIG.SESSION_DIR)) {
       fs.mkdirSync(CONFIG.SESSION_DIR, { recursive: true });
     }
-    const sessionFile = path.join(
-      CONFIG.SESSION_DIR,
-      `${platformKey}-session.json`,
-    );
+    const sessionFile = path.join(CONFIG.SESSION_DIR, `${platformKey}-session.json`);
     fs.writeFileSync(sessionFile, JSON.stringify(session, null, 2));
-    log(
-      `Saved ${relevantCookies.length} cookies to ${sessionFile}`,
-      'success',
-      platformKey,
-    );
+    log(`Saved ${relevantCookies.length} cookies to ${sessionFile}`, 'success', platformKey);
 
     return session;
   } finally {
@@ -226,11 +209,7 @@ async function syncToWorker(session) {
       log('Synced to Worker', 'success', session.platform);
       return true;
     } else {
-      log(
-        `Sync failed: ${result.error || response.status}`,
-        'error',
-        session.platform,
-      );
+      log(`Sync failed: ${result.error || response.status}`, 'error', session.platform);
       return false;
     }
   } catch (e) {
@@ -243,10 +222,7 @@ async function syncAllSessions() {
   log('Syncing all saved sessions to Worker...');
 
   for (const platformKey of Object.keys(PLATFORMS)) {
-    const sessionFile = path.join(
-      CONFIG.SESSION_DIR,
-      `${platformKey}-session.json`,
-    );
+    const sessionFile = path.join(CONFIG.SESSION_DIR, `${platformKey}-session.json`);
 
     if (fs.existsSync(sessionFile)) {
       try {
@@ -299,7 +275,7 @@ if (args.includes('--sync')) {
       const session = JSON.parse(fs.readFileSync(sessionFile, 'utf8'));
       const expired = new Date(session.expiresAt) < new Date();
       console.log(
-        `${expired ? '❌' : '✅'} ${platform.name}: ${session.cookieCount} cookies, expires ${session.expiresAt}`,
+        `${expired ? '❌' : '✅'} ${platform.name}: ${session.cookieCount} cookies, expires ${session.expiresAt}`
       );
     } else {
       console.log(`⚪ ${platform.name}: No session`);

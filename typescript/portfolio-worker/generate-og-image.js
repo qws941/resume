@@ -37,11 +37,11 @@ async function generateOGImage(language = 'ko') {
 
   // Build SVG string
   let svg = `<svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg">`;
-  svg += `<defs><linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">`;
-  svg += `<stop offset="0%" style="stop-color:#7c3aed;stop-opacity:1" />`;
-  svg += `<stop offset="50%" style="stop-color:#5b21b6;stop-opacity:1" />`;
-  svg += `<stop offset="100%" style="stop-color:#2563eb;stop-opacity:1" />`;
-  svg += `</linearGradient></defs>`;
+  svg += '<defs><linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">';
+  svg += '<stop offset="0%" style="stop-color:#7c3aed;stop-opacity:1" />';
+  svg += '<stop offset="50%" style="stop-color:#5b21b6;stop-opacity:1" />';
+  svg += '<stop offset="100%" style="stop-color:#2563eb;stop-opacity:1" />';
+  svg += '</linearGradient></defs>';
   svg += `<rect width="${width}" height="${height}" fill="url(#grad)"/>`;
 
   // Language badge (top-right)
@@ -65,7 +65,7 @@ async function generateOGImage(language = 'ko') {
   // URL
   svg += `<text x="0" y="140" font-family="Inter, sans-serif" font-size="28" font-weight="400" fill="#a5b4fc" text-anchor="middle">${escapeXml(data.url)}</text>`;
 
-  svg += `</g></svg>`;
+  svg += '</g></svg>';
 
   // Generate both PNG and WebP for each language
   const formats = [

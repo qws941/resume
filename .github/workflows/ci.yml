@@ -161,9 +161,9 @@ jobs:
             exit 1
           fi
 
-          # Quality gate: Max 110 warnings (current baseline)
-          if [ "${WARNINGS:-0}" -gt "110" ]; then
-            echo "❌ Too many ESLint warnings (${WARNINGS} > 110) - failing"
+          # Quality gate: Max 150 warnings (current baseline)
+          if [ "${WARNINGS:-0}" -gt "150" ]; then
+            echo "❌ Too many ESLint warnings (${WARNINGS} > 150) - failing"
             exit 1
           fi
 

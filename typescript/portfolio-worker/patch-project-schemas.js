@@ -12,9 +12,9 @@ async function generateProjectSchemasHtml() {
   
   schemas.forEach((schema, idx) => {
     html += `    <!-- Project ${idx + 1}: ${schema.name} -->\n`;
-    html += `    <script type="application/ld+json">\n`;
+    html += '    <script type="application/ld+json">\n';
     html += `    ${JSON.stringify(schema).replace(/"/g, '\\"')}\n`;
-    html += `    </script>\n\n`;
+    html += '    </script>\n\n';
   });
   
   return html;

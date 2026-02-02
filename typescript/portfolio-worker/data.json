@@ -2,102 +2,185 @@
   "resumeDownload": {
     "pdfUrl": "https://resume.jclee.me/resume.pdf",
     "docxUrl": "https://gitlab.jclee.me/jclee/resume/-/raw/master/resumes/master/archive/resume_final.docx",
-    "mdUrl": "https://gitlab.jclee.me/jclee/resume/-/raw/master/resumes/master/archive/resume_final.md"
+    "mdUrl": "https://gitlab.jclee.me/jclee/resume/-/raw/master/resumes/master/resume_final.md"
   },
   "resume": [
     {
-      "icon": "",
+      "icon": "🏦",
       "title": "(주)아이티센 CTS",
-      "description": "넥스트레이드 매매체결시스템 보안운영",
-      "period": "2025.03 — Present",
-      "stats": ["Splunk", "FortiGate", "Security"],
-      "highlight": false,
-      "completePdfUrl": ""
+      "description": "ATS 보안 관제. Splunk 로그 분석, FortiGate 방화벽 정책 관리, 월간 보안 리포트 작성.",
+      "period": "2025.03 ~ 현재",
+      "stats": [
+        "보안관제",
+        "컴플라이언스",
+        "DR"
+      ],
+      "highlight": true,
+      "completePdfUrl": "https://gitlab.jclee.me/jclee/resume/-/raw/master/resumes/technical/nextrade/exports/Nextrade_Full_Documentation.pdf"
     },
     {
-      "icon": "",
+      "icon": "🏗️",
       "title": "(주)가온누리정보시스템",
-      "description": "ATS 보안 인프라 아키텍처 설계 및 네트워크 분리 구축",
-      "period": "2024.03 — 2025.02",
-      "stats": ["Architecture", "Network", "HA"],
+      "description": "ATS 보안 인프라 설계. 금융위 본인가 심사 대응, 네트워크 분리/접근통제 정책 수립, FortiGate HA 구성.",
+      "period": "2024.03 ~ 2025.02",
+      "stats": [
+        "아키텍처",
+        "망분리",
+        "인허가"
+      ],
       "highlight": false
     },
     {
-      "icon": "",
+      "icon": "📈",
       "title": "(주)콴텍투자일임",
-      "description": "AWS 클라우드 인프라 운영 및 모니터링 환경 구축",
-      "period": "2022.08 — 2024.02",
-      "stats": ["AWS", "Prometheus", "Grafana"],
+      "description": "AWS 인프라 보안 운영. 보안 로그 수집, IAM/보안그룹 관리, 취약점 점검, 로보어드바이저 테스트베드 심사 보안 지원.",
+      "period": "2022.08 ~ 2024.02",
+      "stats": [
+        "AWS",
+        "정책설계",
+        "안정운영"
+      ],
       "highlight": false
     },
     {
-      "icon": "",
+      "icon": "☁️",
       "title": "(주)펀엔씨",
-      "description": "AWS 마이그레이션 및 Kubernetes(EKS) CI/CD 파이프라인 구축",
-      "period": "2022.05 — 2022.07",
-      "stats": ["AWS", "EKS", "CI/CD"],
+      "description": "온프레미스→AWS 마이그레이션. VPC 설계, EKS 클러스터 구축, GitLab CI/CD 파이프라인 구성.",
+      "period": "2022.05 ~ 2022.07",
+      "stats": [
+        "AWS",
+        "K8s",
+        "DevOps"
+      ],
       "highlight": false
     },
     {
-      "icon": "",
+      "icon": "🎓",
       "title": "(주)조인트리",
-      "description": "국민대학교 차세대 정보시스템 보안 강화 및 VMware NSX-T 네트워크 세그멘테이션 구축",
-      "period": "2021.09 — 2022.04",
-      "stats": ["VMware", "NSX-T", "Security"],
+      "description": "대학 전산 보안 강화. VMware NSX-T 마이크로세그멘테이션, 보안솔루션(방화벽, NAC, DLP) 설치.",
+      "period": "2021.09 ~ 2022.04",
+      "stats": [
+        "NSX-T",
+        "보안통합",
+        "SI"
+      ],
       "highlight": false
     },
     {
-      "icon": "",
+      "icon": "📞",
       "title": "(주)메타넷엠플랫폼",
-      "description": "콜센터 인프라 운영 및 재택근무 VPN 환경 구축, Ansible 자동화",
-      "period": "2019.12 — 2021.08",
-      "stats": ["Ansible", "VPN", "Automation"],
+      "description": "컨택센터 인프라 운영. 재택근무 VPN 환경 구축, Ansible 서버 프로비저닝 자동화.",
+      "period": "2019.12 ~ 2021.08",
+      "stats": [
+        "VPN/NAC",
+        "Ansible",
+        "Python"
+      ],
       "highlight": false
     },
     {
-      "icon": "",
+      "icon": "✈️",
       "title": "(주)엠티데이타",
-      "description": "한국항공우주산업(KAI) IT 인프라 운영 및 헬프데스크",
-      "period": "2017.02 — 2018.10",
-      "stats": ["Linux", "Helpdesk", "Infrastructure"],
+      "description": "방위산업체 IT 인프라 운영. 서버/클라이언트 환경 관리, 헬프데스크.",
+      "period": "2017.02 ~ 2018.10",
+      "stats": [
+        "서버운영",
+        "방화벽",
+        "망분리"
+      ],
       "highlight": false
     }
   ],
   "projects": [
     {
-      "icon": "",
+      "icon": "📊",
       "title": "Observability Platform",
-      "tech": "Grafana, Prometheus, Loki",
-      "description": "메트릭/로그 통합 모니터링 시스템 구축",
-      "tagline": "Monitoring",
+      "tech": "Grafana, Prometheus, Loki, Blackbox Exporter, Docker",
+      "description": "홈랩 인프라 모니터링. Prometheus 메트릭 수집, Loki 로그 집계, Grafana 시각화.",
+      "tagline": "모니터링 플랫폼",
       "metrics": {},
-      "related_skills": ["Grafana", "Prometheus", "Loki"],
-      "liveUrl": "https://grafana.jclee.me/public-dashboards/8c91649fe829cb4905edf4a60579d0a0"
+      "related_skills": [
+        "Grafana",
+        "Prometheus",
+        "Loki",
+        "Blackbox Exporter",
+        "Docker"
+      ]
     },
     {
-      "icon": "",
-      "title": "GitLab Self-Hosted",
-      "tech": "GitLab, Docker",
-      "description": "온프레미스 Git 저장소 및 CI/CD 파이프라인 운영",
-      "tagline": "DevOps",
-      "metrics": {},
-      "related_skills": ["GitLab", "Docker", "CI/CD"]
-    },
-    {
-      "icon": "",
+      "icon": "🔄",
       "title": "n8n Automation",
-      "tech": "n8n, PostgreSQL",
-      "description": "인프라 운영 워크플로우 자동화",
-      "tagline": "Automation",
+      "tech": "n8n, PostgreSQL, Docker",
+      "description": "알림, 배포, 데이터 수집 워크플로우 자동화.",
+      "tagline": "워크플로우 자동화",
       "metrics": {},
-      "related_skills": ["n8n", "PostgreSQL"]
+      "related_skills": [
+        "n8n",
+        "PostgreSQL",
+        "Docker"
+      ]
+    },
+    {
+      "icon": "🛡️",
+      "title": "FortiNet API Client",
+      "tech": "Python, FortiManager, FortiAnalyzer",
+      "description": "FortiManager 정책/라우트 조회, FortiAnalyzer 로그 통계 수집용 Python 라이브러리.",
+      "tagline": "보안장비 API 자동화",
+      "metrics": {},
+      "related_skills": [
+        "Python",
+        "FortiManager",
+        "FortiAnalyzer"
+      ]
+    },
+    {
+      "icon": "🔔",
+      "title": "Security Alert System",
+      "tech": "Splunk, Python, Slack",
+      "description": "FortiGate 이벤트를 Splunk에서 탐지, Slack Block Kit으로 알림. 32개 탐지 룰 운영.",
+      "tagline": "보안 알림 자동화",
+      "metrics": {},
+      "related_skills": [
+        "Splunk",
+        "Python",
+        "Slack"
+      ]
+    },
+    {
+      "icon": "🚫",
+      "title": "IP Blacklist Platform",
+      "tech": "Flask, Next.js, PostgreSQL",
+      "description": "악성 IP 수집, 분석, 대시보드 제공. Flask API + Next.js 프론트엔드.",
+      "tagline": "위협 인텔리전스",
+      "metrics": {},
+      "related_skills": [
+        "Flask",
+        "Next.js",
+        "PostgreSQL"
+      ]
     }
   ],
   "certifications": [
-    { "name": "CCNP", "issuer": "Cisco", "date": "2020.08" },
-    { "name": "RHCSA", "issuer": "Red Hat", "date": "2019.01" },
-    { "name": "CompTIA Linux+", "issuer": "CompTIA", "date": "2019.02" },
-    { "name": "LPIC-1", "issuer": "LPI", "date": "2019.02" },
+    {
+      "name": "CCNP",
+      "issuer": "Cisco Systems",
+      "date": "2020.08"
+    },
+    {
+      "name": "RHCSA",
+      "issuer": "Red Hat",
+      "date": "2019.01"
+    },
+    {
+      "name": "CompTIA Linux+",
+      "issuer": "CompTIA",
+      "date": "2019.02"
+    },
+    {
+      "name": "LPIC Level 1",
+      "issuer": "Linux Professional Institute",
+      "date": "2019.02"
+    },
     {
       "name": "사무자동화산업기사",
       "issuer": "한국산업인력공단",
@@ -112,48 +195,78 @@
   "skills": {
     "observability": {
       "title": "Observability",
-      "icon": "",
-      "items": ["Grafana", "Prometheus", "Loki", "Splunk"]
+      "icon": "Activity",
+      "items": [
+        "Grafana",
+        "Prometheus",
+        "Loki",
+        "Splunk"
+      ]
     },
-    "cloud": ["AWS", "Docker", "Kubernetes", "Linux"],
-    "devops": ["GitLab CI/CD", "GitHub Actions", "Ansible", "Terraform"],
-    "automation": ["Python", "Shell", "n8n"],
-    "database": ["PostgreSQL", "MySQL", "Redis"],
-    "security": ["FortiGate", "NAC", "DLP", "IPS"]
+    "cloud": [
+      "AWS (EC2, VPC, EKS, S3)",
+      "Docker",
+      "Kubernetes",
+      "Linux"
+    ],
+    "devops": [
+      "GitLab CI/CD",
+      "GitHub Actions",
+      "Ansible",
+      "Terraform"
+    ],
+    "automation": [
+      "Python",
+      "Shell",
+      "n8n"
+    ],
+    "database": [
+      "PostgreSQL",
+      "MySQL",
+      "Redis"
+    ],
+    "security": [
+      "FortiGate",
+      "FortiManager",
+      "FortiAnalyzer",
+      "Splunk",
+      "NAC",
+      "DLP"
+    ]
   },
   "hero": {
-    "badge": "",
+    "badge": "Infrastructure Engineer",
     "title": "이재철",
     "titleEn": "Jaecheol Lee",
-    "subtitle": "모니터링 체계 구축과 운영 자동화에 관심이 있습니다."
+    "subtitle": "보안 인프라 설계 · Observability · 자동화"
   },
   "sectionDescriptions": {
-    "resume": "",
-    "projects": "",
-    "infrastructure": "",
-    "skills": "",
-    "certifications": "",
-    "contact": ""
+    "resume": "7년 11개월 인프라 경력",
+    "projects": "사이드 프로젝트",
+    "infrastructure": "운영 중인 서비스",
+    "skills": "기술 스택",
+    "certifications": "자격증",
+    "contact": "연락처"
   },
   "achievements": [
-    "가온누리 ATS 보안 인프라 설계 참여 (금융위 본인가 통과)",
-    "Grafana/Prometheus 기반 모니터링 체계 구축 경험",
-    "Ansible/n8n 기반 운영 자동화 경험"
+    "넥스트레이드 ATS 보안 인프라 설계 (금융위 본인가 통과)",
+    "로보어드바이저 테스트베드 심사 보안 지원",
+    "Grafana/Prometheus/Loki 모니터링 스택 구축",
+    "Ansible/n8n 운영 자동화 구현"
   ],
   "infrastructure": [
     {
-      "icon": "📊",
-      "title": "Grafana",
-      "description": "Prometheus + Loki 기반 모니터링",
-      "status": "running",
-      "url": "https://grafana.jclee.me/public-dashboards/8c91649fe829cb4905edf4a60579d0a0"
+      "icon": "🖥️",
+      "title": "Proxmox VE",
+      "description": "가상화 플랫폼",
+      "status": "running"
     },
     {
-      "icon": "🦊",
-      "title": "GitLab",
-      "description": "Self-hosted Git + CI/CD",
+      "icon": "📊",
+      "title": "Grafana",
+      "description": "메트릭/로그 시각화",
       "status": "running",
-      "url": "https://gitlab.jclee.me"
+      "url": "https://grafana.jclee.me/public-dashboards/8c91649fe829cb4905edf4a60579d0a0"
     },
     {
       "icon": "🔄",
@@ -161,13 +274,26 @@
       "description": "워크플로우 자동화",
       "status": "running",
       "url": "https://n8n.jclee.me"
+    },
+    {
+      "icon": "⚡",
+      "title": "Cloudflare Workers",
+      "description": "Edge 배포",
+      "status": "running",
+      "url": "https://resume.jclee.me"
+    },
+    {
+      "icon": "🏗️",
+      "title": "Terraform",
+      "description": "IaC (DNS/Workers)",
+      "status": "running"
     }
   ],
   "contact": {
     "email": "qws941@kakao.com",
-    "phone": "",
+    "phone": "010-5757-9592",
     "github": "https://github.com/qws941",
     "website": "https://resume.jclee.me",
-    "monitoring": ""
+    "monitoring": "https://grafana.jclee.me/public-dashboards/8c91649fe829cb4905edf4a60579d0a0"
   }
 }

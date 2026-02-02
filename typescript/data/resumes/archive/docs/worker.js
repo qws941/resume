@@ -475,7 +475,7 @@ const HTML_CONTENT = `<!DOCTYPE html>
 </html>`;
 
 export default {
-  async fetch(request, env, ctx) {
+  async fetch(request, _env, _ctx) {
     const url = new URL(request.url);
 
     // Handle different paths if needed

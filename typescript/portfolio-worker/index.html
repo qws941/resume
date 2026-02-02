@@ -14,10 +14,7 @@
     />
     <meta name="author" content="이재철 (Jaecheol Lee)" />
     <meta name="robots" content="index, follow" />
-    <meta
-      name="google-site-verification"
-      content="2a5f8c3b7d4e9a1f6c2b5e8d1a4f7c0b9e3d6a9f2c5"
-    />
+    <meta name="google-site-verification" content="2a5f8c3b7d4e9a1f6c2b5e8d1a4f7c0b9e3d6a9f2c5" />
 
     <!-- Error Tracking -->
     <script
@@ -28,19 +25,16 @@
     <script src="/sentry-config.js"></script>
 
     <!-- Google Analytics 4 -->
-    <script
-      async
-      src="https://www.googletagmanager.com/gtag/js?id=G-P9E8XY5K2L"
-    ></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-P9E8XY5K2L"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag() {
         dataLayer.push(arguments);
       }
-      gtag("js", new Date());
-      gtag("config", "G-P9E8XY5K2L", {
+      gtag('js', new Date());
+      gtag('config', 'G-P9E8XY5K2L', {
         page_path: window.location.pathname,
-        language: "ko",
+        language: 'ko',
       });
     </script>
 
@@ -65,10 +59,7 @@
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:image:type" content="image/webp" />
-    <meta
-      property="og:image:alt"
-      content="Jaecheol Lee - Infrastructure Engineer Portfolio"
-    />
+    <meta property="og:image:alt" content="Jaecheol Lee - Infrastructure Engineer Portfolio" />
     <meta property="og:site_name" content="Jaecheol Lee Resume" />
     <meta property="og:locale" content="ko_KR" />
     <meta property="og:locale:alternate" content="en_US" />
@@ -84,10 +75,7 @@
       name="twitter:description"
       content="인프라 엔지니어 | 금융·제조·공공 분야 인프라 설계 및 운영"
     />
-    <meta
-      name="twitter:image"
-      content="https://resume.jclee.me/og-image.webp"
-    />
+    <meta name="twitter:image" content="https://resume.jclee.me/og-image.webp" />
     <meta name="twitter:creator" content="@qws941" />
     <meta name="twitter:site" content="@qws941" />
 
@@ -135,19 +123,10 @@
     </script>
 
     <link rel="manifest" href="/manifest.json" />
-    <meta name="theme-color" content="#ffffff" />
+    <meta name="theme-color" content="#0c0c12" />
     <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg" />
-    <link
-      rel="icon"
-      type="image/png"
-      sizes="32x32"
-      href="/assets/favicon-32x32.png"
-    />
-    <link
-      rel="apple-touch-icon"
-      sizes="180x180"
-      href="/assets/apple-touch-icon.png"
-    />
+    <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png" />
 
     <!-- Preload Critical Font -->
     <link
@@ -166,18 +145,50 @@
     />
     <style>
       @font-face {
-        font-family: "Inter";
+        font-family: 'Inter';
         font-style: normal;
         font-weight: 400;
         font-display: swap;
-        src: url("/fonts/inter-v13-latin-regular.woff2") format("woff2");
+        src: url('/fonts/inter-v13-latin-regular.woff2') format('woff2');
       }
       @font-face {
-        font-family: "Inter";
+        font-family: 'Inter';
         font-style: normal;
         font-weight: 700;
         font-display: swap;
-        src: url("/fonts/inter-v13-latin-700.woff2") format("woff2");
+        src: url('/fonts/inter-v13-latin-700.woff2') format('woff2');
+      }
+    </style>
+    <style>
+      .typing-text {
+        display: inline-block;
+        overflow: hidden;
+        border-right: 3px solid var(--cyber-cyan);
+        white-space: nowrap;
+        animation:
+          typing 2s steps(20) forwards,
+          blink 0.7s step-end infinite;
+      }
+      @keyframes typing {
+        from {
+          width: 0;
+        }
+        to {
+          width: 100%;
+        }
+      }
+      @keyframes blink {
+        50% {
+          border-color: transparent;
+        }
+      }
+      .terminal-prompt {
+        color: var(--cyber-green, #00ff88);
+        font-family: 'JetBrains Mono', monospace;
+        margin-right: 0.5rem;
+      }
+      .hero--terminal {
+        text-align: left;
       }
     </style>
 
@@ -209,24 +220,39 @@
       </header>
 
       <main id="main-content">
-        <section id="hero" class="section-hero">
-          <!-- HERO_CONTENT_PLACEHOLDER -->
+        <section id="hero" class="section-hero hero--terminal">
+          <div class="hero-content">
+            <div class="terminal-line">
+              <span class="terminal-prompt">$ whoami →</span>
+              <h1 class="hero-title">
+                <span class="typing-text">이재철</span><span class="cursor"></span>
+              </h1>
+            </div>
+            <p class="hero-subtitle">
+              <span style="color: var(--cyber-cyan, #00f0ff)"
+                >보안 인프라 설계 · Observability · 자동화</span
+              >
+            </p>
+          </div>
         </section>
 
         <section id="about" class="section-about">
-          <h2 class="section-title">About</h2>
+          <div class="section-cmd">
+            <span class="section-cmd__command">cat about.txt</span>
+          </div>
           <div class="about-content">
             <p>
-              I'm a Software Engineer focused on building reliable
-              infrastructure and automation systems. I specialize in
-              Observability, DevOps, and Security pipelines. Currently working
-              at <span class="highlight">ITCEN CTS</span>.
+              I'm a Software Engineer focused on building reliable infrastructure and automation
+              systems. I specialize in Observability, DevOps, and Security pipelines. Currently
+              working at <span class="highlight">ITCEN CTS</span>.
             </p>
           </div>
         </section>
 
         <section id="resume" class="section-resume">
-          <h2 class="section-title">Experience</h2>
+          <div class="section-cmd">
+            <span class="section-cmd__command">cat experience.log</span>
+          </div>
           <ul class="resume-list">
             <!-- RESUME_CARDS_PLACEHOLDER -->
           </ul>
@@ -238,21 +264,27 @@
         </section>
 
         <section id="projects" class="section-projects">
-          <h2 class="section-title">Featured Projects</h2>
+          <div class="section-cmd">
+            <span class="section-cmd__command">ls -la ~/projects/</span>
+          </div>
           <ul class="project-list">
             <!-- PROJECT_CARDS_PLACEHOLDER -->
           </ul>
         </section>
 
         <section id="skills" class="section-skills">
-          <h2 class="section-title">Skills</h2>
+          <div class="section-cmd">
+            <span class="section-cmd__command">cat skills.json</span>
+          </div>
           <ul class="skill-list-minimal">
             <!-- SKILLS_LIST_PLACEHOLDER -->
           </ul>
         </section>
 
         <section id="contact" class="section-contact">
-          <h2 class="section-title">Contact</h2>
+          <div class="section-cmd">
+            <span class="section-cmd__command">cat contact.txt</span>
+          </div>
           <div class="contact-links">
             <!-- CONTACT_GRID_PLACEHOLDER -->
           </div>
@@ -261,7 +293,8 @@
 
       <footer class="site-footer">
         <div class="footer-content">
-          <span>© 2026 Jaecheol Lee</span>
+          <span class="terminal-prompt" style="font-size: var(--text-sm)">exit</span>
+          <span style="color: var(--text-muted); margin-left: 1rem">© 2026 Jaecheol Lee</span>
         </div>
       </footer>
     </div>
