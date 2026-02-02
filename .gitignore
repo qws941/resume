@@ -97,8 +97,22 @@ docs/sessions/*.md
 .opencode/
 .playwright-mcp/
 .sisyphus/
+.affected/
 _bmad-output/
 todo/
+
+# Root-level temp docs (session/task/deployment)
+SESSION_*.md
+TASK_*.md
+DEPLOYMENT_*.md
+PHASE_*.md
+ANALYSIS_*.md
+PORTFOLIO_*.md
+COPY_AUDIT_*.txt
+README_PHASE_*.md
+NEXT_*.md
+GET_TOKENS_GUIDE.md
+DOCUMENTATION_INDEX.md
 
 # Wrangler cache
 .wrangler/
