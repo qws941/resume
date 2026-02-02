@@ -1,0 +1,44 @@
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Build outputs
+dist/
+build/
+coverage/
+typescript/portfolio-worker/worker.js
+typescript/job-automation/workers/dist/
+
+# Wrangler
+.wrangler/
+**/.wrangler/
+
+# Test artifacts
+playwright-report/
+test-results/
+
+# Generated files
+*.min.js
+*.min.css
+
+# Archives
+resumes/archive/
+
+# Cache
+.cache/
+.tmp/
+tmp/
+
+# Logs
+*.log
+npm-debug.log*
+
+# IDE/Editor
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# External tools
+.serena/
+**/pyright/
