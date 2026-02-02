@@ -39,8 +39,8 @@ scripts/
 │   ├── deploy-with-monitoring.sh
 │   └── deploy-grafana-configs.sh
 ├── ci/                  # CI/CD & Quality
-│   ├── setup-gitlab-cicd.sh
-│   ├── auto-setup-gitlab-cicd.sh
+│   ├── setup-github-actions.sh
+│   ├── auto-setup-github-actions.sh
 │   ├── verify-cicd.sh
 │   ├── verify-deployment.sh
 │   └── monitor-deployment.sh

@@ -4,8 +4,9 @@
  */
 
 const CONFIG = {
-  // URL Prefixes (using GitLab instead of private GitHub)
-  GITLAB_BASE_URL: 'https://gitlab.jclee.me/jclee/resume/-/raw/master',
+  // URL Prefixes for file downloads
+  // TODO: Migrate to GitHub raw URLs when files are synced
+  DOWNLOADS_BASE_URL: 'https://gitlab.jclee.me/jclee/resume/-/raw/master',
 
   // Link Types
   LINK_TYPES: {
@@ -22,7 +23,7 @@ const CONFIG = {
     PDF: 'PDF',
     DOCX: 'DOCX',
     LIVE_DEMO: 'Live Demo',
-    GITLAB: 'GitLab',
+    GITHUB: 'GitHub',
     DOCUMENTATION: 'Documentation',
     GRAFANA_HOME: 'Grafana Home',
   },

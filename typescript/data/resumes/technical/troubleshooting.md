@@ -7,12 +7,14 @@
 #### Issue: Deployed site shows old HTML content
 
 **Symptoms**:
+
 - Changes to `index.html` or `resume.html` not reflected on live site
 - Recently updated text/styles not visible
 
 **Cause**: Forgot to run `generate-worker.js` before deployment
 
 **Solution**:
+
 ```bash
 # ALWAYS run this before deploying
 cd web
@@ -22,7 +24,8 @@ node generate-worker.js
 wrangler deploy
 ```
 
-**Prevention**: Add to `.gitlab-ci.yml/deploy.yml`:
+**Prevention**: Add to `.github/workflows/ci.yml`:
+
 ```yaml
 - name: Generate Worker
   run: cd web && node generate-worker.js
@@ -33,6 +36,7 @@ wrangler deploy
 #### Issue: "Worker exceeds 1MB size limit"
 
 **Symptoms**:
+
 ```
 Error: Script startup exceeded CPU time limit.
 ```
@@ -40,6 +44,7 @@ Error: Script startup exceeded CPU time limit.
 **Cause**: HTML files too large when embedded in worker.js
 
 **Solution 1 - Minify HTML**:
+
 ```bash
 npm install -g html-minifier
 
@@ -51,6 +56,7 @@ html-minifier --collapse-whitespace \
 ```
 
 **Solution 2 - Extract CSS**:
+
 ```bash
 # Move CSS to separate file (enables caching)
 # See: /resume/architecture.md#future-enhancements
@@ -63,12 +69,14 @@ html-minifier --collapse-whitespace \
 #### Issue: "Wrangler command not found"
 
 **Symptoms**:
+
 ```bash
 wrangler deploy
 # bash: wrangler: command not found
 ```
 
 **Solution**:
+
 ```bash
 # Install globally
 npm install -g wrangler
@@ -87,6 +95,7 @@ wrangler --version
 #### Issue: "Cannot find module 'fs'" in generate-worker.js
 
 **Symptoms**:
+
 ```
 Error: Cannot find module 'fs'
 ```
@@ -94,6 +103,7 @@ Error: Cannot find module 'fs'
 **Cause**: Running in browser environment instead of Node.js
 
 **Solution**:
+
 ```bash
 # Ensure running with Node.js
 node web/generate-worker.js
@@ -106,6 +116,7 @@ node web/generate-worker.js
 #### Issue: Template literal syntax errors in worker.js
 
 **Symptoms**:
+
 ```
 SyntaxError: Unexpected token
 ```
@@ -113,6 +124,7 @@ SyntaxError: Unexpected token
 **Cause**: Backticks (`) or `$` in HTML not properly escaped
 
 **Solution**: Check `generate-worker.js` escaping logic:
+
 ```javascript
 // Should escape:
 .replace(/`/g, '\\`')     // Backticks
@@ -120,6 +132,7 @@ SyntaxError: Unexpected token
 ```
 
 **Verification**:
+
 ```bash
 # Search for unescaped backticks
 grep -n '`' web/worker.js | grep -v '\\'
@@ -132,17 +145,20 @@ grep -n '`' web/worker.js | grep -v '\\'
 #### Issue: Korean characters display as "□□□"
 
 **Symptoms**:
+
 - Garbled Korean text
 - Unicode characters not rendering
 
 **Cause**: Missing UTF-8 charset declaration
 
 **Solution**: Verify in HTML:
+
 ```html
-<meta charset="UTF-8">
+<meta charset="UTF-8" />
 ```
 
 And in `worker.js`:
+
 ```javascript
 headers: {
   'Content-Type': 'text/html;charset=UTF-8'
@@ -154,19 +170,21 @@ headers: {
 #### Issue: Dark mode not persisting
 
 **Symptoms**:
+
 - Dark mode resets on page refresh
 - Theme preference not saved
 
 **Cause**: localStorage not working or cleared
 
 **Solution**:
+
 ```javascript
 // Check localStorage in browser console
-localStorage.getItem('theme')  // Should return 'dark' or 'light'
+localStorage.getItem('theme'); // Should return 'dark' or 'light'
 
 // Clear and reset
-localStorage.clear()
-window.location.reload()
+localStorage.clear();
+window.location.reload();
 ```
 
 **Current Implementation**: Working via `web/index.html` line 1100+ ✅
@@ -178,10 +196,12 @@ window.location.reload()
 #### Issue: Slow page load on first visit
 
 **Symptoms**:
+
 - Long Time to First Byte (TTFB)
 - White screen delay
 
 **Diagnosis**:
+
 ```bash
 # Measure performance
 curl -w "@curl-format.txt" -o /dev/null -s https://resume.jclee.me
@@ -191,22 +211,25 @@ curl -w "@curl-format.txt" -o /dev/null -s https://resume.jclee.me
 ```
 
 **Solutions**:
+
 1. **Enable caching** (already implemented):
+
    ```javascript
    'Cache-Control': 'public, max-age=3600'
    ```
 
 2. **Preconnect to external domains**:
+
    ```html
-   <link rel="preconnect" href="https://fonts.googleapis.com">
-   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+   <link rel="preconnect" href="https://fonts.googleapis.com" />
+   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
    ```
 
 3. **Lazy-load fonts**:
    ```css
    @font-face {
      font-family: 'Playfair Display';
-     font-display: swap;  /* Prevent FOIT */
+     font-display: swap; /* Prevent FOIT */
    }
    ```
 
@@ -215,6 +238,7 @@ curl -w "@curl-format.txt" -o /dev/null -s https://resume.jclee.me
 #### Issue: High Cloudflare Workers CPU usage
 
 **Symptoms**:
+
 - Slow response times
 - CPU time limit warnings
 
@@ -223,6 +247,7 @@ curl -w "@curl-format.txt" -o /dev/null -s https://resume.jclee.me
 **Current Status**: Minimal JS (just routing) ✅
 
 **Monitor**:
+
 ```bash
 wrangler tail --status error
 ```
@@ -234,10 +259,12 @@ wrangler tail --status error
 #### Issue: Changes not visible when using `wrangler dev`
 
 **Symptoms**:
+
 - Local dev server shows old content
 - Hot reload not working
 
 **Solution**:
+
 ```bash
 # Stop wrangler dev (Ctrl+C)
 
@@ -249,6 +276,7 @@ wrangler dev
 ```
 
 **Better Approach**: Use file watcher
+
 ```bash
 # Install nodemon
 npm install -g nodemon
@@ -263,6 +291,7 @@ nodemon --watch web/index.html --watch web/resume.html \
 #### Issue: CORS errors when testing locally
 
 **Symptoms**:
+
 ```
 Access to fetch at 'https://fonts.googleapis.com/...' blocked by CORS
 ```
@@ -270,6 +299,7 @@ Access to fetch at 'https://fonts.googleapis.com/...' blocked by CORS
 **Cause**: Local dev server restrictions
 
 **Solution**: Add CORS headers in `worker.js`:
+
 ```javascript
 headers: {
   'Content-Type': 'text/html;charset=UTF-8',
@@ -286,12 +316,14 @@ headers: {
 #### Issue: "pandoc: command not found"
 
 **Symptoms**:
+
 ```bash
 ./toss/pdf-convert.sh
 # pandoc: command not found
 ```
 
 **Solution**:
+
 ```bash
 # Ubuntu/Debian
 sudo apt-get install pandoc texlive-xetex texlive-lang-korean
@@ -306,10 +338,12 @@ brew install --cask mactex
 #### Issue: Korean fonts missing in PDF
 
 **Symptoms**:
+
 - PDF shows boxes instead of Korean characters
 - "Missing font" warnings
 
 **Solution**: Install Korean font package
+
 ```bash
 # Ubuntu/Debian
 sudo apt-get install fonts-nanum fonts-nanum-coding
@@ -320,6 +354,7 @@ brew install --cask font-nanum font-nanum-gothic
 ```
 
 Update `pdf-convert.sh`:
+
 ```bash
 pandoc input.md -o output.pdf \
   --pdf-engine=xelatex \
@@ -333,6 +368,7 @@ pandoc input.md -o output.pdf \
 #### Issue: Deployment fails with "Invalid API token"
 
 **Symptoms**:
+
 ```
 Error: 10000: Authentication error
 ```
@@ -340,10 +376,12 @@ Error: 10000: Authentication error
 **Cause**: Expired or incorrect `CLOUDFLARE_API_TOKEN`
 
 **Solution**:
+
 1. Generate new API token: Cloudflare Dashboard → My Profile → API Tokens
 2. Update GitHub Secret: Repository → Settings → Secrets → `CLOUDFLARE_API_TOKEN`
 
 **Required Permissions**:
+
 - Account: Workers Scripts (Edit)
 - Zone: Workers Routes (Edit)
 
@@ -352,56 +390,65 @@ Error: 10000: Authentication error
 #### Issue: "Gemini API failed" in deployment notes
 
 **Symptoms**:
+
 - Deployment succeeds but no summary generated
-- GitLab CI/CD shows API error
+- GitHub Actions shows API error
 
 **Cause**: `GEMINI_API_KEY` missing or invalid
 
 **Solution**:
+
 ```bash
 # This is optional - deployment still works
 # Update GitHub Secret if you want AI-generated notes
 ```
 
-**Workaround**: Remove Gemini step from `.gitlab-ci.yml/deploy.yml`
+**Workaround**: Remove Gemini step from `.github/workflows/ci.yml`
 
 ---
 
 ## Diagnostic Commands
 
 ### Check deployment status
+
 ```bash
 wrangler deployments list
 ```
 
 ### View live logs
+
 ```bash
 wrangler tail --format pretty
 ```
 
 ### Test worker locally
+
 ```bash
 cd web && wrangler dev
 # Visit http://localhost:8787
 ```
 
 ### Validate worker.js syntax
+
 ```bash
 node -c web/worker.js
 ```
 
 ### Check HTML size
+
 ```bash
 wc -c web/index.html web/resume.html
 ```
 
 ### Verify UTF-8 encoding
+
 ```bash
 file -bi web/index.html
 # Should show: text/html; charset=utf-8
 ```
 
 ### Test from different regions
+
 ```bash
 # Use curl with different DNS
 curl -H "Host: resume.jclee.me" https://[CLOUDFLARE_IP]/
@@ -412,16 +459,19 @@ curl -H "Host: resume.jclee.me" https://[CLOUDFLARE_IP]/
 ## Getting Help
 
 ### Resources
+
 - **Cloudflare Workers Docs**: https://developers.cloudflare.com/workers/
 - **Wrangler CLI Docs**: https://developers.cloudflare.com/workers/wrangler/
-- **Project Issues**: http://gitlab.jclee.me/jclee/resume/issues
+- **Project Issues**: https://github.com/jclee-homelab/resume/issues
 
 ### Logs Location
-- **GitLab CI/CD**: Repository → Actions → [Workflow] → Logs
+
+- **GitHub Actions**: Repository → Actions → [Workflow] → Logs
 - **Cloudflare**: Dashboard → Workers & Pages → resume → Logs
 - **Local**: `~/.wrangler/logs/`
 
 ### Debug Mode
+
 ```bash
 # Enable verbose logging
 wrangler deploy --verbose

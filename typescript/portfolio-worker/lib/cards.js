@@ -59,9 +59,9 @@ function generateProjectCards(projectsData, dataHash) {
 
   const html = projectsData
     .map((project) => {
-      const hasLink = project.liveUrl || project.gitlabUrl;
-      const link = project.liveUrl || project.gitlabUrl;
-      const linkText = project.liveUrl ? 'Live Demo' : project.gitlabUrl ? 'GitHub' : '';
+      const hasLink = project.liveUrl || project.repoUrl;
+      const link = project.liveUrl || project.repoUrl;
+      const linkText = project.liveUrl ? 'Live Demo' : project.repoUrl ? 'GitHub' : '';
 
       // Render as anchor tag only if link exists, otherwise use div
       const titleContent = `${escapeHtml(project.title)}<span class="arrow">↗</span>`;

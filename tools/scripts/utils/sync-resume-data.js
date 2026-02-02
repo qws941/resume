@@ -13,16 +13,13 @@ const { validateResumeDataFile, formatErrors } = require('./validate-resume-data
 
 const SOURCE_PATH = path.join(
   __dirname,
-  '../../../typescript/data/resumes/master/resume_data.json',
+  '../../../typescript/data/resumes/master/resume_data.json'
 );
 const SCHEMA_PATH = path.join(
   __dirname,
-  '../../../typescript/data/resumes/master/resume_schema.json',
+  '../../../typescript/data/resumes/master/resume_schema.json'
 );
-const WEB_DATA_PATH = path.join(
-  __dirname,
-  '../../../typescript/portfolio-worker/data.json',
-);
+const WEB_DATA_PATH = path.join(__dirname, '../../../typescript/portfolio-worker/data.json');
 
 function loadSource() {
   const raw = fs.readFileSync(SOURCE_PATH, 'utf-8');
@@ -52,6 +49,7 @@ function generateWebData(source) {
     };
 
     if (idx === 0) {
+      // TODO: Migrate to GitHub raw URLs when files are synced
       entry.completePdfUrl =
         'https://gitlab.jclee.me/jclee/resume/-/raw/master/resumes/technical/nextrade/exports/Nextrade_Full_Documentation.pdf';
     }
@@ -63,25 +61,23 @@ function generateWebData(source) {
   const projects = (source.personalProjects || []).map((proj) => ({
     icon: proj.icon || '💻',
     title: proj.name,
-    tech: Array.isArray(proj.technologies)
-      ? proj.technologies.join(', ')
-      : proj.technologies,
+    tech: Array.isArray(proj.technologies) ? proj.technologies.join(', ') : proj.technologies,
     description: proj.description,
     tagline: proj.tagline || proj.description,
     metrics: proj.metrics || {},
     related_skills: proj.technologies || [],
     liveUrl: proj.url,
-    gitlabUrl: proj.gitlabUrl,
+    repoUrl: proj.repoUrl,
     businessImpact: proj.businessImpact,
   }));
 
   return {
     resumeDownload: {
       pdfUrl: 'https://resume.jclee.me/resume.pdf',
+      // TODO: Migrate to GitHub raw URLs when files are synced
       docxUrl:
         'https://gitlab.jclee.me/jclee/resume/-/raw/master/resumes/master/archive/resume_final.docx',
-      mdUrl:
-        'https://gitlab.jclee.me/jclee/resume/-/raw/master/resumes/master/resume_final.md',
+      mdUrl: 'https://gitlab.jclee.me/jclee/resume/-/raw/master/resumes/master/resume_final.md',
     },
     resume,
     projects,
@@ -99,7 +95,7 @@ function main() {
   // Step 1: Validate master resume data before processing
   console.log('📋 Validating resume data against schema...');
   const validation = validateResumeDataFile(SOURCE_PATH, SCHEMA_PATH);
-  
+
   if (!validation.valid) {
     console.error('❌ Resume data validation FAILED:');
     console.error(formatErrors(validation.errors));
@@ -120,9 +116,7 @@ function main() {
   console.log('\n📊 Summary:');
   console.log(`   - Resume entries: ${webData.resume.length}`);
   console.log(`   - Project entries: ${webData.projects.length}`);
-  console.log(
-    `   - Source: ${source.personal.name} (${source.summary.totalExperience})`,
-  );
+  console.log(`   - Source: ${source.personal.name} (${source.summary.totalExperience})`);
 }
 
 main();

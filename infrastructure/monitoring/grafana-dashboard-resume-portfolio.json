@@ -77,10 +77,10 @@
       "keepTime": false,
       "tags": [],
       "targetBlank": true,
-      "title": "GitLab",
+      "title": "GitHub",
       "tooltip": "Source Repository",
       "type": "link",
-      "url": "https://gitlab.jclee.me/apps/resume"
+      "url": "https://github.com/jclee-homelab/resume"
     },
     {
       "asDropdown": false,
@@ -1064,14 +1064,7 @@
   "refresh": "30s",
   "schemaVersion": 38,
   "style": "dark",
-  "tags": [
-    "resume",
-    "cloudflare",
-    "workers",
-    "portfolio",
-    "production",
-    "web-vitals"
-  ],
+  "tags": ["resume", "cloudflare", "workers", "portfolio", "production", "web-vitals"],
   "templating": {
     "list": [
       {
