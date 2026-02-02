@@ -1,0 +1,7 @@
+{
+  "name": "@resume/data",
+  "version": "1.0.0",
+  "description": "Resume data SSoT (Single Source of Truth)",
+  "private": true,
+  "type": "module"
+}
