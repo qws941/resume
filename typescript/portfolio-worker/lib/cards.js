@@ -158,6 +158,7 @@ function generateSkillsList(skillsData, dataHash) {
 
 /**
  * Generate hero section HTML from data
+ * ✅ FIXED: Added aria-label to email link for accessibility
  * @param {Object} heroData - Hero section data
  * @returns {string} HTML string for hero section
  */
@@ -166,7 +167,7 @@ function generateHeroContent(heroData) {
     <h1 class="hero-name">${escapeHtml(heroData.titleEn)}</h1>
     <h2 class="hero-subtitle">${escapeHtml(heroData.subtitle)}</h2>
     <div class="hero-contact">
-       <a href="mailto:qws941@kakao.com" class="hero-link">qws941@kakao.com</a>
+       <a href="mailto:qws941@kakao.com" class="hero-link" aria-label="Email Jaecheol Lee at qws941@kakao.com">qws941@kakao.com</a>
     </div>
   `;
 }
@@ -189,14 +190,17 @@ function generateInfrastructureCards() {
 
 /**
  * Generate contact grid HTML from data
- * @returns {string} Simple footer links
+ * ✅ FIXED: Added aria-labels to all links for accessibility
+ * ✅ FIXED: Added target="_blank" and rel to website link
+ * @param {Object} contactData - Contact information object
+ * @returns {string} HTML string with accessible footer links
  */
 function generateContactGrid(contactData) {
   return `
     <div class="footer-links">
-        <a href="${escapeHtml(contactData.github)}" target="_blank" rel="noopener noreferrer">GitHub</a>
-        <a href="mailto:${escapeHtml(contactData.email)}">Email</a>
-        <a href="${escapeHtml(contactData.website)}">Website</a>
+        <a href="${escapeHtml(contactData.github)}" target="_blank" rel="noopener noreferrer" aria-label="View GitHub profile">GitHub</a>
+        <a href="mailto:${escapeHtml(contactData.email)}" aria-label="Send email to qws941@kakao.com">Email</a>
+        <a href="${escapeHtml(contactData.website)}" target="_blank" rel="noopener noreferrer" aria-label="Visit portfolio website">Website</a>
     </div>
   `;
 }
