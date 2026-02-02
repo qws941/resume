@@ -23,25 +23,25 @@ on:
   workflow_dispatch:
     inputs:
       deploy_target:
-        description: "Deploy target (portfolio, job-dashboard, all)"
+        description: 'Deploy target (portfolio, job-dashboard, all)'
         required: false
-        default: "all"
+        default: 'all'
         type: choice
         options:
           - all
           - portfolio
           - job-dashboard
       skip_tests:
-        description: "Skip tests (emergency deploy only)"
+        description: 'Skip tests (emergency deploy only)'
         required: false
         default: false
         type: boolean
 
 env:
-  NODE_VERSION: "20"
-  PLAYWRIGHT_VERSION: "1.57.0"
-  PORTFOLIO_URL: "https://resume.jclee.me"
-  JOB_DASHBOARD_URL: "https://job.jclee.me"
+  NODE_VERSION: '22'
+  PLAYWRIGHT_VERSION: '1.58.1'
+  PORTFOLIO_URL: 'https://resume.jclee.me'
+  JOB_DASHBOARD_URL: 'https://job.jclee.me'
 
 # Prevent concurrent deployments to same environment
 concurrency:
@@ -140,7 +140,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: "npm"
+          cache: 'npm'
 
       - name: Install dependencies
         run: npm ci --prefer-offline --no-audit
@@ -189,7 +189,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: "npm"
+          cache: 'npm'
 
       - name: Install dependencies
         run: npm ci --prefer-offline --no-audit
@@ -222,7 +222,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: "npm"
+          cache: 'npm'
 
       - name: Install dependencies
         run: npm ci --prefer-offline --no-audit
@@ -260,7 +260,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: "npm"
+          cache: 'npm'
 
       - name: Install dependencies
         run: npm ci --prefer-offline --no-audit
@@ -309,7 +309,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: "npm"
+          cache: 'npm'
 
       - name: Install dependencies
         run: npm ci --prefer-offline --no-audit
@@ -334,7 +334,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: "npm"
+          cache: 'npm'
 
       - name: Install dependencies
         run: npm ci --prefer-offline --no-audit
@@ -366,7 +366,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: "npm"
+          cache: 'npm'
 
       - name: Install dependencies
         run: npm ci --prefer-offline --no-audit
@@ -402,7 +402,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: "npm"
+          cache: 'npm'
 
       - name: Install dependencies
         run: npm ci --prefer-offline --no-audit
@@ -437,7 +437,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: "npm"
+          cache: 'npm'
 
       - name: Install dependencies
         run: npm ci --prefer-offline --no-audit
