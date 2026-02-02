@@ -1,7 +1,7 @@
 # PROJECT KNOWLEDGE BASE
 
-**Generated:** 2026-02-01
-**Commit:** 0b3bac8
+**Generated:** 2026-02-02
+**Commit:** 9d80a8f
 **Branch:** master
 **Build System:** Bazel + npm (Google3-style hybrid)
 
@@ -51,13 +51,13 @@ resume/
 
 ## ENTRY POINTS
 
-| Component        | Entry Point                                          | Notes                     |
-| ---------------- | ---------------------------------------------------- | ------------------------- |
-| MCP Server       | `typescript/job-automation/src/index.js`             | Fastify + MCP tools       |
-| Portfolio Build  | `typescript/portfolio-worker/lib/generate-worker.js` | HTML → Worker compiler    |
-| Dashboard Worker | `typescript/job-automation/workers/src/index.js`     | Cloudflare Worker entry   |
-| CLI Tool         | `typescript/cli/bin/run.js`                          | `resume-cli` Commander.js |
-| Resume Data      | `typescript/data/resumes/master/resume_data.json`    | Canonical SSoT            |
+| Component        | Entry Point                                       | Notes                     |
+| ---------------- | ------------------------------------------------- | ------------------------- |
+| MCP Server       | `typescript/job-automation/src/index.js`          | Fastify + MCP tools       |
+| Portfolio Build  | `typescript/portfolio-worker/generate-worker.js`  | HTML → Worker compiler    |
+| Dashboard Worker | `typescript/job-automation/workers/src/index.js`  | Cloudflare Worker entry   |
+| CLI Tool         | `typescript/cli/bin/run.js`                       | `resume-cli` Commander.js |
+| Resume Data      | `typescript/data/resumes/master/resume_data.json` | Canonical SSoT            |
 
 ## CODE MAP
 
@@ -67,7 +67,8 @@ resume/
 | `UnifiedApplySystem`  | `typescript/job-automation/src/shared/services/apply/`   | Centralized job application |
 | `SessionManager`      | `typescript/job-automation/src/shared/services/session/` | Session persistence         |
 | `WantedClient`        | `typescript/job-automation/src/shared/clients/wanted/`   | Wanted.co.kr API client     |
-| `generate-worker.js`  | `typescript/portfolio-worker/lib/generate-worker.js`     | HTML → worker.js compiler   |
+| `generate-worker.js`  | `typescript/portfolio-worker/generate-worker.js`         | HTML → worker.js compiler   |
+| `security-headers.js` | `typescript/portfolio-worker/lib/security-headers.js`    | CSP baseline, HSTS          |
 | `sync-resume-data.js` | `typescript/data/sync-resume-data.js`                    | SSoT propagation script     |
 
 ## BAZEL TARGETS
@@ -145,21 +146,17 @@ Dashboard Worker: workers/src/index.js → Cloudflare Worker
 
 ## CI/CD PIPELINE
 
-**GitLab CI (7 stages):**
+**Manual Deployment (Primary):**
 
-```
-analyze → validate → test → build → deploy → verify → notify
+```bash
+# Deploy portfolio worker
+source ~/.env && cd typescript/portfolio-worker && \
+  CLOUDFLARE_API_KEY="$CLOUDFLARE_API_KEY" \
+  CLOUDFLARE_EMAIL="$CLOUDFLARE_EMAIL" \
+  npx wrangler deploy --env production
 ```
 
-| Stage    | Tools                          | Purpose                 |
-| -------- | ------------------------------ | ----------------------- |
-| analyze  | `affected.sh`, Bazel query     | Change impact detection |
-| validate | YAML lint, gitleaks            | Security + syntax       |
-| test     | Jest, Playwright               | Unit + E2E tests        |
-| build    | npm, generate-worker.js        | Build artifacts         |
-| deploy   | Wrangler, REST API             | Cloudflare deployment   |
-| verify   | Health check, security headers | Post-deploy validation  |
-| notify   | n8n webhook                    | Slack notification      |
+**Historical Note:** GitLab CI configuration was removed. Some docs may reference old pipeline stages.
 
 ## TESTING
 

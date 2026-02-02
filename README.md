@@ -7,53 +7,48 @@ Personal resume and portfolio management system built with modern web technologi
 - **Portfolio**: https://resume.jclee.me
 - **Features**: Responsive design, dark mode, SEO optimized, accessibility compliant
 
-## 📦 Project Structure
+## Project Structure
 
 ```
 resume/
-├── resumes/                  # All resume content
-│   ├── master/              # Master resume versions
-│   │   ├── resume_master.md # Complete career history
-│   │   └── resume_final.md  # Compressed submission version
-│   ├── companies/           # Company-tailored resumes
-│   ├── technical/           # Technical documentation by company
-│   │   └── nextrade/       # Nextrade project docs (Architecture, DR, SOC)
-│   └── archive/            # Historical versions
-├── infrastructure/          # Infrastructure configs and workflows
-│   ├── configs/            # Configuration files
-│   ├── monitoring/         # Monitoring dashboards
-│   ├── n8n/                # n8n integration configs
-│   └── workflows/          # n8n workflow definitions
-├── web/                     # Web portfolio
-│   ├── index.html          # Main portfolio page
-│   ├── resume.html         # Resume HTML version
-│   ├── worker.js           # Cloudflare Worker
-│   ├── generate-worker.js  # Worker generator script
-│   └── downloads/          # Downloadable documents (PDF/DOCX)
-├── docs/                    # Documentation
-│   ├── guides/             # User guides
-│   └── planning/           # Planning and analysis docs
-├── data/                    # Extracted data and templates
-├── assets/                  # Images and resources
-└── scripts/                 # Automation scripts
+├── typescript/                    # Language-based source directory
+│   ├── portfolio-worker/          # Edge portfolio (resume.jclee.me)
+│   │   ├── lib/                   # Build utilities, security headers
+│   │   ├── assets/                # Fonts, images (inlined at build)
+│   │   ├── index.html             # KO portfolio template
+│   │   ├── index-en.html          # EN portfolio template
+│   │   └── generate-worker.js     # Build engine → worker.js
+│   ├── job-automation/            # MCP Server + Dashboard
+│   │   ├── src/                   # Core: crawlers, services, tools
+│   │   └── workers/               # Dashboard Cloudflare Worker
+│   ├── cli/                       # Deployment CLI (Commander.js)
+│   └── data/                      # SSoT: Resume JSONs & schemas
+│       └── resumes/master/        # resume_data.json (canonical)
+├── infrastructure/                # Grafana, Loki, Prometheus, n8n
+├── docs/                          # Documentation hub
+│   ├── guides/                    # Deployment & setup guides
+│   └── architecture/              # ADRs, system design
+├── tools/                         # Build scripts, CI utilities
+├── tests/                         # Jest unit + Playwright E2E
+└── third_party/                   # npm deps (One Version Rule)
 ```
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 - **Frontend**: HTML5, CSS3, Vanilla JavaScript
-- **Deployment**: Cloudflare Workers (Serverless)
-- **Build System**: Bazel (Google3-style monorepo coordination)
-- **CI/CD**: GitLab CI/CD (self-hosted)
+- **Deployment**: Cloudflare Workers (Edge-deployed)
+- **Build System**: Bazel + npm (Google3-style hybrid)
+- **CI/CD**: GitHub Actions
 - **Testing**: Jest (unit), Playwright (E2E)
-- **Code Quality**: ESLint, Prettier, gitleaks (secret scanning)
-- **Documentation**: Markdown, Pandoc (PDF generation)
+- **Code Quality**: gitleaks (secret scanning)
+- **Observability**: Grafana, Loki, Prometheus (self-hosted)
 
-## 🔧 Development
+## Development
 
 ### Prerequisites
 
 - Node.js >= 20.0.0
-- npm or yarn
+- npm
 - Wrangler CLI (for Cloudflare deployment)
 
 ### Local Development
@@ -63,21 +58,14 @@ resume/
 npm install
 
 # Serve portfolio locally
-cd web
-python3 -m http.server 8000
-# → http://localhost:8000/index.html
+cd typescript/portfolio-worker
+npm run dev
 
 # Run tests
 npm test
 
 # E2E tests
 npm run test:e2e
-
-# Lint code
-npm run lint
-
-# Format code
-npm run format
 ```
 
 ### Worker Generation
@@ -85,123 +73,75 @@ npm run format
 **CRITICAL**: After editing HTML files, regenerate `worker.js`:
 
 ```bash
-# Generate worker.js from HTML
-npm run build
-# OR: cd web && node generate-worker.js
+# Generate worker.js from HTML (extracts CSP hashes from both KO + EN)
+cd typescript/portfolio-worker
+node generate-worker.js
 
 # Deploy to Cloudflare Workers
-npm run deploy
-# OR: cd web && wrangler deploy
-
-# Local preview with Wrangler
-npm run dev
+source ~/.env && CLOUDFLARE_API_KEY="$CLOUDFLARE_API_KEY" \
+  CLOUDFLARE_EMAIL="$CLOUDFLARE_EMAIL" npx wrangler deploy --env production
 ```
 
-### PDF Generation
-
-**Automated PDF generation** for all resume variants and technical documentation:
-
-```bash
-# Generate all PDFs (resumes + docs)
-./scripts/pdf-generator.sh all
-
-# Generate specific variant
-./scripts/pdf-generator.sh master      # Master resume
-./scripts/pdf-generator.sh toss        # Toss-specific resume
-./scripts/pdf-generator.sh nextrade_arch   # Nextrade architecture doc
-
-# Legacy scripts (still work but use new script above)
-cd toss && ./pdf-convert.sh  # Old method
-```
-
-**Features**:
-
-- ✅ Automatic version numbering (v1.0.3)
-- ✅ Docker fallback (no Pandoc installation needed)
-- ✅ Git LFS integration for efficient storage
-- ✅ Multiple variants: master, final, toss, nextrade docs
-- ✅ Metadata injection (author, title, date)
-
-**See**: `docs/guides/PDF_GENERATION.md` for complete guide
-
-## 🚀 Deployment
-
-### Automatic Deployment (GitLab CI/CD)
-
-Push to `master` branch triggers automatic deployment via `.gitlab-ci.yml`:
-
-```
-Stages: analyze → validate → test → build → deploy → verify → notify
-```
-
-1. **Analyze**: Bazel affected targets detection (`tools/ci/affected.sh`)
-2. **Validate**: YAML lint, secret scanning (gitleaks)
-3. **Test**: Unit tests (Jest), E2E tests (Playwright)
-4. **Build**: Generate `worker.js` from HTML, data sync
-5. **Deploy**: Deploy to Cloudflare Workers
-6. **Verify**: Health check, content verification, security headers
-7. **Notify**: n8n webhook notification
-
-**Pipeline Configuration**: See `.gitlab-ci.yml` for complete pipeline definition.
+## Deployment
 
 ### Manual Deployment
 
-**Recommended Method** (uses Cloudflare REST API, bypasses Wrangler auth):
-
 ```bash
-# Deploy using REST API script
-npm run deploy
+# From project root
+source ~/.env && cd typescript/portfolio-worker && \
+  CLOUDFLARE_API_KEY="$CLOUDFLARE_API_KEY" \
+  CLOUDFLARE_EMAIL="$CLOUDFLARE_EMAIL" \
+  npx wrangler deploy --env production
 
-# OR directly run the script
-./scripts/deployment/deploy-via-api.sh
+# Verify deployment
+curl -I https://resume.jclee.me/health
 ```
-
-**Alternative Method** (requires Wrangler API token):
-
-```bash
-# Deploy with Wrangler CLI
-npm run deploy:wrangler
-
-# OR: cd web && wrangler deploy
-
-# Check deployment status
-wrangler deployments list
-```
-
-**Note**: If Wrangler authentication fails (code: 10001), the REST API method uses your Global API Key from `.env` and works reliably. See `docs/CLOUDFLARE_TOKEN_SETUP.md` for details.
 
 ### Environment Variables
 
-Required for CI/CD pipeline (set in GitLab CI/CD Settings):
+Required for deployment (in `~/.env`):
 
 ```bash
-# .env.example (local development)
-CLOUDFLARE_API_TOKEN=your_api_token
+CLOUDFLARE_API_KEY=your_global_api_key
+CLOUDFLARE_EMAIL=your_email
 CLOUDFLARE_ACCOUNT_ID=your_account_id
-
-# GitLab CI/CD Variables (Settings → CI/CD → Variables)
-# CLOUDFLARE_API_TOKEN - Cloudflare Workers deploy
-# CLOUDFLARE_ACCOUNT_ID - Cloudflare account
-# N8N_WEBHOOK_URL - Deployment notifications
-# AUTH_SYNC_SECRET - Auth sync job (optional)
 ```
 
-## 📊 Architecture
+## Architecture
 
 ### Cloudflare Worker Design
 
 - **Static HTML serving**: HTML files embedded in `worker.js` as template literals
-- **Routing**: `/` → index.html, `/resume` → resume.html
-- **Security headers**: CSP, HSTS, X-Frame-Options
+- **Multi-language**: `/` → KO, `/en` → EN portfolio
+- **Security headers**: CSP with SHA-256 hashes, HSTS, X-Frame-Options
 - **Performance**: Global CDN, zero cold start
 
 ### Worker Generation Pipeline
 
 ```
-HTML files (index.html, resume.html)
-  → generate-worker.js (escape backticks and $)
-  → worker.js (embedded template literals)
-  → wrangler deploy (to Cloudflare)
+index.html + index-en.html
+  → generate-worker.js
+    - Escape backticks and ${}
+    - Extract CSP hashes from both HTML files (union)
+    - Apply baseline CSP directives
+  → worker.js (NEVER EDIT DIRECTLY)
+  → wrangler deploy → Cloudflare Edge
+```
+
+### Security Headers
+
+Content Security Policy with baseline directives and SHA-256 hashes:
+
+```
+Content-Security-Policy:
+  default-src 'none';
+  script-src 'self' 'sha256-...' https://*.sentry.io;
+  style-src 'self' 'sha256-...' https://fonts.googleapis.com;
+  font-src 'self' https://fonts.gstatic.com;
+  img-src 'self' data:;
+  connect-src 'self' https://grafana.jclee.me https://*.sentry.io;
+  manifest-src 'self';
+  worker-src 'self';
 ```
 
 ## 📊 Observability
@@ -305,122 +245,36 @@ Automated performance testing on every deployment:
 - **Best Practices**: ≥95 score
 - **SEO**: ≥95 score
 
-**Web Vitals Targets**:
+## Documentation
 
-- LCP (Largest Contentful Paint): <2.5s
-- FID (First Input Delay): <100ms
-- CLS (Cumulative Layout Shift): <0.1
-- FCP (First Contentful Paint): <1.8s
-- TTFB (Time to First Byte): <0.8s
+### Key Guides
 
-### Security Headers
+- **Infrastructure Architecture**: `docs/guides/INFRASTRUCTURE.md`
+- **Monitoring Setup**: `docs/guides/MONITORING_SETUP.md`
+- **Manual Deployment**: `docs/guides/MANUAL_DEPLOYMENT_GUIDE.md`
 
-Enhanced Content Security Policy with SHA-256 hashes (no `unsafe-inline`):
+### AGENTS.md Hierarchy
 
-```
-Content-Security-Policy:
-  default-src 'self';
-  font-src 'self' https://fonts.gstatic.com;
-  style-src 'self' 'sha256-...' https://fonts.googleapis.com;
-  script-src 'self' 'sha256-...';
-  img-src 'self' data:;
-  connect-src 'self' https://grafana.jclee.me
-```
+Domain-specific context in subdirectory AGENTS.md files:
 
-Additional security headers:
+| Path                                    | Focus                |
+| --------------------------------------- | -------------------- |
+| `typescript/portfolio-worker/AGENTS.md` | Build pipeline, CSP  |
+| `typescript/job-automation/AGENTS.md`   | MCP server, crawlers |
+| `typescript/data/AGENTS.md`             | SSoT schema, sync    |
+| `typescript/cli/AGENTS.md`              | CLI tool usage       |
+| `tests/AGENTS.md`                       | Test patterns        |
 
-- `X-Content-Type-Options: nosniff`
-- `X-Frame-Options: DENY`
-- `X-XSS-Protection: 1; mode=block`
-- `Referrer-Policy: strict-origin-when-cross-origin`
+## Portfolio Features
 
-## 🧪 Testing
-
-```bash
-# Unit tests (Jest)
-npm test
-npm run test:watch      # Watch mode
-npm run test:coverage   # Coverage report
-
-# E2E tests (Playwright)
-npm run test:e2e        # Headless
-npm run test:e2e:ui     # With UI
-npm run test:e2e:headed # Visible browser
-
-# All tests before deployment
-npm test && npm run test:e2e
-```
-
-## 📚 Documentation
-
-### Infrastructure & Deployment
-
-- **Infrastructure Architecture**: `docs/guides/INFRASTRUCTURE.md` - Complete system topology (Cloudflare Workers + Synology NAS)
-- **Monitoring Setup**: `docs/guides/MONITORING_SETUP.md` - Prometheus, Grafana, Loki, n8n configuration
-- **PDF Generation**: `docs/guides/PDF_GENERATION.md` - Automated PDF generation for resumes and docs
-- **Deployment Status**: `docs/DEPLOYMENT_STATUS.md` - Service status report
-- **Environment Map**: `docs/planning/ENVIRONMENTAL_MAP.md` - Environment configuration
-
-### Operations & Automation
-
-- **Slack Integration**: `docs/SLACK_INTEGRATION.md` - Deployment notifications
-- **Monitoring Guide**: `docs/MONITORING_GUIDE.md` - Deployment monitoring with tmux
-- **Troubleshooting**: `docs/TS_SESSION_TROUBLESHOOTING.md` - TS session debugging
-
-## 🎨 Portfolio Features
-
-- **Responsive Design**: 5 breakpoints (375px - 1200px+)
+- **Responsive Design**: Mobile-first, 5 breakpoints
 - **Dark Mode**: Toggle with localStorage persistence
 - **SEO Optimized**: Meta tags, Open Graph, Twitter Card
 - **Accessibility**: ARIA labels, semantic HTML, keyboard navigation
-- **Performance**: Preconnect, lazy loading, optimized animations
-- **Projects Showcase**: 5 production projects with live demos
-- **Technical Documentation**: Nextrade project docs (PDF/DOCX downloads)
+- **Multi-language**: Korean (default) + English
 
-## 🔄 Recent Updates
-
-### 2025-11-20
-
-- Infrastructure documentation rewrite based on production environment
-- Created comprehensive Grafana dashboard (7 visualization panels)
-- Complete monitoring setup guide (Prometheus, Grafana, Loki, n8n)
-- Documented full system architecture (Cloudflare Workers + Synology NAS)
-- Added semantic versioning with auto-increment on deployment
-- Implemented SEO improvements (robots.txt, sitemap.xml, og-image.png)
-
-### 2025.10.16
-
-- Add Nextrade technical documentation download section
-- Implement modern UI with gradient animations
-- 4 doc cards with floating icons and hover effects
-- Color-coded PDF/DOCX download buttons
-
-### 2025.10.13
-
-- Slack integration for deployment notifications
-- tmux-based deployment monitoring
-- TS session improvements with auto-attach fix
-- ESLint warning fixes, backup file cleanup
-
-### 2025.10.12
-
-- UI/UX improvements (better color contrast)
-- Repository links for all projects
-- Remove unrealistic metrics
-
-### 2025.09.30
-
-- Complete responsive redesign (5 breakpoints)
-- SEO and accessibility improvements
-- Touch device optimization
-- Project showcase
-
-## 📝 License
-
-This project is for personal use and portfolio demonstration.
-
-## 🔗 Links
+## Links
 
 - **Live Site**: https://resume.jclee.me
-- **GitLab** (Primary): http://gitlab.jclee.me/jclee/resume
-- **Documentation**: Comprehensive technical docs in `/resumes/technical/nextrade/`
+- **English**: https://resume.jclee.me/en
+- **GitHub**: https://github.com/qws941/resume
