@@ -56,6 +56,7 @@ node generate-worker.js
 ```
 
 This script:
+
 - Reads `index.html` and `resume.html`
 - Escapes backticks (`) and dollar signs ($)
 - Embeds HTML into `worker.js` as template literals
@@ -78,11 +79,11 @@ curl https://resume.jclee.me/resume
 # Expected: Resume page HTML
 ```
 
-## Automated Deployment (GitLab CI/CD)
+## Automated Deployment (GitHub Actions)
 
 ### Workflow Trigger
 
-Push to `master` branch auto-deploys via `.gitlab-ci.yml/deploy.yml`
+Push to `master` branch auto-deploys via `.github/workflows/ci.yml`
 
 ### Workflow Steps
 
@@ -132,11 +133,12 @@ wrangler deploy
 ## Build Pipeline Enhancement
 
 ### Current Issue
+
 Manual step required: `node generate-worker.js`
 
 ### Recommended Fix
 
-Update `.gitlab-ci.yml/deploy.yml`:
+Update `.github/workflows/ci.yml`:
 
 ```yaml
 jobs:
@@ -208,6 +210,7 @@ wrangler tail --status error
 ### Analytics
 
 Check Cloudflare Dashboard → Workers → resume → Analytics:
+
 - Requests per second
 - CPU time
 - Errors
@@ -224,6 +227,7 @@ curl -w "@curl-format.txt" -o /dev/null -s https://resume.jclee.me
 ```
 
 Create `curl-format.txt`:
+
 ```
 time_namelookup:  %{time_namelookup}\n
 time_connect:     %{time_connect}\n
@@ -289,7 +293,7 @@ export default {
     const response = new Response(INDEX_HTML, {
       headers: {
         'Content-Type': 'text/html;charset=UTF-8',
-        'Cache-Control': 'public, max-age=3600',  // 1 hour cache
+        'Cache-Control': 'public, max-age=3600', // 1 hour cache
       },
     });
     return response;

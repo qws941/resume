@@ -17,10 +17,8 @@ function validateData(data) {
   if (!data.resumeDownload) {
     errors.push('Missing resumeDownload object');
   } else {
-    if (!data.resumeDownload.pdfUrl)
-      errors.push('Missing resumeDownload.pdfUrl');
-    if (!data.resumeDownload.docxUrl)
-      errors.push('Missing resumeDownload.docxUrl');
+    if (!data.resumeDownload.pdfUrl) errors.push('Missing resumeDownload.pdfUrl');
+    if (!data.resumeDownload.docxUrl) errors.push('Missing resumeDownload.docxUrl');
     if (!data.resumeDownload.mdUrl) errors.push('Missing resumeDownload.mdUrl');
   }
 
@@ -33,8 +31,7 @@ function validateData(data) {
       // if (!item.icon) errors.push(`resume[${idx}]: missing icon`);
       if (!item.title) errors.push(`resume[${idx}]: missing title`);
       if (!item.description) errors.push(`resume[${idx}]: missing description`);
-      if (!Array.isArray(item.stats))
-        errors.push(`resume[${idx}]: stats must be an array`);
+      if (!Array.isArray(item.stats)) errors.push(`resume[${idx}]: stats must be an array`);
 
       // Check for required URLs based on highlight status
       if (item.highlight && !item.completePdfUrl) {
@@ -53,20 +50,19 @@ function validateData(data) {
       // if (!item.icon) errors.push(`projects[${idx}]: missing icon`);
       if (!item.title) errors.push(`projects[${idx}]: missing title`);
       if (!item.tech) errors.push(`projects[${idx}]: missing tech`);
-      if (!item.description)
-        errors.push(`projects[${idx}]: missing description`);
+      if (!item.description) errors.push(`projects[${idx}]: missing description`);
 
       // Link check removed: Internal projects may not have public links
       /*
       // Check for at least one link
       const hasLink =
         item.liveUrl ||
-        item.gitlabUrl ||
+        item.repoUrl ||
         item.documentationUrl ||
         item.dashboards;
       if (!hasLink) {
         errors.push(
-          `projects[${idx}]: no links provided (liveUrl, gitlabUrl, documentationUrl, or dashboards)`
+          `projects[${idx}]: no links provided (liveUrl, repoUrl, documentationUrl, or dashboards)`
         );
       }
       */
@@ -95,10 +91,7 @@ function validateData(data) {
     Object.entries(data.skills).forEach(([cat, value]) => {
       if (Array.isArray(value)) {
         // Simple array format - all items must be strings
-        if (
-          value.length > 0 &&
-          !value.every((item) => typeof item === 'string')
-        ) {
+        if (value.length > 0 && !value.every((item) => typeof item === 'string')) {
           errors.push(`skills.${cat} array items must be strings`);
         }
       } else if (typeof value === 'object' && value !== null) {

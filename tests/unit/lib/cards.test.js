@@ -6,9 +6,7 @@ const {
   generateResumeCards,
   generateProjectCards,
 } = require('../../../typescript/portfolio-worker/lib/cards');
-const {
-  TEMPLATE_CACHE,
-} = require('../../../typescript/portfolio-worker/lib/config');
+const { TEMPLATE_CACHE } = require('../../../typescript/portfolio-worker/lib/config');
 
 describe('Cards Module', () => {
   // Reset cache before each test
@@ -147,7 +145,7 @@ describe('Cards Module', () => {
         tech: 'Node.js, React',
         description: 'A test project',
         liveUrl: 'https://example.com',
-        gitlabUrl: 'https://gitlab.com/test',
+        repoUrl: 'https://github.com/test',
       },
     ];
 
@@ -161,13 +159,13 @@ describe('Cards Module', () => {
       expect(html).toContain('A test project');
     });
 
-    test('should include Live Demo and GitLab links', () => {
+    test('should include Live Demo and GitHub links', () => {
       const html = generateProjectCards(validProjectData, 'testhash');
 
       expect(html).toContain('href="https://example.com"');
-      expect(html).toContain('href="https://gitlab.com/test"');
+      expect(html).toContain('href="https://github.com/test"');
       expect(html).toContain('Live Demo');
-      expect(html).toContain('GitLab');
+      expect(html).toContain('GitHub');
     });
 
     test('should set external link attributes', () => {
@@ -240,7 +238,7 @@ describe('Cards Module', () => {
           tech: 'Tech 1',
           description: 'Desc 1',
           liveUrl: 'a',
-          gitlabUrl: 'b',
+          repoUrl: 'b',
         },
         {
           icon: '💻',
@@ -248,7 +246,7 @@ describe('Cards Module', () => {
           tech: 'Tech 2',
           description: 'Desc 2',
           liveUrl: 'c',
-          gitlabUrl: 'd',
+          repoUrl: 'd',
         },
       ];
 
@@ -256,9 +254,7 @@ describe('Cards Module', () => {
 
       expect(html).toContain('Project 1');
       expect(html).toContain('Project 2');
-      expect((html.match(/project-card/g) || []).length).toBeGreaterThanOrEqual(
-        2,
-      );
+      expect((html.match(/project-card/g) || []).length).toBeGreaterThanOrEqual(2);
     });
 
     test('should handle project with only documentation URL', () => {
@@ -288,7 +284,7 @@ describe('Cards Module', () => {
           description: 'A project with tagline',
           tagline: 'This is a catchy tagline',
           liveUrl: 'https://example.com',
-          gitlabUrl: 'https://gitlab.com/test',
+          repoUrl: 'https://github.com/test',
         },
       ];
 
@@ -311,7 +307,7 @@ describe('Cards Module', () => {
             response_time: '50ms',
           },
           liveUrl: 'https://example.com',
-          gitlabUrl: 'https://gitlab.com/test',
+          repoUrl: 'https://github.com/test',
         },
       ];
 
@@ -337,7 +333,7 @@ describe('Cards Module', () => {
           description: 'A project with skills',
           related_skills: ['JavaScript', 'TypeScript', 'React'],
           liveUrl: 'https://example.com',
-          gitlabUrl: 'https://gitlab.com/test',
+          repoUrl: 'https://github.com/test',
         },
       ];
 
@@ -359,7 +355,7 @@ describe('Cards Module', () => {
           description: 'A project with business impact',
           businessImpact: 'Reduced costs by 50%',
           liveUrl: 'https://example.com',
-          gitlabUrl: 'https://gitlab.com/test',
+          repoUrl: 'https://github.com/test',
         },
       ];
 
@@ -380,7 +376,7 @@ describe('Cards Module', () => {
           tech: 'Node.js',
           description: 'A minimal project',
           liveUrl: 'https://example.com',
-          gitlabUrl: 'https://gitlab.com/test',
+          repoUrl: 'https://github.com/test',
         },
       ];
 
@@ -407,7 +403,7 @@ describe('Cards Module', () => {
           related_skills: ['Node.js', 'React'],
           businessImpact: 'Increased revenue by 200%',
           liveUrl: 'https://example.com',
-          gitlabUrl: 'https://gitlab.com/test',
+          repoUrl: 'https://github.com/test',
         },
       ];
 
@@ -432,14 +428,11 @@ describe('Cards Module', () => {
           description: 'A project with empty metrics',
           metrics: {},
           liveUrl: 'https://example.com',
-          gitlabUrl: 'https://gitlab.com/test',
+          repoUrl: 'https://github.com/test',
         },
       ];
 
-      const html = generateProjectCards(
-        projectWithEmptyMetrics,
-        'empty-metrics-hash',
-      );
+      const html = generateProjectCards(projectWithEmptyMetrics, 'empty-metrics-hash');
 
       expect(html).not.toContain('project-metrics');
     });
@@ -453,14 +446,11 @@ describe('Cards Module', () => {
           description: 'A project with empty skills',
           related_skills: [],
           liveUrl: 'https://example.com',
-          gitlabUrl: 'https://gitlab.com/test',
+          repoUrl: 'https://github.com/test',
         },
       ];
 
-      const html = generateProjectCards(
-        projectWithEmptySkills,
-        'empty-skills-hash',
-      );
+      const html = generateProjectCards(projectWithEmptySkills, 'empty-skills-hash');
 
       expect(html).not.toContain('project-skills');
     });

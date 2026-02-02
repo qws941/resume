@@ -25,7 +25,7 @@ const logger = require('./logger');
 
 // Read version from package.json
 const packageJson = JSON.parse(
-  fs.readFileSync(path.join(__dirname, '..', '..', 'package.json'), 'utf-8'),
+  fs.readFileSync(path.join(__dirname, '..', '..', 'package.json'), 'utf-8')
 );
 const VERSION = packageJson.version;
 
@@ -60,7 +60,7 @@ const VERSION = packageJson.version;
  * @property {Dashboard[]} [dashboards] - Array of dashboards (for Grafana project)
  * @property {string} [documentationUrl] - Documentation URL
  * @property {string} [liveUrl] - Live demo URL
- * @property {string} [gitlabUrl] - GitLab repository URL
+ * @property {string} [repoUrl] - Repository URL (GitHub/GitLab)
  */
 
 /**
@@ -87,8 +87,7 @@ const _GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID || '';
 // SECURITY: Never hardcode API keys in source code
 const CF_API_KEY_DEFAULT = process.env.CF_API_KEY || '';
 const CF_EMAIL_DEFAULT = process.env.CF_EMAIL || '';
-const _N8N_WEBHOOK_BASE =
-  process.env.N8N_WEBHOOK_BASE || 'https://n8n.jclee.me/webhook';
+const _N8N_WEBHOOK_BASE = process.env.N8N_WEBHOOK_BASE || 'https://n8n.jclee.me/webhook';
 
 // ========================================
 // MAIN BUILD PROCESS
@@ -166,14 +165,7 @@ const _N8N_WEBHOOK_BASE =
       name: 'ogImageEnBuffer',
     },
     {
-      path: path.join(
-        __dirname,
-        '..',
-        'data',
-        'resumes',
-        'master',
-        'resume_final.pdf',
-      ),
+      path: path.join(__dirname, '..', 'data', 'resumes', 'master', 'resume_final.pdf'),
       encoding: null,
       name: 'resumePdfBuffer',
     },
@@ -230,7 +222,7 @@ const _N8N_WEBHOOK_BASE =
   logger.debug(`index.html size: ${indexHtmlRaw.length} bytes`);
   logger.debug(`styles.css size: ${cssContent.length} bytes`);
   logger.debug(
-    `data.json: ${projectData.resume.length} resume items, ${projectData.projects.length} projects`,
+    `data.json: ${projectData.resume.length} resume items, ${projectData.projects.length} projects`
   );
   logger.debug(`manifest.json size: ${manifestJson.length} bytes`);
   logger.debug(`sw.js size: ${serviceWorker.length} bytes`);
@@ -251,19 +243,14 @@ const _N8N_WEBHOOK_BASE =
   // Generate dynamic HTML content (with caching)
   const resumeCardsHtml = generateResumeCards(projectData.resume, dataHash);
   const projectCardsHtml = generateProjectCards(projectData.projects, dataHash);
-  const certCardsHtml = generateCertificationCards(
-    projectData.certifications,
-    dataHash,
-  );
+  const certCardsHtml = generateCertificationCards(projectData.certifications, dataHash);
   const skillsHtml = generateSkillsList(projectData.skills, dataHash);
   const heroContentHtml = generateHeroContent(projectData.hero);
   const resumeDescriptionHtml = generateResumeDescription(
     projectData.sectionDescriptions.resume,
-    projectData.achievements,
+    projectData.achievements
   );
-  const infrastructureCardsHtml = generateInfrastructureCards(
-    projectData.infrastructure,
-  );
+  const infrastructureCardsHtml = generateInfrastructureCards(projectData.infrastructure);
   const contactGridHtml = generateContactGrid(projectData.contact);
 
   // Inject CSS, resume cards, project cards and resume download URLs into HTML
@@ -273,10 +260,7 @@ const _N8N_WEBHOOK_BASE =
     .replace('<!-- RESUME_DESCRIPTION_PLACEHOLDER -->', resumeDescriptionHtml)
     .replace('<!-- RESUME_CARDS_PLACEHOLDER -->', resumeCardsHtml)
     .replace('<!-- PROJECT_CARDS_PLACEHOLDER -->', projectCardsHtml)
-    .replace(
-      '<!-- INFRASTRUCTURE_CARDS_PLACEHOLDER -->',
-      infrastructureCardsHtml,
-    )
+    .replace('<!-- INFRASTRUCTURE_CARDS_PLACEHOLDER -->', infrastructureCardsHtml)
     .replace('<!-- CERTIFICATION_CARDS_PLACEHOLDER -->', certCardsHtml)
     .replace('<!-- SKILLS_LIST_PLACEHOLDER -->', skillsHtml)
     .replace('<!-- CONTACT_GRID_PLACEHOLDER -->', contactGridHtml)
@@ -308,10 +292,7 @@ const _N8N_WEBHOOK_BASE =
     .replace('<!-- RESUME_DESCRIPTION_PLACEHOLDER -->', resumeDescriptionHtml)
     .replace('<!-- RESUME_CARDS_PLACEHOLDER -->', resumeCardsHtml)
     .replace('<!-- PROJECT_CARDS_PLACEHOLDER -->', projectCardsHtml)
-    .replace(
-      '<!-- INFRASTRUCTURE_CARDS_PLACEHOLDER -->',
-      infrastructureCardsHtml,
-    )
+    .replace('<!-- INFRASTRUCTURE_CARDS_PLACEHOLDER -->', infrastructureCardsHtml)
     .replace('<!-- CERTIFICATION_CARDS_PLACEHOLDER -->', certCardsHtml)
     .replace('<!-- SKILLS_LIST_PLACEHOLDER -->', skillsHtml)
     .replace('<!-- CONTACT_GRID_PLACEHOLDER -->', contactGridHtml)
@@ -337,21 +318,14 @@ const _N8N_WEBHOOK_BASE =
   // Extract from both Korean and English HTML, then merge unique hashes
   const koHashes = extractInlineHashes(indexHtml);
   const enHashes = extractInlineHashes(indexEnHtml);
-  const scriptHashes = [
-    ...new Set([...koHashes.scriptHashes, ...enHashes.scriptHashes]),
-  ];
-  const styleHashes = [
-    ...new Set([...koHashes.styleHashes, ...enHashes.styleHashes]),
-  ];
+  const scriptHashes = [...new Set([...koHashes.scriptHashes, ...enHashes.scriptHashes])];
+  const styleHashes = [...new Set([...koHashes.styleHashes, ...enHashes.styleHashes])];
   logger.log(
-    `✓ CSP hashes extracted: ${scriptHashes.length} scripts, ${styleHashes.length} styles\n`,
+    `✓ CSP hashes extracted: ${scriptHashes.length} scripts, ${styleHashes.length} styles\n`
   );
 
   // Security headers (using imported module)
-  const SECURITY_HEADERS = securityHeadersModule.generateSecurityHeaders(
-    scriptHashes,
-    styleHashes,
-  );
+  const SECURITY_HEADERS = securityHeadersModule.generateSecurityHeaders(scriptHashes, styleHashes);
 
   // Get deployment timestamp from environment or use current time
   const deployedAt = process.env.DEPLOYED_AT || new Date().toISOString();
@@ -1103,9 +1077,7 @@ export default {
   fs.writeFileSync(path.join(__dirname, 'worker.js'), workerCode);
 
   const buildTime = ((Date.now() - buildStartTime) / 1000).toFixed(2);
-  const workerSizeKB = (Buffer.byteLength(workerCode, 'utf-8') / 1024).toFixed(
-    2,
-  );
+  const workerSizeKB = (Buffer.byteLength(workerCode, 'utf-8') / 1024).toFixed(2);
 
   // Cloudflare Workers free tier limit is 1MB, warn at 900KB
   if (parseFloat(workerSizeKB) > 900) {
@@ -1121,9 +1093,7 @@ export default {
   logger.log(`   - Style hashes: ${styleHashes.length}`);
   logger.log(`   - Resume cards: ${projectData.resume.length}`);
   logger.log(`   - Project cards: ${projectData.projects.length}`);
-  logger.log(
-    `   - Template cache: ${TEMPLATE_CACHE.dataHash ? 'Active' : 'Empty'}`,
-  );
+  logger.log(`   - Template cache: ${TEMPLATE_CACHE.dataHash ? 'Active' : 'Empty'}`);
   logger.log(`   - Deployed at: ${deployedAt}`);
   logger.log('\n🎯 Improvements Applied:');
   logger.log('   ✓ Configuration constants extracted');

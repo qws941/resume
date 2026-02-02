@@ -4,7 +4,8 @@ import fs from 'fs';
 import os from 'os';
 import path from 'path';
 
-const GITLAB_URL = process.env.CI_SERVER_URL || 'https://gitlab.jclee.me';
+// CI server URL - defaults to GitHub, falls back to GitLab for legacy CI
+const CI_SERVER_URL = process.env.CI_SERVER_URL || 'https://github.com/jclee-homelab/resume';
 const PROJECT_ID = process.env.CI_PROJECT_ID;
 const MR_IID = process.env.CI_MERGE_REQUEST_IID;
 const CI_JOB_TOKEN = process.env.CI_JOB_TOKEN;
@@ -16,8 +17,7 @@ const CONFIG = {
 };
 
 function getGitDiff() {
-  const targetBranch =
-    process.env.CI_MERGE_REQUEST_TARGET_BRANCH_SHA || 'origin/master';
+  const targetBranch = process.env.CI_MERGE_REQUEST_TARGET_BRANCH_SHA || 'origin/master';
   try {
     return execSync(`git diff ${targetBranch} HEAD`, {
       encoding: 'utf-8',
@@ -32,7 +32,7 @@ function getGitDiff() {
 }
 
 async function fetchMRDetails() {
-  const url = `${GITLAB_URL}/api/v4/projects/${PROJECT_ID}/merge_requests/${MR_IID}`;
+  const url = `${CI_SERVER_URL}/api/v4/projects/${PROJECT_ID}/merge_requests/${MR_IID}`;
   const headers = {
     'JOB-TOKEN': CI_JOB_TOKEN || '',
   };
@@ -40,15 +40,13 @@ async function fetchMRDetails() {
     headers,
   });
   if (!response.ok) {
-    throw new Error(
-      `Failed to fetch MR details: ${response.status} ${response.statusText}`,
-    );
+    throw new Error(`Failed to fetch MR details: ${response.status} ${response.statusText}`);
   }
   return response.json();
 }
 
 async function postMRComment(body) {
-  const url = `${GITLAB_URL}/api/v4/projects/${PROJECT_ID}/merge_requests/${MR_IID}/notes`;
+  const url = `${CI_SERVER_URL}/api/v4/projects/${PROJECT_ID}/merge_requests/${MR_IID}/notes`;
   const headers = {
     'JOB-TOKEN': CI_JOB_TOKEN || '',
     'Content-Type': 'application/json',
@@ -67,10 +65,7 @@ async function postMRComment(body) {
 
 function formatDiffForReview(diffText) {
   if (diffText.length > CONFIG.maxDiffSize) {
-    return (
-      diffText.slice(0, CONFIG.maxDiffSize) +
-      '\n\n*[Diff truncated due to size]*\n'
-    );
+    return diffText.slice(0, CONFIG.maxDiffSize) + '\n\n*[Diff truncated due to size]*\n';
   }
   return diffText;
 }
@@ -90,7 +85,7 @@ function callOpenCode(prompt) {
           ...process.env,
           HOME: process.env.HOME || '/home/gitlab-runner',
         },
-      },
+      }
     );
     return result.trim();
   } finally {
@@ -136,17 +131,11 @@ If the changes look good, say so briefly. Don't manufacture issues.`;
 }
 
 async function main() {
-  const requiredEnvVars = [
-    'CI_JOB_TOKEN',
-    'CI_PROJECT_ID',
-    'CI_MERGE_REQUEST_IID',
-  ];
+  const requiredEnvVars = ['CI_JOB_TOKEN', 'CI_PROJECT_ID', 'CI_MERGE_REQUEST_IID'];
   const missing = requiredEnvVars.filter((v) => !process.env[v]);
 
   if (missing.length > 0) {
-    console.error(
-      `Missing required environment variables: ${missing.join(', ')}`,
-    );
+    console.error(`Missing required environment variables: ${missing.join(', ')}`);
     process.exit(1);
   }
 

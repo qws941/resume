@@ -20,9 +20,7 @@ test.describe('Download Functionality', () => {
   test.describe('Resume Download Links', () => {
     test('should have main resume download buttons', async ({ page }) => {
       // Wait for download links to be rendered before checking
-      await page.waitForSelector(
-        'a[aria-label*="Download resume in PDF format"]',
-      );
+      await page.waitForSelector('a[aria-label*="Download resume in PDF format"]');
 
       // Check for PDF download link in hero section (DOCX/MD removed)
       const pdfLink = page.getByRole('link', {
@@ -40,9 +38,7 @@ test.describe('Download Functionality', () => {
     });
 
     test('should have download attribute on resume links', async ({ page }) => {
-      const downloadLinks = page
-        .locator('a[download]')
-        .filter({ hasText: /pdf/i });
+      const downloadLinks = page.locator('a[download]').filter({ hasText: /pdf/i });
       const count = await downloadLinks.count();
 
       // At least 1 PDF download link in hero
@@ -68,14 +64,12 @@ test.describe('Download Functionality', () => {
       await expect(completePdfLink).toBeVisible();
 
       const href = await completePdfLink.getAttribute('href');
-      expect(href).toContain('gitlab.jclee.me');
+      // TODO: Update to github raw URL when files are migrated
+      expect(href).toMatch(/gitlab\.jclee\.me|raw\.githubusercontent\.com/);
       expect(href).toContain('Nextrade_Full_Documentation.pdf');
-      expect(href).not.toContain('github.com');
     });
 
-    test('should have PDF and DOCX downloads for standard resume cards', async ({
-      page,
-    }) => {
+    test('should have PDF and DOCX downloads for standard resume cards', async ({ page }) => {
       // Find all standard (non-highlighted) resume cards
       const standardCards = page.locator('.doc-card:not(.doc-card-highlight)');
       const count = await standardCards.count();
@@ -91,36 +85,24 @@ test.describe('Download Functionality', () => {
         // Check PDF link if present with valid URL
         if ((await pdfLink.count()) > 0) {
           const pdfHref = await pdfLink.getAttribute('href');
-          if (
-            pdfHref &&
-            pdfHref !== 'undefined' &&
-            !pdfHref.includes('undefined')
-          ) {
+          if (pdfHref && pdfHref !== 'undefined' && !pdfHref.includes('undefined')) {
             await expect(pdfLink).toBeVisible();
-            expect(pdfHref).toContain('gitlab.jclee.me');
-            expect(pdfHref).not.toContain('github.com');
+            expect(pdfHref).toMatch(/gitlab\.jclee\.me|raw\.githubusercontent\.com/);
           }
         }
 
         // Check DOCX link if present with valid URL
         if ((await docxLink.count()) > 0) {
           const docxHref = await docxLink.getAttribute('href');
-          if (
-            docxHref &&
-            docxHref !== 'undefined' &&
-            !docxHref.includes('undefined')
-          ) {
+          if (docxHref && docxHref !== 'undefined' && !docxHref.includes('undefined')) {
             await expect(docxLink).toBeVisible();
-            expect(docxHref).toContain('gitlab.jclee.me');
-            expect(docxHref).not.toContain('github.com');
+            expect(docxHref).toMatch(/gitlab\.jclee\.me|raw\.githubusercontent\.com/);
           }
         }
       }
     });
 
-    test('should have proper ARIA labels on download links', async ({
-      page,
-    }) => {
+    test('should have proper ARIA labels on download links', async ({ page }) => {
       const downloadLinks = page.locator('a[download]');
       const count = await downloadLinks.count();
 
@@ -137,9 +119,7 @@ test.describe('Download Functionality', () => {
   });
 
   test.describe('Download Link Accessibility', () => {
-    test('should have role="group" on download link containers', async ({
-      page,
-    }) => {
+    test('should have role="group" on download link containers', async ({ page }) => {
       const downloadGroups = page
         .locator('[role="group"]')
         .filter({ has: page.locator('a[download]') });
@@ -148,9 +128,7 @@ test.describe('Download Functionality', () => {
       expect(count).toBeGreaterThanOrEqual(5); // At least 5 resume cards
     });
 
-    test('should have descriptive aria-label on download groups', async ({
-      page,
-    }) => {
+    test('should have descriptive aria-label on download groups', async ({ page }) => {
       const downloadGroups = page.locator('.doc-links[role="group"]');
       const count = await downloadGroups.count();
 
@@ -181,14 +159,13 @@ test.describe('Download Functionality', () => {
   });
 
   test.describe('Download Link Validation', () => {
-    test('all download URLs should follow correct patterns', async ({
-      page,
-    }) => {
+    test('all download URLs should follow correct patterns', async ({ page }) => {
       const allDownloadLinks = page.locator('a[download]');
       const count = await allDownloadLinks.count();
 
-      const gitlabUrlPattern =
-        /^https:\/\/gitlab\.jclee\.me\/jclee\/resume\/-\/raw\/master\/.+\.(pdf|docx|md)$/;
+      // File download URL pattern - supports GitLab or GitHub raw
+      const downloadsUrlPattern =
+        /^https:\/\/(gitlab\.jclee\.me\/jclee\/resume\/-\/raw\/master|raw\.githubusercontent\.com\/jclee-homelab\/resume\/master)\/.+\.(pdf|docx|md)$/;
       // Worker PDF pattern - handles both production (resume.jclee.me) and staging (*.workers.dev)
       const workerPdfPattern =
         /^https:\/\/(resume\.jclee\.me|resume-staging\.jclee\.workers\.dev)\/resume\.pdf$/;
@@ -199,9 +176,7 @@ test.describe('Download Functionality', () => {
 
         // Skip links with undefined URLs (missing data in data.json)
         if (href && href !== 'undefined' && !href.includes('undefined')) {
-          // Main resume PDF is served from worker, others from GitLab
-          const isValidUrl =
-            gitlabUrlPattern.test(href) || workerPdfPattern.test(href);
+          const isValidUrl = downloadsUrlPattern.test(href) || workerPdfPattern.test(href);
           expect(isValidUrl).toBe(true);
         }
       }
@@ -217,10 +192,7 @@ test.describe('Download Functionality', () => {
   });
 
   test.describe('Network Request Validation (Optional)', () => {
-    test.skip('download links should return 200 OK', async ({
-      page,
-      request,
-    }) => {
+    test.skip('download links should return 200 OK', async ({ page, request }) => {
       // This test requires GitLab to be publicly accessible
       // Skip by default, enable manually when testing
       const downloadLinks = page.locator('a[download]');
@@ -238,10 +210,7 @@ test.describe('Download Functionality', () => {
  * Expected download link counts - dynamically check rather than hardcode
  */
 test.describe('Download Link Counts', () => {
-  test('should have expected number of download links', async ({
-    page,
-    baseURL,
-  }) => {
+  test('should have expected number of download links', async ({ page, baseURL }) => {
     await page.goto(baseURL || '/');
     await page.waitForLoadState('networkidle');
 

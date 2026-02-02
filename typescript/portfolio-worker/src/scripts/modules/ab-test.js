@@ -110,18 +110,14 @@ export function initializeABTesting() {
   const pdfDownloadText = document.getElementById('pdf-download-text');
 
   if (pdfDownloadLink) {
+    // TODO: Migrate URLs to GitHub raw when files are synced
+    const DOWNLOADS_BASE = 'https://gitlab.jclee.me/jclee/resume/-/raw/master';
     if (resumeVariant === 'A') {
-      // Variant A: General resume
-      pdfDownloadLink.href =
-        'https://gitlab.jclee.me/jclee/resume/-/raw/master/resumes/generated/resume_general.pdf';
-      if (pdfDownloadText)
-        pdfDownloadText.textContent = '이력서 다운로드 (PDF)';
+      pdfDownloadLink.href = `${DOWNLOADS_BASE}/resumes/generated/resume_general.pdf`;
+      if (pdfDownloadText) pdfDownloadText.textContent = '이력서 다운로드 (PDF)';
     } else {
-      // Variant B: Technical resume
-      pdfDownloadLink.href =
-        'https://gitlab.jclee.me/jclee/resume/-/raw/master/resumes/generated/resume_technical.pdf';
-      if (pdfDownloadText)
-        pdfDownloadText.textContent = '이력서 다운로드 (PDF)';
+      pdfDownloadLink.href = `${DOWNLOADS_BASE}/resumes/generated/resume_technical.pdf`;
+      if (pdfDownloadText) pdfDownloadText.textContent = '이력서 다운로드 (PDF)';
     }
 
     // Track download clicks

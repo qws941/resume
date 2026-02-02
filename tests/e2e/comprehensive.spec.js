@@ -36,19 +36,13 @@ test.describe('Navigation', () => {
     await expect(navLinks.nth(1)).toHaveAttribute('data-i18n', 'nav.projects');
 
     await expect(navLinks.nth(2)).toHaveAttribute('href', '#infrastructure');
-    await expect(navLinks.nth(2)).toHaveAttribute(
-      'data-i18n',
-      'nav.infrastructure',
-    );
+    await expect(navLinks.nth(2)).toHaveAttribute('data-i18n', 'nav.infrastructure');
 
     await expect(navLinks.nth(3)).toHaveAttribute('href', '#skills');
     await expect(navLinks.nth(3)).toHaveAttribute('data-i18n', 'nav.skills');
 
     await expect(navLinks.nth(4)).toHaveAttribute('href', '#certifications');
-    await expect(navLinks.nth(4)).toHaveAttribute(
-      'data-i18n',
-      'nav.certifications',
-    );
+    await expect(navLinks.nth(4)).toHaveAttribute('data-i18n', 'nav.certifications');
 
     await expect(navLinks.nth(5)).toHaveAttribute('href', '#contact');
     await expect(navLinks.nth(5)).toHaveAttribute('data-i18n', 'nav.contact');
@@ -259,15 +253,15 @@ test.describe('Projects Section', () => {
         }
       }
 
-      // Check GitLab URL if exists
-      if (project.gitlabUrl) {
-        const gitlabLink = links
-          .filter({ hasText: /GitLab|코드/i })
+      // Check Repository URL if exists
+      if (project.repoUrl) {
+        const repoLink = links
+          .filter({ hasText: /GitHub|코드/i })
           .or(links.locator('.link-secondary').first());
-        const linkCount = await gitlabLink.count();
+        const linkCount = await repoLink.count();
         if (linkCount > 0) {
-          const href = await gitlabLink.first().getAttribute('href');
-          expect(href).toBe(project.gitlabUrl);
+          const href = await repoLink.first().getAttribute('href');
+          expect(href).toBe(project.repoUrl);
         }
       }
     }
@@ -294,9 +288,7 @@ test.describe('Contact Section', () => {
   });
 
   test('should have valid email link', async ({ page }) => {
-    const emailItem = page
-      .locator('.contact-item')
-      .filter({ hasText: 'Email' });
+    const emailItem = page.locator('.contact-item').filter({ hasText: 'Email' });
     const emailLink = emailItem.locator('a');
 
     await expect(emailLink).toHaveAttribute('href', 'mailto:qws941@kakao.com');
@@ -304,9 +296,7 @@ test.describe('Contact Section', () => {
   });
 
   test('should have valid phone link', async ({ page }) => {
-    const phoneItem = page
-      .locator('.contact-item')
-      .filter({ hasText: 'Phone' });
+    const phoneItem = page.locator('.contact-item').filter({ hasText: 'Phone' });
     const phoneLink = phoneItem.locator('a');
 
     await expect(phoneLink).toHaveAttribute('href', 'tel:010-5757-9592');
@@ -314,29 +304,19 @@ test.describe('Contact Section', () => {
   });
 
   test('should have valid GitHub link', async ({ page }) => {
-    const githubItem = page
-      .locator('.contact-item')
-      .filter({ hasText: 'GitHub' });
+    const githubItem = page.locator('.contact-item').filter({ hasText: 'GitHub' });
     const githubLink = githubItem.locator('a');
 
-    await expect(githubLink).toHaveAttribute(
-      'href',
-      'https://github.com/qws941',
-    );
+    await expect(githubLink).toHaveAttribute('href', 'https://github.com/qws941');
     await expect(githubLink).toHaveAttribute('target', '_blank');
     await expect(githubLink).toHaveAttribute('rel', 'noopener noreferrer');
   });
 
   test('should have valid website link', async ({ page }) => {
-    const websiteItem = page
-      .locator('.contact-item')
-      .filter({ hasText: 'Website' });
+    const websiteItem = page.locator('.contact-item').filter({ hasText: 'Website' });
     const websiteLink = websiteItem.locator('a');
 
-    await expect(websiteLink).toHaveAttribute(
-      'href',
-      'https://resume.jclee.me',
-    );
+    await expect(websiteLink).toHaveAttribute('href', 'https://resume.jclee.me');
     await expect(websiteLink).toHaveAttribute('target', '_blank');
   });
 });
@@ -443,10 +423,7 @@ test.describe('Data Consistency', () => {
 
     for (let i = 0; i < projectData.resume.length; i++) {
       const expected = projectData.resume[i].title;
-      const actual = page
-        .locator('#resume .doc-card')
-        .nth(i)
-        .locator('.doc-title');
+      const actual = page.locator('#resume .doc-card').nth(i).locator('.doc-title');
       await expect(actual).toContainText(expected);
     }
   });
@@ -456,10 +433,7 @@ test.describe('Data Consistency', () => {
 
     for (let i = 0; i < projectData.projects.length; i++) {
       const expected = projectData.projects[i].title;
-      const actual = page
-        .locator('#projects .project-card')
-        .nth(i)
-        .locator('.project-title');
+      const actual = page.locator('#projects .project-card').nth(i).locator('.project-title');
       await expect(actual).toContainText(expected);
     }
   });

@@ -10,9 +10,9 @@ const {
 
 describe('Config Module', () => {
   describe('CONFIG', () => {
-    test('should have GITLAB_BASE_URL', () => {
-      expect(CONFIG.GITLAB_BASE_URL).toBeDefined();
-      expect(CONFIG.GITLAB_BASE_URL).toContain('gitlab.jclee.me');
+    test('should have DOWNLOADS_BASE_URL', () => {
+      expect(CONFIG.DOWNLOADS_BASE_URL).toBeDefined();
+      expect(CONFIG.DOWNLOADS_BASE_URL).toMatch(/^https?:\/\//);
     });
 
     test('should have all LINK_TYPES', () => {
@@ -28,7 +28,7 @@ describe('Config Module', () => {
       expect(CONFIG.LINK_LABELS).toHaveProperty('PDF');
       expect(CONFIG.LINK_LABELS).toHaveProperty('DOCX');
       expect(CONFIG.LINK_LABELS).toHaveProperty('LIVE_DEMO');
-      expect(CONFIG.LINK_LABELS).toHaveProperty('GITLAB');
+      expect(CONFIG.LINK_LABELS).toHaveProperty('GITHUB');
       expect(CONFIG.LINK_LABELS).toHaveProperty('DOCUMENTATION');
       expect(CONFIG.LINK_LABELS).toHaveProperty('GRAFANA_HOME');
     });
@@ -40,9 +40,7 @@ describe('Config Module', () => {
     });
 
     test('DOC_CARD_HIGHLIGHT should include DOC_CARD', () => {
-      expect(CONFIG.CARD_CLASSES.DOC_CARD_HIGHLIGHT).toContain(
-        CONFIG.CARD_CLASSES.DOC_CARD,
-      );
+      expect(CONFIG.CARD_CLASSES.DOC_CARD_HIGHLIGHT).toContain(CONFIG.CARD_CLASSES.DOC_CARD);
     });
   });
 
