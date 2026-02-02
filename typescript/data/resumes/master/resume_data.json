@@ -38,7 +38,7 @@
       "project": "넥스트레이드 매매체결시스템 보안운영SM",
       "role": "보안운영 담당",
       "client": "넥스트레이드",
-      "description": "대체거래소(ATS) 보안 관제 업무를 담당하고 있습니다. Splunk 기반 로그 분석, FortiGate 방화벽 정책 관리, 월간 보안 리포트 작성 등의 업무를 수행합니다."
+      "description": "ATS 보안 관제. Splunk 로그 분석, FortiGate 방화벽 정책 관리, 월간 보안 리포트 작성."
     },
     {
       "company": "(주)가온누리정보시스템",
@@ -47,15 +47,15 @@
       "project": "넥스트레이드 매매체결시스템 구축",
       "role": "인프라 엔지니어",
       "client": "넥스트레이드",
-      "description": "ATS 구축 프로젝트에서 보안 인프라 설계를 담당했습니다. 금융위원회 본인가 심사 기준에 맞춰 네트워크 분리 및 접근통제 정책을 수립했으며, FortiGate HA 구성을 통해 고가용성 환경을 구현했습니다."
+      "description": "ATS 보안 인프라 설계. 금융위 본인가 심사 대응, 네트워크 분리/접근통제 정책 수립, FortiGate HA 구성."
     },
     {
       "company": "(주)콴텍투자일임",
       "period": "2022.08 ~ 2024.02",
       "duration": "1년 7개월",
-      "project": "AI 주식투자 서비스 인프라",
-      "role": "인프라 담당",
-      "description": "AI 투자 서비스의 인프라 운영을 담당했습니다. AWS 환경에서 Prometheus/Grafana 기반 모니터링 시스템을 구축하고, 약 20대 서버의 통합 관리 체계를 마련했습니다."
+      "project": "AI 주식투자 서비스 보안운영",
+      "role": "정보보호팀",
+      "description": "AWS 인프라 보안 운영. 보안 로그 수집, IAM/보안그룹 관리, 취약점 점검, 로보어드바이저 테스트베드 심사 보안 지원."
     },
     {
       "company": "(주)펀엔씨",
@@ -63,7 +63,7 @@
       "duration": "3개월",
       "project": "클라우드 인프라",
       "role": "인프라 담당",
-      "description": "온프레미스에서 AWS로의 마이그레이션을 수행했습니다. VPC 설계 및 EKS 클러스터 구축을 담당했고, GitLab CI/CD 파이프라인을 구성했습니다."
+      "description": "온프레미스→AWS 마이그레이션. VPC 설계, EKS 클러스터 구축, GitLab CI/CD 파이프라인 구성."
     },
     {
       "company": "(주)조인트리",
@@ -71,15 +71,15 @@
       "duration": "8개월",
       "project": "국민대학교 차세대 정보시스템",
       "role": "시스템 엔지니어",
-      "description": "대학 전산 환경의 보안 강화 프로젝트에 참여했습니다. VMware NSX-T 기반 네트워크 세그멘테이션 구축 및 보안솔루션(방화벽, NAC, DLP 등) 설치를 담당했습니다."
+      "description": "대학 전산 보안 강화. VMware NSX-T 마이크로세그멘테이션, 보안솔루션(방화벽, NAC, DLP) 설치."
     },
     {
       "company": "(주)메타넷엠플랫폼",
       "period": "2019.12 ~ 2021.08",
       "duration": "1년 9개월",
-      "project": "콜센터 인프라",
+      "project": "컨택센터 인프라",
       "role": "시스템 엔지니어",
-      "description": "콜센터 인프라 운영 및 재택근무 환경 구축을 담당했습니다. VPN 환경 구성과 Ansible 기반 서버 프로비저닝 자동화 작업을 수행했습니다."
+      "description": "컨택센터 인프라 운영. 재택근무 VPN 환경 구축, Ansible 서버 프로비저닝 자동화."
     },
     {
       "company": "(주)엠티데이타",
@@ -87,7 +87,7 @@
       "duration": "1년 9개월",
       "project": "한국항공우주산업(KAI)",
       "role": "IT지원/OA운영",
-      "description": "방위산업체 KAI의 IT 인프라 운영을 담당했습니다. 서버/클라이언트 환경 관리 및 헬프데스크 업무를 수행했습니다."
+      "description": "방위산업체 IT 인프라 운영. 서버/클라이언트 환경 관리, 헬프데스크."
     }
   ],
   "projects": [
@@ -111,12 +111,12 @@
     },
     {
       "period": "2022.08 ~ 2024.02",
-      "name": "AI투자서비스 인프라운영",
+      "name": "AI투자서비스 보안운영",
       "client": "콴텍투자일임",
-      "technologies": ["Python", "AWS", "Prometheus", "Grafana"],
+      "technologies": ["AWS", "IAM", "Security Group", "Prometheus", "Grafana"],
       "os": "Linux, AWS",
-      "role": "인프라 운영",
-      "description": "AWS 기반 인프라 운영 및 Prometheus/Grafana 모니터링 환경 구축을 담당했습니다."
+      "role": "정보보호팀",
+      "description": "AWS 보안 운영 및 로보어드바이저 테스트베드 심사 보안 지원을 담당했습니다."
     },
     {
       "period": "2022.05 ~ 2022.07",
@@ -138,7 +138,7 @@
     },
     {
       "period": "2019.12 ~ 2021.08",
-      "name": "콜센터 원격근무 인프라",
+      "name": "컨택센터 원격근무 인프라",
       "client": "메타넷엠플랫폼",
       "technologies": ["Ansible", "Python", "VPN", "NAC"],
       "os": "Linux",
@@ -190,77 +190,88 @@
     "devops": ["GitLab CI/CD", "GitHub Actions", "Ansible", "Terraform"],
     "automation": ["Python", "Shell", "n8n"],
     "database": ["PostgreSQL", "MySQL", "Redis"],
-    "security": ["FortiGate", "NAC", "DLP", "IPS"]
+    "security": ["FortiGate", "FortiManager", "FortiAnalyzer", "Splunk", "NAC", "DLP"]
   },
   "personalProjects": [
     {
       "name": "Observability Platform",
       "period": "2024.06 ~ 현재",
-      "description": "Grafana/Prometheus/Loki 기반 모니터링 플랫폼을 구축하여 개인 프로젝트들의 메트릭과 로그를 수집하고 있습니다.",
-      "technologies": ["Grafana", "Prometheus", "Loki", "Docker"],
+      "description": "홈랩 인프라 모니터링. Prometheus 메트릭 수집, Loki 로그 집계, Grafana 시각화.",
+      "technologies": ["Grafana", "Prometheus", "Loki", "Blackbox Exporter", "Docker"],
       "icon": "📊",
       "tagline": "모니터링 플랫폼",
-      "metrics": {
-        "dashboards": "10개 대시보드 운영",
-        "services": "15개 서비스 모니터링"
-      }
-    },
-    {
-      "name": "GitLab Self-Hosted",
-      "period": "2023.01 ~ 현재",
-      "description": "개인 프로젝트 관리를 위해 GitLab을 자체 호스팅하여 운영하고 있습니다.",
-      "technologies": ["GitLab", "Docker", "CI/CD"],
-      "icon": "🦊",
-      "tagline": "Git 저장소",
-      "metrics": {
-        "repositories": "30개 프로젝트 관리"
-      }
+      "metrics": {}
     },
     {
       "name": "n8n Automation",
       "period": "2024.01 ~ 현재",
-      "description": "반복 업무 자동화를 위해 n8n 워크플로우 플랫폼을 운영하고 있습니다.",
+      "description": "알림, 배포, 데이터 수집 워크플로우 자동화.",
       "technologies": ["n8n", "PostgreSQL", "Docker"],
       "icon": "🔄",
       "tagline": "워크플로우 자동화",
-      "metrics": {
-        "workflows": "20개 워크플로우 운영"
-      }
+      "metrics": {}
+    },
+    {
+      "name": "FortiNet API Client",
+      "period": "2025.01 ~ 현재",
+      "description": "FortiManager 정책/라우트 조회, FortiAnalyzer 로그 통계 수집용 Python 라이브러리.",
+      "technologies": ["Python", "FortiManager", "FortiAnalyzer"],
+      "icon": "🛡️",
+      "tagline": "보안장비 API 자동화",
+      "metrics": {}
+    },
+    {
+      "name": "Security Alert System",
+      "period": "2025.01 ~ 현재",
+      "description": "FortiGate 이벤트를 Splunk에서 탐지, Slack Block Kit으로 알림. 32개 탐지 룰 운영.",
+      "technologies": ["Splunk", "Python", "Slack"],
+      "icon": "🔔",
+      "tagline": "보안 알림 자동화",
+      "metrics": {}
+    },
+    {
+      "name": "IP Blacklist Platform",
+      "period": "2024.12 ~ 현재",
+      "description": "악성 IP 수집, 분석, 대시보드 제공. Flask API + Next.js 프론트엔드.",
+      "technologies": ["Flask", "Next.js", "PostgreSQL"],
+      "icon": "🚫",
+      "tagline": "위협 인텔리전스",
+      "metrics": {}
     }
   ],
   "hero": {
     "badge": "Infrastructure Engineer",
     "title": "이재철",
     "titleEn": "Jaecheol Lee",
-    "subtitle": "금융·제조·공공 분야 인프라 설계 및 운영\nObservability, 보안 인프라, 자동화"
+    "subtitle": "보안 인프라 설계 · Observability · 자동화"
   },
   "sectionDescriptions": {
-    "resume": "금융, 제조, 공공 분야에서 인프라 설계 및 운영 경험을 쌓았습니다.",
-    "projects": "개인적으로 운영 중인 인프라입니다.",
-    "infrastructure": "실제 운영 중인 서비스입니다.",
-    "skills": "실무에서 활용하고 있는 기술입니다.",
-    "certifications": "취득한 자격증입니다.",
-    "contact": "연락처입니다."
+    "resume": "7년 11개월 인프라 경력",
+    "projects": "사이드 프로젝트",
+    "infrastructure": "운영 중인 서비스",
+    "skills": "기술 스택",
+    "certifications": "자격증",
+    "contact": "연락처"
   },
   "achievements": [
-    "넥스트레이드 ATS 보안 인프라 설계 참여 (금융위 본인가 통과)",
-    "Grafana/Prometheus 기반 모니터링 체계 구축 경험",
-    "Ansible/n8n 기반 운영 자동화 경험"
+    "넥스트레이드 ATS 보안 인프라 설계 (금융위 본인가 통과)",
+    "로보어드바이저 테스트베드 심사 보안 지원",
+    "Grafana/Prometheus/Loki 모니터링 스택 구축",
+    "Ansible/n8n 운영 자동화 구현"
   ],
   "infrastructure": [
     {
-      "icon": "📊",
-      "title": "Grafana",
-      "description": "Prometheus + Loki 기반 모니터링",
-      "status": "running",
-      "url": "https://grafana.jclee.me/public-dashboards/8c91649fe829cb4905edf4a60579d0a0"
+      "icon": "🖥️",
+      "title": "Proxmox VE",
+      "description": "가상화 플랫폼",
+      "status": "running"
     },
     {
-      "icon": "🦊",
-      "title": "GitLab",
-      "description": "Self-hosted Git + CI/CD",
+      "icon": "📊",
+      "title": "Grafana",
+      "description": "메트릭/로그 시각화",
       "status": "running",
-      "url": "https://gitlab.jclee.me"
+      "url": "https://grafana.jclee.me/public-dashboards/8c91649fe829cb4905edf4a60579d0a0"
     },
     {
       "icon": "🔄",
@@ -268,6 +279,19 @@
       "description": "워크플로우 자동화",
       "status": "running",
       "url": "https://n8n.jclee.me"
+    },
+    {
+      "icon": "⚡",
+      "title": "Cloudflare Workers",
+      "description": "Edge 배포",
+      "status": "running",
+      "url": "https://resume.jclee.me"
+    },
+    {
+      "icon": "🏗️",
+      "title": "Terraform",
+      "description": "IaC (DNS/Workers)",
+      "status": "running"
     }
   ],
   "contact": {

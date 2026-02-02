@@ -1,12 +1,12 @@
 // Sentry configuration - loads AFTER Sentry SDK
 Sentry.init({
-  dsn: "https://0aff8c4399157caf0dc92e63a9401d67@sentry.jclee.me/3",
-  environment: "production",
+  dsn: 'https://0aff8c4399157caf0dc92e63a9401d67@sentry.jclee.me/3',
+  environment: 'production',
   tracesSampleRate: 0.1,
   // Only capture unhandled errors
   integrations: function (integrations) {
     return integrations.filter(function (integration) {
-      return integration.name !== "TryCatch";
+      return integration.name !== 'TryCatch';
     });
   },
   beforeSend: function (event) {
@@ -19,8 +19,8 @@ Sentry.init({
           ex.stacktrace.frames.some(function (frame) {
             return (
               frame.filename &&
-              (frame.filename.indexOf("chrome-extension://") !== -1 ||
-                frame.filename.indexOf("moz-extension://") !== -1)
+              (frame.filename.indexOf('chrome-extension://') !== -1 ||
+                frame.filename.indexOf('moz-extension://') !== -1)
             );
           })
         );

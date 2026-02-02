@@ -57,12 +57,7 @@ const PLATFORMS = {
       main: 'https://www.wanted.co.kr',
       profile: 'https://www.wanted.co.kr/profile',
     },
-    cookieDomains: [
-      'www.wanted.co.kr',
-      'id.wanted.jobs',
-      'wanted.co.kr',
-      'wanted.jobs',
-    ],
+    cookieDomains: ['www.wanted.co.kr', 'id.wanted.jobs', 'wanted.co.kr', 'wanted.jobs'],
     sessionCookie: 'WWW_ONEID_ACCESS_TOKEN',
   },
   jobkorea: {
@@ -100,8 +95,7 @@ class AuthSync {
 
   log(message, type = 'info', platform = null) {
     const timestamp = new Date().toISOString();
-    const prefix =
-      { info: 'ℹ️', error: '❌', success: '✅', warn: '⚠️' }[type] || '📝';
+    const prefix = { info: 'ℹ️', error: '❌', success: '✅', warn: '⚠️' }[type] || '📝';
     const platformTag = platform ? `[${platform.toUpperCase()}]` : '';
     console.log(`${timestamp} ${prefix} ${platformTag} ${message}`);
   }
@@ -130,7 +124,7 @@ class AuthSync {
     this.page = await this.browser.newPage();
 
     await this.page.setUserAgent(
-      'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+      'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
     );
 
     await this.page.evaluateOnNewDocument(() => {
@@ -160,13 +154,9 @@ class AuthSync {
     // Click "Continue with email" button
     this.log('Clicking email login button', 'info', 'wanted');
     await this.sleep(1000);
-    const buttons = await this.page.$$(
-      'button, a[role="button"], div[role="button"]',
-    );
+    const buttons = await this.page.$$('button, a[role="button"], div[role="button"]');
     for (const btn of buttons) {
-      const text = await btn.evaluate(
-        (el) => el.textContent?.toLowerCase() || '',
-      );
+      const text = await btn.evaluate((el) => el.textContent?.toLowerCase() || '');
       if (text.includes('email') || text.includes('이메일')) {
         await btn.click();
         await this.sleep(2000);
@@ -178,7 +168,7 @@ class AuthSync {
     this.log('Entering email', 'info', 'wanted');
     const emailInput = await this.page.waitForSelector(
       'input[type="email"], input[type="text"][name*="email"], input[placeholder*="이메일"], input[placeholder*="email"]',
-      { timeout: 10000 },
+      { timeout: 10000 }
     );
     await emailInput.click({ clickCount: 3 });
     await emailInput.type(CONFIG.WANTED_EMAIL, { delay: 30 });
@@ -188,9 +178,7 @@ class AuthSync {
     this.log('Clicking next', 'info', 'wanted');
     const nextButtons = await this.page.$$('button[type="submit"], button');
     for (const btn of nextButtons) {
-      const text = await btn.evaluate(
-        (el) => el.textContent?.toLowerCase() || '',
-      );
+      const text = await btn.evaluate((el) => el.textContent?.toLowerCase() || '');
       if (
         text.includes('다음') ||
         text.includes('계속') ||
@@ -205,10 +193,10 @@ class AuthSync {
 
     // Enter password
     this.log('Entering password', 'info', 'wanted');
-    const passwordInput = await this.page.waitForSelector(
-      'input[type="password"]',
-      { visible: true, timeout: 10000 },
-    );
+    const passwordInput = await this.page.waitForSelector('input[type="password"]', {
+      visible: true,
+      timeout: 10000,
+    });
     await passwordInput.click();
     await passwordInput.type(CONFIG.WANTED_PASSWORD, { delay: 30 });
     await this.sleep(500);
@@ -217,9 +205,7 @@ class AuthSync {
     this.log('Clicking login', 'info', 'wanted');
     const loginButtons = await this.page.$$('button[type="submit"], button');
     for (const btn of loginButtons) {
-      const text = await btn.evaluate(
-        (el) => el.textContent?.toLowerCase() || '',
-      );
+      const text = await btn.evaluate((el) => el.textContent?.toLowerCase() || '');
       if (text.includes('로그인') || text.includes('login')) {
         await btn.click();
         break;
@@ -233,9 +219,7 @@ class AuthSync {
     await this.sleep(3000);
 
     const finalCookies = await this.page.cookies();
-    const loggedIn = finalCookies.some(
-      (c) => c.name === platform.sessionCookie,
-    );
+    const loggedIn = finalCookies.some((c) => c.name === platform.sessionCookie);
 
     if (loggedIn) {
       this.log('Login successful', 'success', 'wanted');
@@ -252,25 +236,13 @@ class AuthSync {
     const platform = PLATFORMS[platformKey];
 
     if (this.headless) {
-      this.log(
-        'Manual login requires non-headless mode. Skipping.',
-        'warn',
-        platformKey,
-      );
-      this.log(
-        'Run without --headless flag to login manually',
-        'info',
-        platformKey,
-      );
+      this.log('Manual login requires non-headless mode. Skipping.', 'warn', platformKey);
+      this.log('Run without --headless flag to login manually', 'info', platformKey);
       return false;
     }
 
     this.log('Opening browser for manual login', 'info', platformKey);
-    this.log(
-      'Please complete the Google OAuth login in the browser',
-      'info',
-      platformKey,
-    );
+    this.log('Please complete the Google OAuth login in the browser', 'info', platformKey);
 
     try {
       await this.page.goto(platform.urls.login, {
@@ -290,16 +262,8 @@ class AuthSync {
     }
 
     // Wait for user to complete manual login
-    this.log(
-      'Waiting for manual login (max 3 minutes)...',
-      'info',
-      platformKey,
-    );
-    this.log(
-      'After logging in, the script will automatically continue',
-      'info',
-      platformKey,
-    );
+    this.log('Waiting for manual login (max 3 minutes)...', 'info', platformKey);
+    this.log('After logging in, the script will automatically continue', 'info', platformKey);
 
     const startTime = Date.now();
     const timeout = 180000; // 3 minutes
@@ -313,19 +277,16 @@ class AuthSync {
           waitUntil: 'domcontentloaded',
           timeout: 10000,
         });
-      } catch (e) {
+      } catch (_e) {
         // Ignore navigation errors
       }
 
       const currentCookies = await this.page.cookies();
-      const hasSession = currentCookies.some(
-        (c) => c.name === platform.sessionCookie,
-      );
+      const hasSession = currentCookies.some((c) => c.name === platform.sessionCookie);
 
       // Also check if we're no longer on the login page
       const currentUrl = this.page.url();
-      const notOnLogin =
-        !currentUrl.includes('login') && !currentUrl.includes('auth');
+      const notOnLogin = !currentUrl.includes('login') && !currentUrl.includes('auth');
 
       if (hasSession || (notOnLogin && currentCookies.length > 5)) {
         this.log('Login detected!', 'success', platformKey);
@@ -334,11 +295,7 @@ class AuthSync {
 
       const elapsed = Math.floor((Date.now() - startTime) / 1000);
       if (elapsed % 15 === 0) {
-        this.log(
-          `Still waiting for login... (${elapsed}s)`,
-          'info',
-          platformKey,
-        );
+        this.log(`Still waiting for login... (${elapsed}s)`, 'info', platformKey);
       }
     }
 
@@ -357,11 +314,7 @@ class AuthSync {
         timeout: 30000,
       });
     } catch (e) {
-      this.log(
-        `Navigation warning: ${e.message}, continuing...`,
-        'warn',
-        platformKey,
-      );
+      this.log(`Navigation warning: ${e.message}, continuing...`, 'warn', platformKey);
     }
     await this.sleep(3000);
 
@@ -404,17 +357,13 @@ class AuthSync {
       // Fallback: Find by class pattern (sns login buttons)
       if (!googleClicked) {
         const snsButtons = await this.page.$$(
-          '.sns-login a, .social-login a, [class*="sns"] a, [class*="social"] a',
+          '.sns-login a, .social-login a, [class*="sns"] a, [class*="social"] a'
         );
         if (snsButtons.length >= 4) {
           // Google is typically 4th (index 3)
           await snsButtons[3].click();
           googleClicked = true;
-          this.log(
-            'Clicked 4th social button (likely Google)',
-            'info',
-            platformKey,
-          );
+          this.log('Clicked 4th social button (likely Google)', 'info', platformKey);
         }
       }
     } else if (platformKey === 'saramin') {
@@ -448,8 +397,7 @@ class AuthSync {
         const src = await img.evaluate((el) => el.src || '');
         if (src.toLowerCase().includes('google')) {
           await img.evaluate((el) => {
-            const clickable =
-              el.closest('a') || el.closest('button') || el.parentElement;
+            const clickable = el.closest('a') || el.closest('button') || el.parentElement;
             if (clickable) clickable.click();
             else el.click();
           });
@@ -515,19 +463,12 @@ class AuthSync {
         googlePage = this.page;
       } else {
         // Wait a bit more for popup
-        googlePage = await Promise.race([
-          popupPromise,
-          this.sleep(5000).then(() => null),
-        ]);
+        googlePage = await Promise.race([popupPromise, this.sleep(5000).then(() => null)]);
       }
     }
 
     if (!googlePage) {
-      this.log(
-        'Google OAuth page not found - popup may be blocked',
-        'error',
-        platformKey,
-      );
+      this.log('Google OAuth page not found - popup may be blocked', 'error', platformKey);
       await this.screenshot(`${platformKey}-no-google-popup`);
       return false;
     }
@@ -614,9 +555,7 @@ class AuthSync {
 
     // Verify login
     const finalCookies = await this.page.cookies();
-    const loggedIn = finalCookies.some(
-      (c) => c.name === platform.sessionCookie,
-    );
+    const loggedIn = finalCookies.some((c) => c.name === platform.sessionCookie);
 
     if (loggedIn) {
       this.log('Login successful', 'success', platformKey);
@@ -657,18 +596,15 @@ class AuthSync {
           .slice(0, 10)
           .join(', ')}...`,
         'info',
-        platformKey,
+        platformKey
       );
     }
 
     const relevantCookies = allCookies.filter((c) =>
       platform.cookieDomains.some((d) => {
         const normalizedDomain = d.replace(/^www\./, '');
-        return (
-          c.domain.endsWith(normalizedDomain) ||
-          c.domain === `.${normalizedDomain}`
-        );
-      }),
+        return c.domain.endsWith(normalizedDomain) || c.domain === `.${normalizedDomain}`;
+      })
     );
 
     this.log(`Found ${relevantCookies.length} cookies`, 'info', platformKey);
@@ -677,27 +613,18 @@ class AuthSync {
       return null;
     }
 
-    const cookieString = relevantCookies
-      .map((c) => `${c.name}=${c.value}`)
-      .join('; ');
+    const cookieString = relevantCookies.map((c) => `${c.name}=${c.value}`).join('; ');
 
     const session = {
       platform: platformKey,
       cookies: cookieString,
-      email:
-        platform.authMethod === 'google'
-          ? CONFIG.GOOGLE_EMAIL
-          : CONFIG.WANTED_EMAIL,
+      email: platform.authMethod === 'google' ? CONFIG.GOOGLE_EMAIL : CONFIG.WANTED_EMAIL,
       extractedAt: new Date().toISOString(),
       expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
     };
 
     this.saveSessionToFile(platformKey, session);
-    this.log(
-      `Extracted ${relevantCookies.length} cookies`,
-      'success',
-      platformKey,
-    );
+    this.log(`Extracted ${relevantCookies.length} cookies`, 'success', platformKey);
     return session;
   }
 
@@ -721,11 +648,7 @@ class AuthSync {
       this.log('Loaded session from file', 'success', platformKey);
       return data;
     } catch (error) {
-      this.log(
-        `Failed to load session: ${error.message}`,
-        'error',
-        platformKey,
-      );
+      this.log(`Failed to load session: ${error.message}`, 'error', platformKey);
       return null;
     }
   }
@@ -767,11 +690,7 @@ class AuthSync {
         this.log('Synced to Worker', 'success', session.platform);
         return true;
       } else {
-        this.log(
-          `Sync failed: ${result.error || response.status}`,
-          'error',
-          session.platform,
-        );
+        this.log(`Sync failed: ${result.error || response.status}`, 'error', session.platform);
         return false;
       }
     } catch (error) {
@@ -787,10 +706,7 @@ class AuthSync {
       fs.mkdirSync(CONFIG.SCREENSHOTS_DIR, { recursive: true });
     }
 
-    const filepath = path.join(
-      CONFIG.SCREENSHOTS_DIR,
-      `${name}-${Date.now()}.png`,
-    );
+    const filepath = path.join(CONFIG.SCREENSHOTS_DIR, `${name}-${Date.now()}.png`);
     await this.page.screenshot({ path: filepath, fullPage: true });
     this.log(`Screenshot: ${filepath}`);
   }
@@ -914,7 +830,7 @@ sync
     for (const [platform, session] of Object.entries(results)) {
       if (session) {
         console.log(
-          `✅ ${platform.toUpperCase()}: ${session.email} (expires: ${session.expiresAt})`,
+          `✅ ${platform.toUpperCase()}: ${session.email} (expires: ${session.expiresAt})`
         );
       } else {
         console.log(`❌ ${platform.toUpperCase()}: Failed`);

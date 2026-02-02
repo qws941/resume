@@ -42,7 +42,7 @@ async function injectSchemas(htmlFile) {
       console.log(`⚠️  Could not find insertion point in ${htmlFile}`);
     }
   } catch (error) {
-    console.error(`❌ Error injecting schemas:`, error.message);
+    console.error('❌ Error injecting schemas:', error.message);
     process.exit(1);
   }
 }

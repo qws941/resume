@@ -1,13 +1,13 @@
-const fs = require("fs");
-const path = require("path");
-const { minify } = require("html-minifier-terser");
-const esbuild = require("esbuild");
+const fs = require('fs');
+const path = require('path');
+const { minify } = require('html-minifier-terser');
+const esbuild = require('esbuild');
 
 // Import modularized components
-const { ESCAPE_PATTERNS, TEMPLATE_CACHE } = require("./lib/config");
-const { validateData } = require("./lib/validators");
-const { calculateDataHash, readAllFiles } = require("./lib/utils");
-const { extractInlineHashes } = require("./lib/templates");
+const { ESCAPE_PATTERNS, TEMPLATE_CACHE } = require('./lib/config');
+const { validateData } = require('./lib/validators');
+const { calculateDataHash, readAllFiles } = require('./lib/utils');
+const { extractInlineHashes } = require('./lib/templates');
 const {
   generateResumeCards,
   generateProjectCards,
@@ -17,15 +17,15 @@ const {
   generateResumeDescription,
   generateInfrastructureCards,
   generateContactGrid,
-} = require("./lib/cards");
-const securityHeadersModule = require("./lib/security-headers");
-const metricsModule = require("./lib/metrics");
-const lokiLoggerModule = require("./lib/loki-logger");
-const logger = require("./logger");
+} = require('./lib/cards');
+const securityHeadersModule = require('./lib/security-headers');
+const metricsModule = require('./lib/metrics');
+const lokiLoggerModule = require('./lib/loki-logger');
+const logger = require('./logger');
 
 // Read version from package.json
 const packageJson = JSON.parse(
-  fs.readFileSync(path.join(__dirname, "..", "..", "package.json"), "utf-8"),
+  fs.readFileSync(path.join(__dirname, '..', '..', 'package.json'), 'utf-8'),
 );
 const VERSION = packageJson.version;
 
@@ -77,18 +77,18 @@ const VERSION = packageJson.version;
 // SECURITY & AUTH CONFIGURATION
 // ========================================
 const ALLOWED_EMAILS = process.env.ALLOWED_EMAILS
-  ? process.env.ALLOWED_EMAILS.split(",").map((e) => e.trim())
+  ? process.env.ALLOWED_EMAILS.split(',').map((e) => e.trim())
   : [];
 // Note: In a real Worker, env vars are better, but for build-time generation we can inject defaults
 // or rely on env vars present at runtime (env object).
-const _GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID || "";
+const _GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID || '';
 
 // Cloudflare API Config - MUST be set via environment variables or Cloudflare Worker bindings
 // SECURITY: Never hardcode API keys in source code
-const CF_API_KEY_DEFAULT = process.env.CF_API_KEY || "";
-const CF_EMAIL_DEFAULT = process.env.CF_EMAIL || "";
+const CF_API_KEY_DEFAULT = process.env.CF_API_KEY || '';
+const CF_EMAIL_DEFAULT = process.env.CF_EMAIL || '';
 const _N8N_WEBHOOK_BASE =
-  process.env.N8N_WEBHOOK_BASE || "https://n8n.jclee.me/webhook";
+  process.env.N8N_WEBHOOK_BASE || 'https://n8n.jclee.me/webhook';
 
 // ========================================
 // MAIN BUILD PROCESS
@@ -97,13 +97,13 @@ const _N8N_WEBHOOK_BASE =
 // Main async function to handle Promise-based minification
 (async () => {
   // Only run if not in test environment
-  if (process.env.NODE_ENV === "test") {
+  if (process.env.NODE_ENV === 'test') {
     return;
   }
 
   const buildStartTime = Date.now();
-  logger.log("🚀 Starting improved worker generation...\n");
-  logger.debug("Build configuration:", {
+  logger.log('🚀 Starting improved worker generation...\n');
+  logger.debug('Build configuration:', {
     NODE_ENV: process.env.NODE_ENV,
     DEBUG: process.env.DEBUG,
     VERBOSE: process.env.VERBOSE,
@@ -112,95 +112,95 @@ const _N8N_WEBHOOK_BASE =
 
   // CRITICAL: Calculate hashes from ORIGINAL HTML before escaping
   // (Browsers calculate hashes from the actual HTML they receive, not the escaped template literal)
-  logger.log("📂 Reading source files...");
+  logger.log('📂 Reading source files...');
 
   const filesToRead = [
     {
-      path: path.join(__dirname, "index.html"),
-      encoding: "utf-8",
-      name: "indexHtmlRaw",
+      path: path.join(__dirname, 'index.html'),
+      encoding: 'utf-8',
+      name: 'indexHtmlRaw',
     },
     {
-      path: path.join(__dirname, "index-en.html"),
-      encoding: "utf-8",
-      name: "indexEnHtmlRaw",
+      path: path.join(__dirname, 'index-en.html'),
+      encoding: 'utf-8',
+      name: 'indexEnHtmlRaw',
     },
     {
-      path: path.join(__dirname, "data.json"),
-      encoding: "utf-8",
-      name: "projectDataRaw",
+      path: path.join(__dirname, 'data.json'),
+      encoding: 'utf-8',
+      name: 'projectDataRaw',
     },
     {
-      path: path.join(__dirname, "manifest.json"),
-      encoding: "utf-8",
-      name: "manifestJson",
+      path: path.join(__dirname, 'manifest.json'),
+      encoding: 'utf-8',
+      name: 'manifestJson',
     },
     {
-      path: path.join(__dirname, "sw.js"),
-      encoding: "utf-8",
-      name: "serviceWorker",
+      path: path.join(__dirname, 'sw.js'),
+      encoding: 'utf-8',
+      name: 'serviceWorker',
     },
     {
-      path: path.join(__dirname, "robots.txt"),
-      encoding: "utf-8",
-      name: "robotsTxt",
+      path: path.join(__dirname, 'robots.txt'),
+      encoding: 'utf-8',
+      name: 'robotsTxt',
     },
     {
-      path: path.join(__dirname, "sitemap.xml"),
-      encoding: "utf-8",
-      name: "sitemapXml",
+      path: path.join(__dirname, 'sitemap.xml'),
+      encoding: 'utf-8',
+      name: 'sitemapXml',
     },
     {
-      path: path.join(__dirname, "sentry-config.js"),
-      encoding: "utf-8",
-      name: "sentryConfig",
+      path: path.join(__dirname, 'sentry-config.js'),
+      encoding: 'utf-8',
+      name: 'sentryConfig',
     },
     {
-      path: path.join(__dirname, "og-image.webp"),
+      path: path.join(__dirname, 'og-image.webp'),
       encoding: null,
-      name: "ogImageBuffer",
+      name: 'ogImageBuffer',
     },
     {
-      path: path.join(__dirname, "og-image-en.webp"),
+      path: path.join(__dirname, 'og-image-en.webp'),
       encoding: null,
-      name: "ogImageEnBuffer",
+      name: 'ogImageEnBuffer',
     },
     {
       path: path.join(
         __dirname,
-        "..",
-        "data",
-        "resumes",
-        "master",
-        "resume_final.pdf",
+        '..',
+        'data',
+        'resumes',
+        'master',
+        'resume_final.pdf',
       ),
       encoding: null,
-      name: "resumePdfBuffer",
+      name: 'resumePdfBuffer',
     },
   ];
 
   const fileContents = readAllFiles(filesToRead);
 
   // Bundle main.js using esbuild
-  logger.log("📦 Bundling main.js...");
+  logger.log('📦 Bundling main.js...');
   const bundleResult = await esbuild.build({
-    entryPoints: [path.join(__dirname, "src", "scripts", "main.js")],
+    entryPoints: [path.join(__dirname, 'src', 'scripts', 'main.js')],
     bundle: true,
     minify: true,
     write: false,
-    format: "iife",
-    target: ["es2020"],
+    format: 'iife',
+    target: ['es2020'],
     absWorkingDir: __dirname,
   });
 
   const mainJs = bundleResult.outputFiles[0].text
-    .replace(ESCAPE_PATTERNS.BACKTICK, "\\`")
-    .replace(ESCAPE_PATTERNS.DOLLAR, "\\$");
+    .replace(ESCAPE_PATTERNS.BACKTICK, '\\`')
+    .replace(ESCAPE_PATTERNS.DOLLAR, '\\$');
 
   // Bundle CSS using esbuild
-  logger.log("📦 Bundling CSS...");
+  logger.log('📦 Bundling CSS...');
   const cssBundleResult = await esbuild.build({
-    entryPoints: [path.join(__dirname, "src", "styles", "main.css")],
+    entryPoints: [path.join(__dirname, 'src', 'styles', 'main.css')],
     bundle: true,
     minify: true,
     write: false,
@@ -223,9 +223,9 @@ const _N8N_WEBHOOK_BASE =
   } = fileContents;
 
   const projectData = JSON.parse(projectDataRaw);
-  const ogImageBase64 = ogImageBuffer.toString("base64");
-  const ogImageEnBase64 = ogImageEnBuffer.toString("base64");
-  const resumePdfBase64 = resumePdfBuffer.toString("base64");
+  const ogImageBase64 = ogImageBuffer.toString('base64');
+  const ogImageEnBase64 = ogImageEnBuffer.toString('base64');
+  const resumePdfBase64 = resumePdfBuffer.toString('base64');
 
   logger.debug(`index.html size: ${indexHtmlRaw.length} bytes`);
   logger.debug(`styles.css size: ${cssContent.length} bytes`);
@@ -235,16 +235,16 @@ const _N8N_WEBHOOK_BASE =
   logger.debug(`manifest.json size: ${manifestJson.length} bytes`);
   logger.debug(`sw.js size: ${serviceWorker.length} bytes`);
 
-  logger.log("✓ Source files loaded\n");
+  logger.log('✓ Source files loaded\n');
 
   // Validate data.json structure
-  logger.log("🔍 Validating data.json...");
+  logger.log('🔍 Validating data.json...');
   validateData(projectData);
 
   // Calculate data hash for caching
   const dataHash = calculateDataHash(projectData);
   if (TEMPLATE_CACHE.dataHash !== dataHash) {
-    logger.log("📝 Data changed, regenerating templates...");
+    logger.log('📝 Data changed, regenerating templates...');
     TEMPLATE_CACHE.dataHash = dataHash;
   }
 
@@ -268,23 +268,23 @@ const _N8N_WEBHOOK_BASE =
 
   // Inject CSS, resume cards, project cards and resume download URLs into HTML
   let indexHtml = indexHtmlRaw
-    .replace("<!-- CSS_PLACEHOLDER -->", cssContent)
-    .replace("<!-- HERO_CONTENT_PLACEHOLDER -->", heroContentHtml)
-    .replace("<!-- RESUME_DESCRIPTION_PLACEHOLDER -->", resumeDescriptionHtml)
-    .replace("<!-- RESUME_CARDS_PLACEHOLDER -->", resumeCardsHtml)
-    .replace("<!-- PROJECT_CARDS_PLACEHOLDER -->", projectCardsHtml)
+    .replace('<!-- CSS_PLACEHOLDER -->', cssContent)
+    .replace('<!-- HERO_CONTENT_PLACEHOLDER -->', heroContentHtml)
+    .replace('<!-- RESUME_DESCRIPTION_PLACEHOLDER -->', resumeDescriptionHtml)
+    .replace('<!-- RESUME_CARDS_PLACEHOLDER -->', resumeCardsHtml)
+    .replace('<!-- PROJECT_CARDS_PLACEHOLDER -->', projectCardsHtml)
     .replace(
-      "<!-- INFRASTRUCTURE_CARDS_PLACEHOLDER -->",
+      '<!-- INFRASTRUCTURE_CARDS_PLACEHOLDER -->',
       infrastructureCardsHtml,
     )
-    .replace("<!-- CERTIFICATION_CARDS_PLACEHOLDER -->", certCardsHtml)
-    .replace("<!-- SKILLS_LIST_PLACEHOLDER -->", skillsHtml)
-    .replace("<!-- CONTACT_GRID_PLACEHOLDER -->", contactGridHtml)
-    .replace("<!-- RESUME_PDF_URL -->", projectData.resumeDownload.pdfUrl)
-    .replace("<!-- RESUME_DOCX_URL -->", projectData.resumeDownload.docxUrl)
-    .replace("<!-- RESUME_MD_URL -->", projectData.resumeDownload.mdUrl);
+    .replace('<!-- CERTIFICATION_CARDS_PLACEHOLDER -->', certCardsHtml)
+    .replace('<!-- SKILLS_LIST_PLACEHOLDER -->', skillsHtml)
+    .replace('<!-- CONTACT_GRID_PLACEHOLDER -->', contactGridHtml)
+    .replace('<!-- RESUME_PDF_URL -->', projectData.resumeDownload.pdfUrl)
+    .replace('<!-- RESUME_DOCX_URL -->', projectData.resumeDownload.docxUrl)
+    .replace('<!-- RESUME_MD_URL -->', projectData.resumeDownload.mdUrl);
 
-  logger.log("✓ Templates generated successfully\n");
+  logger.log('✓ Templates generated successfully\n');
 
   // PHASE 1: Minify HTML
   indexHtml = await minify(indexHtml, {
@@ -293,31 +293,31 @@ const _N8N_WEBHOOK_BASE =
     minifyCSS: { level: 0 },
     minifyJS: true,
   });
-  logger.log("✓ HTML minified\n");
+  logger.log('✓ HTML minified\n');
 
   // PHASE 3: Escape template literals for safe JavaScript embedding
   indexHtml = indexHtml
-    .replace(ESCAPE_PATTERNS.BACKTICK, "\\`")
-    .replace(ESCAPE_PATTERNS.DOLLAR, "\\$");
-  logger.log("✓ Template literals escaped\n");
+    .replace(ESCAPE_PATTERNS.BACKTICK, '\\`')
+    .replace(ESCAPE_PATTERNS.DOLLAR, '\\$');
+  logger.log('✓ Template literals escaped\n');
 
   // PHASE 3.5: Process English HTML (index-en.html)
   let indexEnHtml = indexEnHtmlRaw
-    .replace("<!-- CSS_PLACEHOLDER -->", cssContent)
-    .replace("<!-- HERO_CONTENT_PLACEHOLDER -->", heroContentHtml)
-    .replace("<!-- RESUME_DESCRIPTION_PLACEHOLDER -->", resumeDescriptionHtml)
-    .replace("<!-- RESUME_CARDS_PLACEHOLDER -->", resumeCardsHtml)
-    .replace("<!-- PROJECT_CARDS_PLACEHOLDER -->", projectCardsHtml)
+    .replace('<!-- CSS_PLACEHOLDER -->', cssContent)
+    .replace('<!-- HERO_CONTENT_PLACEHOLDER -->', heroContentHtml)
+    .replace('<!-- RESUME_DESCRIPTION_PLACEHOLDER -->', resumeDescriptionHtml)
+    .replace('<!-- RESUME_CARDS_PLACEHOLDER -->', resumeCardsHtml)
+    .replace('<!-- PROJECT_CARDS_PLACEHOLDER -->', projectCardsHtml)
     .replace(
-      "<!-- INFRASTRUCTURE_CARDS_PLACEHOLDER -->",
+      '<!-- INFRASTRUCTURE_CARDS_PLACEHOLDER -->',
       infrastructureCardsHtml,
     )
-    .replace("<!-- CERTIFICATION_CARDS_PLACEHOLDER -->", certCardsHtml)
-    .replace("<!-- SKILLS_LIST_PLACEHOLDER -->", skillsHtml)
-    .replace("<!-- CONTACT_GRID_PLACEHOLDER -->", contactGridHtml)
-    .replace("<!-- RESUME_PDF_URL -->", projectData.resumeDownload.pdfUrl)
-    .replace("<!-- RESUME_DOCX_URL -->", projectData.resumeDownload.docxUrl)
-    .replace("<!-- RESUME_MD_URL -->", projectData.resumeDownload.mdUrl);
+    .replace('<!-- CERTIFICATION_CARDS_PLACEHOLDER -->', certCardsHtml)
+    .replace('<!-- SKILLS_LIST_PLACEHOLDER -->', skillsHtml)
+    .replace('<!-- CONTACT_GRID_PLACEHOLDER -->', contactGridHtml)
+    .replace('<!-- RESUME_PDF_URL -->', projectData.resumeDownload.pdfUrl)
+    .replace('<!-- RESUME_DOCX_URL -->', projectData.resumeDownload.docxUrl)
+    .replace('<!-- RESUME_MD_URL -->', projectData.resumeDownload.mdUrl);
 
   // Minify English HTML
   indexEnHtml = await minify(indexEnHtml, {
@@ -329,9 +329,9 @@ const _N8N_WEBHOOK_BASE =
 
   // Escape template literals for English HTML
   indexEnHtml = indexEnHtml
-    .replace(ESCAPE_PATTERNS.BACKTICK, "\\`")
-    .replace(ESCAPE_PATTERNS.DOLLAR, "\\$");
-  logger.log("✓ English HTML processed\n");
+    .replace(ESCAPE_PATTERNS.BACKTICK, '\\`')
+    .replace(ESCAPE_PATTERNS.DOLLAR, '\\$');
+  logger.log('✓ English HTML processed\n');
 
   // PHASE 2: Extract CSP hashes from MINIFIED HTML (must match browser's hash)
   // Extract from both Korean and English HTML, then merge unique hashes
@@ -1100,10 +1100,10 @@ export default {
 `;
 
   // Write worker.js
-  fs.writeFileSync(path.join(__dirname, "worker.js"), workerCode);
+  fs.writeFileSync(path.join(__dirname, 'worker.js'), workerCode);
 
   const buildTime = ((Date.now() - buildStartTime) / 1000).toFixed(2);
-  const workerSizeKB = (Buffer.byteLength(workerCode, "utf-8") / 1024).toFixed(
+  const workerSizeKB = (Buffer.byteLength(workerCode, 'utf-8') / 1024).toFixed(
     2,
   );
 
@@ -1113,8 +1113,8 @@ export default {
     process.exit(1);
   }
 
-  logger.log("✅ Improved worker.js generated successfully!");
-  logger.log("\n📊 Build Statistics:");
+  logger.log('✅ Improved worker.js generated successfully!');
+  logger.log('\n📊 Build Statistics:');
   logger.log(`   - Build time: ${buildTime}s`);
   logger.log(`   - Worker size: ${workerSizeKB} KB`);
   logger.log(`   - Script hashes: ${scriptHashes.length}`);
@@ -1122,16 +1122,16 @@ export default {
   logger.log(`   - Resume cards: ${projectData.resume.length}`);
   logger.log(`   - Project cards: ${projectData.projects.length}`);
   logger.log(
-    `   - Template cache: ${TEMPLATE_CACHE.dataHash ? "Active" : "Empty"}`,
+    `   - Template cache: ${TEMPLATE_CACHE.dataHash ? 'Active' : 'Empty'}`,
   );
   logger.log(`   - Deployed at: ${deployedAt}`);
-  logger.log("\n🎯 Improvements Applied:");
-  logger.log("   ✓ Configuration constants extracted");
-  logger.log("   ✓ JSDoc type annotations added");
-  logger.log("   ✓ Link generation helper function");
-  logger.log("   ✓ Template caching implemented");
-  logger.log("   ✓ Hardcoded strings eliminated");
-  logger.log("   ✓ Data validation with schema checking");
-  logger.log("   ✓ Safe file operations with error handling");
-  logger.log("   ✓ Build time measurement");
+  logger.log('\n🎯 Improvements Applied:');
+  logger.log('   ✓ Configuration constants extracted');
+  logger.log('   ✓ JSDoc type annotations added');
+  logger.log('   ✓ Link generation helper function');
+  logger.log('   ✓ Template caching implemented');
+  logger.log('   ✓ Hardcoded strings eliminated');
+  logger.log('   ✓ Data validation with schema checking');
+  logger.log('   ✓ Safe file operations with error handling');
+  logger.log('   ✓ Build time measurement');
 })();

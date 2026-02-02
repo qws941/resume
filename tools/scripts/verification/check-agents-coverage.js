@@ -15,9 +15,7 @@ const { existsSync, readFileSync } = require('fs');
 const { dirname, join, relative } = require('path');
 
 const args = process.argv.slice(2);
-const THRESHOLD = parseInt(
-  args.find((a) => a.startsWith('--threshold='))?.split('=')[1] || '500',
-);
+const THRESHOLD = parseInt(args.find((a) => a.startsWith('--threshold='))?.split('=')[1] || '500');
 const VERBOSE = args.includes('--verbose');
 
 const ROOT = process.cwd();
@@ -38,7 +36,7 @@ const RISK_PATTERNS = [
 const CODE_EXTENSIONS = ['.js', '.ts', '.tsx', '.go', '.py', '.rs'];
 const SKIP_DIRS = ['node_modules', '.git', 'dist', 'build', '.venv', 'vendor'];
 
-function log(msg) {
+function _log(msg) {
   if (VERBOSE) console.log(msg);
 }
 
@@ -73,13 +71,11 @@ function getAllFiles(dir) {
   try {
     const entries = execSync(
       `find "${dir}" -type f \\( -name "*.js" -o -name "*.ts" -o -name "*.tsx" -o -name "*.go" -o -name "*.py" -o -name "*.rs" -o -name "*.toml" -o -name "*.yml" -o -name "Makefile" \\) 2>/dev/null`,
-      { encoding: 'utf-8', maxBuffer: 50 * 1024 * 1024 },
+      { encoding: 'utf-8', maxBuffer: 50 * 1024 * 1024 }
     )
       .split('\n')
       .filter(Boolean);
-    return entries.filter(
-      (f) => !SKIP_DIRS.some((skip) => f.includes(`/${skip}/`)),
-    );
+    return entries.filter((f) => !SKIP_DIRS.some((skip) => f.includes(`/${skip}/`)));
   } catch {
     return [];
   }
@@ -152,15 +148,11 @@ function main() {
   console.log('');
 
   if (uncovered.length > 0) {
-    console.log(
-      `❌ ${uncovered.length} hotspot file(s) without AGENTS.md coverage:\n`,
-    );
+    console.log(`❌ ${uncovered.length} hotspot file(s) without AGENTS.md coverage:\n`);
     for (const u of uncovered) {
       console.log(`  - ${u.path} (${u.reason})`);
     }
-    console.log(
-      '\nRecommendation: Add AGENTS.md to ancestor directories of uncovered files.\n',
-    );
+    console.log('\nRecommendation: Add AGENTS.md to ancestor directories of uncovered files.\n');
     process.exit(1);
   } else {
     console.log('✅ All hotspot files have AGENTS.md coverage.\n');

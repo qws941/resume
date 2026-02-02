@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "Edge-deployed portfolio (resume.jclee.me)",
   "private": true,
-  "type": "module",
   "scripts": {
     "build": "node generate-worker.js",
     "start": "wrangler dev"

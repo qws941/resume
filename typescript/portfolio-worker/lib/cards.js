@@ -3,10 +3,10 @@
  * @module cards
  */
 
-const { CONFIG, TEMPLATE_CACHE } = require("./config");
-const { generateLink } = require("./templates");
-const { escapeHtml } = require("./utils");
-const logger = require("../logger");
+const { CONFIG, TEMPLATE_CACHE } = require('./config');
+const { generateLink } = require('./templates');
+const { escapeHtml } = require('./utils');
+const logger = require('../logger');
 
 /**
  * Generate resume list items HTML from JSON data
@@ -16,7 +16,7 @@ const logger = require("../logger");
  */
 function generateResumeCards(resumeData, dataHash) {
   if (TEMPLATE_CACHE.dataHash === dataHash && TEMPLATE_CACHE.resumeCardsHtml) {
-    logger.log("✓ Using cached resume HTML");
+    logger.log('✓ Using cached resume HTML');
     return TEMPLATE_CACHE.resumeCardsHtml;
   }
 
@@ -24,7 +24,7 @@ function generateResumeCards(resumeData, dataHash) {
     .map((item) => {
       // Minimal list item structure
       return `
-        <li class="resume-item">
+        <li class="resume-item card">
           <div class="resume-header">
             <h3 class="resume-title">${escapeHtml(item.title)}</h3>
             <span class="resume-period">${escapeHtml(item.period)}</span>
@@ -33,13 +33,13 @@ function generateResumeCards(resumeData, dataHash) {
           ${
             item.stats && item.stats.length > 0
               ? `<div class="resume-tags">
-                  ${item.stats.map((s) => `<span class="tag">${escapeHtml(s)}</span>`).join("")}
+                  ${item.stats.map((s) => `<span class="tag">${escapeHtml(s)}</span>`).join('')}
                  </div>`
-              : ""
+              : ''
           }
         </li>`;
     })
-    .join("\n");
+    .join('\n');
 
   TEMPLATE_CACHE.resumeCardsHtml = html;
   return html;
@@ -53,7 +53,7 @@ function generateResumeCards(resumeData, dataHash) {
  */
 function generateProjectCards(projectsData, dataHash) {
   if (TEMPLATE_CACHE.dataHash === dataHash && TEMPLATE_CACHE.projectCardsHtml) {
-    logger.log("✓ Using cached project HTML");
+    logger.log('✓ Using cached project HTML');
     return TEMPLATE_CACHE.projectCardsHtml;
   }
 
@@ -61,11 +61,7 @@ function generateProjectCards(projectsData, dataHash) {
     .map((project) => {
       const hasLink = project.liveUrl || project.gitlabUrl;
       const link = project.liveUrl || project.gitlabUrl;
-      const linkText = project.liveUrl
-        ? "Live Demo"
-        : project.gitlabUrl
-          ? "GitHub"
-          : "";
+      const linkText = project.liveUrl ? 'Live Demo' : project.gitlabUrl ? 'GitHub' : '';
 
       // Render as anchor tag only if link exists, otherwise use div
       const titleContent = `${escapeHtml(project.title)}<span class="arrow">↗</span>`;
@@ -74,7 +70,7 @@ function generateProjectCards(projectsData, dataHash) {
         : `<div class="project-link-title">${titleContent}</div>`;
 
       return `
-         <li class="project-item">
+         <li class="project-item card">
              <div class="project-header">
                  <h3 class="project-title">
                      ${titleElement}
@@ -86,7 +82,7 @@ function generateProjectCards(projectsData, dataHash) {
              </div>
          </li>`;
     })
-    .join("\n");
+    .join('\n');
 
   TEMPLATE_CACHE.projectCardsHtml = html;
   return html;
@@ -100,15 +96,12 @@ function generateProjectCards(projectsData, dataHash) {
  */
 function generateCertificationCards(certData, dataHash) {
   // Minimal or empty
-  if (!certData || certData.length === 0) return "";
+  if (!certData || certData.length === 0) return '';
 
   // Just return a simple list
   return certData
-    .map(
-      (c) =>
-        `<li class="cert-item">${escapeHtml(c.name)} (${escapeHtml(c.issuer)})</li>`,
-    )
-    .join("\n");
+    .map((c) => `<li class="cert-item">${escapeHtml(c.name)} (${escapeHtml(c.issuer)})</li>`)
+    .join('\n');
 }
 
 /**
@@ -119,38 +112,38 @@ function generateCertificationCards(certData, dataHash) {
  */
 function generateSkillsList(skillsData, dataHash) {
   if (TEMPLATE_CACHE.dataHash === dataHash && TEMPLATE_CACHE.skillsHtml) {
-    logger.log("✓ Using cached skills HTML");
+    logger.log('✓ Using cached skills HTML');
     return TEMPLATE_CACHE.skillsHtml;
   }
 
   // Flatten skills for minimal view or keep categories simple
   const categories = {
-    aiops: "AIOps",
-    observability: "Observability",
-    cloud: "Cloud",
-    devops: "DevOps",
-    automation: "Automation",
-    security: "Security",
+    aiops: 'AIOps',
+    observability: 'Observability',
+    cloud: 'Cloud',
+    devops: 'DevOps',
+    automation: 'Automation',
+    security: 'Security',
   };
 
   const html = Object.entries(categories)
     .map(([key, label]) => {
       const skillData = skillsData[key] || skillsData[`${key}_aiops`]; // Handle naming mismatch if any
-      if (!skillData) return "";
+      if (!skillData) return '';
 
       let skills = [];
       if (Array.isArray(skillData)) skills = skillData;
       else if (skillData.items) skills = skillData.items;
 
-      if (skills.length === 0) return "";
+      if (skills.length === 0) return '';
 
       // Just return text list: "Label: Item, Item, Item"
       return `<li class="skill-row">
         <span class="skill-label">${label}:</span>
-        <span class="skill-list">${skills.map((s) => escapeHtml(s)).join(", ")}</span>
+        <span class="skill-list">${skills.map((s) => `<span class="skill-tag">${escapeHtml(s)}</span>`).join('')}</span>
       </li>`;
     })
-    .join("\n");
+    .join('\n');
 
   TEMPLATE_CACHE.skillsHtml = html;
   return html;
@@ -177,7 +170,7 @@ function generateHeroContent(heroData) {
  * @returns {string} Empty string for minimal design
  */
 function generateResumeDescription() {
-  return "";
+  return '';
 }
 
 /**
@@ -185,7 +178,7 @@ function generateResumeDescription() {
  * @returns {string} Empty string
  */
 function generateInfrastructureCards() {
-  return "";
+  return '';
 }
 
 /**

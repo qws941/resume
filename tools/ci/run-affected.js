@@ -19,7 +19,7 @@ function runCommand(command) {
   console.log(`> ${command}`);
   try {
     execSync(command, { stdio: 'inherit' });
-  } catch (error) {
+  } catch (_error) {
     console.error(`Command failed: ${command}`);
     process.exit(1);
   }
@@ -47,10 +47,7 @@ function main() {
     return;
   }
 
-  const testTargets = fs
-    .readFileSync(TEST_TARGETS_FILE, 'utf8')
-    .split('\n')
-    .filter(Boolean);
+  const testTargets = fs.readFileSync(TEST_TARGETS_FILE, 'utf8').split('\n').filter(Boolean);
 
   const affectedWorkspaces = new Set();
 
@@ -63,9 +60,7 @@ function main() {
     } else {
       // Try to find matching workspace by path prefix
       const workspace = Object.values(TARGET_TO_WORKSPACE).find(
-        (ws) =>
-          packagePath.includes(ws) ||
-          (packagePath === '//tools' && ws === 'typescript/cli'), // Map tools changes to CLI for now?
+        (ws) => packagePath.includes(ws) || (packagePath === '//tools' && ws === 'typescript/cli') // Map tools changes to CLI for now?
       );
       if (workspace) affectedWorkspaces.add(workspace);
     }
@@ -79,9 +74,7 @@ function main() {
     return;
   }
 
-  console.log(`Running ${task} for affected workspaces:`, [
-    ...affectedWorkspaces,
-  ]);
+  console.log(`Running ${task} for affected workspaces:`, [...affectedWorkspaces]);
 
   if (task === 'test') {
     // Run tests for each workspace
@@ -94,15 +87,13 @@ function main() {
         } else {
           console.log(`Skipping ${workspace} (no test script)`);
         }
-      } catch (e) {
+      } catch (_e) {
         console.warn(`Could not read package.json for ${workspace}`);
       }
     }
   } else if (task === 'lint' || task === 'typecheck') {
     // Lint/Typecheck can often be run for specific workspaces
-    const workspacesFlag = [...affectedWorkspaces]
-      .map((ws) => `--workspace=${ws}`)
-      .join(' ');
+    const workspacesFlag = [...affectedWorkspaces].map((ws) => `--workspace=${ws}`).join(' ');
     runCommand(`npm run ${task} ${workspacesFlag}`);
   } else {
     console.error(`Unknown task: ${task}`);

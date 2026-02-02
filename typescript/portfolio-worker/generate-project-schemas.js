@@ -15,23 +15,23 @@ async function generateProjectSchemas() {
   // Generate CreativeWork schema for each project
   data.projects.forEach((project, index) => {
     const schema = {
-      "@context": "https://schema.org",
-      "@type": "CreativeWork",
-      "@id": `https://resume.jclee.me/#project-${index + 1}`,
-      "name": project.title,
-      "description": project.description,
-      "keywords": (project.related_skills || []).join(', '),
-      "creator": {
-        "@type": "Person",
-        "name": "이재철",
-        "alternateName": "Jaecheol Lee"
+      '@context': 'https://schema.org',
+      '@type': 'CreativeWork',
+      '@id': `https://resume.jclee.me/#project-${index + 1}`,
+      'name': project.title,
+      'description': project.description,
+      'keywords': (project.related_skills || []).join(', '),
+      'creator': {
+        '@type': 'Person',
+        'name': '이재철',
+        'alternateName': 'Jaecheol Lee'
       },
-      "dateCreated": new Date().toISOString().split('T')[0],
-      "inLanguage": ["ko", "en"],
-      "isPartOf": {
-        "@type": "WebSite",
-        "name": "이재철 포트폴리오",
-        "url": "https://resume.jclee.me"
+      'dateCreated': new Date().toISOString().split('T')[0],
+      'inLanguage': ['ko', 'en'],
+      'isPartOf': {
+        '@type': 'WebSite',
+        'name': '이재철 포트폴리오',
+        'url': 'https://resume.jclee.me'
       }
     };
 
@@ -73,7 +73,7 @@ if (require.main === module) {
       
       schemas.forEach((schema, idx) => {
         console.log(`Project ${idx + 1}: ${schema.name}`);
-        console.log(`  ID: ${schema["@id"]}`);
+        console.log(`  ID: ${schema['@id']}`);
         console.log(`  Keywords: ${schema.keywords}`);
         console.log('');
       });
