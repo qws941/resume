@@ -58,6 +58,14 @@
 .section-skills,
 .section-contact {
   margin-bottom: var(--space-16);
+  padding-bottom: var(--space-16);
+  border-bottom: 1px solid var(--border-secondary);
+}
+
+.section-contact {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
 }
 
 .section-title {
@@ -65,8 +73,28 @@
   text-transform: uppercase;
   letter-spacing: 0.1em;
   color: var(--text-muted);
-  margin-bottom: var(--space-6);
+  margin-bottom: var(--space-8);
   font-weight: var(--font-bold);
+  position: relative;
+  padding-bottom: var(--space-4);
+  display: inline-block;
+}
+
+.section-title::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 60px;
+  height: 3px;
+  background: linear-gradient(90deg, var(--cyber-cyan), transparent);
+  border-radius: var(--radius-full);
+}
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--space-6);
 }
 
 /* Footer */

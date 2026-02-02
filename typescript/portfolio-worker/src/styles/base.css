@@ -55,8 +55,8 @@ button {
 }
 
 ::selection {
-  background: var(--color-accent-subtle);
-  color: var(--color-accent-dark);
+  background: var(--cyber-cyan);
+  color: var(--bg-primary);
 }
 
 :focus-visible {

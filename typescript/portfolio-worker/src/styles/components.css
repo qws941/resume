@@ -41,6 +41,31 @@
   border-color: var(--color-accent);
 }
 
+/* Cards */
+.card {
+  background: var(--bg-card, #16161e);
+  border: 1px solid rgba(0, 240, 255, 0.2);
+  border-radius: 8px;
+  padding: var(--space-4);
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  box-shadow: var(--glow-cyan);
+  border-color: rgba(0, 240, 255, 0.5);
+}
+
+.card--terminal {
+  border-left: 3px solid var(--cyber-cyan);
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.card--terminal::before {
+  content: '>';
+  color: var(--cyber-cyan);
+  margin-right: 0.5rem;
+}
+
 /* Resume List */
 .resume-list {
   list-style: none;
@@ -171,6 +196,38 @@
   color: var(--text-secondary);
 }
 
+/* Skills Neon */
+.skill-bar {
+  background: rgba(0, 240, 255, 0.1);
+  border-radius: 4px;
+  height: 8px;
+  overflow: hidden;
+  margin-top: 4px;
+}
+
+.skill-bar__fill {
+  background: linear-gradient(90deg, var(--cyber-cyan), var(--cyber-magenta));
+  height: 100%;
+  box-shadow: var(--glow-cyan);
+  transition: width 1s ease-out;
+}
+
+.skill-tag {
+  background: rgba(0, 240, 255, 0.1);
+  border: 1px solid rgba(0, 240, 255, 0.3);
+  color: var(--cyber-cyan);
+  padding: 0.25rem 0.75rem;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+  display: inline-block;
+}
+
+.skill-tag:hover {
+  background: rgba(0, 240, 255, 0.2);
+  box-shadow: var(--glow-cyan);
+}
+
 /* Contact Links */
 .contact-links {
   display: flex;
@@ -191,6 +248,28 @@
 
 .contact-links a:hover {
   border-color: var(--color-accent);
+}
+
+/* Buttons */
+.btn--neon {
+  background: transparent;
+  border: 2px solid var(--cyber-cyan);
+  color: var(--cyber-cyan);
+  padding: 0.75rem 1.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  display: inline-block;
+  font-weight: bold;
+}
+
+.btn--neon:hover {
+  background: var(--cyber-cyan);
+  color: var(--bg-primary);
+  box-shadow:
+    var(--glow-cyan),
+    inset 0 0 20px rgba(0, 240, 255, 0.3);
 }
 
 /* WCAG 2.5.5 Touch Targets - 44px minimum */
@@ -283,7 +362,7 @@
   .footer-links {
     gap: var(--space-3);
   }
-  
+
   .footer-links a {
     min-height: 48px;
     min-width: 48px;
