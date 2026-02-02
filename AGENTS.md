@@ -1,7 +1,7 @@
 # PROJECT KNOWLEDGE BASE
 
 **Generated:** 2026-02-02
-**Commit:** 9d80a8f
+**Commit:** 4eff852
 **Branch:** master
 **Build System:** Bazel + npm (Google3-style hybrid)
 
@@ -36,7 +36,7 @@ resume/
 │   │   │   └── tools/             # MCP tool implementations
 │   │   └── workers/               # Dashboard Cloudflare Worker
 │   └── portfolio-worker/          # Edge portfolio worker
-│       └── lib/                   # Build utilities (generate-worker.js)
+│       └── lib/                   # Stateless modules (security-headers.js)
 ├── tools/                         # Build, deploy, CI scripts
 │   ├── scripts/build/             # npm script wrappers
 │   └── ci/                        # affected.sh, GitLab CI helpers
@@ -69,7 +69,7 @@ resume/
 | `WantedClient`        | `typescript/job-automation/src/shared/clients/wanted/`   | Wanted.co.kr API client     |
 | `generate-worker.js`  | `typescript/portfolio-worker/generate-worker.js`         | HTML → worker.js compiler   |
 | `security-headers.js` | `typescript/portfolio-worker/lib/security-headers.js`    | CSP baseline, HSTS          |
-| `sync-resume-data.js` | `typescript/data/sync-resume-data.js`                    | SSoT propagation script     |
+| `sync-resume-data.js` | `tools/scripts/utils/sync-resume-data.js`                | SSoT propagation script     |
 
 ## BAZEL TARGETS
 
