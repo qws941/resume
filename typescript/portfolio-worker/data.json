@@ -72,7 +72,7 @@
       "tagline": "Monitoring",
       "metrics": {},
       "related_skills": ["Grafana", "Prometheus", "Loki"],
-      "liveUrl": "https://grafana.jclee.me/public-dashboards/resume-public"
+      "liveUrl": "https://grafana.jclee.me/public-dashboards/8c91649fe829cb4905edf4a60579d0a0"
     },
     {
       "icon": "",
@@ -135,8 +135,34 @@
     "certifications": "",
     "contact": ""
   },
-  "achievements": [],
-  "infrastructure": [],
+  "achievements": [
+    "가온누리 ATS 보안 인프라 설계 참여 (금융위 본인가 통과)",
+    "Grafana/Prometheus 기반 모니터링 체계 구축 경험",
+    "Ansible/n8n 기반 운영 자동화 경험"
+  ],
+  "infrastructure": [
+    {
+      "icon": "📊",
+      "title": "Grafana",
+      "description": "Prometheus + Loki 기반 모니터링",
+      "status": "running",
+      "url": "https://grafana.jclee.me/public-dashboards/8c91649fe829cb4905edf4a60579d0a0"
+    },
+    {
+      "icon": "🦊",
+      "title": "GitLab",
+      "description": "Self-hosted Git + CI/CD",
+      "status": "running",
+      "url": "https://gitlab.jclee.me"
+    },
+    {
+      "icon": "🔄",
+      "title": "n8n",
+      "description": "워크플로우 자동화",
+      "status": "running",
+      "url": "https://n8n.jclee.me"
+    }
+  ],
   "contact": {
     "email": "qws941@kakao.com",
     "phone": "",
