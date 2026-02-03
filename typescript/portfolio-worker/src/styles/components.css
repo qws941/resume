@@ -3,6 +3,15 @@
    ======================================== */
 
 /* Hero */
+.hero-title {
+  font-size: var(--text-5xl);
+  font-weight: var(--font-bold);
+  color: var(--text-primary);
+  margin-bottom: var(--space-4);
+  line-height: 1.1;
+  text-shadow: 0 0 10px rgba(228, 228, 231, 0.3);
+}
+
 .hero-name {
   font-size: var(--text-4xl);
   font-weight: var(--font-bold);
@@ -41,6 +50,19 @@
   border-color: var(--color-accent);
 }
 
+.highlight {
+  color: var(--cyber-cyan);
+  font-weight: var(--font-bold);
+  text-shadow: var(--glow-cyan);
+}
+
+.about-content {
+  font-size: var(--text-lg);
+  line-height: var(--leading-relaxed);
+  max-width: 800px;
+  color: var(--text-secondary);
+}
+
 /* Cards */
 .card {
   background: var(--bg-card, #16161e);
@@ -51,8 +73,11 @@
 }
 
 .card:hover {
-  box-shadow: var(--glow-cyan);
-  border-color: rgba(0, 240, 255, 0.5);
+  box-shadow:
+    0 0 5px rgba(0, 240, 255, 0.5),
+    0 0 10px rgba(0, 240, 255, 0.3),
+    0 0 20px rgba(0, 240, 255, 0.1);
+  border-color: var(--cyber-cyan);
 }
 
 .card--terminal {

@@ -118,11 +118,6 @@ body::before {
   color: var(--cyber-cyan);
 }
 
-.terminal-prompt::before {
-  content: '$ ';
-  color: var(--cyber-green);
-}
-
 .terminal-output {
   font-family: var(--font-mono);
   color: var(--text-secondary);
