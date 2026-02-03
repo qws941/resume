@@ -2,7 +2,7 @@
 
 > Parent: [../AGENTS.md](../AGENTS.md)
 
-**Generated:** 2026-02-01
+**Generated:** 2026-02-03
 **Reason:** High complexity (Anti-bot evasion)
 
 ## OVERVIEW

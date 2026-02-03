@@ -2,7 +2,8 @@
 
 > Parent: [../AGENTS.md](../AGENTS.md)
 
-**Generated:** 2026-02-01
+**Generated:** 2026-02-03
+**Commit:** 213ab0f
 
 ## OVERVIEW
 
@@ -98,10 +99,10 @@ typescript/job-automation/src/
 
 ```javascript
 // CORRECT: Direct imports from shared/
-import WantedAPI from "../shared/clients/wanted/index.js";
-import { SessionManager } from "../shared/services/session/index.js";
-import { JobMatcher } from "../shared/services/matching/index.js";
-import { SlackService } from "../shared/services/slack/index.js";
+import WantedAPI from '../shared/clients/wanted/index.js';
+import { SessionManager } from '../shared/services/session/index.js';
+import { JobMatcher } from '../shared/services/matching/index.js';
+import { SlackService } from '../shared/services/slack/index.js';
 
 // WRONG: Old lib/ wrapper imports (files deleted)
 // import WantedAPI from '../lib/wanted-api.js';  // DELETED
