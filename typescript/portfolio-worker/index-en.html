@@ -191,6 +191,8 @@
     ></script>
   </head>
   <body class="minimal-theme">
+    <canvas id="matrix-bg"></canvas>
+    <div class="crt-overlay"></div>
     <a href="#main-content" class="skip-link">Skip to main content</a>
 
     <div class="container-narrow">
@@ -225,8 +227,9 @@
                   ><span class="cmd-path">resume</span><span class="cmd-symbol">$</span>
                   <span class="cmd-input">whoami</span>
                 </div>
-                <h1 class="hero-title">
-                  <span class="typing-text">Jaecheol Lee</span><span class="cursor"></span>
+                <h1 class="hero-title glitch" data-text="Jaecheol Lee">
+                  <span class="typing-text glow-cyan">Jaecheol Lee</span
+                  ><span class="cursor"></span>
                 </h1>
                 <div class="cmd-output">
                   Infrastructure Engineer | Security | Observability | Automation
@@ -234,7 +237,7 @@
               </div>
             </section>
 
-            <section id="about" class="section-about">
+            <section id="about" class="section-about reveal">
               <div class="section-cmd">
                 <span class="section-cmd__command">cat about.txt</span>
               </div>
@@ -247,7 +250,7 @@
               </div>
             </section>
 
-            <section id="resume" class="section-resume">
+            <section id="resume" class="section-resume reveal">
               <div class="section-cmd">
                 <span class="section-cmd__command">cat experience.log</span>
               </div>
@@ -261,7 +264,7 @@
               </div>
             </section>
 
-            <section id="projects" class="section-projects">
+            <section id="projects" class="section-projects reveal">
               <div class="section-cmd">
                 <span class="section-cmd__command">ls -la ~/projects/</span>
               </div>
@@ -270,7 +273,7 @@
               </ul>
             </section>
 
-            <section id="skills" class="section-skills">
+            <section id="skills" class="section-skills reveal">
               <div class="section-cmd">
                 <span class="section-cmd__command">cat skills.json</span>
               </div>
@@ -279,7 +282,7 @@
               </ul>
             </section>
 
-            <section id="contact" class="section-contact">
+            <section id="contact" class="section-contact reveal">
               <div class="section-cmd">
                 <span class="section-cmd__command">cat contact.txt</span>
               </div>
@@ -301,5 +304,57 @@
 
     <!-- Scripts -->
     <script src="/main.js" defer></script>
+    <script>
+      (function () {
+        var c = document.getElementById('matrix-bg');
+        if (!c) return;
+        var ctx = c.getContext('2d');
+        var w,
+          h,
+          cols,
+          drops = [];
+        var chars =
+          'アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン0123456789ABCDEF';
+
+        function resize() {
+          w = c.width = window.innerWidth;
+          h = c.height = window.innerHeight;
+          cols = Math.floor(w / 20);
+          drops = [];
+          for (var i = 0; i < cols; i++) drops[i] = Math.random() * -100;
+        }
+
+        function draw() {
+          ctx.fillStyle = 'rgba(12, 12, 18, 0.05)';
+          ctx.fillRect(0, 0, w, h);
+          ctx.fillStyle = '#00ff88';
+          ctx.font = '15px monospace';
+          for (var i = 0; i < cols; i++) {
+            var char = chars[Math.floor(Math.random() * chars.length)];
+            ctx.fillText(char, i * 20, drops[i] * 20);
+            if (drops[i] * 20 > h && Math.random() > 0.975) drops[i] = 0;
+            drops[i]++;
+          }
+        }
+
+        resize();
+        window.addEventListener('resize', resize);
+        setInterval(draw, 50);
+      })();
+
+      (function () {
+        var obs = new IntersectionObserver(
+          function (entries) {
+            entries.forEach(function (e) {
+              if (e.isIntersecting) e.target.classList.add('revealed');
+            });
+          },
+          { threshold: 0.1 }
+        );
+        document.querySelectorAll('.reveal').forEach(function (el) {
+          obs.observe(el);
+        });
+      })();
+    </script>
   </body>
 </html>
