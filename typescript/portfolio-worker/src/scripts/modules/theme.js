@@ -6,9 +6,7 @@ const html = document.documentElement;
 export function initTheme() {
   // Load saved theme or respect system preference
   const savedTheme = localStorage.getItem('theme');
-  const systemPrefersDark = window.matchMedia(
-    '(prefers-color-scheme: dark)',
-  ).matches;
+  const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
   const theme = savedTheme || (systemPrefersDark ? 'dark' : 'light');
 
   html.setAttribute('data-theme', theme);
@@ -18,19 +16,14 @@ export function initTheme() {
   themeToggle.setAttribute('aria-pressed', theme === 'dark' ? 'true' : 'false');
 
   // Listen for system theme changes (only if no user preference saved)
-  window
-    .matchMedia('(prefers-color-scheme: dark)')
-    .addEventListener('change', (e) => {
-      if (!localStorage.getItem('theme')) {
-        const newTheme = e.matches ? 'dark' : 'light';
-        html.setAttribute('data-theme', newTheme);
-        updateIcons(newTheme);
-        themeToggle.setAttribute(
-          'aria-pressed',
-          newTheme === 'dark' ? 'true' : 'false',
-        );
-      }
-    });
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+    if (!localStorage.getItem('theme')) {
+      const newTheme = e.matches ? 'dark' : 'light';
+      html.setAttribute('data-theme', newTheme);
+      updateIcons(newTheme);
+      themeToggle.setAttribute('aria-pressed', newTheme === 'dark' ? 'true' : 'false');
+    }
+  });
 
   // Click event
   themeToggle.addEventListener('click', toggleTheme);
@@ -50,19 +43,17 @@ function toggleTheme() {
 
   html.setAttribute('data-theme', newTheme);
   localStorage.setItem('theme', newTheme);
-  themeToggle.setAttribute(
-    'aria-pressed',
-    newTheme === 'dark' ? 'true' : 'false',
-  );
+  themeToggle.setAttribute('aria-pressed', newTheme === 'dark' ? 'true' : 'false');
   updateIcons(newTheme);
 }
 
 function updateIcons(theme) {
+  // Use CSS classes instead of inline styles for CSP compliance
   if (theme === 'dark') {
-    sunIcon.style.display = 'none';
-    moonIcon.style.display = 'block';
+    sunIcon.classList.add('hidden');
+    moonIcon.classList.remove('hidden');
   } else {
-    sunIcon.style.display = 'block';
-    moonIcon.style.display = 'none';
+    sunIcon.classList.remove('hidden');
+    moonIcon.classList.add('hidden');
   }
 }

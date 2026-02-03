@@ -46,6 +46,14 @@ img {
   display: block;
 }
 
+.hidden {
+  display: none !important;
+}
+
+.scroll-progress {
+  width: var(--scroll-progress, 0%);
+}
+
 button {
   font-family: inherit;
   font-size: inherit;

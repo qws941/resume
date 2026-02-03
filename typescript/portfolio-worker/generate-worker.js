@@ -149,11 +149,7 @@ const _N8N_WEBHOOK_BASE = process.env.N8N_WEBHOOK_BASE || 'https://n8n.jclee.me/
       encoding: 'utf-8',
       name: 'sitemapXml',
     },
-    {
-      path: path.join(__dirname, 'sentry-config.js'),
-      encoding: 'utf-8',
-      name: 'sentryConfig',
-    },
+
     {
       path: path.join(__dirname, 'og-image.webp'),
       encoding: null,
@@ -208,7 +204,6 @@ const _N8N_WEBHOOK_BASE = process.env.N8N_WEBHOOK_BASE || 'https://n8n.jclee.me/
     serviceWorker,
     robotsTxt,
     sitemapXml,
-    sentryConfig,
     ogImageBuffer,
     ogImageEnBuffer,
     resumePdfBuffer,
@@ -279,12 +274,6 @@ const _N8N_WEBHOOK_BASE = process.env.N8N_WEBHOOK_BASE || 'https://n8n.jclee.me/
   });
   logger.log('✓ HTML minified\n');
 
-  // PHASE 3: Escape template literals for safe JavaScript embedding
-  indexHtml = indexHtml
-    .replace(ESCAPE_PATTERNS.BACKTICK, '\\`')
-    .replace(ESCAPE_PATTERNS.DOLLAR, '\\$');
-  logger.log('✓ Template literals escaped\n');
-
   // PHASE 3.5: Process English HTML (index-en.html)
   let indexEnHtml = indexEnHtmlRaw
     .replace('<!-- CSS_PLACEHOLDER -->', cssContent)
@@ -307,15 +296,10 @@ const _N8N_WEBHOOK_BASE = process.env.N8N_WEBHOOK_BASE || 'https://n8n.jclee.me/
     minifyCSS: { level: 0 },
     minifyJS: true,
   });
-
-  // Escape template literals for English HTML
-  indexEnHtml = indexEnHtml
-    .replace(ESCAPE_PATTERNS.BACKTICK, '\\`')
-    .replace(ESCAPE_PATTERNS.DOLLAR, '\\$');
   logger.log('✓ English HTML processed\n');
 
-  // PHASE 2: Extract CSP hashes from MINIFIED HTML (must match browser's hash)
-  // Extract from both Korean and English HTML, then merge unique hashes
+  // PHASE 2: Extract CSP hashes from MINIFIED HTML BEFORE ESCAPE
+  // CRITICAL: Must extract hashes BEFORE escape, as browser sees un-escaped content
   const koHashes = extractInlineHashes(indexHtml);
   const enHashes = extractInlineHashes(indexEnHtml);
   const scriptHashes = [...new Set([...koHashes.scriptHashes, ...enHashes.scriptHashes])];
@@ -323,6 +307,16 @@ const _N8N_WEBHOOK_BASE = process.env.N8N_WEBHOOK_BASE || 'https://n8n.jclee.me/
   logger.log(
     `✓ CSP hashes extracted: ${scriptHashes.length} scripts, ${styleHashes.length} styles\n`
   );
+
+  // PHASE 3: Escape template literals for safe JavaScript embedding (AFTER hash extraction)
+  indexHtml = indexHtml
+    .replace(ESCAPE_PATTERNS.BACKTICK, '\\`')
+    .replace(ESCAPE_PATTERNS.DOLLAR, '\\$');
+
+  indexEnHtml = indexEnHtml
+    .replace(ESCAPE_PATTERNS.BACKTICK, '\\`')
+    .replace(ESCAPE_PATTERNS.DOLLAR, '\\$');
+  logger.log('✓ Template literals escaped\n');
 
   // Security headers (using imported module)
   const SECURITY_HEADERS = securityHeadersModule.generateSecurityHeaders(scriptHashes, styleHashes);
@@ -359,7 +353,6 @@ const INDEX_EN_HTML = \`${indexEnHtml}\`;
 const MANIFEST_JSON = \`${manifestJson}\`;
 const SERVICE_WORKER = \`${serviceWorker}\`;
 const MAIN_JS = \`${mainJs}\`;
-const SENTRY_CONFIG = \`${sentryConfig}\`;
 
 // SEO files
 const ROBOTS_TXT = \`${robotsTxt}\`;
@@ -719,16 +712,6 @@ export default {
             'Content-Type': 'application/javascript',
             'Cache-Control': 'max-age=0, must-revalidate',
             'Service-Worker-Allowed': '/'
-          }
-        });
-      }
-
-      if (url.pathname === '/sentry-config.js') {
-        metrics.requests_success++;
-        return new Response(SENTRY_CONFIG, {
-          headers: {
-            ...SECURITY_HEADERS,
-            'Content-Type': 'application/javascript'
           }
         });
       }

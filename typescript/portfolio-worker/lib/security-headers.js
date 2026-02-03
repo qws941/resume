@@ -36,10 +36,11 @@ const CACHE_STRATEGIES = {
 function generateSecurityHeaders(scriptHashes, styleHashes) {
   const cspDirectives = [
     "default-src 'none'",
-    `script-src 'self' ${scriptHashes.join(' ')} ${CLOUDFLARE_SCRIPT_HASHES.join(' ')} https://www.googletagmanager.com https://browser.sentry-cdn.com ${CLOUDFLARE_ANALYTICS.script}`,
+    `script-src 'self' ${scriptHashes.join(' ')} ${CLOUDFLARE_SCRIPT_HASHES.join(' ')} https://www.googletagmanager.com ${CLOUDFLARE_ANALYTICS.script}`,
     `style-src 'self' ${styleHashes.join(' ')}`,
     `style-src-elem 'self' ${styleHashes.join(' ')}`,
-    `connect-src 'self' https://sentry.jclee.me ${CLOUDFLARE_ANALYTICS.connect}`,
+    "style-src-attr 'unsafe-inline'",
+    `connect-src 'self' https://www.google-analytics.com https://analytics.google.com ${CLOUDFLARE_ANALYTICS.connect}`,
     "img-src 'self' data: https:",
     "font-src 'self'",
     "manifest-src 'self'",
@@ -60,8 +61,7 @@ function generateSecurityHeaders(scriptHashes, styleHashes) {
     'X-XSS-Protection': '1; mode=block',
     'Referrer-Policy': 'strict-origin-when-cross-origin',
     'Cache-Control': CACHE_STRATEGIES.HTML,
-    'Permissions-Policy':
-      'camera=(), microphone=(), geolocation=(), payment=()',
+    'Permissions-Policy': 'camera=(), microphone=(), geolocation=(), payment=()',
   };
 }
 
