@@ -13,8 +13,7 @@ function initSmoothScroll() {
       const target = document.querySelector(this.getAttribute('href'));
       if (target) {
         const offset = 80;
-        const targetPosition =
-          target.getBoundingClientRect().top + window.pageYOffset - offset;
+        const targetPosition = target.getBoundingClientRect().top + window.pageYOffset - offset;
         window.scrollTo({
           top: targetPosition,
           behavior: 'smooth',
@@ -40,9 +39,7 @@ function initNavScrollEffect() {
 }
 
 function initScrollReveal() {
-  const prefersReducedMotion = window.matchMedia(
-    '(prefers-reduced-motion: reduce)',
-  ).matches;
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   if (prefersReducedMotion) {
     document.querySelectorAll('.reveal-on-scroll').forEach((el) => {
@@ -66,7 +63,7 @@ function initScrollReveal() {
     {
       threshold: 0.1,
       rootMargin: '0px 0px -50px 0px',
-    },
+    }
   );
 
   revealElements.forEach((el) => observer.observe(el));
@@ -80,10 +77,10 @@ function initScrollProgress() {
 
   function updateProgress() {
     const scrollTop = window.scrollY;
-    const docHeight =
-      document.documentElement.scrollHeight - window.innerHeight;
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
     const progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
-    progressBar.style.width = `${progress}%`;
+    // Set CSS custom property on root for CSP compliance
+    document.documentElement.style.setProperty('--scroll-progress', `${progress}%`);
   }
 
   window.addEventListener('scroll', updateProgress, { passive: true });
