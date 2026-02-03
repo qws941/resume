@@ -182,6 +182,7 @@ const _N8N_WEBHOOK_BASE = process.env.N8N_WEBHOOK_BASE || 'https://n8n.jclee.me/
   });
 
   const mainJs = bundleResult.outputFiles[0].text
+    .replace(ESCAPE_PATTERNS.BACKSLASH, '\\\\')
     .replace(ESCAPE_PATTERNS.BACKTICK, '\\`')
     .replace(ESCAPE_PATTERNS.DOLLAR, '\\$');
 
@@ -309,11 +310,14 @@ const _N8N_WEBHOOK_BASE = process.env.N8N_WEBHOOK_BASE || 'https://n8n.jclee.me/
   );
 
   // PHASE 3: Escape template literals for safe JavaScript embedding (AFTER hash extraction)
+  // Order matters: backslash FIRST (\ -> \\), then backtick/dollar
   indexHtml = indexHtml
+    .replace(ESCAPE_PATTERNS.BACKSLASH, '\\\\')
     .replace(ESCAPE_PATTERNS.BACKTICK, '\\`')
     .replace(ESCAPE_PATTERNS.DOLLAR, '\\$');
 
   indexEnHtml = indexEnHtml
+    .replace(ESCAPE_PATTERNS.BACKSLASH, '\\\\')
     .replace(ESCAPE_PATTERNS.BACKTICK, '\\`')
     .replace(ESCAPE_PATTERNS.DOLLAR, '\\$');
   logger.log('✓ Template literals escaped\n');

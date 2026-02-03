@@ -37,7 +37,10 @@ const CONFIG = {
 };
 
 // Escape patterns for template literal safety
+// CRITICAL: Backslash MUST be escaped first, before backtick/dollar
+// Otherwise, JS template literals interpret \\ as \ causing CSP hash mismatch
 const ESCAPE_PATTERNS = {
+  BACKSLASH: /\\/g,
   BACKTICK: /`/g,
   DOLLAR: /\$/g,
 };
