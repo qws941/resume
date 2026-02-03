@@ -1,25 +1,33 @@
 {
   "resumeDownload": {
     "pdfUrl": "https://resume.jclee.me/resume.pdf",
-    "docxUrl": "https://github.com/jclee-homelab/resume/raw/master/typescript/data/resumes/master/archive/resume_final.docx",
-    "mdUrl": "https://github.com/jclee-homelab/resume/raw/master/typescript/data/resumes/master/resume_final.md"
+    "docxUrl": "https://gitlab.jclee.me/jclee/resume/-/raw/master/resumes/master/archive/resume_final.docx",
+    "mdUrl": "https://gitlab.jclee.me/jclee/resume/-/raw/master/resumes/master/resume_final.md"
   },
   "resume": [
     {
       "icon": "🏦",
       "title": "(주)아이티센 CTS",
-      "description": "ATS 보안 관제. Splunk 로그 분석, FortiGate 방화벽 정책 관리, 월간 보안 리포트 작성.",
+      "description": "넥스트레이드 보안운영SM. Splunk 로그 분석, FortiGate 방화벽 정책 관리, 월간 보안 리포트 작성.",
       "period": "2025.03 ~ 현재",
-      "stats": ["보안관제", "컴플라이언스", "DR"],
+      "stats": [
+        "보안관제",
+        "컴플라이언스",
+        "DR"
+      ],
       "highlight": true,
-      "completePdfUrl": "https://github.com/jclee-homelab/resume/raw/master/typescript/data/resumes/technical/nextrade/exports/Nextrade_Full_Documentation.pdf"
+      "completePdfUrl": "https://gitlab.jclee.me/jclee/resume/-/raw/master/resumes/technical/nextrade/exports/Nextrade_Full_Documentation.pdf"
     },
     {
       "icon": "🏗️",
       "title": "(주)가온누리정보시스템",
-      "description": "ATS 보안 인프라 설계. 금융위 본인가 심사 대응, 네트워크 분리/접근통제 정책 수립, FortiGate HA 구성.",
+      "description": "넥스트레이드 보안 인프라 구축. 금융위 본인가 심사 대응, 네트워크 분리/접근통제 정책 수립, FortiGate HA 구성.",
       "period": "2024.03 ~ 2025.02",
-      "stats": ["아키텍처", "망분리", "인허가"],
+      "stats": [
+        "아키텍처",
+        "망분리",
+        "인허가"
+      ],
       "highlight": false
     },
     {
@@ -27,7 +35,11 @@
       "title": "(주)콴텍투자일임",
       "description": "AWS 인프라 보안 운영. 보안 로그 수집, IAM/보안그룹 관리, 취약점 점검, 로보어드바이저 테스트베드 심사 보안 지원.",
       "period": "2022.08 ~ 2024.02",
-      "stats": ["AWS", "정책설계", "안정운영"],
+      "stats": [
+        "AWS",
+        "정책설계",
+        "안정운영"
+      ],
       "highlight": false
     },
     {
@@ -35,7 +47,11 @@
       "title": "(주)펀엔씨",
       "description": "온프레미스→AWS 마이그레이션. VPC 설계, EKS 클러스터 구축, GitLab CI/CD 파이프라인 구성.",
       "period": "2022.05 ~ 2022.07",
-      "stats": ["AWS", "K8s", "DevOps"],
+      "stats": [
+        "AWS",
+        "K8s",
+        "DevOps"
+      ],
       "highlight": false
     },
     {
@@ -43,7 +59,11 @@
       "title": "(주)조인트리",
       "description": "대학 전산 보안 강화. VMware NSX-T 마이크로세그멘테이션, 보안솔루션(방화벽, NAC, DLP) 설치.",
       "period": "2021.09 ~ 2022.04",
-      "stats": ["NSX-T", "보안통합", "SI"],
+      "stats": [
+        "NSX-T",
+        "보안통합",
+        "SI"
+      ],
       "highlight": false
     },
     {
@@ -51,7 +71,11 @@
       "title": "(주)메타넷엠플랫폼",
       "description": "컨택센터 인프라 운영. 재택근무 VPN 환경 구축, Ansible 서버 프로비저닝 자동화.",
       "period": "2019.12 ~ 2021.08",
-      "stats": ["VPN/NAC", "Ansible", "Python"],
+      "stats": [
+        "VPN/NAC",
+        "Ansible",
+        "Python"
+      ],
       "highlight": false
     },
     {
@@ -59,7 +83,11 @@
       "title": "(주)엠티데이타",
       "description": "방위산업체 IT 인프라 운영. 서버/클라이언트 환경 관리, 헬프데스크.",
       "period": "2017.02 ~ 2018.10",
-      "stats": ["서버운영", "방화벽", "망분리"],
+      "stats": [
+        "서버운영",
+        "방화벽",
+        "망분리"
+      ],
       "highlight": false
     }
   ],
@@ -71,7 +99,13 @@
       "description": "홈랩 인프라 모니터링. Prometheus 메트릭 수집, Loki 로그 집계, Grafana 시각화.",
       "tagline": "모니터링 플랫폼",
       "metrics": {},
-      "related_skills": ["Grafana", "Prometheus", "Loki", "Blackbox Exporter", "Docker"]
+      "related_skills": [
+        "Grafana",
+        "Prometheus",
+        "Loki",
+        "Blackbox Exporter",
+        "Docker"
+      ]
     },
     {
       "icon": "🔄",
@@ -80,7 +114,11 @@
       "description": "알림, 배포, 데이터 수집 워크플로우 자동화.",
       "tagline": "워크플로우 자동화",
       "metrics": {},
-      "related_skills": ["n8n", "PostgreSQL", "Docker"]
+      "related_skills": [
+        "n8n",
+        "PostgreSQL",
+        "Docker"
+      ]
     },
     {
       "icon": "🛡️",
@@ -89,7 +127,11 @@
       "description": "FortiManager 정책/라우트 조회, FortiAnalyzer 로그 통계 수집용 Python 라이브러리.",
       "tagline": "보안장비 API 자동화",
       "metrics": {},
-      "related_skills": ["Python", "FortiManager", "FortiAnalyzer"]
+      "related_skills": [
+        "Python",
+        "FortiManager",
+        "FortiAnalyzer"
+      ]
     },
     {
       "icon": "🔔",
@@ -98,7 +140,11 @@
       "description": "FortiGate 이벤트를 Splunk에서 탐지, Slack Block Kit으로 알림. 32개 탐지 룰 운영.",
       "tagline": "보안 알림 자동화",
       "metrics": {},
-      "related_skills": ["Splunk", "Python", "Slack"]
+      "related_skills": [
+        "Splunk",
+        "Python",
+        "Slack"
+      ]
     },
     {
       "icon": "🚫",
@@ -107,7 +153,11 @@
       "description": "악성 IP 수집, 분석, 대시보드 제공. Flask API + Next.js 프론트엔드.",
       "tagline": "위협 인텔리전스",
       "metrics": {},
-      "related_skills": ["Flask", "Next.js", "PostgreSQL"]
+      "related_skills": [
+        "Flask",
+        "Next.js",
+        "PostgreSQL"
+      ]
     }
   ],
   "certifications": [
@@ -146,13 +196,43 @@
     "observability": {
       "title": "Observability",
       "icon": "Activity",
-      "items": ["Grafana", "Prometheus", "Loki", "Splunk"]
+      "items": [
+        "Grafana",
+        "Prometheus",
+        "Loki",
+        "Splunk"
+      ]
     },
-    "cloud": ["AWS (EC2, VPC, EKS, S3)", "Docker", "Kubernetes", "Linux"],
-    "devops": ["GitLab CI/CD", "GitHub Actions", "Ansible", "Terraform"],
-    "automation": ["Python", "Shell", "n8n"],
-    "database": ["PostgreSQL", "MySQL", "Redis"],
-    "security": ["FortiGate", "FortiManager", "FortiAnalyzer", "Splunk", "NAC", "DLP"]
+    "cloud": [
+      "AWS (EC2, VPC, EKS, S3)",
+      "Docker",
+      "Kubernetes",
+      "Linux"
+    ],
+    "devops": [
+      "GitLab CI/CD",
+      "GitHub Actions",
+      "Ansible",
+      "Terraform"
+    ],
+    "automation": [
+      "Python",
+      "Shell",
+      "n8n"
+    ],
+    "database": [
+      "PostgreSQL",
+      "MySQL",
+      "Redis"
+    ],
+    "security": [
+      "FortiGate",
+      "FortiManager",
+      "FortiAnalyzer",
+      "Splunk",
+      "NAC",
+      "DLP"
+    ]
   },
   "hero": {
     "badge": "Infrastructure Engineer",
