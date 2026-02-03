@@ -52,6 +52,34 @@
 }
 
 /* Sections */
+.section-hero {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  padding: 0 var(--space-6);
+  /* Subtle gradient background if needed, or rely on body */
+}
+
+.hero-content {
+  width: 100%;
+  max-width: var(--container-max);
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.terminal-line {
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+  margin-bottom: var(--space-4);
+}
+
 .section-about,
 .section-resume,
 .section-projects,
@@ -105,6 +133,13 @@
   font-size: var(--text-sm);
   color: var(--text-muted);
   text-align: center;
+}
+
+.footer-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: var(--space-4);
 }
 
 /* Responsive */
