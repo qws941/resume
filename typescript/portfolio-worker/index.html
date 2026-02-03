@@ -343,7 +343,19 @@
 
         resize();
         window.addEventListener('resize', resize);
-        setInterval(draw, 50);
+        // Use requestAnimationFrame for better performance
+        var lastTime = 0;
+        var fps = 20;
+        var interval = 1000 / fps;
+        function animate(currentTime) {
+          requestAnimationFrame(animate);
+          var delta = currentTime - lastTime;
+          if (delta >= interval) {
+            lastTime = currentTime - (delta % interval);
+            draw();
+          }
+        }
+        requestAnimationFrame(animate);
       })();
 
       (function () {

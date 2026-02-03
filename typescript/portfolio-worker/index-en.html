@@ -241,11 +241,11 @@
               <div class="section-cmd">
                 <span class="section-cmd__command">cat about.txt</span>
               </div>
-              <div class="about-content card">
+              <div class="about-content">
                 <p>
-                  I'm a Software Engineer focused on building reliable infrastructure and automation
-                  systems. I specialize in Observability, DevOps, and Security pipelines. Currently
-                  working at <span class="highlight">ITCEN CTS</span>.
+                  Hi, I'm Jaecheol Lee, an Infrastructure Engineer. I specialize in Observability,
+                  DevSecOps, and automation pipeline development. Currently working at
+                  <span class="highlight">ITCEN CTS</span>.
                 </p>
               </div>
             </section>
@@ -339,7 +339,19 @@
 
         resize();
         window.addEventListener('resize', resize);
-        setInterval(draw, 50);
+        // Use requestAnimationFrame for better performance
+        var lastTime = 0;
+        var fps = 20;
+        var interval = 1000 / fps;
+        function animate(currentTime) {
+          requestAnimationFrame(animate);
+          var delta = currentTime - lastTime;
+          if (delta >= interval) {
+            lastTime = currentTime - (delta % interval);
+            draw();
+          }
+        }
+        requestAnimationFrame(animate);
       })();
 
       (function () {
