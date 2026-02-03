@@ -194,96 +194,109 @@
     <a href="#main-content" class="skip-link">Skip to main content</a>
 
     <div class="container-narrow">
-      <header class="site-header">
-        <nav class="minimal-nav">
-          <a href="/" class="nav-logo">Jaecheol Lee</a>
-          <div class="nav-links">
-            <a href="#about">About</a>
-            <a href="#resume">Experience</a>
-            <a href="#projects">Projects</a>
-            <a href="#contact">Contact</a>
+      <div class="terminal-window">
+        <div class="terminal-titlebar">
+          <div class="terminal-buttons">
+            <span class="terminal-btn terminal-btn--close"></span>
+            <span class="terminal-btn terminal-btn--minimize"></span>
+            <span class="terminal-btn terminal-btn--maximize"></span>
           </div>
-        </nav>
-      </header>
-
-      <main id="main-content">
-        <section id="hero" class="section-hero hero--terminal">
-          <div class="hero-content">
-            <div class="terminal-line">
-              <span class="terminal-prompt">$ whoami →</span>
-              <h1 class="hero-title">
-                <span class="typing-text">Jaecheol Lee</span><span class="cursor"></span>
-              </h1>
-            </div>
-            <p class="hero-subtitle">
-              <span style="color: var(--cyber-cyan, #00f0ff)"
-                >Security Infrastructure · Observability · Automation</span
-              >
-            </p>
-          </div>
-        </section>
-
-        <section id="about" class="section-about">
-          <div class="section-cmd">
-            <span class="section-cmd__command">cat about.txt</span>
-          </div>
-          <div class="about-content card">
-            <p>
-              I'm a Software Engineer focused on building reliable infrastructure and automation
-              systems. I specialize in Observability, DevOps, and Security pipelines. Currently
-              working at <span class="highlight">ITCEN CTS</span>.
-            </p>
-          </div>
-        </section>
-
-        <section id="resume" class="section-resume">
-          <div class="section-cmd">
-            <span class="section-cmd__command">cat experience.log</span>
-          </div>
-          <ul class="resume-list">
-            <!-- RESUME_CARDS_PLACEHOLDER -->
-          </ul>
-          <div class="resume-download card">
-            <a href="<!-- RESUME_PDF_URL -->" class="link-subtle" download
-              >View Full Resume (PDF)</a
-            >
-          </div>
-        </section>
-
-        <section id="projects" class="section-projects">
-          <div class="section-cmd">
-            <span class="section-cmd__command">ls -la ~/projects/</span>
-          </div>
-          <ul class="project-list">
-            <!-- PROJECT_CARDS_PLACEHOLDER -->
-          </ul>
-        </section>
-
-        <section id="skills" class="section-skills">
-          <div class="section-cmd">
-            <span class="section-cmd__command">cat skills.json</span>
-          </div>
-          <ul class="skill-list-minimal">
-            <!-- SKILLS_LIST_PLACEHOLDER -->
-          </ul>
-        </section>
-
-        <section id="contact" class="section-contact">
-          <div class="section-cmd">
-            <span class="section-cmd__command">cat contact.txt</span>
-          </div>
-          <div class="contact-links card">
-            <!-- CONTACT_GRID_PLACEHOLDER -->
-          </div>
-        </section>
-      </main>
-
-      <footer class="site-footer">
-        <div class="footer-content">
-          <span class="terminal-prompt" style="font-size: var(--text-sm)">exit</span>
-          <span style="color: var(--text-muted); margin-left: 1rem">© 2026 Jaecheol Lee</span>
+          <span class="terminal-title">jclee@resume:~</span>
+          <div style="width: 52px"></div>
         </div>
-      </footer>
+        <div class="terminal-body">
+          <header class="site-header">
+            <nav class="minimal-nav">
+              <a href="/" class="nav-logo">~/jclee</a>
+              <div class="nav-links">
+                <a href="#about">about</a>
+                <a href="#resume">exp</a>
+                <a href="#projects">projects</a>
+                <a href="#contact">contact</a>
+              </div>
+            </nav>
+          </header>
+
+          <main id="main-content">
+            <section id="hero" class="section-hero hero--terminal">
+              <div class="hero-content">
+                <div class="cmd-line">
+                  <span class="cmd-user">jclee</span><span class="cmd-separator">@</span
+                  ><span class="cmd-path">resume</span><span class="cmd-symbol">$</span>
+                  <span class="cmd-input">whoami</span>
+                </div>
+                <h1 class="hero-title">
+                  <span class="typing-text">Jaecheol Lee</span><span class="cursor"></span>
+                </h1>
+                <div class="cmd-output">
+                  Infrastructure Engineer | Security | Observability | Automation
+                </div>
+              </div>
+            </section>
+
+            <section id="about" class="section-about">
+              <div class="section-cmd">
+                <span class="section-cmd__command">cat about.txt</span>
+              </div>
+              <div class="about-content card">
+                <p>
+                  I'm a Software Engineer focused on building reliable infrastructure and automation
+                  systems. I specialize in Observability, DevOps, and Security pipelines. Currently
+                  working at <span class="highlight">ITCEN CTS</span>.
+                </p>
+              </div>
+            </section>
+
+            <section id="resume" class="section-resume">
+              <div class="section-cmd">
+                <span class="section-cmd__command">cat experience.log</span>
+              </div>
+              <ul class="resume-list">
+                <!-- RESUME_CARDS_PLACEHOLDER -->
+              </ul>
+              <div class="resume-download card">
+                <a href="<!-- RESUME_PDF_URL -->" class="link-subtle" download
+                  >View Full Resume (PDF)</a
+                >
+              </div>
+            </section>
+
+            <section id="projects" class="section-projects">
+              <div class="section-cmd">
+                <span class="section-cmd__command">ls -la ~/projects/</span>
+              </div>
+              <ul class="project-list">
+                <!-- PROJECT_CARDS_PLACEHOLDER -->
+              </ul>
+            </section>
+
+            <section id="skills" class="section-skills">
+              <div class="section-cmd">
+                <span class="section-cmd__command">cat skills.json</span>
+              </div>
+              <ul class="skill-list-minimal">
+                <!-- SKILLS_LIST_PLACEHOLDER -->
+              </ul>
+            </section>
+
+            <section id="contact" class="section-contact">
+              <div class="section-cmd">
+                <span class="section-cmd__command">cat contact.txt</span>
+              </div>
+              <div class="contact-links card">
+                <!-- CONTACT_GRID_PLACEHOLDER -->
+              </div>
+            </section>
+          </main>
+
+          <footer class="site-footer">
+            <div class="footer-content">
+              <span class="terminal-prompt" style="font-size: var(--text-sm)">logout</span>
+              <span style="color: var(--text-muted); margin-left: 1rem">Connection closed.</span>
+            </div>
+          </footer>
+        </div>
+      </div>
     </div>
 
     <!-- Scripts -->

@@ -2,7 +2,7 @@
 
 > Parent: [../AGENTS.md](../AGENTS.md)
 
-**Updated:** 2026-02-01
+**Updated:** 2026-02-03
 
 ## PURPOSE
 
