@@ -307,7 +307,7 @@ jobs:
   notify-failure:
     name: Notify on Failure
     runs-on: ubuntu-latest
-    needs: [auth-refresh, profile-sync, drift-detection]
+    needs: [auth-refresh, profile-sync, drift-detection, cache-cleanup]
     if: failure()
     steps:
       - name: Send failure notification
