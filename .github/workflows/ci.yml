@@ -43,6 +43,11 @@ env:
   PORTFOLIO_URL: 'https://resume.jclee.me'
   JOB_DASHBOARD_URL: 'https://job.jclee.me'
 
+permissions:
+  contents: read
+  actions: read
+  pull-requests: read
+
 # Prevent concurrent deployments to same environment
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -161,9 +166,9 @@ jobs:
             exit 1
           fi
 
-          # Quality gate: Max 150 warnings (current baseline)
-          if [ "${WARNINGS:-0}" -gt "150" ]; then
-            echo "❌ Too many ESLint warnings (${WARNINGS} > 150) - failing"
+          # Quality gate: Max 50 warnings (current baseline)
+          if [ "${WARNINGS:-0}" -gt "50" ]; then
+            echo "❌ Too many ESLint warnings (${WARNINGS} > 50) - failing"
             exit 1
           fi
 
@@ -303,7 +308,6 @@ jobs:
       - name: Run gitleaks
         run: |
           gitleaks detect --source . --verbose --no-git || echo "::warning::gitleaks found potential secrets"
-        continue-on-error: true
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -316,7 +320,6 @@ jobs:
 
       - name: Run npm audit
         run: npm audit --audit-level=high || echo "::warning::npm audit found vulnerabilities"
-        continue-on-error: true
 
   # ===========================================================================
   # STAGE: BUILD
@@ -340,7 +343,7 @@ jobs:
         run: npm ci --prefer-offline --no-audit
 
       - name: Sync resume data
-        run: npm run sync:data || true
+        run: npm run sync:data
 
       - name: Build portfolio worker
         run: npm run build
@@ -391,6 +394,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [build-portfolio, test-e2e, security-scan]
     if: ${{ always() && !failure() && !cancelled() && github.ref == 'refs/heads/master' }}
+    timeout-minutes: 15
     environment:
       name: production/portfolio
       url: ${{ env.PORTFOLIO_URL }}
@@ -426,6 +430,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [build-job-dashboard, test-e2e, security-scan]
     if: ${{ always() && !failure() && !cancelled() && github.ref == 'refs/heads/master' }}
+    timeout-minutes: 15
     environment:
       name: production/job-dashboard
       url: ${{ env.JOB_DASHBOARD_URL }}
