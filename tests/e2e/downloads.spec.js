@@ -14,7 +14,7 @@ test.describe('Download Functionality', () => {
   test.beforeEach(async ({ page, baseURL }) => {
     await page.goto(baseURL || '/');
     // Wait for download links to be fully rendered (they may be injected by JS)
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
   });
 
   test.describe('Resume Download Links', () => {
@@ -212,7 +212,7 @@ test.describe('Download Functionality', () => {
 test.describe('Download Link Counts', () => {
   test('should have expected number of download links', async ({ page, baseURL }) => {
     await page.goto(baseURL || '/');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
 
     // Count all download links - verify there are some
     const allDownloadLinks = page.locator('a[download]');

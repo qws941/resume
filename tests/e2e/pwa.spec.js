@@ -4,7 +4,7 @@ const { test, expect } = require('@playwright/test');
 test.describe('Progressive Web App (PWA)', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
   });
 
   test('should have manifest.json link', async ({ page }) => {

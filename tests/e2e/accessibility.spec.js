@@ -4,7 +4,7 @@ const { test, expect } = require('@playwright/test');
 test.describe('Accessibility (a11y)', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
   });
 
   test('should have skip link for keyboard navigation', async ({ page }) => {
@@ -124,7 +124,7 @@ test.describe('Accessibility (a11y)', () => {
 test.describe('Keyboard Navigation', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
   });
 
   test('should be able to navigate with Tab key', async ({ page }) => {

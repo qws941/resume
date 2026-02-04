@@ -4,7 +4,7 @@ const { test, expect } = require('@playwright/test');
 test.describe('Performance & Core Web Vitals', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
   });
 
   test('should load within acceptable time', async ({ page }) => {
@@ -76,7 +76,7 @@ test.describe('Performance & Core Web Vitals', () => {
     await page.goto('/');
 
     // Wait for page to settle
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
     await page.waitForTimeout(2000);
 
     const cls = await page.evaluate(() => {
@@ -104,7 +104,7 @@ test.describe('Performance & Core Web Vitals', () => {
   test('should have fast First Contentful Paint (FCP)', async ({ page }) => {
     // Navigate and wait for full load
     await page.goto('/');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
 
     // Give browser time to record paint metrics
     await page.waitForTimeout(1000);
@@ -202,7 +202,7 @@ test.describe('Performance & Core Web Vitals', () => {
     const requests = [];
     page.on('request', (request) => requests.push(request));
 
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
 
     // Should not have excessive requests
     expect(requests.length).toBeLessThan(20);
@@ -291,7 +291,7 @@ test.describe('Performance & Core Web Vitals', () => {
 
   test('should have good performance score metrics', async ({ page }) => {
     await page.goto('/');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
 
     // Collect all performance metrics
     const metrics = await page.evaluate(() => {

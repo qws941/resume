@@ -4,7 +4,7 @@ const { test, expect } = require('@playwright/test');
 test.describe('SEO Meta Tags', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
   });
 
   test('should have proper page title', async ({ page }) => {
@@ -66,7 +66,7 @@ test.describe('SEO Meta Tags', () => {
 test.describe('Open Graph Tags', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
   });
 
   test('should have og:type', async ({ page }) => {
@@ -173,7 +173,7 @@ test.describe('Open Graph Tags', () => {
 test.describe('Twitter Card Tags', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
   });
 
   test('should have twitter:card', async ({ page }) => {
@@ -245,7 +245,7 @@ test.describe('Twitter Card Tags', () => {
 test.describe('JSON-LD Structured Data', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
   });
 
   test('should have Person schema', async ({ page }) => {
@@ -375,7 +375,7 @@ test.describe('JSON-LD Structured Data', () => {
 test.describe('PWA Meta Tags', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
   });
 
   test('should have manifest link', async ({ page }) => {
@@ -416,7 +416,7 @@ test.describe('PWA Meta Tags', () => {
 test.describe('Resource Hints', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
   });
 
   test('should have dns-prefetch for external domains', async ({ page }) => {

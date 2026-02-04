@@ -31,7 +31,7 @@ test.describe('Mobile Responsiveness', () => {
 
   test('should have touch-friendly interactive elements', async ({ page }) => {
     await page.goto('/');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
 
     // Get all interactive elements (buttons and primary links)
     const buttons = await page.locator('button:visible').all();
@@ -74,7 +74,7 @@ test.describe('Mobile Responsiveness', () => {
 
   test('should not have horizontal overflow', async ({ page }) => {
     await page.goto('/');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
 
     // Check document width doesn't exceed viewport width
     const viewportWidth = page.viewportSize()?.width || 0;
@@ -94,7 +94,7 @@ test.describe('Mobile Responsiveness', () => {
 
   test('should have readable text sizes', async ({ page }) => {
     await page.goto('/');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
 
     // Check main body text is at least 14px (minimum readable)
     const bodyTexts = await page
@@ -125,7 +125,7 @@ test.describe('Mobile Responsiveness', () => {
 
   test('should have working navigation', async ({ page }) => {
     await page.goto('/');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
 
     // Check if nav exists
     const nav = page.locator('nav, .nav, [role="navigation"]').first();
@@ -152,7 +152,7 @@ test.describe('Mobile Responsiveness', () => {
 
   test('should load images with proper alt text', async ({ page }) => {
     await page.goto('/');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
 
     const images = await page.locator('img').all();
 
@@ -180,7 +180,7 @@ test.describe('Mobile Responsiveness', () => {
 
   test('should be scrollable', async ({ page }) => {
     await page.goto('/');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
 
     // Check if page has scrollable content
     const pageHeight = await page.evaluate(() => document.body.scrollHeight);
@@ -203,7 +203,7 @@ test.describe('Mobile Responsiveness', () => {
 
   test('should handle touch interactions', async ({ page }) => {
     await page.goto('/');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
 
     // Find a clickable element (button or link), excluding skip-link which is hidden
     // Skip-links are positioned off-screen and cannot be scrolled to on mobile
@@ -248,7 +248,7 @@ test.describe('Tablet Features', () => {
     }
 
     await page.goto('/');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
 
     // Simulate landscape orientation
     await page.setViewportSize({
@@ -291,7 +291,7 @@ test.describe('Mobile Performance', () => {
 
   test('should not block main thread excessively', async ({ page }) => {
     await page.goto('/');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
 
     // Check for long tasks (blocking main thread > 50ms)
     const longTasks = await page.evaluate(() => {

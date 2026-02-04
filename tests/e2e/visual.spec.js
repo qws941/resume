@@ -9,7 +9,7 @@ test.describe('Visual Regression Tests', () => {
 
     test('homepage full page screenshot', async ({ page }) => {
       await page.goto('/');
-      await page.waitForLoadState('networkidle');
+      await page.waitForLoadState('domcontentloaded');
       await page.waitForTimeout(500);
 
       await expect(page).toHaveScreenshot('desktop-homepage.png', {
@@ -20,7 +20,7 @@ test.describe('Visual Regression Tests', () => {
 
     test('hero section screenshot', async ({ page }) => {
       await page.goto('/');
-      await page.waitForLoadState('networkidle');
+      await page.waitForLoadState('domcontentloaded');
 
       const heroSection = page.locator('.hero');
       await expect(heroSection).toHaveScreenshot('desktop-hero.png', {
@@ -30,7 +30,7 @@ test.describe('Visual Regression Tests', () => {
 
     test('projects section screenshot', async ({ page }) => {
       await page.goto('/');
-      await page.waitForLoadState('networkidle');
+      await page.waitForLoadState('domcontentloaded');
 
       const projectsSection = page.locator('#projects');
       await expect(projectsSection).toHaveScreenshot('desktop-projects.png', {
@@ -40,7 +40,7 @@ test.describe('Visual Regression Tests', () => {
 
     test('resume section screenshot', async ({ page }) => {
       await page.goto('/');
-      await page.waitForLoadState('networkidle');
+      await page.waitForLoadState('domcontentloaded');
 
       const resumeSection = page.locator('#resume');
       await expect(resumeSection).toHaveScreenshot('desktop-resume.png', {
@@ -51,7 +51,7 @@ test.describe('Visual Regression Tests', () => {
     // Stats section removed in redesign - test skipped
     test.skip('stats grid screenshot', async ({ page }) => {
       await page.goto('/');
-      await page.waitForLoadState('networkidle');
+      await page.waitForLoadState('domcontentloaded');
 
       const statsGrid = page.locator('.stats-grid').first();
       await expect(statsGrid).toHaveScreenshot('desktop-stats.png', {
@@ -67,7 +67,7 @@ test.describe('Visual Regression Tests', () => {
 
     test('mobile homepage screenshot', async ({ page }) => {
       await page.goto('/');
-      await page.waitForLoadState('networkidle');
+      await page.waitForLoadState('domcontentloaded');
       await page.waitForTimeout(500);
 
       await expect(page).toHaveScreenshot('mobile-homepage.png', {
@@ -78,7 +78,7 @@ test.describe('Visual Regression Tests', () => {
 
     test('mobile hero section screenshot', async ({ page }) => {
       await page.goto('/');
-      await page.waitForLoadState('networkidle');
+      await page.waitForLoadState('domcontentloaded');
 
       const heroSection = page.locator('.hero');
       await expect(heroSection).toHaveScreenshot('mobile-hero.png', {
@@ -88,7 +88,7 @@ test.describe('Visual Regression Tests', () => {
 
     test('mobile project card screenshot', async ({ page }) => {
       await page.goto('/');
-      await page.waitForLoadState('networkidle');
+      await page.waitForLoadState('domcontentloaded');
 
       const firstProjectCard = page.locator('.project-card').first();
       await expect(firstProjectCard).toHaveScreenshot('mobile-project-card.png', {
@@ -104,7 +104,7 @@ test.describe('Visual Regression Tests', () => {
 
     test('tablet homepage screenshot', async ({ page }) => {
       await page.goto('/');
-      await page.waitForLoadState('networkidle');
+      await page.waitForLoadState('domcontentloaded');
       await page.waitForTimeout(500);
 
       await expect(page).toHaveScreenshot('tablet-homepage.png', {
@@ -119,7 +119,7 @@ test.describe('Visual Regression Tests', () => {
       await page.emulateMedia({ colorScheme: 'dark' });
       await page.setViewportSize({ width: 1280, height: 720 });
       await page.goto('/');
-      await page.waitForLoadState('networkidle');
+      await page.waitForLoadState('domcontentloaded');
       await page.waitForTimeout(500);
 
       await expect(page).toHaveScreenshot('dark-mode-homepage.png', {
@@ -133,7 +133,7 @@ test.describe('Visual Regression Tests', () => {
     test('footer screenshot', async ({ page }) => {
       await page.setViewportSize({ width: 1280, height: 720 });
       await page.goto('/');
-      await page.waitForLoadState('networkidle');
+      await page.waitForLoadState('domcontentloaded');
 
       const footer = page.locator('footer');
       await expect(footer).toHaveScreenshot('footer.png', {
@@ -144,7 +144,7 @@ test.describe('Visual Regression Tests', () => {
     test('hero download buttons screenshot', async ({ page }) => {
       await page.setViewportSize({ width: 1280, height: 720 });
       await page.goto('/');
-      await page.waitForLoadState('networkidle');
+      await page.waitForLoadState('domcontentloaded');
 
       const heroDownload = page.locator('.hero-download');
       await expect(heroDownload).toHaveScreenshot('download-buttons.png', {
@@ -155,7 +155,7 @@ test.describe('Visual Regression Tests', () => {
     test('single project card screenshot', async ({ page }) => {
       await page.setViewportSize({ width: 1280, height: 720 });
       await page.goto('/');
-      await page.waitForLoadState('networkidle');
+      await page.waitForLoadState('domcontentloaded');
 
       const projectCard = page.locator('.project-card').first();
       await expect(projectCard).toHaveScreenshot('project-card.png', {
@@ -167,7 +167,7 @@ test.describe('Visual Regression Tests', () => {
     test.skip('single stat card screenshot', async ({ page }) => {
       await page.setViewportSize({ width: 1280, height: 720 });
       await page.goto('/');
-      await page.waitForLoadState('networkidle');
+      await page.waitForLoadState('domcontentloaded');
 
       const statCard = page.locator('.stat-card').first();
       await expect(statCard).toHaveScreenshot('stat-card.png', {

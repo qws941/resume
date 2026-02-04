@@ -4,9 +4,9 @@ const { test, expect } = require('@playwright/test');
 // Test Constants
 const SELECTORS = {
   HERO_TITLE: '.hero-title',
-  PROJECT_CARD: '#projects .project-card', // Scoped to projects section only
+  PROJECT_CARD: '#projects .project-list li.project-item',
   STAT_CARD: '.stat-card',
-  PROJECT_LINK_PRIMARY: '.project-link.link-primary',
+  PROJECT_LINK_PRIMARY: '#projects .project-link-title[href]',
 };
 
 // Dynamically load project counts from data.json (auto-sync)
@@ -23,7 +23,7 @@ const REGEX_PATTERNS = {
 // Helper Functions
 async function navigateToHome(page) {
   await page.goto('/');
-  await page.waitForLoadState('networkidle');
+  await page.waitForLoadState('domcontentloaded');
 }
 
 async function checkElementVisible(page, selector) {
@@ -70,14 +70,14 @@ test.describe('Responsive Design', () => {
   test('should be mobile responsive (iPhone SE)', async ({ page }) => {
     // Set mobile viewport
     await page.setViewportSize({ width: 375, height: 667 });
-    await page.goto('/', { waitUntil: 'networkidle' });
+    await page.goto('/', { waitUntil: 'domcontentloaded' });
 
     // Check mobile-specific behavior
     const heroTitle = page.locator('.hero-title');
     await expect(heroTitle).toBeVisible();
 
     // Verify project cards stack vertically on mobile
-    const projectCards = page.locator('#projects .project-card');
+    const projectCards = page.locator(SELECTORS.PROJECT_CARD);
     const firstCard = projectCards.first();
     const secondCard = projectCards.nth(1);
 
@@ -86,7 +86,7 @@ test.describe('Responsive Design', () => {
 
     // Wait for grid layout to compute bounding boxes
     await page.waitForFunction(() => {
-      const cards = document.querySelectorAll('#projects .project-card');
+      const cards = document.querySelectorAll('#projects .project-list li.project-item');
       if (cards.length < 2) return false;
       const box1 = cards[0].getBoundingClientRect();
       const box2 = cards[1].getBoundingClientRect();
@@ -98,9 +98,7 @@ test.describe('Responsive Design', () => {
 
     // Cards should be vertically stacked (second card below first)
     // Use >= to handle cases where cards are exactly touching
-    expect(secondCardBox.y).toBeGreaterThanOrEqual(
-      firstCardBox.y + firstCardBox.height,
-    );
+    expect(secondCardBox.y).toBeGreaterThanOrEqual(firstCardBox.y + firstCardBox.height);
   });
 
   test('should be mobile responsive (Samsung Galaxy S20)', async ({ page }) => {
@@ -110,13 +108,11 @@ test.describe('Responsive Design', () => {
     // Check content visibility
     await checkElementVisible(page, SELECTORS.HERO_TITLE);
     // Check project cards exist (use count instead of checkElementVisible)
-    await expect(page.locator(SELECTORS.PROJECT_CARD)).toHaveCount(
-      EXPECTED_COUNTS.PROJECTS,
-    );
+    await expect(page.locator(SELECTORS.PROJECT_CARD)).toHaveCount(EXPECTED_COUNTS.PROJECTS);
 
     // Note: Touch target 44x44px is ideal but inline links may be smaller
     // We verify the link is visible and clickable instead
-    const links = page.locator('.project-link');
+    const links = page.locator('.project-link-title');
     await expect(links.first()).toBeVisible();
     // The actual touch target size depends on CSS - 22px height is acceptable for inline links
   });
@@ -127,9 +123,7 @@ test.describe('Responsive Design', () => {
 
     // Check font sizes are readable on mobile
     const heroTitle = page.locator('.hero-title');
-    const fontSize = await heroTitle.evaluate(
-      (el) => window.getComputedStyle(el).fontSize,
-    );
+    const fontSize = await heroTitle.evaluate((el) => window.getComputedStyle(el).fontSize);
     const fontSizeNum = parseFloat(fontSize);
     expect(fontSizeNum).toBeGreaterThanOrEqual(24); // Minimum readable size
   });
@@ -138,7 +132,7 @@ test.describe('Responsive Design', () => {
     await page.setViewportSize({ width: 768, height: 1024 });
     await page.goto('/');
 
-    const projectCards = page.locator('#projects .project-card');
+    const projectCards = page.locator(SELECTORS.PROJECT_CARD);
     await expect(projectCards).toHaveCount(EXPECTED_COUNTS.PROJECTS);
     await expect(projectCards.first()).toBeVisible();
 
