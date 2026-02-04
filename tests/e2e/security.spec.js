@@ -4,7 +4,7 @@ const { test, expect } = require('@playwright/test');
 test.describe('Security Headers & CSP', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
   });
 
   test('should have all required security headers', async ({ request }) => {

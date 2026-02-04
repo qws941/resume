@@ -4,7 +4,7 @@ const { test, expect } = require('@playwright/test');
 test.describe('Error Tracking (Sentry)', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
   });
 
   test('should load Sentry script from CDN', async ({ page }) => {
