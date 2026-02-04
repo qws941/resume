@@ -104,31 +104,24 @@ function generateCertificationCards(certData, dataHash) {
     .join('\n');
 }
 
-/**
- * Generate skills list HTML from JSON data
- * @param {Object} skillsData - Object containing skill categories
- * @param {string} dataHash - Hash of the data for cache validation
- * @returns {string} HTML string for skills section
- */
 function generateSkillsList(skillsData, dataHash) {
   if (TEMPLATE_CACHE.dataHash === dataHash && TEMPLATE_CACHE.skillsHtml) {
     logger.log('✓ Using cached skills HTML');
     return TEMPLATE_CACHE.skillsHtml;
   }
 
-  // Flatten skills for minimal view or keep categories simple
   const categories = {
-    aiops: 'AIOps',
-    observability: 'Observability',
-    cloud: 'Cloud',
-    devops: 'DevOps',
-    automation: 'Automation',
-    security: 'Security',
+    observability: { label: 'Observability', level: 95 },
+    security: { label: 'Security', level: 90 },
+    cloud: { label: 'Cloud', level: 85 },
+    devops: { label: 'DevOps', level: 85 },
+    automation: { label: 'Automation', level: 80 },
+    database: { label: 'Database', level: 70 },
   };
 
   const html = Object.entries(categories)
-    .map(([key, label]) => {
-      const skillData = skillsData[key] || skillsData[`${key}_aiops`]; // Handle naming mismatch if any
+    .map(([key, config]) => {
+      const skillData = skillsData[key];
       if (!skillData) return '';
 
       let skills = [];
@@ -137,10 +130,19 @@ function generateSkillsList(skillsData, dataHash) {
 
       if (skills.length === 0) return '';
 
-      // Just return text list: "Label: Item, Item, Item"
-      return `<li class="skill-row">
-        <span class="skill-label">${label}:</span>
-        <span class="skill-list">${skills.map((s) => `<span class="skill-tag">${escapeHtml(s)}</span>`).join('')}</span>
+      const barWidth = 20;
+      const filled = Math.round((config.level / 100) * barWidth);
+      const empty = barWidth - filled;
+      const bar = '█'.repeat(filled) + '░'.repeat(empty);
+
+      return `<li class="htop-row">
+        <span class="htop-label">${config.label}</span>
+        <span class="htop-bar">[<span class="htop-filled">${bar}</span>]</span>
+        <span class="htop-pct">${config.level}%</span>
+        <span class="htop-items">${skills
+          .slice(0, 4)
+          .map((s) => escapeHtml(s))
+          .join(', ')}</span>
       </li>`;
     })
     .join('\n');

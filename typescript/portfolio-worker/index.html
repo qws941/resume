@@ -254,6 +254,30 @@
               </div>
             </section>
 
+            <section id="status" class="section-status reveal">
+              <div class="section-cmd">
+                <span class="section-cmd__command">systemctl status services</span>
+              </div>
+              <div class="status-content">
+                <div class="status-header">
+                  <span class="status-indicator status-loading"></span>
+                  <span class="status-title">Service Status</span>
+                </div>
+                <ul class="status-list" id="status-list">
+                  <li class="status-item" data-url="https://resume.jclee.me">
+                    <span class="status-dot"></span>
+                    <span class="status-name">resume.jclee.me</span>
+                    <span class="status-state">checking...</span>
+                  </li>
+                  <li class="status-item" data-url="https://job.jclee.me">
+                    <span class="status-dot"></span>
+                    <span class="status-name">job.jclee.me</span>
+                    <span class="status-state">checking...</span>
+                  </li>
+                </ul>
+              </div>
+            </section>
+
             <section id="resume" class="section-resume reveal">
               <div class="section-cmd">
                 <span class="section-cmd__command">cat experience.log</span>
@@ -302,6 +326,21 @@
               <span style="color: var(--text-muted); margin-left: 1rem">Connection closed.</span>
             </div>
           </footer>
+
+          <div id="cli-container" class="cli-container">
+            <div id="cli-output" class="cli-output"></div>
+            <div class="cli-input-line">
+              <span class="cli-prompt">jclee@resume:~$ </span>
+              <input
+                type="text"
+                id="cli-input"
+                class="cli-input"
+                autocomplete="off"
+                spellcheck="false"
+                placeholder="type 'help' for commands..."
+              />
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -369,6 +408,408 @@
         );
         document.querySelectorAll('.reveal').forEach(function (el) {
           obs.observe(el);
+        });
+      })();
+
+      // ========================================
+      // PHASE 1: Easter Eggs & Interactive Features
+      // ========================================
+
+      // Konami Code Easter Egg
+      (function () {
+        var konamiCode = [
+          'ArrowUp',
+          'ArrowUp',
+          'ArrowDown',
+          'ArrowDown',
+          'ArrowLeft',
+          'ArrowRight',
+          'ArrowLeft',
+          'ArrowRight',
+          'KeyB',
+          'KeyA',
+        ];
+        var konamiIndex = 0;
+
+        document.addEventListener('keydown', function (e) {
+          if (e.code === konamiCode[konamiIndex]) {
+            konamiIndex++;
+            if (konamiIndex === konamiCode.length) {
+              activateHackMode();
+              konamiIndex = 0;
+            }
+          } else {
+            konamiIndex = 0;
+          }
+        });
+
+        function activateHackMode() {
+          var overlay = document.createElement('div');
+          overlay.id = 'hack-mode-overlay';
+          overlay.innerHTML =
+            '<div class="hack-text">HACK MODE ACTIVATED</div><div class="hack-sub">// root access granted</div>';
+          overlay.style.cssText =
+            'position:fixed;inset:0;background:rgba(0,255,136,0.1);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;animation:hackFlash 0.1s ease-in-out 5;';
+          document.body.appendChild(overlay);
+
+          var style = document.createElement('style');
+          style.textContent =
+            '@keyframes hackFlash{0%,100%{opacity:1}50%{opacity:0.5}}.hack-text{font-size:3rem;font-family:monospace;color:#00ff88;text-shadow:0 0 20px #00ff88;animation:glitchText 0.3s infinite}.hack-sub{color:#0ff;font-family:monospace;margin-top:1rem}@keyframes glitchText{0%{transform:translate(0)}20%{transform:translate(-2px,2px)}40%{transform:translate(2px,-2px)}60%{transform:translate(-2px,-2px)}80%{transform:translate(2px,2px)}100%{transform:translate(0)}}';
+          document.head.appendChild(style);
+
+          setTimeout(function () {
+            overlay.remove();
+            style.remove();
+          }, 3000);
+        }
+      })();
+
+      // Interactive Terminal Commands (preparation for Phase 2)
+      window.terminalCommands = {
+        neofetch: function () {
+          return (
+            '<pre class="neofetch-output">' +
+            '<span class="nf-logo">       ██╗ ██████╗██╗     ███████╗███████╗\n' +
+            '       ██║██╔════╝██║     ██╔════╝██╔════╝\n' +
+            '       ██║██║     ██║     █████╗  █████╗  \n' +
+            '  ██   ██║██║     ██║     ██╔══╝  ██╔══╝  \n' +
+            '  ╚█████╔╝╚██████╗███████╗███████╗███████╗\n' +
+            '   ╚════╝  ╚═════╝╚══════╝╚══════╝╚══════╝</span>\n' +
+            '  ─────────────────────────────────────────\n' +
+            '  <span class="nf-label">OS:</span> Linux (Infrastructure)\n' +
+            '  <span class="nf-label">Host:</span> resume.jclee.me\n' +
+            '  <span class="nf-label">Uptime:</span> 10+ years in production\n' +
+            '  <span class="nf-label">Shell:</span> /bin/devops\n' +
+            '  <span class="nf-label">DE:</span> Grafana + Prometheus\n' +
+            '  <span class="nf-label">Terminal:</span> Observability Expert\n' +
+            '  <span class="nf-label">CPU:</span> Problem Solving @ 100%\n' +
+            '  <span class="nf-label">Memory:</span> 10y experience loaded\n' +
+            '  ─────────────────────────────────────────\n' +
+            '  <span class="nf-colors">███</span><span class="nf-colors c2">███</span><span class="nf-colors c3">███</span><span class="nf-colors c4">███</span><span class="nf-colors c5">███</span><span class="nf-colors c6">███</span><span class="nf-colors c7">███</span>\n' +
+            '</pre>'
+          );
+        },
+
+        'sudo hire-me': function () {
+          return (
+            '<div class="sudo-output">' +
+            '<div>[sudo] password for recruiter: ********</div>' +
+            '<div class="sudo-success">✓ Access granted</div>' +
+            '<div class="sudo-msg">→ Resume downloading...</div>' +
+            '<div class="sudo-msg">→ Contact: qws941@kakao.com</div>' +
+            '<div class="sudo-msg">→ Ready for new challenges!</div>' +
+            '</div>'
+          );
+        },
+
+        'rm -rf doubt': function () {
+          return (
+            '<div class="rm-output">' +
+            "rm: removing 'doubt/impostor-syndrome'...<br>" +
+            "rm: removing 'doubt/fear-of-failure'...<br>" +
+            "rm: removing 'doubt/perfectionism'...<br>" +
+            '<span class="rm-success">✓ All doubts successfully removed.</span><br>' +
+            '<span class="rm-hint">// Confidence level: 100%</span>' +
+            '</div>'
+          );
+        },
+
+        coffee: function () {
+          return (
+            '<pre class="coffee-art">' +
+            '        ( (\n' +
+            '         ) )\n' +
+            '      ........\n' +
+            '      |      |]\n' +
+            '      \\      /\n' +
+            "       `----'\n" +
+            '  <span class="coffee-msg">Brewing productivity...</span>\n' +
+            '</pre>'
+          );
+        },
+
+        matrix: function () {
+          // Intensify matrix rain
+          var canvas = document.getElementById('matrix-bg');
+          if (canvas) {
+            canvas.style.opacity = '1';
+            setTimeout(function () {
+              canvas.style.opacity = '';
+            }, 5000);
+          }
+          return '<span class="matrix-msg">// Matrix rain intensified for 5 seconds</span>';
+        },
+
+        help: function () {
+          return (
+            '<div class="help-output">' +
+            'Available commands:\\n' +
+            '  <span class="cmd-name">neofetch</span>     - Display system info\\n' +
+            '  <span class="cmd-name">sudo hire-me</span> - Unlock recruitment mode\\n' +
+            '  <span class="cmd-name">rm -rf doubt</span> - Remove all doubts\\n' +
+            '  <span class="cmd-name">coffee</span>       - Brew some coffee\\n' +
+            '  <span class="cmd-name">matrix</span>       - Intensify the matrix\\n' +
+            '  <span class="cmd-name">theme [name]</span> - Switch theme (dark/light/hacker)\\n' +
+            '  <span class="cmd-name">snake</span>        - Play Snake game\\n' +
+            '  <span class="cmd-name">clear</span>        - Clear terminal\\n' +
+            '  <span class="cmd-name">help</span>         - Show this help\\n' +
+            '\\n<span class="help-hint">// Try the Konami code for a surprise!</span>' +
+            '</div>'
+          );
+        },
+
+        theme: function (arg) {
+          var root = document.documentElement;
+          var themes = {
+            dark: { bg: '#0c0c12', text: '#00ff88', accent: '#0ff' },
+            light: { bg: '#f0f0f0', text: '#006644', accent: '#0088cc' },
+            hacker: { bg: '#000', text: '#0f0', accent: '#0f0' },
+          };
+          var name = arg || 'hacker';
+          var t = themes[name];
+          if (!t) return 'Unknown theme. Available: dark, light, hacker';
+          root.style.setProperty('--bg-base', t.bg);
+          root.style.setProperty('--cyber-green', t.text);
+          root.style.setProperty('--cyber-cyan', t.accent);
+          return 'Theme switched to ' + name;
+        },
+
+        snake: function () {
+          if (document.getElementById('snake-game')) return 'Snake is already running!';
+          var gameDiv = document.createElement('div');
+          gameDiv.id = 'snake-game';
+          gameDiv.innerHTML =
+            '<canvas id="snake-canvas" width="200" height="200"></canvas><div style="color:#0f0;font-size:12px;margin-top:5px">Score: <span id="snake-score">0</span> | WASD to move | Q to quit</div>';
+          gameDiv.style.cssText =
+            'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#000;border:2px solid #0f0;padding:10px;z-index:9999;font-family:monospace';
+          document.body.appendChild(gameDiv);
+
+          var canvas = document.getElementById('snake-canvas');
+          var ctx = canvas.getContext('2d');
+          var size = 10;
+          var snake = [{ x: 100, y: 100 }];
+          var food = { x: 50, y: 50 };
+          var dir = { x: size, y: 0 };
+          var score = 0;
+          var gameLoop;
+
+          function draw() {
+            ctx.fillStyle = '#000';
+            ctx.fillRect(0, 0, 200, 200);
+            ctx.fillStyle = '#0f0';
+            snake.forEach(function (s) {
+              ctx.fillRect(s.x, s.y, size - 1, size - 1);
+            });
+            ctx.fillStyle = '#f00';
+            ctx.fillRect(food.x, food.y, size - 1, size - 1);
+          }
+
+          function update() {
+            var head = { x: snake[0].x + dir.x, y: snake[0].y + dir.y };
+            if (head.x < 0 || head.x >= 200 || head.y < 0 || head.y >= 200) return endGame();
+            for (var i = 0; i < snake.length; i++) {
+              if (snake[i].x === head.x && snake[i].y === head.y) return endGame();
+            }
+            snake.unshift(head);
+            if (head.x === food.x && head.y === food.y) {
+              score++;
+              document.getElementById('snake-score').textContent = score;
+              food = {
+                x: Math.floor(Math.random() * 20) * size,
+                y: Math.floor(Math.random() * 20) * size,
+              };
+            } else {
+              snake.pop();
+            }
+            draw();
+          }
+
+          function endGame() {
+            clearInterval(gameLoop);
+            ctx.fillStyle = '#0f0';
+            ctx.font = '14px monospace';
+            ctx.fillText('GAME OVER', 60, 100);
+            ctx.fillText('Score: ' + score, 70, 120);
+            setTimeout(function () {
+              gameDiv.remove();
+            }, 2000);
+          }
+
+          function handleKey(e) {
+            if (e.key === 'q' || e.key === 'Q') {
+              clearInterval(gameLoop);
+              gameDiv.remove();
+              document.removeEventListener('keydown', handleKey);
+              return;
+            }
+            var dirs = {
+              ArrowUp: [0, -1],
+              ArrowDown: [0, 1],
+              ArrowLeft: [-1, 0],
+              ArrowRight: [1, 0],
+              w: [0, -1],
+              s: [0, 1],
+              a: [-1, 0],
+              d: [1, 0],
+            };
+            var d = dirs[e.key];
+            if (d && !(dir.x === -d[0] * size && dir.y === -d[1] * size)) {
+              dir = { x: d[0] * size, y: d[1] * size };
+            }
+          }
+
+          document.addEventListener('keydown', handleKey);
+          gameLoop = setInterval(update, 150);
+          draw();
+          return 'Snake game started! WASD/Arrows to move, Q to quit.';
+        },
+      };
+
+      // Add CSS for terminal command outputs
+      (function () {
+        var cmdStyle = document.createElement('style');
+        cmdStyle.textContent =
+          '.neofetch-output{color:#00ff88;line-height:1.3}.nf-logo{color:#0ff}.nf-label{color:#ff0088}.nf-colors{color:#f00}.nf-colors.c2{color:#ff0}.nf-colors.c3{color:#0f0}.nf-colors.c4{color:#0ff}.nf-colors.c5{color:#00f}.nf-colors.c6{color:#f0f}.nf-colors.c7{color:#fff}.sudo-output{color:#00ff88}.sudo-success{color:#0f0;font-weight:bold;margin:0.5rem 0}.sudo-msg{color:#0ff;margin-left:1rem}.rm-output{color:#ff8800}.rm-success{color:#00ff88;font-weight:bold}.rm-hint{color:#666}.coffee-art{color:#c4a000}.coffee-msg{color:#00ff88}.matrix-msg{color:#00ff88}.help-output{white-space:pre-wrap}.cmd-name{color:#0ff}.help-hint{color:#666}.cli-container{position:fixed;bottom:0;left:0;right:0;background:rgba(12,12,18,0.95);border-top:1px solid #00ff88;padding:1rem;font-family:monospace;z-index:1000;max-height:40vh;overflow-y:auto}.cli-output{margin-bottom:0.5rem;color:#00ff88;font-size:0.9rem;max-height:30vh;overflow-y:auto}.cli-input-line{display:flex;align-items:center}.cli-prompt{color:#00ff88;margin-right:0.5rem;flex-shrink:0}.cli-input{flex:1;background:transparent;border:none;color:#0ff;font-family:monospace;font-size:1rem;outline:none;caret-color:#0ff}.cli-input::placeholder{color:#444}.cli-entry{margin-bottom:0.5rem}.cli-cmd{color:#0ff}.cli-result{margin-left:1rem;white-space:pre-wrap}';
+        document.head.appendChild(cmdStyle);
+      })();
+
+      (function () {
+        var cliInput = document.getElementById('cli-input');
+        var cliOutput = document.getElementById('cli-output');
+        var history = [];
+        var historyIndex = -1;
+
+        if (!cliInput || !cliOutput) return;
+
+        window.terminalCommands.clear = function () {
+          cliOutput.innerHTML = '';
+          return '';
+        };
+
+        window.terminalCommands.whoami = function () {
+          return 'jclee - Infrastructure Engineer';
+        };
+
+        window.terminalCommands.pwd = function () {
+          return '/home/jclee/resume';
+        };
+
+        window.terminalCommands.date = function () {
+          return new Date().toString();
+        };
+
+        window.terminalCommands.ls = function () {
+          return 'about.txt  experience.log  projects/  skills.json  contact.txt';
+        };
+
+        window.terminalCommands.cat = function (args) {
+          var files = {
+            'about.txt':
+              '> Observability | DevSecOps | Automation\\n> 금융·제조·공공 인프라 10년\\n> 현재 아이티센 CTS',
+            'contact.txt': 'Email: qws941@kakao.com\\nGitHub: github.com/qws941',
+            'skills.json':
+              '{\\n  "observability": ["Grafana", "Prometheus", "Loki", "Splunk"],\\n  "devops": ["GitLab CI/CD", "Ansible", "Terraform"]\\n}',
+          };
+          if (!args) return 'cat: missing file operand';
+          return files[args] || 'cat: ' + args + ': No such file or directory';
+        };
+
+        function executeCommand(cmd) {
+          cmd = cmd.trim();
+          if (!cmd) return '';
+
+          var parts = cmd.split(' ');
+          var command = parts[0];
+          var args = parts.slice(1).join(' ');
+
+          if (window.terminalCommands[cmd]) {
+            return window.terminalCommands[cmd]();
+          } else if (window.terminalCommands[command]) {
+            return window.terminalCommands[command](args);
+          } else {
+            return 'command not found: ' + command + '. Type "help" for available commands.';
+          }
+        }
+
+        function addOutput(cmd, result) {
+          var entry = document.createElement('div');
+          entry.className = 'cli-entry';
+          entry.innerHTML =
+            '<div class="cli-cmd">jclee@resume:~$ ' +
+            cmd +
+            '</div>' +
+            (result ? '<div class="cli-result">' + result + '</div>' : '');
+          cliOutput.appendChild(entry);
+          cliOutput.scrollTop = cliOutput.scrollHeight;
+        }
+
+        cliInput.addEventListener('keydown', function (e) {
+          if (e.key === 'Enter') {
+            var cmd = cliInput.value;
+            if (cmd.trim()) {
+              history.push(cmd);
+              historyIndex = history.length;
+            }
+            var result = executeCommand(cmd);
+            addOutput(cmd, result);
+            cliInput.value = '';
+          } else if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            if (historyIndex > 0) {
+              historyIndex--;
+              cliInput.value = history[historyIndex];
+            }
+          } else if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            if (historyIndex < history.length - 1) {
+              historyIndex++;
+              cliInput.value = history[historyIndex];
+            } else {
+              historyIndex = history.length;
+              cliInput.value = '';
+            }
+          } else if (e.key === 'Tab') {
+            e.preventDefault();
+            var val = cliInput.value;
+            var cmds = Object.keys(window.terminalCommands);
+            var matches = cmds.filter(function (c) {
+              return c.startsWith(val);
+            });
+            if (matches.length === 1) {
+              cliInput.value = matches[0];
+            }
+          }
+        });
+      })();
+
+      (function () {
+        var statusList = document.getElementById('status-list');
+        var mainIndicator = document.querySelector('.status-indicator');
+        if (!statusList) return;
+
+        var items = statusList.querySelectorAll('.status-item');
+        var allOnline = true;
+
+        items.forEach(function (item) {
+          var url = item.getAttribute('data-url');
+          var stateEl = item.querySelector('.status-state');
+
+          fetch(url, { method: 'HEAD', mode: 'no-cors' })
+            .then(function () {
+              item.classList.add('online');
+              stateEl.textContent = 'operational';
+            })
+            .catch(function () {
+              item.classList.add('offline');
+              stateEl.textContent = 'unreachable';
+              allOnline = false;
+            })
+            .finally(function () {
+              if (mainIndicator) {
+                mainIndicator.classList.remove('status-loading');
+                mainIndicator.classList.add(allOnline ? 'status-ok' : 'status-error');
+              }
+            });
         });
       })();
     </script>
