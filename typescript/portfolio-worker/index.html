@@ -626,6 +626,7 @@
 
           function endGame() {
             clearInterval(gameLoop);
+            document.removeEventListener('keydown', handleKey);
             ctx.fillStyle = '#0f0';
             ctx.font = '14px monospace';
             ctx.fillText('GAME OVER', 60, 100);
@@ -788,28 +789,39 @@
         if (!statusList) return;
 
         var items = statusList.querySelectorAll('.status-item');
+        var pendingChecks = items.length;
         var allOnline = true;
+
+        function updateMainIndicator() {
+          pendingChecks--;
+          if (pendingChecks === 0 && mainIndicator) {
+            mainIndicator.classList.remove('status-loading');
+            mainIndicator.classList.add(allOnline ? 'status-ok' : 'status-error');
+          }
+        }
 
         items.forEach(function (item) {
           var url = item.getAttribute('data-url');
           var stateEl = item.querySelector('.status-state');
+          var isSameOrigin = url.indexOf(window.location.origin) === 0;
 
-          fetch(url, { method: 'HEAD', mode: 'no-cors' })
-            .then(function () {
-              item.classList.add('online');
-              stateEl.textContent = 'operational';
+          fetch(url + '/health', { method: 'GET', mode: isSameOrigin ? 'same-origin' : 'cors' })
+            .then(function (response) {
+              if (response.ok) {
+                item.classList.add('online');
+                stateEl.textContent = 'operational';
+              } else {
+                item.classList.add('offline');
+                stateEl.textContent = 'degraded (' + response.status + ')';
+                allOnline = false;
+              }
             })
             .catch(function () {
               item.classList.add('offline');
               stateEl.textContent = 'unreachable';
               allOnline = false;
             })
-            .finally(function () {
-              if (mainIndicator) {
-                mainIndicator.classList.remove('status-loading');
-                mainIndicator.classList.add(allOnline ? 'status-ok' : 'status-error');
-              }
-            });
+            .finally(updateMainIndicator);
         });
       })();
     </script>
