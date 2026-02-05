@@ -4,6 +4,7 @@ const ADMIN_ROUTES = [
   '/api/auth',
   '/api/config',
   '/api/cleanup',
+  '/api/workflows',
 
   '/api/slack/notify',
   '/api/stats',
@@ -158,13 +159,9 @@ export async function verifyWebhookSignature(request, env) {
     encoder.encode(env.WEBHOOK_SECRET),
     { name: 'HMAC', hash: 'SHA-256' },
     false,
-    ['sign'],
+    ['sign']
   );
-  const sig = await crypto.subtle.sign(
-    'HMAC',
-    key,
-    encoder.encode(signedPayload),
-  );
+  const sig = await crypto.subtle.sign('HMAC', key, encoder.encode(signedPayload));
   const expectedHmac = Array.from(new Uint8Array(sig))
     .map((b) => b.toString(16).padStart(2, '0'))
     .join('');
