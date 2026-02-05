@@ -34,11 +34,11 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 puppeteer.use(StealthPlugin());
 
 const CONFIG = {
-  // Wanted (direct login)
-  WANTED_EMAIL: process.env.WANTED_EMAIL || 'qws941@kakao.com',
+  // Wanted (direct login) - MUST set via environment variables
+  WANTED_EMAIL: process.env.WANTED_EMAIL,
   WANTED_PASSWORD: process.env.WANTED_PASSWORD,
-  // Google OAuth (for JobKorea, Saramin)
-  GOOGLE_EMAIL: process.env.GOOGLE_EMAIL || 'qwer941a@gmail.com',
+  // Google OAuth (for JobKorea, Saramin) - MUST set via environment variables
+  GOOGLE_EMAIL: process.env.GOOGLE_EMAIL,
   GOOGLE_PASSWORD: process.env.GOOGLE_PASSWORD,
   // Worker
   JOB_WORKER_URL: process.env.JOB_WORKER_URL || 'https://job.jclee.me',
