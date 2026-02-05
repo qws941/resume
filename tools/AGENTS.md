@@ -1,85 +1,106 @@
 # TOOLS KNOWLEDGE BASE
 
-**Generated:** 2026-02-03
-**Commit:** 213ab0f
-**Reason:** Build/CI orchestration hub
+**Generated:** 2026-02-05
+**Commit:** 3d9015d
+**Branch:** master
 
 ## OVERVIEW
 
-Build tooling, CI/CD automation, and Bazel wrapper scripts.
-Coordinates npm execution through Bazel's query-based change detection.
+Bazel facade + npm scripts. Bazel coordinates, npm executes (hybrid Google3 style).
 
 ## STRUCTURE
 
 ```
 tools/
-├── ci/                  # CI/CD utilities
-│   └── affected.sh      # Change impact analysis
-└── scripts/             # Automation suite (see scripts/AGENTS.md)
-    ├── bazel/           # Bazel → npm wrappers
-    ├── build/           # Content generation (PDF, PPTX, icons)
-    ├── deployment/      # Cloudflare shipping
-    ├── monitoring/      # Production observability
-    ├── setup/           # Infrastructure bootstrap
-    ├── utils/           # Data sync, versioning
-    └── verification/    # Post-deploy health checks
+├── ci/
+│   └── affected.sh          # Change analysis for CI
+├── scripts/
+│   ├── bazel/               # Bazel wrapper scripts
+│   ├── build/               # Asset generation (PDF, PPTX, icons)
+│   │   ├── pdf-generator.sh     # HTML → PDF via Puppeteer
+│   │   ├── pptx_engine.py       # PowerPoint generation
+│   │   ├── pptx_templates.py    # PPTX template definitions
+│   │   ├── generate-icons.js    # Favicon/icon generation
+│   │   └── generate-screenshots.js
+│   ├── deployment/          # Deploy scripts
+│   │   ├── quick-deploy.sh      # Atomic deployment
+│   │   └── deploy-grafana.sh
+│   ├── monitoring/          # Health/metrics scripts
+│   ├── setup/               # Environment setup
+│   ├── utils/               # Utilities
+│   │   └── sync-resume-data.js  # SSoT propagation
+│   └── verification/        # Post-deploy checks
+│       └── verify-deployment.sh # 7 health checks
+└── BUILD.bazel              # Bazel targets
 ```
 
-## WHERE TO LOOK
+## KEY SCRIPTS
 
-| Task                 | Location                                    | Notes                              |
-| -------------------- | ------------------------------------------- | ---------------------------------- |
-| **Affected Targets** | `ci/affected.sh`                            | Bazel query or path-based fallback |
-| **Build All**        | `scripts/bazel/build.sh`                    | Thin wrapper → `npm run build`     |
-| **Deploy Portfolio** | `scripts/bazel/deploy_portfolio.sh`         | Cloudflare Workers deploy          |
-| **Quick Deploy**     | `scripts/deployment/quick-deploy.sh`        | Atomic test+build+deploy+verify    |
-| **Verify Deploy**    | `scripts/verification/verify-deployment.sh` | 7-check health suite               |
+| Script                                      | Purpose                              |
+| ------------------------------------------- | ------------------------------------ |
+| `ci/affected.sh`                            | Find targets affected by git changes |
+| `scripts/build/pdf-generator.sh`            | Generate PDF from HTML               |
+| `scripts/build/pptx_engine.py`              | Generate PowerPoint decks            |
+| `scripts/deployment/quick-deploy.sh`        | Atomic deploy with rollback          |
+| `scripts/utils/sync-resume-data.js`         | Propagate SSoT changes               |
+| `scripts/verification/verify-deployment.sh` | 7-point health check                 |
 
-## BAZEL INTEGRATION
+## BUILD SCRIPTS (scripts/build/)
 
-Bazel serves as **coordination layer**, not build system:
-
-```bash
-# Bazel targets delegate to npm
-bazel build //tools:build    # → npm run build
-bazel build //tools:test     # → npm test
-bazel build //tools:deploy   # → wrangler deploy
-```
-
-**Why this pattern:**
-
-- Bazel query for affected-target analysis
-- npm for actual build execution
-- Best of both: queryability + ecosystem compatibility
+| Script                        | Input        | Output      | Tech        |
+| ----------------------------- | ------------ | ----------- | ----------- |
+| `pdf-generator.sh`            | HTML resume  | PDF         | Puppeteer   |
+| `pptx_engine.py`              | JSON data    | PPTX        | python-pptx |
+| `generate-icons.js`           | Source image | Favicons    | Sharp       |
+| `generate-screenshots.js`     | URLs         | Screenshots | Puppeteer   |
+| `generate-resume-variants.js` | Master JSON  | Variants    | Node.js     |
 
 ## CONVENTIONS
 
-- **Root execution**: All scripts assume `pwd` is project root
-- **Robust bash**: `set -euo pipefail` mandatory
-- **Idempotent**: Safe to re-run (check before create)
-- **No hardcoded paths**: Use `$(dirname "$0")` or env vars
+- **Root Execution**: All scripts assume `pwd` is project root.
+- **Bazel Facade**: Use `bazel build //...` for coordination, but scripts run npm.
+- **Robust Bash**: `set -euo pipefail` in all shell scripts.
+- **Idempotent**: Scripts safe to re-run.
+- **No Direct Edits**: Use scripts for all automated tasks.
+
+## CI WORKFLOW
+
+```bash
+# Find affected targets
+./tools/ci/affected.sh origin/master
+
+# Build all
+bazel build //...
+
+# Test all
+bazel test //...
+
+# Deploy (atomic)
+./tools/scripts/deployment/quick-deploy.sh
+
+# Verify
+./tools/scripts/verification/verify-deployment.sh
+```
 
 ## ANTI-PATTERNS
 
-| Anti-Pattern        | Why                  | Do Instead                      |
-| ------------------- | -------------------- | ------------------------------- |
-| Direct Bazel builds | Bazel wraps npm here | Use npm scripts directly        |
-| Skip verification   | Silent failures      | Always run verify-deployment    |
-| Hardcoded secrets   | Security risk        | Use `.env` or `wrangler secret` |
-| Absolute paths      | Breaks portability   | Use relative paths              |
+| Anti-Pattern             | Why                    | Do Instead                   |
+| ------------------------ | ---------------------- | ---------------------------- |
+| Run scripts from subdirs | Path assumptions break | Always run from project root |
+| Skip affected.sh in CI   | Builds everything      | Use affected.sh for speed    |
+| Manual deployments       | No rollback            | Use quick-deploy.sh          |
+| Edit generated files     | Overwritten on build   | Edit source, run generator   |
+| Hardcode paths           | Breaks portability     | Use relative paths from root |
 
 ## COMMANDS
 
 ```bash
-# CI: Analyze changes
-./tools/ci/affected.sh origin/master
+# From project root
+npm run build:all      # Build everything
+npm run test:all       # Run all tests
+npm run sync:data      # Propagate SSoT changes
 
-# Build
-./tools/scripts/bazel/build.sh
-
-# Deploy (recommended)
-./tools/scripts/deployment/quick-deploy.sh
-
-# Verify only
-./tools/scripts/verification/verify-deployment.sh
+# Bazel
+bazel build //tools:deploy
+bazel query "//..."
 ```

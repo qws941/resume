@@ -1,125 +1,138 @@
-# PROJECT KNOWLEDGE BASE
+# JOB AUTOMATION KNOWLEDGE BASE
 
-**Generated:** 2026-02-03
-**Commit:** 213ab0f
+**Generated:** 2026-02-05
+**Commit:** 3d9015d
 **Branch:** master
-**Build System:** Bazel + npm
 
 ## OVERVIEW
 
-Google3-style MCP Server for stealth job automation.
-Hybrid strategy: Chaos API (Wanted internal) + Stealth Crawlers (Playwright).
-Integrates with Cloudflare D1 for persistence and n8n for scheduling.
+MCP Server + Cloudflare Worker for stealth job automation. Hexagonal architecture: `shared/services/` (business logic) and `shared/clients/` (adapters).
 
 ## STRUCTURE
 
 ```
 job-automation/
 ├── src/
-│   ├── shared/                # Hexagonal core domain logic
-│   │   ├── services/          # Business logic (Apply, Matching, Session)
-│   │   └── clients/           # Infrastructure adapters (API, D1)
-│   ├── tools/                 # MCP entry points for OpenCode
-│   ├── auto-apply/            # Playwright-based auto-apply logic
-│   └── server/                # Fastify management API
-├── platforms/                 # Stealth-hardened crawlers (Saramin, LinkedIn, etc.)
-├── workers/                   # Cloudflare Worker: Job Dashboard
-├── scripts/                   # Auth, sync, and maintenance utilities
-├── BUILD.bazel                # Bazel build rules
-└── OWNERS                     # Package code owners
+│   ├── index.js                 # MCP server entry (Fastify + MCP tools)
+│   ├── server/routes/           # 13 Fastify route modules
+│   ├── crawlers/                # BaseCrawler + platform implementations
+│   │   └── base-crawler.js      # CRITICAL: Stealth base class
+│   ├── auto-apply/              # AutoApplier, ApplicationManager
+│   ├── shared/
+│   │   ├── services/            # Pure business logic (10 services)
+│   │   │   ├── apply/           # ApplyOrchestrator, UnifiedApplySystem
+│   │   │   ├── session/         # SessionManager (cookie persistence)
+│   │   │   ├── matching/        # JobMatcher
+│   │   │   └── slack/           # SlackService
+│   │   └── clients/             # Adapters (D1, Vault, Wanted API)
+│   │       └── wanted/          # Wanted.co.kr API client
+│   └── tools/                   # 9 MCP tool implementations
+├── workers/                     # Dashboard Cloudflare Worker
+│   └── src/index.js             # Worker entry
+├── scripts/                     # 25 utility scripts
+│   ├── quick-login.js           # Current auth method
+│   └── extract-cookies-cdp.js   # Cookie extraction (recommended)
+├── platforms/                   # Platform-specific configs
+└── docs/                        # Internal documentation
 ```
+
+## ENTRY POINTS
+
+| Component  | Entry                    | Purpose                    |
+| ---------- | ------------------------ | -------------------------- |
+| MCP Server | `src/index.js`           | Fastify HTTP + MCP tools   |
+| Worker     | `workers/src/index.js`   | Dashboard (job.jclee.me)   |
+| Auth       | `scripts/quick-login.js` | Session cookie acquisition |
 
 ## WHERE TO LOOK
 
-| Task                  | Location                        | Notes                          |
-| --------------------- | ------------------------------- | ------------------------------ |
-| **MCP Entry Point**   | `src/index.js`                  | 9 tools, 1 resource, 3 prompts |
-| **Platform Crawlers** | `platforms/`                    | Inherit from `BaseCrawler`     |
-| **Apply System**      | `src/shared/services/apply/`    | `UnifiedApplySystem`           |
-| **Dashboard UI**      | `workers/src/views/`            | Refactored styles & scripts    |
-| **Auth Automation**   | `scripts/auth-sync.js`          | OAuth + Cookie synchronization |
-| **Matching Engine**   | `src/shared/services/matching/` | AI & Keyword-based scoring     |
+| Task                 | Location               | Notes                                             |
+| -------------------- | ---------------------- | ------------------------------------------------- |
+| Add Fastify route    | `src/server/routes/`   | Pattern: `export default async function(fastify)` |
+| Add crawler          | `src/crawlers/`        | Extend `BaseCrawler`                              |
+| Add business logic   | `src/shared/services/` | Pure, stateless, DI-friendly                      |
+| Add external adapter | `src/shared/clients/`  | Isolated per client                               |
+| Add MCP tool         | `src/tools/`           | Follow existing tool structure                    |
+| Modify Worker        | `workers/src/`         | D1/KV bindings available                          |
 
 ## CODE MAP
 
-| Component            | Location                         | Bazel Target                    |
-| -------------------- | -------------------------------- | ------------------------------- |
-| `UnifiedApplySystem` | `src/shared/services/apply/`     | `//typescript/job-automation:*` |
-| `SessionManager`     | `src/shared/services/session/`   | `//typescript/job-automation:*` |
-| `BaseCrawler`        | `src/crawlers/base-crawler.js`   | `//typescript/job-automation:*` |
-| `JobMatcher`         | `src/shared/services/matching/`  | `//typescript/job-automation:*` |
-| `EsLogger`           | `workers/src/utils/es-logger.js` | `//typescript/job-automation:*` |
+| Class/Module         | Location                                | Purpose                     |
+| -------------------- | --------------------------------------- | --------------------------- |
+| `BaseCrawler`        | `src/crawlers/base-crawler.js`          | Stealth Puppeteer base      |
+| `UnifiedApplySystem` | `src/shared/services/apply/`            | Centralized job application |
+| `SessionManager`     | `src/shared/services/session/`          | Cookie persistence          |
+| `JobMatcher`         | `src/shared/services/matching/`         | Skill-to-job matching       |
+| `WantedClient`       | `src/shared/clients/wanted/`            | Wanted.co.kr API            |
+| `AutoApplier`        | `src/auto-apply/auto-applier.js`        | Playwright form submission  |
+| `ApplicationManager` | `src/auto-apply/application-manager.js` | Application status tracking |
 
-## BAZEL TARGETS
+## PLATFORM CRAWLERS
 
-```bash
-# Build the automation package
-bazel build //typescript/job-automation:build
+| Platform | Tech                       | Notes                       |
+| -------- | -------------------------- | --------------------------- |
+| Wanted   | playwright-extra + stealth | Heavy WAF, frequent changes |
+| JobKorea | Cheerio (static HTML)      | Simpler anti-bot            |
+| Saramin  | playwright-extra + stealth | Dynamic content             |
+| LinkedIn | Strict detection           | Use with caution            |
 
-# Run all tests (unit + integration)
-bazel test //typescript/job-automation:test
+## API NOTES (CRITICAL)
 
-# Deploy the dashboard worker
-bazel run //typescript/job-automation/workers:deploy
-```
+| API       | Status  | Notes                                               |
+| --------- | ------- | --------------------------------------------------- |
+| Skills v1 | WORKING | Use `text` field only, v2 has bugs                  |
+| Skills v2 | BROKEN  | Server error when toggling highlights               |
+| Links API | BROKEN  | 500 error on update                                 |
+| SNS API   | WORKING | Profile data (email, phone)                         |
+| Chaos API | WORKING | Resume structure (projects, experiences, education) |
 
 ## CONVENTIONS
 
-### Stealth & Evasion
-
-- **BaseCrawler**: All browser-based tasks MUST inherit from `BaseCrawler` to use hardened headers and evasion patches.
-- **WAF Awareness**: Avoid high-frequency requests to Wanted/Saramin to prevent CloudFront blocking.
-
-### Auth & Persistence
-
-- **Session Storage**: Wanted session cookies stored in `~/.OpenCode/data/wanted-session.json`.
-- **D1 Database**: Application tracking and analytics stored in `job-dashboard-db`.
-- **Secrets**: `ELASTICSEARCH_URL`, `ELASTICSEARCH_API_KEY`, and `AUTH_SYNC_SECRET` must be set via `wrangler secret put --env production`.
-
-### Development
-
-- **Hexagonal Architecture**: Keep business logic in `services/` and infrastructure in `clients/`.
-- **Dry Run**: Always implement `dryRun` mode for application and sync tools.
+- **Hexagonal Arch**: Business logic in `services/`, adapters in `clients/`.
+- **DI Pattern**: Services receive dependencies via constructor.
+- **Stateless**: Services don't store state; use SessionManager for cookies.
+- **Typed Errors**: Domain-specific error classes.
+- **Route Pattern**: `export default async function(fastify) { ... }`
+- **Imports**: Use `shared/` directly; `lib/` wrappers were deleted.
 
 ## ANTI-PATTERNS
 
-| Anti-Pattern      | Why              | Do Instead                            |
-| ----------------- | ---------------- | ------------------------------------- |
-| Naked Playwright  | 403 Forbidden    | Use `BaseCrawler`                     |
-| Direct API Write  | 500 Internal Err | Use sync scripts/Chaos API            |
-| Environment Drift | Deployment fail  | Always use `--env production`         |
-| Hardcoded IDs     | Brittle code     | Resolve IDs dynamically via tools     |
-| Global State      | Testing hell     | Use dependency injection              |
-| Skills v2 API     | 404 Not Found    | Use v1 with `text` field (not `name`) |
-| Duplicate clients | Sync drift       | workers/ duplicates shared/ code      |
-
-## API QUIRKS
-
-| Section | API Version | Field Name | Notes                              |
-| ------- | ----------- | ---------- | ---------------------------------- |
-| Skills  | **v1**      | `text`     | Others use v2 with `name`          |
-| Links   | v2          | -          | **Broken** (500 error, Wanted bug) |
-
-## CRON SCHEDULES
-
-| Schedule  | Task         | Trigger             |
-| --------- | ------------ | ------------------- |
-| 09:00 KST | Job search   | n8n webhook         |
-| 18:00 KST | Daily report | n8n webhook → Slack |
+| Anti-Pattern               | Why               | Do Instead                         |
+| -------------------------- | ----------------- | ---------------------------------- |
+| Naked Playwright/Puppeteer | Bot detection     | Extend `BaseCrawler`               |
+| Fixed User-Agent strings   | Fingerprinting    | Use randomized UA from BaseCrawler |
+| Aggressive polling         | Rate limits/bans  | Use jitter + backoff               |
+| Skills v2 API              | Server bugs       | Use Skills v1 with `text` field    |
+| Links API                  | 500 errors        | Skip until fixed                   |
+| Direct state in services   | Testing nightmare | Use SessionManager/DI              |
+| Cross-client imports       | Circular deps     | Each client isolated               |
+| Hardcoded credentials      | Security          | Use `.env` or Vault                |
 
 ## COMMANDS
 
 ```bash
-# === Automation ===
-npm run auto-apply:dry           # Test application logic without submission
-npm run sync:resume              # Sync local resume JSON to Wanted
-npm run auth:sync                # Synchronize OAuth cookies to Worker
+# MCP Server
+cd typescript/job-automation
+npm run dev              # Start dev server
+npm run start            # Production server
 
-# === Dashboard ===
-npm run dashboard:dev            # Local development server for UI
-npm run deploy:prod              # Deploy dashboard to production
+# Worker
+cd workers
+./deploy.sh              # Deploy to Cloudflare
+wrangler d1 execute JOB_AUTOMATION_DB --file=migrations/XXXX.sql
 
-# === Testing ===
-npm test                         # Run all tests
-npm run test:crawlers            # Run platform-specific crawler tests
+# Authentication
+node scripts/quick-login.js    # Get session cookies
+node scripts/auth-sync.js      # Sync cookies to Worker
+
+# Testing
+npm test                 # Run tests
 ```
+
+## WORKER BINDINGS
+
+| Binding         | Type | Purpose                |
+| --------------- | ---- | ---------------------- |
+| `DB`            | D1   | Application database   |
+| `SESSIONS`      | KV   | Session cookie storage |
+| `RATE_LIMIT_KV` | KV   | Rate limiting          |
