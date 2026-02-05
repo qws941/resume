@@ -24,7 +24,7 @@ resume/
 │   ├── cli/                       # Deployment CLI (Commander.js)
 │   └── data/                      # SSoT: Resume JSONs & schemas
 │       └── resumes/master/        # resume_data.json (canonical)
-├── infrastructure/                # Grafana, Loki, Prometheus, n8n
+├── infrastructure/                # Grafana, Elasticsearch, Prometheus, n8n
 ├── docs/                          # Documentation hub
 │   ├── guides/                    # Deployment & setup guides
 │   └── architecture/              # ADRs, system design
@@ -41,7 +41,7 @@ resume/
 - **CI/CD**: GitHub Actions
 - **Testing**: Jest (unit), Playwright (E2E)
 - **Code Quality**: gitleaks (secret scanning)
-- **Observability**: Grafana, Loki, Prometheus (self-hosted)
+- **Observability**: Grafana, Elasticsearch, Prometheus (self-hosted)
 
 ## Development
 
@@ -149,7 +149,7 @@ Content-Security-Policy:
 > **📖 For complete infrastructure details**, see:
 >
 > - **[Infrastructure Architecture](docs/guides/INFRASTRUCTURE.md)** - Complete system topology, component details, security, performance metrics
-> - **[Monitoring Setup Guide](docs/guides/MONITORING_SETUP.md)** - Step-by-step configuration for Prometheus, Grafana, Loki, n8n
+> - **[Monitoring Setup Guide](docs/guides/MONITORING_SETUP.md)** - Step-by-step configuration for Prometheus, Grafana, Elasticsearch, n8n
 > - **[Grafana Dashboard](monitoring/grafana-dashboard-resume-portfolio.json)** - Pre-configured dashboard with 7 visualization panels
 
 ### Monitoring Endpoints
@@ -220,10 +220,10 @@ curl -X POST https://resume.jclee.me/api/vitals \
 All metrics and logs are automatically sent to the centralized observability stack:
 
 - **Metrics**: Prometheus scrapes `/metrics` endpoint
-- **Logs**: All requests logged to Loki at `https://grafana.jclee.me/loki/api/v1/push`
+- **Logs**: All requests logged to Elasticsearch (ECS format, batched)
 - **Dashboard**: View real-time metrics at `https://grafana.jclee.me`
 
-**Log Format** (Loki):
+**Log Format** (ECS):
 
 ```json
 {
