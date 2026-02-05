@@ -98,7 +98,11 @@ test.describe('Responsive Design', () => {
 
     // Cards should be vertically stacked (second card below first)
     // Use >= to handle cases where cards are exactly touching
-    expect(secondCardBox.y).toBeGreaterThanOrEqual(firstCardBox.y + firstCardBox.height);
+    expect(firstCardBox).toBeTruthy();
+    expect(secondCardBox).toBeTruthy();
+    if (firstCardBox && secondCardBox) {
+      expect(secondCardBox.y).toBeGreaterThanOrEqual(firstCardBox.y + firstCardBox.height);
+    }
   });
 
   test('should be mobile responsive (Samsung Galaxy S20)', async ({ page }) => {
@@ -175,7 +179,10 @@ test.describe('Responsive Design', () => {
     // Check content doesn't overflow
     const body = page.locator('body');
     const bodyBox = await body.boundingBox();
-    expect(bodyBox.width).toBeLessThanOrEqual(320);
+    expect(bodyBox).toBeTruthy();
+    if (bodyBox) {
+      expect(bodyBox.width).toBeLessThanOrEqual(320);
+    }
 
     // Check text is still visible
     await checkElementVisible(page, SELECTORS.HERO_TITLE);

@@ -1,58 +1,88 @@
 # INFRASTRUCTURE KNOWLEDGE BASE
 
-**Generated:** 2026-02-03
-**Commit:** 213ab0f
+**Generated:** 2026-02-05
+**Commit:** 3d9015d
 **Branch:** master
 
 ## OVERVIEW
 
-Observability (Grafana/Loki/Prometheus) & Automation (n8n).
-Infrastructure as Code (IaC). Docker Compose based.
+Infrastructure as Code (IaC) for Cloudflare + Observability stack (Grafana/Loki/Prometheus) + Automation (n8n).
 
 ## STRUCTURE
 
+```
 infrastructure/
-├── monitoring/ # Dashboards: Grafana JSON panels
-├── automation/ # Workflows: systemd timers, crontab
-├── n8n/ # Workflows: n8n JSON flows
-├── configs/ # Provisioning: Alert rules, datasources
-├── database/ # Schema: D1 migration SQL
-└── nginx/ # Proxy: SSL termination, CSP
+├── cloudflare/              # Terraform IaC for Cloudflare
+│   ├── versions.tf          # Provider requirements (cloudflare ~> 4.0)
+│   ├── variables.tf         # Input variables (account_id, zone_id, api_token)
+│   ├── workers.tf           # Worker scripts and routes
+│   ├── dns.tf               # DNS records (A, CNAME, TXT)
+│   ├── kv.tf                # KV namespace data sources (read-only)
+│   └── d1.tf                # D1 database data sources (read-only)
+├── monitoring/              # Grafana JSON dashboards
+├── automation/              # systemd timers, crontab
+├── n8n/                     # n8n JSON workflow exports
+├── configs/                 # Alert rules, datasources
+├── database/                # D1 migration SQL
+└── nginx/                   # Proxy: SSL termination, CSP
+```
 
 ## WHERE TO LOOK
 
-| Task         | Location               | Notes                                |
-| ------------ | ---------------------- | ------------------------------------ |
-| Dashboards   | `monitoring/`          | Export JSON from Grafana UI.         |
-| Workflows    | `n8n/`, `automation/`  | n8n JSON exports, systemd templates. |
-| Alert Rules  | `configs/grafana/`     | Edit alert-rules.yaml thresholds.    |
-| DB Schema    | `database/migrations/` | XXXX_name.sql patterns.              |
-| Proxy Config | `nginx/nginx.conf`     | Security headers (HSTS, CSP).        |
+| Task                | Location               | Notes                          |
+| ------------------- | ---------------------- | ------------------------------ |
+| Terraform resources | `cloudflare/*.tf`      | DNS, Worker routes, KV/D1 refs |
+| Dashboards          | `monitoring/`          | Export JSON from Grafana UI    |
+| Workflows           | `n8n/`, `automation/`  | n8n JSON, systemd templates    |
+| Alert Rules         | `configs/grafana/`     | Edit alert-rules.yaml          |
+| DB Schema           | `database/migrations/` | XXXX_name.sql patterns         |
+| Proxy Config        | `nginx/nginx.conf`     | Security headers (HSTS, CSP)   |
 
 ## CONVENTIONS
 
-- **GitOps**: UI changes (Grafana/n8n) must be exported/committed.
-- **IaC**: Use Docker Compose for service orchestration.
+- **GitOps**: All changes via PR; UI edits (Grafana/n8n) must be exported to Git.
 - **No SSH Drift**: Direct NAS edits forbidden. Use Git.
-- **Secret Masking**: Use templates; secrets in `.env` or Vault.
+- **Secret Masking**: Use `.env` or Vault; never commit credentials.
 - **D1 Versioning**: Use migration scripts for DB updates.
+
+### Terraform-Specific
+
+- **Import First**: Existing resources must be imported before managing.
+- **Read-Only Resources**: KV/D1 managed by Wrangler; Terraform only reads.
+- **State Lock**: Use Terraform Cloud or local state with locking.
 
 ## ANTI-PATTERNS
 
-- **UI-Only Fixes**: Forgetting to sync UI edits back to JSON.
-- **Direct SQL**: Running manual commands in D1 console.
-- **Hardcoded Secrets**: Webhooks/API keys in committed files.
-- **NAS SSH**: Modifying server state outside version control.
+| Anti-Pattern                  | Why                        | Do Instead                          |
+| ----------------------------- | -------------------------- | ----------------------------------- |
+| Create KV/D1 in Terraform     | Wrangler creates these     | Use `data` sources only             |
+| Skip terraform import         | Duplicate resource errors  | Import existing before apply        |
+| Manual DNS edits in dashboard | Drift from Terraform state | Edit `dns.tf` and apply             |
+| UI-Only Grafana fixes         | Forgetting to export JSON  | Export and commit after UI changes  |
+| Direct SQL in D1 console      | No version control         | Use migration scripts               |
+| Hardcode secrets              | Security violation         | Use `terraform.tfvars` (gitignored) |
 
 ## COMMANDS
 
-# Health/Metrics
+```bash
+# Terraform
+cd infrastructure/cloudflare
+terraform init
+terraform plan
+terraform apply
+terraform import cloudflare_workers_script.portfolio $ACCOUNT_ID/resume-portfolio
 
+# Health/Metrics
 curl -s https://resume.jclee.me/health
 curl -s https://resume.jclee.me/metrics
+```
 
-# Deployment
+## DIVISION OF RESPONSIBILITY
 
-# Deploy dashboard via Grafana API with Bearer token.
-
-# Import n8n workflows via UI or CLI.
+| Layer         | Managed By | Changes Via              |
+| ------------- | ---------- | ------------------------ |
+| DNS records   | Terraform  | `dns.tf` + GitHub PR     |
+| Worker routes | Terraform  | `workers.tf` + GitHub PR |
+| Worker code   | Wrangler   | `npm run deploy`         |
+| KV namespaces | Wrangler   | Create only              |
+| D1 databases  | Wrangler   | Create only              |

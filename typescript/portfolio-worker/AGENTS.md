@@ -1,134 +1,128 @@
-# PROJECT KNOWLEDGE BASE: PORTFOLIO
+# PORTFOLIO WORKER KNOWLEDGE BASE
 
 **Generated:** 2026-02-05
 **Commit:** 3d9015d
-**Context:** Cloudflare Worker for resume portfolio. Cyberpunk terminal theme with interactive CLI.
+**Branch:** master
 
 ## OVERVIEW
 
-High-performance, edge-delivered portfolio site built on Cloudflare Workers.
-Features cyberpunk terminal UI, interactive CLI with command history, snake game easter egg,
-zero-runtime I/O, aggressive asset inlining, and hash-locked CSP security.
+Cloudflare Worker portfolio with cyberpunk terminal UI. Zero runtime I/O - all assets inlined at build time.
 
 ## STRUCTURE
 
 ```
-typescript/portfolio-worker/
-├── lib/                  # SHARED LOGIC: Stateless modules (see lib/AGENTS.md)
-│   └── security-headers.js  # CSP, HSTS, security headers
-├── src/styles/           # MODULAR CSS: Component-based stylesheets
-│   ├── animations.css    # Keyframe animations (typing, scanlines, glitch)
-│   ├── base.css          # Reset, typography, variables
-│   ├── components.css    # Terminal, CLI, sections
-│   ├── layout.css        # Grid, flexbox layouts
-│   ├── main.css          # Import orchestrator
-│   ├── media.css         # Responsive breakpoints
-│   ├── utilities.css     # Helper classes
-│   └── variables.css     # CSS custom properties
-├── assets/               # STATIC: Fonts, images, icons (inlined at build)
-├── generate-worker.js    # BUILD ENGINE: Compiles HTML + lib -> worker.js
-├── worker.js             # ARTIFACT: The deployable worker (NEVER EDIT)
-├── index.html            # TEMPLATE: Korean portfolio (has interactive CLI)
-├── index-en.html         # TEMPLATE: English portfolio
-├── robots.txt            # SEO: Disallow /api/, /dashboard
-└── wrangler.toml         # Cloudflare config
+portfolio-worker/
+├── index.html           # Source HTML (terminal UI, CLI commands)
+├── generate-worker.js   # HTML → worker.js compiler (CSP hashes, escaping)
+├── worker.js            # GENERATED - NEVER EDIT
+├── wrangler.toml        # Cloudflare Worker config
+├── lib/                 # Stateless modules
+│   ├── security-headers.js  # CSP baseline, HSTS, X-* headers
+│   ├── es-logger.js         # ECS-format logging
+│   ├── metrics.js           # Prometheus metrics
+│   ├── ab-testing.js        # Feature flag experiments
+│   └── templates.js         # HTML generation helpers
+└── src/styles/          # Modular CSS (8 files)
+    ├── animations.css   # Typing effects, glitch, fade
+    ├── base.css         # Root variables, reset
+    ├── cli.css          # CLI input/output styles
+    ├── components.css   # Cards, buttons, sections
+    ├── layout.css       # Grid, flex, positioning
+    ├── responsive.css   # Mobile breakpoints
+    ├── terminal.css     # Terminal window chrome
+    └── typography.css   # Fonts, text styles
 ```
 
-## WHERE TO LOOK
+## BUILD PIPELINE
 
-| Task                  | Location                    | Notes                                  |
-| --------------------- | --------------------------- | -------------------------------------- |
-| **Build Logic**       | `generate-worker.js`        | Orchestrates inlining & CSP extraction |
-| **Security**          | `lib/security-headers.js`   | CSP baseline, HSTS, security headers   |
-| **UI Structure**      | `index.html`                | Korean portfolio + interactive CLI     |
-| **EN Portfolio**      | `index-en.html`             | English portfolio template             |
-| **Terminal Commands** | `index.html` (script)       | `window.terminalCommands` object       |
-| **Animations**        | `src/styles/animations.css` | Typing cursor, scanlines, glitch FX    |
-| **Deployment**        | `wrangler.toml`             | Cloudflare environment config          |
+```
+index.html (edit this)
+    ↓ generate-worker.js
+        - Escape backticks in HTML
+        - Compute SHA-256 CSP hashes for inline scripts
+        - Inline all CSS from src/styles/
+    ↓
+worker.js (NEVER EDIT - regenerated on build)
+    ↓ wrangler deploy
+resume.jclee.me (Cloudflare Edge)
+```
 
-## INTERACTIVE CLI (Easter Egg)
+## CLI COMMANDS
 
-The portfolio includes a hidden CLI accessible via the input at the bottom:
+Interactive terminal supports these commands:
 
-| Command  | Action                                |
-| -------- | ------------------------------------- |
-| `help`   | List available commands               |
-| `whoami` | Display user info                     |
-| `pwd`    | Show current path                     |
-| `date`   | Display current date/time             |
-| `ls`     | List "files" in portfolio             |
-| `cat`    | Display content of "files"            |
-| `snake`  | Play canvas-based Snake game (WASD/Q) |
-| `clear`  | Clear terminal output                 |
+| Command  | Description              |
+| -------- | ------------------------ |
+| `help`   | List available commands  |
+| `whoami` | Display profile info     |
+| `pwd`    | Show current "directory" |
+| `date`   | Current date/time        |
+| `ls`     | List resume sections     |
+| `cat`    | View section contents    |
+| `snake`  | Easter egg game          |
+| `clear`  | Clear terminal           |
 
-**Implementation**: `window.terminalCommands` object in `index.html`. Commands return strings displayed in `#cli-output`.
+Commands defined in `index.html` within `terminalCommands` object.
 
-## TERMINAL THEME COMPONENTS
+## KEY CSS CLASSES
 
-| Element          | Class                   | Purpose                     |
-| ---------------- | ----------------------- | --------------------------- |
-| Window frame     | `.terminal-window`      | macOS-like window chrome    |
-| Title bar        | `.terminal-titlebar`    | Traffic light buttons       |
-| Body content     | `.terminal-body`        | Main content area           |
-| Command prompts  | `.terminal-prompt`      | `$` prompts in sections     |
-| Section commands | `.section-cmd__command` | `cat`, `ls` section headers |
-| CLI container    | `.cli-container`        | Interactive input area      |
-| CLI input        | `#cli-input`            | User command input          |
-| CLI output       | `#cli-output`           | Command result display      |
+| Class              | Purpose                   |
+| ------------------ | ------------------------- |
+| `.terminal-window` | Main terminal container   |
+| `.cli-container`   | CLI input/output wrapper  |
+| `#cli-input`       | User input field          |
+| `.typing-effect`   | Animated typing animation |
+| `.glitch`          | Cyberpunk glitch effect   |
 
-## RECENT CHANGES (2026-02)
+## LIB MODULES
 
-- **Cyberpunk Terminal Theme**: Redesigned with terminal window UI, scanlines, glitch effects
-- **Interactive CLI**: Full command-line interface with history (↑/↓), tab completion
-- **Snake Game**: Canvas-based easter egg game (`snake` command)
-- **Modular CSS**: Split into `src/styles/` directory with 8 component files
-- **CSP Updates**: Added `unsafe-inline` to `style-src-elem`, `job.jclee.me` to `connect-src`
-- **Removed Endpoints**: `/dashboard`, `/api/stats`, `/api/applications` (security)
-- **Sentry**: Scripts use `defer` attribute for performance
+| Module                | Purpose                          |
+| --------------------- | -------------------------------- |
+| `security-headers.js` | CSP, HSTS, X-Frame-Options       |
+| `es-logger.js`        | ECS-format structured logging    |
+| `metrics.js`          | Prometheus endpoint (`/metrics`) |
+| `ab-testing.js`       | Feature flag experiments         |
+| `templates.js`        | HTML generation utilities        |
+
+**Conventions for lib/**:
+
+- Pure functions, no side effects
+- Receive `env` object from Worker
+- Fire-and-forget telemetry (non-blocking)
+- CSP hash updates require regenerating worker.js
 
 ## CONVENTIONS
 
-- **Zero Runtime I/O**: File system access is forbidden at edge; inline everything.
-- **Pure Architecture**: Logic in `lib/` must be stateless and testable.
-- **Security First**: CSP hashes are calculated post-minification in build.
-- **Vanilla Performance**: No frameworks; direct DOM manipulation for sub-100ms LCP.
-- **Template Escaping**: HTML must escape backticks (\`) and `${}` for worker embedding.
-- **Terminal UX**: All sections styled as terminal commands (`cat about.txt`, `ls ~/projects/`).
+- **Zero Runtime I/O**: No fetch() for assets; all inlined at build.
+- **CSP Hashes**: Computed from exact inline script content. `trim()` breaks hashes.
+- **Edit Source**: Only edit `index.html` and `src/styles/`. Never `worker.js`.
+- **Mobile-First**: Use responsive.css for breakpoints.
 
 ## ANTI-PATTERNS
 
-- **Direct Artifact Edit**: Never modify `worker.js`; changes vanish on build.
-- **External Dependencies**: No npm packages in runtime; keep bundle minimal.
-- **Dynamic Eval**: Forbidden by CSP; use `lib/templates.js` for safe injection.
-- **Raw Template Literals**: Unescaped backticks/`${}` in HTML break worker generation.
-- **Single-HTML CSP**: Must extract hashes from BOTH index.html and index-en.html.
-- **Modifying terminalCommands outside index.html**: CLI logic is inlined; keep it in HTML.
-
-## CSP DIRECTIVES (Current)
-
-```
-default-src 'none';
-script-src 'self' 'sha256-...' https://www.googletagmanager.com ...;
-style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
-style-src-elem 'self' 'unsafe-inline' https://fonts.googleapis.com;
-font-src 'self' https://fonts.gstatic.com;
-img-src 'self' data:;
-connect-src 'self' https://grafana.jclee.me https://job.jclee.me ...;
-```
+| Anti-Pattern                 | Why                        | Do Instead                    |
+| ---------------------------- | -------------------------- | ----------------------------- |
+| Edit `worker.js` directly    | Regenerated on build       | Edit `index.html`             |
+| `trim()` before CSP hash     | Whitespace affects SHA-256 | Hash exact source string      |
+| Runtime `fetch()` for assets | Adds latency               | Inline at build time          |
+| Hardcode colors in HTML      | Style drift                | Use CSS variables in base.css |
+| Skip CSP regeneration        | Security violation         | Always run generate-worker.js |
 
 ## COMMANDS
 
 ```bash
-# Build worker.js from HTML
+# Build
 node generate-worker.js
 
-# Local development with Wrangler
-npm run dev
+# Deploy (production)
+source ~/.env && \
+  CLOUDFLARE_API_KEY="$CLOUDFLARE_API_KEY" \
+  CLOUDFLARE_EMAIL="$CLOUDFLARE_EMAIL" \
+  npx wrangler deploy --env production
 
-# Deploy to Cloudflare Workers
-source ~/.env && CLOUDFLARE_API_KEY="$CLOUDFLARE_API_KEY" \
-  CLOUDFLARE_EMAIL="$CLOUDFLARE_EMAIL" npx wrangler deploy --env production
+# Local dev
+npx wrangler dev
 
-# Verify deployment health
-curl -I https://resume.jclee.me/health
+# Test
+curl -s https://resume.jclee.me/health
 ```
