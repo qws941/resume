@@ -228,7 +228,7 @@
   line-height: var(--leading-relaxed);
   max-width: 800px;
   color: var(--text-secondary);
-  font-family: var(--font-mono);
+  font-family: var(--font-sans);
   padding-left: var(--space-4);
   border-left: 2px solid var(--border-secondary);
 }

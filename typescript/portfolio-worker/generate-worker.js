@@ -20,7 +20,7 @@ const {
 } = require('./lib/cards');
 const securityHeadersModule = require('./lib/security-headers');
 const metricsModule = require('./lib/metrics');
-const lokiLoggerModule = require('./lib/loki-logger');
+const esLoggerModule = require('./lib/es-logger');
 const logger = require('./logger');
 
 // Read version from package.json
@@ -380,7 +380,7 @@ ${metricsModule.generateHistogramLines.toString()}
 
 ${metricsModule.generateMetrics.toString()}
 
-${lokiLoggerModule.logToLoki.toString()}
+${esLoggerModule.logToElasticsearch.toString()}
 
 const ipCache = new Map();
 const RATE_LIMIT_CONFIG = ${JSON.stringify(RATE_LIMIT_CONFIG)};
@@ -561,7 +561,7 @@ export default {
         metrics.requests_success++;
         metrics.response_time_sum += (Date.now() - startTime);
 
-        ctx.waitUntil(logToLoki(env, \`Request: \${request.method} \${url.pathname}\`, 'INFO', {
+        ctx.waitUntil(logToElasticsearch(env, \`Request: \${request.method} \${url.pathname}\`, 'INFO', {
           path: url.pathname,
           method: request.method
         }));
@@ -575,7 +575,7 @@ export default {
         metrics.requests_success++;
         metrics.response_time_sum += (Date.now() - startTime);
 
-        ctx.waitUntil(logToLoki(env, \`Request: \${request.method} \${url.pathname}\`, 'INFO', {
+        ctx.waitUntil(logToElasticsearch(env, \`Request: \${request.method} \${url.pathname}\`, 'INFO', {
           path: url.pathname,
           method: request.method
         }));
@@ -787,7 +787,7 @@ export default {
 
           metrics.vitals_received++;
 
-          ctx.waitUntil(logToLoki(env, \`Web Vitals: LCP=\${vitals.lcp}ms FID=\${vitals.fid}ms CLS=\${vitals.cls}\`, 'INFO', {
+          ctx.waitUntil(logToElasticsearch(env, \`Web Vitals: LCP=\${vitals.lcp}ms FID=\${vitals.fid}ms CLS=\${vitals.cls}\`, 'INFO', {
             path: '/api/vitals',
             method: 'POST'
           }));
@@ -801,7 +801,7 @@ export default {
             }
           });
         } catch (err) {
-          ctx.waitUntil(logToLoki(env, \`Vitals error: \${err.message}\`, 'ERROR'));
+          ctx.waitUntil(logToElasticsearch(env, \`Vitals error: \${err.message}\`, 'ERROR'));
           return new Response(JSON.stringify({ error: 'Invalid data' }), {
             status: 400,
             headers: {
@@ -829,7 +829,7 @@ export default {
           }
           
           // Log to Loki for observability
-          ctx.waitUntil(logToLoki(env, \`Track: \${trackingData.event} - \${trackingData.type || 'N/A'}\`, 'INFO', {
+          ctx.waitUntil(logToElasticsearch(env, \`Track: \${trackingData.event} - \${trackingData.type || 'N/A'}\`, 'INFO', {
             path: '/api/track',
             event: trackingData.event,
             type: trackingData.type,
@@ -840,7 +840,7 @@ export default {
           metrics.requests_success++;
           return new Response('', { status: 204 }); // No Content (fire-and-forget)
         } catch (err) {
-          ctx.waitUntil(logToLoki(env, \`Tracking error: \${err.message}\`, 'ERROR'));
+          ctx.waitUntil(logToElasticsearch(env, \`Tracking error: \${err.message}\`, 'ERROR'));
           return new Response('', { status: 204 }); // Still return 204 for fire-and-forget
         }
       }
@@ -859,7 +859,7 @@ export default {
           }
 
           // Log to Loki for observability
-          ctx.waitUntil(logToLoki(env, \`Analytics: \${analyticsData.event || 'unknown'}\`, 'INFO', {
+          ctx.waitUntil(logToElasticsearch(env, \`Analytics: \${analyticsData.event || 'unknown'}\`, 'INFO', {
             path: '/api/analytics',
             method: 'POST',
             event: analyticsData.event,
@@ -875,7 +875,7 @@ export default {
             }
           });
         } catch (err) {
-          ctx.waitUntil(logToLoki(env, \`Analytics error: \${err.message}\`, 'ERROR'));
+          ctx.waitUntil(logToElasticsearch(env, \`Analytics error: \${err.message}\`, 'ERROR'));
           return new Response(JSON.stringify({ error: 'Invalid data' }), {
             status: 400,
             headers: {
@@ -899,7 +899,7 @@ export default {
           }
 
           // Log to Loki for observability
-          ctx.waitUntil(logToLoki(env, \`Metrics: \${JSON.stringify(metricsData).slice(0, 200)}\`, 'INFO', {
+          ctx.waitUntil(logToElasticsearch(env, \`Metrics: \${JSON.stringify(metricsData).slice(0, 200)}\`, 'INFO', {
             path: '/api/metrics',
             method: 'POST'
           }));
@@ -913,7 +913,7 @@ export default {
             }
           });
         } catch (err) {
-          ctx.waitUntil(logToLoki(env, \`Metrics error: \${err.message}\`, 'ERROR'));
+          ctx.waitUntil(logToElasticsearch(env, \`Metrics error: \${err.message}\`, 'ERROR'));
           return new Response(JSON.stringify({ error: 'Invalid data' }), {
             status: 400,
             headers: {
@@ -960,7 +960,7 @@ export default {
             }
           };
           
-          ctx.waitUntil(logToLoki(env, \`Metrics GET: \${metrics.requests_total} requests, \${metrics.vitals_received} vitals\`, 'INFO', {
+          ctx.waitUntil(logToElasticsearch(env, \`Metrics GET: \${metrics.requests_total} requests, \${metrics.vitals_received} vitals\`, 'INFO', {
             path: '/api/metrics',
             method: 'GET',
             requests_total: metrics.requests_total
@@ -974,7 +974,7 @@ export default {
             }
           });
         } catch (err) {
-          ctx.waitUntil(logToLoki(env, \`Metrics GET error: \${err.message}\`, 'ERROR'));
+          ctx.waitUntil(logToElasticsearch(env, \`Metrics GET error: \${err.message}\`, 'ERROR'));
           return new Response(JSON.stringify({ error: 'Failed to retrieve metrics', status: 'error' }), {
             status: 500,
             headers: {
@@ -1049,7 +1049,7 @@ export default {
 
     } catch (err) {
       metrics.requests_error++;
-      ctx.waitUntil(logToLoki(env, \`Error: \${err.message}\`, 'ERROR', {
+      ctx.waitUntil(logToElasticsearch(env, \`Error: \${err.message}\`, 'ERROR', {
         path: url.pathname,
         method: request.method
       }));

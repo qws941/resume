@@ -235,9 +235,7 @@
                 <h1 class="hero-title glitch" data-text="이재철">
                   <span class="typing-text glow-cyan">이재철</span><span class="cursor"></span>
                 </h1>
-                <div class="cmd-output">
-                  Infrastructure Engineer | Security | Observability | Automation
-                </div>
+                <div class="cmd-output">보안 인프라 · Observability · 자동화</div>
               </div>
             </section>
 
@@ -247,9 +245,9 @@
               </div>
               <div class="about-content">
                 <p class="cmd-output">
-                  > Observability | DevSecOps | Automation<br />
-                  > 금융·제조·공공 인프라 10년<br />
-                  > 현재 <span class="highlight">아이티센 CTS</span>
+                  > 보안 인프라 / 관측성 / 자동화<br />
+                  > 금융·공공 중심 8년차, 설계-운영-개선<br />
+                  > <span class="highlight">ITCEN CTS</span> (현재)
                 </p>
               </div>
             </section>
@@ -469,23 +467,19 @@
         neofetch: function () {
           return (
             '<pre class="neofetch-output">' +
-            '<span class="nf-logo">       ██╗ ██████╗██╗     ███████╗███████╗\n' +
-            '       ██║██╔════╝██║     ██╔════╝██╔════╝\n' +
-            '       ██║██║     ██║     █████╗  █████╗  \n' +
-            '  ██   ██║██║     ██║     ██╔══╝  ██╔══╝  \n' +
-            '  ╚█████╔╝╚██████╗███████╗███████╗███████╗\n' +
-            '   ╚════╝  ╚═════╝╚══════╝╚══════╝╚══════╝</span>\n' +
-            '  ─────────────────────────────────────────\n' +
-            '  <span class="nf-label">OS:</span> Linux (Infrastructure)\n' +
-            '  <span class="nf-label">Host:</span> resume.jclee.me\n' +
-            '  <span class="nf-label">Uptime:</span> 10+ years in production\n' +
-            '  <span class="nf-label">Shell:</span> /bin/devops\n' +
-            '  <span class="nf-label">DE:</span> Grafana + Prometheus\n' +
-            '  <span class="nf-label">Terminal:</span> Observability Expert\n' +
-            '  <span class="nf-label">CPU:</span> Problem Solving @ 100%\n' +
-            '  <span class="nf-label">Memory:</span> 10y experience loaded\n' +
-            '  ─────────────────────────────────────────\n' +
-            '  <span class="nf-colors">███</span><span class="nf-colors c2">███</span><span class="nf-colors c3">███</span><span class="nf-colors c4">███</span><span class="nf-colors c5">███</span><span class="nf-colors c6">███</span><span class="nf-colors c7">███</span>\n' +
+            '<span class="nf-logo">       ██╗ ██████╗██╗     ███████╗███████╗\\n' +
+            '       ██║██╔════╝██║     ██╔════╝██╔════╝\\n' +
+            '       ██║██║     ██║     █████╗  █████╗  \\n' +
+            '  ██   ██║██║     ██║     ██╔══╝  ██╔══╝  \\n' +
+            '  ╚█████╔╝╚██████╗███████╗███████╗███████╗\\n' +
+            '   ╚════╝  ╚═════╝╚══════╝╚══════╝╚══════╝</span>\\n' +
+            '  ─────────────────────────────────────────\\n' +
+            '  <span class="nf-label">Role:</span> Infrastructure Engineer\\n' +
+            '  <span class="nf-label">Focus:</span> Security Infra / Observability\\n' +
+            '  <span class="nf-label">Domain:</span> Finance, Public Sector\\n' +
+            '  <span class="nf-label">Stack:</span> Grafana, Prometheus, Splunk\\n' +
+            '  ─────────────────────────────────────────\\n' +
+            '  <span class="nf-colors">███</span><span class="nf-colors c2">███</span><span class="nf-colors c3">███</span><span class="nf-colors c4">███</span><span class="nf-colors c5">███</span><span class="nf-colors c6">███</span><span class="nf-colors c7">███</span>\\n' +
             '</pre>'
           );
         },
@@ -544,16 +538,13 @@
           return (
             '<div class="help-output">' +
             'Available commands:\\n' +
-            '  <span class="cmd-name">neofetch</span>     - Display system info\\n' +
-            '  <span class="cmd-name">sudo hire-me</span> - Unlock recruitment mode\\n' +
-            '  <span class="cmd-name">rm -rf doubt</span> - Remove all doubts\\n' +
-            '  <span class="cmd-name">coffee</span>       - Brew some coffee\\n' +
-            '  <span class="cmd-name">matrix</span>       - Intensify the matrix\\n' +
-            '  <span class="cmd-name">theme [name]</span> - Switch theme (dark/light/hacker)\\n' +
-            '  <span class="cmd-name">snake</span>        - Play Snake game\\n' +
-            '  <span class="cmd-name">clear</span>        - Clear terminal\\n' +
-            '  <span class="cmd-name">help</span>         - Show this help\\n' +
-            '\\n<span class="help-hint">// Try the Konami code for a surprise!</span>' +
+            '  <span class="cmd-name">neofetch</span>   - Display system info\\n' +
+            '  <span class="cmd-name">skills</span>     - Show tech stack\\n' +
+            '  <span class="cmd-name">experience</span> - View career history\\n' +
+            '  <span class="cmd-name">projects</span>   - List side projects\\n' +
+            '  <span class="cmd-name">contact</span>    - Contact information\\n' +
+            '  <span class="cmd-name">clear</span>      - Clear terminal\\n' +
+            '  <span class="cmd-name">help</span>       - Show this help' +
             '</div>'
           );
         },
@@ -706,7 +697,7 @@
         window.terminalCommands.cat = function (args) {
           var files = {
             'about.txt':
-              '> Observability | DevSecOps | Automation\\n> 금융·제조·공공 인프라 10년\\n> 현재 아이티센 CTS',
+              '> 보안 인프라 / 관측성 / 자동화\\n> 금융·공공 중심 8년차, 설계-운영-개선\\n> ITCEN CTS (현재)',
             'contact.txt': 'Email: qws941@kakao.com\\nGitHub: github.com/qws941',
             'skills.json':
               '{\\n  "observability": ["Grafana", "Prometheus", "Loki", "Splunk"],\\n  "devops": ["GitLab CI/CD", "Ansible", "Terraform"]\\n}',
