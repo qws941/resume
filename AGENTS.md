@@ -1,7 +1,7 @@
 # PROJECT KNOWLEDGE BASE
 
-**Generated:** 2026-02-03
-**Commit:** 213ab0f
+**Generated:** 2026-02-05
+**Commit:** 3d9015d
 **Branch:** master
 **Build System:** Bazel + npm (Google3-style hybrid)
 
@@ -36,12 +36,13 @@ resume/
 │   │   │   └── tools/             # MCP tool implementations
 │   │   └── workers/               # Dashboard Cloudflare Worker
 │   └── portfolio-worker/          # Edge portfolio worker
-│       └── lib/                   # Stateless modules (security-headers.js)
+│       ├── lib/                   # Stateless modules (security-headers.js)
+│       └── src/styles/            # Modular CSS (animations, components)
 ├── tools/                         # Build, deploy, CI scripts
 │   ├── scripts/build/             # npm script wrappers
 │   └── ci/                        # affected.sh, CI helpers
 ├── tests/                         # Jest unit + Playwright E2E
-├── infrastructure/                # Grafana/Loki/Prometheus/n8n
+├── infrastructure/                # Grafana/Elasticsearch/Prometheus/n8n
 ├── third_party/                   # npm deps (One Version Rule)
 ├── docs/                          # Documentation hub
 ├── BUILD.bazel                    # Root build aliases
@@ -70,6 +71,7 @@ resume/
 | `generate-worker.js`  | `typescript/portfolio-worker/generate-worker.js`         | HTML → worker.js compiler   |
 | `security-headers.js` | `typescript/portfolio-worker/lib/security-headers.js`    | CSP baseline, HSTS          |
 | `sync-resume-data.js` | `tools/scripts/utils/sync-resume-data.js`                | SSoT propagation script     |
+| `terminalCommands`    | `typescript/portfolio-worker/index.html`                 | Interactive CLI commands    |
 
 ## BAZEL TARGETS
 
@@ -171,6 +173,7 @@ source ~/.env && cd typescript/portfolio-worker && \
 - `generate-worker.js` requires 100% coverage
 - All tests data-driven from `typescript/data` SSoT
 - E2E defaults to production URL
+- E2E uses `domcontentloaded` wait strategy for portfolio
 
 ## CONVENTIONS
 
@@ -207,14 +210,14 @@ source ~/.env && cd typescript/portfolio-worker && \
 
 Subdirectory AGENTS.md files provide domain-specific context:
 
-| Path                                    | Focus                            |
-| --------------------------------------- | -------------------------------- |
-| `typescript/cli/AGENTS.md`              | CLI tool usage, Wrangler wrapper |
-| `typescript/data/AGENTS.md`             | SSoT schema, sync process        |
-| `typescript/job-automation/AGENTS.md`   | MCP server, crawlers, workers    |
-| `typescript/portfolio-worker/AGENTS.md` | Build pipeline, CSP hashing      |
-| `tests/AGENTS.md`                       | Test patterns, coverage reqs     |
-| `tools/AGENTS.md`                       | Build scripts, CI utilities      |
-| `infrastructure/AGENTS.md`              | Observability stack (Grafana)    |
+| Path                                    | Focus                                       |
+| --------------------------------------- | ------------------------------------------- |
+| `typescript/cli/AGENTS.md`              | CLI tool usage, Wrangler wrapper            |
+| `typescript/data/AGENTS.md`             | SSoT schema, sync process                   |
+| `typescript/job-automation/AGENTS.md`   | MCP server, crawlers, workers               |
+| `typescript/portfolio-worker/AGENTS.md` | Terminal UI, CLI, build pipeline, CSP       |
+| `tests/AGENTS.md`                       | Test patterns, coverage reqs, wait strategy |
+| `tools/AGENTS.md`                       | Build scripts, CI utilities                 |
+| `infrastructure/AGENTS.md`              | Observability stack (Grafana)               |
 
 See subdirectory AGENTS.md for deeper context on each component.

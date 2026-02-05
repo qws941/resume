@@ -42,13 +42,13 @@ job-automation/
 
 ## CODE MAP
 
-| Component            | Location                           | Bazel Target                    |
-| -------------------- | ---------------------------------- | ------------------------------- |
-| `UnifiedApplySystem` | `src/shared/services/apply/`       | `//typescript/job-automation:*` |
-| `SessionManager`     | `src/shared/services/session/`     | `//typescript/job-automation:*` |
-| `BaseCrawler`        | `src/crawlers/base-crawler.js`     | `//typescript/job-automation:*` |
-| `JobMatcher`         | `src/shared/services/matching/`    | `//typescript/job-automation:*` |
-| `LokiLogger`         | `workers/src/utils/loki-logger.js` | `//typescript/job-automation:*` |
+| Component            | Location                         | Bazel Target                    |
+| -------------------- | -------------------------------- | ------------------------------- |
+| `UnifiedApplySystem` | `src/shared/services/apply/`     | `//typescript/job-automation:*` |
+| `SessionManager`     | `src/shared/services/session/`   | `//typescript/job-automation:*` |
+| `BaseCrawler`        | `src/crawlers/base-crawler.js`   | `//typescript/job-automation:*` |
+| `JobMatcher`         | `src/shared/services/matching/`  | `//typescript/job-automation:*` |
+| `EsLogger`           | `workers/src/utils/es-logger.js` | `//typescript/job-automation:*` |
 
 ## BAZEL TARGETS
 
@@ -74,7 +74,7 @@ bazel run //typescript/job-automation/workers:deploy
 
 - **Session Storage**: Wanted session cookies stored in `~/.OpenCode/data/wanted-session.json`.
 - **D1 Database**: Application tracking and analytics stored in `job-dashboard-db`.
-- **Secrets**: `LOKI_API_KEY` and `AUTH_SYNC_SECRET` must be set via `wrangler secret put --env production`.
+- **Secrets**: `ELASTICSEARCH_URL`, `ELASTICSEARCH_API_KEY`, and `AUTH_SYNC_SECRET` must be set via `wrangler secret put --env production`.
 
 ### Development
 

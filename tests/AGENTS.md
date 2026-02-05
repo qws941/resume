@@ -1,8 +1,8 @@
 # TEST SUITE (tests/)
 
 **Reason:** Shared test suite
-**Generated:** 2026-02-03
-**Commit:** 213ab0f
+**Generated:** 2026-02-05
+**Commit:** 3d9015d
 
 ## OVERVIEW
 
@@ -40,10 +40,47 @@ tests/
 - **Test Framework**: Jest for unit tests; `node:test` used at depth 5 for some modules.
 - **Device Projects**: Playwright configured for Desktop Chrome, Mobile Safari (see playwright.config.js).
 
+## E2E WAIT STRATEGY (IMPORTANT)
+
+**Current Strategy**: Use `domcontentloaded` for portfolio pages.
+
+```javascript
+await page.goto('/', { waitUntil: 'domcontentloaded' });
+```
+
+**Why Not `networkidle`**: The portfolio's terminal animations and interactive CLI cause continuous network activity that prevents `networkidle` from settling. Using `domcontentloaded` ensures tests don't timeout while waiting for animations.
+
+**When to Use Each**:
+| Strategy | Use Case |
+|----------|----------|
+| `domcontentloaded` | Portfolio pages (index.html, index-en.html) |
+| `networkidle` | API-heavy pages, dashboard, static pages |
+| `load` | Pages with many external resources |
+
 ## ANTI-PATTERNS
 
 - **Brittle Selectors**: Use `aria-label` or semantic classes over raw XPath/CSS.
-- **Arbitrary Sleeps**: Use `networkidle` or `waitForSelector` for stability.
+- **Using `networkidle` on Portfolio**: Will timeout due to terminal animations.
+- **Arbitrary Sleeps**: Use `domcontentloaded` or `waitForSelector` for stability.
 - **Global Pollution**: Integration tests must be idempotent and cleanup state.
 - **Blind Snapshots**: Verify diffs in UI mode before updating baselines.
 - **Side Effects**: Tests should not modify production data without explicit intent.
+
+## COMMANDS
+
+```bash
+# Run all unit tests
+npm test
+
+# Run E2E tests
+npm run test:e2e
+
+# Run E2E with UI (debug mode)
+npm run test:e2e:ui
+
+# Update visual snapshots
+npx playwright test --update-snapshots
+
+# Run specific test file
+npx playwright test tests/e2e/portfolio.spec.js
+```
