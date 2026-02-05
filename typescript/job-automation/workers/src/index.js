@@ -4,12 +4,8 @@ import { StatsHandler } from './handlers/stats.js';
 import { AuthHandler } from './handlers/auth.js';
 import { WebhookHandler } from './handlers/webhooks.js';
 import { AutoApplyHandler } from './handlers/auto-apply.js';
-import {
-  jsonResponse,
-  corsHeaders,
-  addCorsHeaders,
-} from './middleware/cors.js';
-import { logRequest, logError } from './utils/loki-logger.js';
+import { jsonResponse, corsHeaders, addCorsHeaders } from './middleware/cors.js';
+import { logRequest, logError } from './utils/es-logger.js';
 import {
   requiresAuth,
   requiresWebhookSignature,
@@ -18,14 +14,19 @@ import {
   createAuthCookie,
   clearAuthCookie,
 } from './services/auth.js';
-import {
-  checkRateLimit,
-  addRateLimitHeaders,
-} from './middleware/rate-limit.js';
+import { checkRateLimit, addRateLimitHeaders } from './middleware/rate-limit.js';
 import { validateCsrf, addCsrfCookie } from './middleware/csrf.js';
 import { getConfig, saveConfig } from './services/config.js';
 import { serveStatic } from './views/dashboard.js';
 import { sendSlackMessage } from './services/slack.js';
+import {
+  JobCrawlingWorkflow,
+  ApplicationWorkflow,
+  ResumeSyncWorkflow,
+  DailyReportWorkflow,
+} from './workflows/index.js';
+
+export { JobCrawlingWorkflow, ApplicationWorkflow, ResumeSyncWorkflow, DailyReportWorkflow };
 
 export default {
   async fetch(request, env, ctx) {
@@ -38,7 +39,7 @@ export default {
     const origin = request.headers.get('Origin') || '';
 
     if (request.method === 'OPTIONS') {
-      return new Response(null, { status: 204, headers: corsHeaders(origin) });
+      return addCorsHeaders(new Response(null, { status: 204 }), origin);
     }
 
     const rateResult = await checkRateLimit(request, url.pathname, env);
@@ -46,29 +47,23 @@ export default {
       return addCorsHeaders(
         addRateLimitHeaders(
           jsonResponse({ error: rateResult.error }, rateResult.status),
-          rateResult.headers,
+          rateResult.headers
         ),
-        origin,
+        origin
       );
     }
 
     if (requiresAuth(url.pathname)) {
       const authResult = verifyAdminAuth(request, env);
       if (!authResult.ok) {
-        return addCorsHeaders(
-          jsonResponse({ error: authResult.error }, authResult.status),
-          origin,
-        );
+        return addCorsHeaders(jsonResponse({ error: authResult.error }, authResult.status), origin);
       }
     }
 
     if (requiresWebhookSignature(url.pathname)) {
       const sigResult = await verifyWebhookSignature(request, env);
       if (!sigResult.ok) {
-        return addCorsHeaders(
-          jsonResponse({ error: sigResult.error }, sigResult.status),
-          origin,
-        );
+        return addCorsHeaders(jsonResponse({ error: sigResult.error }, sigResult.status), origin);
       }
     }
 
@@ -80,10 +75,7 @@ export default {
     if (!skipCsrf) {
       const csrfResult = validateCsrf(request);
       if (!csrfResult.ok) {
-        return addCorsHeaders(
-          jsonResponse({ error: csrfResult.error }, csrfResult.status),
-          origin,
-        );
+        return addCorsHeaders(jsonResponse({ error: csrfResult.error }, csrfResult.status), origin);
       }
     }
 
@@ -92,6 +84,27 @@ export default {
     const auth = new AuthHandler(env.DB, env.SESSIONS, env);
     const webhooks = new WebhookHandler(env, auth);
     const autoApply = new AutoApplyHandler(env);
+
+    // Health endpoint at root (for portfolio status checks with CORS)
+    router.get('/health', async () => {
+      const health = {
+        status: 'ok',
+        timestamp: new Date().toISOString(),
+        version: '2.0.0',
+      };
+      try {
+        if (env.DB) {
+          await env.DB.prepare('SELECT 1').first();
+          health.database = 'connected';
+        } else {
+          health.database = 'not configured';
+        }
+      } catch {
+        health.status = 'degraded';
+        health.database = 'error';
+      }
+      return jsonResponse(health);
+    });
 
     router.get('/api/health', async () => {
       const health = {
@@ -121,9 +134,7 @@ export default {
       };
       if (env.DB) {
         try {
-          const result = await env.DB.prepare(
-            'SELECT COUNT(*) as count FROM applications',
-          ).first();
+          const result = await env.DB.prepare('SELECT COUNT(*) as count FROM applications').first();
           status.applications = result?.count ?? 0;
         } catch {
           status.applications = 'error';
@@ -173,174 +184,143 @@ export default {
     router.get('/api/report/weekly', (req) => stats.getWeeklyReport(req));
 
     router.post('/api/slack/notify', (req) => webhooks.notifySlack(req));
-    router.post('/api/slack/interactions', (req) =>
-      webhooks.handleSlackInteraction(req),
-    );
+    router.post('/api/slack/interactions', (req) => webhooks.handleSlackInteraction(req));
 
-    router.post('/api/automation/search', (req) =>
-      webhooks.triggerJobSearch(req),
-    );
-    router.post('/api/automation/apply', (req) =>
-      webhooks.triggerAutoApply(req),
-    );
-    router.post('/api/automation/report', (req) =>
-      webhooks.triggerDailyReport(req),
-    );
-    router.post('/api/automation/resume', (req) =>
-      webhooks.triggerResumeSync(req),
-    );
+    router.post('/api/automation/search', (req) => webhooks.triggerJobSearch(req));
+    router.post('/api/automation/apply', (req) => webhooks.triggerAutoApply(req));
+    router.post('/api/automation/report', (req) => webhooks.triggerDailyReport(req));
+    router.post('/api/automation/resume', (req) => webhooks.triggerResumeSync(req));
 
     router.get('/api/auto-apply/status', (req) => autoApply.status(req));
     router.post('/api/auto-apply/run', (req) => autoApply.run(req));
     router.put('/api/auto-apply/config', (req) => autoApply.configure(req));
 
     // Profile sync endpoints
-    router.post('/api/automation/profile-sync', (req) =>
-      webhooks.triggerProfileSync(req),
-    );
-    router.get('/api/automation/profile-sync/:syncId', (req) =>
-      webhooks.getProfileSyncStatus(req),
-    );
+    router.post('/api/automation/profile-sync', (req) => webhooks.triggerProfileSync(req));
+    router.get('/api/automation/profile-sync/:syncId', (req) => webhooks.getProfileSyncStatus(req));
     router.post('/api/automation/profile-sync/callback', (req) =>
-      webhooks.updateProfileSyncStatus(req),
+      webhooks.updateProfileSyncStatus(req)
     );
 
     // Test endpoints for Chaos API integration
-    router.get('/api/test/chaos-resumes', (req) =>
-      webhooks.testChaosResumes(req),
-    );
+    router.get('/api/test/chaos-resumes', (req) => webhooks.testChaosResumes(req));
 
     router.get('/api/config', () => getConfig(env.DB));
     router.put('/api/config', (req) => saveConfig(req, env.DB));
 
     router.post('/api/cleanup', (req) => apps.cleanupExpired(req));
 
-    if (!url.pathname.startsWith('/api/')) {
-      const staticResponse = serveStatic(url.pathname);
-      return addCsrfCookie(staticResponse, request);
-    }
+    router.post('/api/workflows/job-crawling', async (req) => {
+      const body = await req.json().catch(() => ({}));
+      const instance = await env.JOB_CRAWLING_WORKFLOW.create({ params: body });
+      return jsonResponse({ instanceId: instance.id, status: 'started' });
+    });
+
+    router.post('/api/workflows/application', async (req) => {
+      const body = await req.json().catch(() => ({}));
+      const instance = await env.APPLICATION_WORKFLOW.create({ params: body });
+      return jsonResponse({ instanceId: instance.id, status: 'started' });
+    });
+
+    router.post('/api/workflows/resume-sync', async (req) => {
+      const body = await req.json().catch(() => ({}));
+      const instance = await env.RESUME_SYNC_WORKFLOW.create({ params: body });
+      return jsonResponse({ instanceId: instance.id, status: 'started' });
+    });
+
+    router.post('/api/workflows/daily-report', async (req) => {
+      const body = await req.json().catch(() => ({}));
+      const instance = await env.DAILY_REPORT_WORKFLOW.create({ params: body });
+      return jsonResponse({ instanceId: instance.id, status: 'started' });
+    });
+
+    router.get('/api/workflows/:workflowType/:instanceId', async (req) => {
+      const { workflowType, instanceId } = req.params;
+      const workflowBindings = {
+        'job-crawling': env.JOB_CRAWLING_WORKFLOW,
+        application: env.APPLICATION_WORKFLOW,
+        'resume-sync': env.RESUME_SYNC_WORKFLOW,
+        'daily-report': env.DAILY_REPORT_WORKFLOW,
+      };
+
+      const workflow = workflowBindings[workflowType];
+      if (!workflow) {
+        return jsonResponse({ error: 'Unknown workflow type' }, 404);
+      }
+
+      const instance = await workflow.get(instanceId);
+      const status = await instance.status();
+      return jsonResponse({ instanceId, status: status.status, output: status.output });
+    });
+
+    router.post('/api/workflows/application/:instanceId/approve', async (req) => {
+      const { instanceId } = req.params;
+      await env.SESSIONS.put(
+        `workflow:application:${instanceId}:approval`,
+        JSON.stringify({ approved: true, at: new Date().toISOString() }),
+        { expirationTtl: 86400 }
+      );
+      return jsonResponse({ success: true, approved: true });
+    });
+
+    router.post('/api/workflows/application/:instanceId/reject', async (req) => {
+      const { instanceId } = req.params;
+      await env.SESSIONS.put(
+        `workflow:application:${instanceId}:approval`,
+        JSON.stringify({ approved: false, at: new Date().toISOString() }),
+        { expirationTtl: 86400 }
+      );
+      return jsonResponse({ success: true, approved: false });
+    });
 
     try {
+      // Router-first: try all registered routes
       const response = await router.handle(request, url);
       if (response) {
         const withCsrf = addCsrfCookie(response, request);
-        return addRateLimitHeaders(
-          addCorsHeaders(withCsrf, origin),
-          rateResult.headers,
-        );
+        return addRateLimitHeaders(addCorsHeaders(withCsrf, origin), rateResult.headers);
       }
+
+      // Static fallback: serve dashboard for non-API routes
+      if (!url.pathname.startsWith('/api/')) {
+        const staticResponse = serveStatic(url.pathname);
+        const withCsrf = addCsrfCookie(staticResponse, request);
+        return addCorsHeaders(withCsrf, origin);
+      }
+
+      // API route not found
       return addCorsHeaders(jsonResponse({ error: 'Not found' }, 404), origin);
     } catch (error) {
       console.error('Worker error:', error);
-      ctx.waitUntil(
-        logError(env, error, { path: url.pathname, method: request.method }),
-      );
-      return addCorsHeaders(
-        jsonResponse({ error: 'Internal server error' }, 500),
-        origin,
-      );
+      ctx.waitUntil(logError(env, error, { path: url.pathname, method: request.method }));
+      return addCorsHeaders(jsonResponse({ error: 'Internal server error' }, 500), origin);
     }
   },
 
   async scheduled(event, env, ctx) {
     console.log(`Cron triggered: ${event.cron}`);
 
-    const auth = new AuthHandler(env.DB, env.SESSIONS, env);
-    const autoApply = new AutoApplyHandler(env);
-    const webhooks = new WebhookHandler(env, auth);
-
-    // Route based on cron schedule
-    // 0 0 * * 1-5 = 00:00 UTC Mon-Fri = 09:00 KST (Job search + apply)
-    // 0 9 * * * = 09:00 UTC Daily = 18:00 KST (Daily report)
     const isJobSearchCron = event.cron === '0 0 * * 1-5';
     const isDailyReportCron = event.cron === '0 9 * * *';
 
     try {
       if (isJobSearchCron) {
-        const config = await autoApply.getConfig();
-
-        if (!config.autoApplyEnabled) {
-          console.log('Auto-apply disabled, skipping job search cron');
-          return;
-        }
-
-        const mockRequest = new Request(
-          'https://job.jclee.me/api/auto-apply/run',
-          {
-            method: 'POST',
-            body: JSON.stringify({
-              dryRun: false,
-              platforms: ['wanted', 'linkedin', 'remember'],
-            }),
-            headers: { 'Content-Type': 'application/json' },
+        const instance = await env.JOB_CRAWLING_WORKFLOW.create({
+          params: {
+            platforms: ['wanted', 'linkedin', 'remember'],
+            dryRun: false,
           },
-        );
-
-        const result = await autoApply.run(mockRequest);
-        const data = await result.json();
-        console.log('Cron auto-apply result:', JSON.stringify(data));
-
-        if (data.results?.applied > 0) {
-          const jobList = (data.results?.jobs || [])
-            .slice(0, 5)
-            .map((j) => `• ${j.company} - ${j.position} (${j.matchScore}%)`)
-            .join('\n');
-
-          await sendSlackMessage(env, {
-            text: `🤖 Auto-Apply Complete: ${data.results.applied} jobs processed`,
-            blocks: [
-              {
-                type: 'header',
-                text: { type: 'plain_text', text: '🤖 Auto-Apply Results' },
-              },
-              {
-                type: 'section',
-                text: {
-                  type: 'mrkdwn',
-                  text: `*Summary*\nSearched: ${data.results.searched} | Matched: ${data.results.matched} | Applied: ${data.results.applied}\n\n*Top Jobs*\n${jobList || 'None'}`,
-                },
-              },
-            ],
-          });
-        }
+        });
+        console.log(`Job crawling workflow started: ${instance.id}`);
       } else if (isDailyReportCron) {
-        const mockRequest = new Request(
-          'https://job.jclee.me/api/automation/report',
-          {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-          },
-        );
-
-        const result = await webhooks.triggerDailyReport(mockRequest);
-        const data = await result.json();
-        console.log('Cron daily report result:', JSON.stringify(data));
-      } else {
-        const config = await autoApply.getConfig();
-
-        if (!config.autoApplyEnabled) {
-          console.log('Auto-apply disabled, skipping cron');
-          return;
-        }
-
-        const mockRequest = new Request(
-          'https://job.jclee.me/api/auto-apply/run',
-          {
-            method: 'POST',
-            body: JSON.stringify({ dryRun: false }),
-            headers: { 'Content-Type': 'application/json' },
-          },
-        );
-
-        const result = await autoApply.run(mockRequest);
-        const data = await result.json();
-        console.log('Cron auto-apply result:', JSON.stringify(data));
+        const instance = await env.DAILY_REPORT_WORKFLOW.create({
+          params: { type: 'daily' },
+        });
+        console.log(`Daily report workflow started: ${instance.id}`);
       }
     } catch (error) {
       console.error('Cron error:', error.message);
-      ctx.waitUntil(
-        logError(env, error, { trigger: 'cron', cron: event.cron }),
-      );
+      ctx.waitUntil(logError(env, error, { trigger: 'cron', cron: event.cron }));
 
       await sendSlackMessage(env, {
         text: `❌ Cron Error: ${event.cron}\n\`\`\`${error.message}\`\`\``,
