@@ -49,9 +49,8 @@ function generateWebData(source) {
     };
 
     if (idx === 0) {
-      // TODO: Migrate to GitHub raw URLs when files are synced
       entry.completePdfUrl =
-        'https://gitlab.jclee.me/jclee/resume/-/raw/master/resumes/technical/nextrade/exports/Nextrade_Full_Documentation.pdf';
+        'https://raw.githubusercontent.com/jclee-homelab/resume/master/typescript/data/resumes/technical/nextrade/exports/Nextrade_Full_Documentation.pdf';
     }
 
     return entry;
@@ -74,10 +73,10 @@ function generateWebData(source) {
   return {
     resumeDownload: {
       pdfUrl: 'https://resume.jclee.me/resume.pdf',
-      // TODO: Migrate to GitHub raw URLs when files are synced
       docxUrl:
-        'https://gitlab.jclee.me/jclee/resume/-/raw/master/resumes/master/archive/resume_final.docx',
-      mdUrl: 'https://gitlab.jclee.me/jclee/resume/-/raw/master/resumes/master/resume_final.md',
+        'https://raw.githubusercontent.com/jclee-homelab/resume/master/typescript/data/resumes/archive/versions/resume_final.docx',
+      mdUrl:
+        'https://raw.githubusercontent.com/jclee-homelab/resume/master/typescript/data/resumes/master/resume_final.md',
     },
     resume,
     projects,

@@ -64,8 +64,7 @@ test.describe('Download Functionality', () => {
       await expect(completePdfLink).toBeVisible();
 
       const href = await completePdfLink.getAttribute('href');
-      // TODO: Update to github raw URL when files are migrated
-      expect(href).toMatch(/gitlab\.jclee\.me|raw\.githubusercontent\.com/);
+      expect(href).toMatch(/raw\.githubusercontent\.com/);
       expect(href).toContain('Nextrade_Full_Documentation.pdf');
     });
 
@@ -87,7 +86,7 @@ test.describe('Download Functionality', () => {
           const pdfHref = await pdfLink.getAttribute('href');
           if (pdfHref && pdfHref !== 'undefined' && !pdfHref.includes('undefined')) {
             await expect(pdfLink).toBeVisible();
-            expect(pdfHref).toMatch(/gitlab\.jclee\.me|raw\.githubusercontent\.com/);
+            expect(pdfHref).toMatch(/raw\.githubusercontent\.com/);
           }
         }
 
@@ -96,7 +95,7 @@ test.describe('Download Functionality', () => {
           const docxHref = await docxLink.getAttribute('href');
           if (docxHref && docxHref !== 'undefined' && !docxHref.includes('undefined')) {
             await expect(docxLink).toBeVisible();
-            expect(docxHref).toMatch(/gitlab\.jclee\.me|raw\.githubusercontent\.com/);
+            expect(docxHref).toMatch(/raw\.githubusercontent\.com/);
           }
         }
       }
@@ -163,9 +162,8 @@ test.describe('Download Functionality', () => {
       const allDownloadLinks = page.locator('a[download]');
       const count = await allDownloadLinks.count();
 
-      // File download URL pattern - supports GitLab or GitHub raw
       const downloadsUrlPattern =
-        /^https:\/\/(gitlab\.jclee\.me\/jclee\/resume\/-\/raw\/master|raw\.githubusercontent\.com\/jclee-homelab\/resume\/master)\/.+\.(pdf|docx|md)$/;
+        /^https:\/\/raw\.githubusercontent\.com\/jclee-homelab\/resume\/master\/.+\.(pdf|docx|md)$/;
       // Worker PDF pattern - handles both production (resume.jclee.me) and staging (*.workers.dev)
       const workerPdfPattern =
         /^https:\/\/(resume\.jclee\.me|resume-staging\.jclee\.workers\.dev)\/resume\.pdf$/;

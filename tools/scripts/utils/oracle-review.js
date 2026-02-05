@@ -165,7 +165,7 @@ async function main() {
 ${review}
 
 ---
-*Automated review by [Oracle](https://gitlab.jclee.me/apps/resume/-/blob/master/scripts/utils/oracle-review.js) | ${OPENCODE_MODEL}*`;
+*Automated review by [Oracle](https://github.com/jclee-homelab/resume/blob/master/tools/scripts/utils/oracle-review.js) | ${OPENCODE_MODEL}*`;
 
     await postMRComment(comment);
     console.log('Review posted successfully.');
