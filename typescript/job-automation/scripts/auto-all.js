@@ -2,12 +2,11 @@
 /**
  * Unified Automation Runner
  * Runs all automation tasks: cookie extraction, platform sync, verification
- * 
+ *
  * Usage: node scripts/auto-all.js [--extract] [--sync] [--verify] [--all]
  */
-import {execSync, spawn} from 'child_process';
-import {existsSync} from 'fs';
-import {SessionManager} from '../src/shared/services/session/index.js';
+import { execSync } from 'child_process';
+import { SessionManager } from '../src/shared/services/session/index.js';
 
 const PLATFORMS = ['wanted', 'jobkorea', 'remember'];
 const CHROME_DEBUG_PORT = 9222;
@@ -24,8 +23,8 @@ const c = {
 };
 
 function log(msg, type = 'info') {
-  const icons = {info: '→', ok: '✓', err: '✗', warn: '⚠', run: '▶'};
-  const colors = {info: c.cyan, ok: c.green, err: c.red, warn: c.yellow, run: c.blue};
+  const icons = { info: '→', ok: '✓', err: '✗', warn: '⚠', run: '▶' };
+  const colors = { info: c.cyan, ok: c.green, err: c.red, warn: c.yellow, run: c.blue };
   console.log(`${colors[type]}${icons[type]}${c.reset} ${msg}`);
 }
 
@@ -35,7 +34,7 @@ function header(title) {
 
 function run(cmd, opts = {}) {
   try {
-    return execSync(cmd, {encoding: 'utf8', stdio: opts.silent ? 'pipe' : 'inherit', ...opts});
+    return execSync(cmd, { encoding: 'utf8', stdio: opts.silent ? 'pipe' : 'inherit', ...opts });
   } catch (e) {
     if (!opts.ignoreError) throw e;
     return null;
@@ -45,7 +44,9 @@ function run(cmd, opts = {}) {
 // Check if Chrome DevTools is available
 async function checkChromeDevTools() {
   try {
-    const res = await fetch(`http://127.0.0.1:${CHROME_DEBUG_PORT}/json/version`, {signal: AbortSignal.timeout(2000)});
+    const res = await fetch(`http://127.0.0.1:${CHROME_DEBUG_PORT}/json/version`, {
+      signal: AbortSignal.timeout(2000),
+    });
     return res.ok;
   } catch {
     return false;
@@ -53,8 +54,8 @@ async function checkChromeDevTools() {
 }
 
 // Extract cookies via Chrome DevTools Protocol
-async function extractCookiesViaCDP(platform) {
-  const domains = {
+async function extractCookiesViaCDP(_platform) {
+  const _domains = {
     wanted: ['.wanted.co.kr', 'www.wanted.co.kr'],
     jobkorea: ['.jobkorea.co.kr', 'www.jobkorea.co.kr'],
     remember: ['.rememberapp.co.kr', 'www.rememberapp.co.kr'],
@@ -64,7 +65,7 @@ async function extractCookiesViaCDP(platform) {
     // Get all cookies via CDP
     const res = await fetch(`http://127.0.0.1:${CHROME_DEBUG_PORT}/json/list`);
     const pages = await res.json();
-    
+
     if (pages.length === 0) {
       log('No Chrome pages found', 'warn');
       return null;
@@ -78,8 +79,8 @@ async function extractCookiesViaCDP(platform) {
     }
 
     // Use CDP to get cookies (via HTTP endpoint)
-    const cookieRes = await fetch(`http://127.0.0.1:${CHROME_DEBUG_PORT}/json/protocol`);
-    
+    const _cookieRes = await fetch(`http://127.0.0.1:${CHROME_DEBUG_PORT}/json/protocol`);
+
     // Fallback: try to get cookies from Network domain
     // This is a simplified approach - full CDP would use WebSocket
     log('CDP available but cookie extraction needs WebSocket client', 'warn');
@@ -93,15 +94,16 @@ async function extractCookiesViaCDP(platform) {
 // Check session validity
 function checkSession(platform) {
   const session = SessionManager.load(platform);
-  if (!session) return {valid: false, reason: 'no session'};
-  if (!session || !session.timestamp || Date.now() - session.timestamp > 24 * 60 * 60 * 1000) return {valid: false, reason: 'expired'};
-  
-  const authCookie = session.cookies?.find(c => 
-    c.name.includes('TOKEN') || c.name.includes('session')
+  if (!session) return { valid: false, reason: 'no session' };
+  if (!session || !session.timestamp || Date.now() - session.timestamp > 24 * 60 * 60 * 1000)
+    return { valid: false, reason: 'expired' };
+
+  const authCookie = session.cookies?.find(
+    (c) => c.name.includes('TOKEN') || c.name.includes('session')
   );
-  if (!authCookie) return {valid: false, reason: 'no auth cookie'};
-  
-  return {valid: true, cookies: session.cookies.length};
+  if (!authCookie) return { valid: false, reason: 'no auth cookie' };
+
+  return { valid: true, cookies: session.cookies.length };
 }
 
 // Sync to platform
@@ -114,7 +116,7 @@ async function syncPlatform(platform) {
 
   log(`${platform}: Syncing...`, 'run');
   try {
-    run(`npm run sync:platforms sync ${platform}`, {silent: true});
+    run(`npm run sync:platforms sync ${platform}`, { silent: true });
     log(`${platform}: Synced`, 'ok');
     return true;
   } catch (e) {
@@ -138,7 +140,7 @@ async function main() {
   // Step 1: Check/Extract Cookies
   if (doExtract) {
     header('Cookie Status');
-    
+
     const cdpAvailable = await checkChromeDevTools();
     if (cdpAvailable) {
       log(`Chrome DevTools available on port ${CHROME_DEBUG_PORT}`, 'ok');
@@ -153,7 +155,7 @@ async function main() {
         log(`${platform}: Valid session (${status.cookies} cookies)`, 'ok');
       } else {
         log(`${platform}: ${status.reason}`, 'err');
-        
+
         if (cdpAvailable) {
           log(`Attempting CDP extraction for ${platform}...`, 'run');
           await extractCookiesViaCDP(platform);
@@ -165,23 +167,23 @@ async function main() {
   // Step 2: Sync Platforms
   if (doSync) {
     header('Platform Sync');
-    
+
     let synced = 0;
     for (const platform of PLATFORMS) {
       if (await syncPlatform(platform)) synced++;
     }
-    
+
     log(`Synced ${synced}/${PLATFORMS.length} platforms`, synced > 0 ? 'ok' : 'warn');
   }
 
   // Step 3: Verify
   if (doVerify) {
     header('Verification');
-    
+
     // Build
     log('Building worker.js...', 'run');
     try {
-      run('npm run build', {cwd: '..', silent: true});
+      run('npm run build', { cwd: '..', silent: true });
       log('Build successful', 'ok');
     } catch {
       log('Build failed', 'err');
@@ -190,7 +192,7 @@ async function main() {
     // LSP diagnostics on key files
     log('Checking for errors...', 'run');
     try {
-      const result = run('npx tsc --noEmit 2>&1 || true', {silent: true});
+      const result = run('npx tsc --noEmit 2>&1 || true', { silent: true });
       if (result?.includes('error')) {
         log('TypeScript errors found', 'warn');
       } else {
