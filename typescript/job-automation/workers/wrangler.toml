@@ -42,7 +42,10 @@ routes = [
 [env.production.triggers]
 # 0 0 * * 1-5 = 00:00 UTC Mon-Fri = 09:00 KST (Job search + auto-apply)
 # 0 9 * * * = 09:00 UTC Daily = 18:00 KST (Daily report)
-crons = ["0 0 * * 1-5", "0 9 * * *"]
+# */5 * * * * = Every 5 minutes (Health check)
+# 0 3 * * * = 03:00 UTC Daily = 12:00 KST (Backup)
+# 0 4 * * 0 = 04:00 UTC Sunday = 13:00 KST (Cleanup)
+crons = ["0 0 * * 1-5", "0 9 * * *", "*/5 * * * *", "0 3 * * *", "0 4 * * 0"]
 
 [env.production.vars]
 ENVIRONMENT = "production"
@@ -67,7 +70,10 @@ id = "3e282b1b906c474aadcc947a06f0c1ad"
 
 # Staging environment
 [env.staging]
-name = "job"
+name = "job-staging"
+routes = [
+  { pattern = "job-staging.jclee.me/*", zone_name = "jclee.me" }
+]
 
 [env.staging.vars]
 ENVIRONMENT = "staging"
@@ -110,6 +116,21 @@ name = "daily-report-workflow"
 binding = "DAILY_REPORT_WORKFLOW"
 class_name = "DailyReportWorkflow"
 
+[[workflows]]
+name = "health-check-workflow"
+binding = "HEALTH_CHECK_WORKFLOW"
+class_name = "HealthCheckWorkflow"
+
+[[workflows]]
+name = "backup-workflow"
+binding = "BACKUP_WORKFLOW"
+class_name = "BackupWorkflow"
+
+[[workflows]]
+name = "cleanup-workflow"
+binding = "CLEANUP_WORKFLOW"
+class_name = "CleanupWorkflow"
+
 [[env.production.workflows]]
 name = "job-crawling-workflow"
 binding = "JOB_CRAWLING_WORKFLOW"
@@ -130,6 +151,21 @@ name = "daily-report-workflow"
 binding = "DAILY_REPORT_WORKFLOW"
 class_name = "DailyReportWorkflow"
 
+[[env.production.workflows]]
+name = "health-check-workflow"
+binding = "HEALTH_CHECK_WORKFLOW"
+class_name = "HealthCheckWorkflow"
+
+[[env.production.workflows]]
+name = "backup-workflow"
+binding = "BACKUP_WORKFLOW"
+class_name = "BackupWorkflow"
+
+[[env.production.workflows]]
+name = "cleanup-workflow"
+binding = "CLEANUP_WORKFLOW"
+class_name = "CleanupWorkflow"
+
 [[env.staging.workflows]]
 name = "job-crawling-workflow"
 binding = "JOB_CRAWLING_WORKFLOW"
@@ -149,3 +185,18 @@ class_name = "ResumeSyncWorkflow"
 name = "daily-report-workflow"
 binding = "DAILY_REPORT_WORKFLOW"
 class_name = "DailyReportWorkflow"
+
+[[env.staging.workflows]]
+name = "health-check-workflow"
+binding = "HEALTH_CHECK_WORKFLOW"
+class_name = "HealthCheckWorkflow"
+
+[[env.staging.workflows]]
+name = "backup-workflow"
+binding = "BACKUP_WORKFLOW"
+class_name = "BackupWorkflow"
+
+[[env.staging.workflows]]
+name = "cleanup-workflow"
+binding = "CLEANUP_WORKFLOW"
+class_name = "CleanupWorkflow"
