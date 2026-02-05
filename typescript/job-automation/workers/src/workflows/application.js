@@ -362,7 +362,7 @@ export class ApplicationWorkflow extends WorkflowEntrypoint {
 
   async sendApprovalRequest({ applicationId, job, platform }) {
     await this.sendSlackNotification({
-      text: `⏳ Application Approval Required`,
+      text: '⏳ Application Approval Required',
       blocks: [
         {
           type: 'header',

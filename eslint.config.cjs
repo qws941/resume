@@ -50,7 +50,9 @@ module.exports = [
       'wanted-mcp/node_modules/**',
 
       // Build outputs
-      'web/worker.js', // Generated file
+      'typescript/portfolio-worker/worker.js', // Generated file (NEVER EDIT)
+      'typescript/data/resumes/archive/docs/worker.js', // Legacy archive
+      'web/worker.js', // Old path (keep for compat)
       'web/sentry-config.js', // Browser-embedded JavaScript
       'web/sw.js', // Service worker
       '*.min.js',

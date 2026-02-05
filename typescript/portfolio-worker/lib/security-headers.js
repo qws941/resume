@@ -38,7 +38,7 @@ function generateSecurityHeaders(scriptHashes, styleHashes) {
     "default-src 'none'",
     `script-src 'self' ${scriptHashes.join(' ')} ${CLOUDFLARE_SCRIPT_HASHES.join(' ')} https://www.googletagmanager.com ${CLOUDFLARE_ANALYTICS.script}`,
     `style-src 'self' ${styleHashes.join(' ')}`,
-    `style-src-elem 'self' 'unsafe-inline'`,
+    'style-src-elem \'self\' \'unsafe-inline\'',
     "style-src-attr 'unsafe-inline'",
     `connect-src 'self' https://www.google-analytics.com https://analytics.google.com https://job.jclee.me ${CLOUDFLARE_ANALYTICS.connect}`,
     "img-src 'self' data: https:",
