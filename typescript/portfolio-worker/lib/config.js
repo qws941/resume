@@ -5,8 +5,7 @@
 
 const CONFIG = {
   // URL Prefixes for file downloads
-  // TODO: Migrate to GitHub raw URLs when files are synced
-  DOWNLOADS_BASE_URL: 'https://gitlab.jclee.me/jclee/resume/-/raw/master',
+  DOWNLOADS_BASE_URL: 'https://raw.githubusercontent.com/jclee-homelab/resume/master',
 
   // Link Types
   LINK_TYPES: {
