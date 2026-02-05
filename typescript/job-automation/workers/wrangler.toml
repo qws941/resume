@@ -36,7 +36,7 @@ ENVIRONMENT = "production"
 # Production routes
 [env.production]
 routes = [
-  { pattern = "job.jclee.me/*", zone_name = "jclee.me" }
+  { pattern = "resume.jclee.me/job/*", zone_name = "jclee.me" }
 ]
 
 [env.production.triggers]
@@ -72,7 +72,7 @@ id = "3e282b1b906c474aadcc947a06f0c1ad"
 [env.staging]
 name = "job-staging"
 routes = [
-  { pattern = "job-staging.jclee.me/*", zone_name = "jclee.me" }
+  { pattern = "resume.jclee.me/job-staging/*", zone_name = "jclee.me" }
 ]
 
 [env.staging.vars]

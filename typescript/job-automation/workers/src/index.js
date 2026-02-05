@@ -41,7 +41,18 @@ export {
 
 export default {
   async fetch(request, env, ctx) {
-    const url = new URL(request.url);
+    const originalUrl = new URL(request.url);
+
+    // Strip /job prefix when served from resume.jclee.me/job/*
+    let pathname = originalUrl.pathname;
+    if (pathname.startsWith('/job')) {
+      pathname = pathname.slice(4) || '/';
+    }
+
+    // Create normalized URL for routing
+    const url = new URL(originalUrl);
+    url.pathname = pathname;
+
     const router = new Router();
 
     // Log request to Loki (waitUntil ensures completion)

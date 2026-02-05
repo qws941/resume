@@ -42,9 +42,9 @@ env:
   NODE_VERSION: '22'
   PLAYWRIGHT_VERSION: '1.58.1'
   PORTFOLIO_URL: 'https://resume.jclee.me'
-  JOB_DASHBOARD_URL: 'https://job.jclee.me'
+  JOB_DASHBOARD_URL: 'https://resume.jclee.me/job'
   STAGING_PORTFOLIO_URL: 'https://resume-staging.jclee.me'
-  STAGING_JOB_URL: 'https://job-staging.jclee.me'
+  STAGING_JOB_URL: 'https://resume.jclee.me/job-staging'
 
 permissions:
   contents: read
