@@ -10,8 +10,11 @@ binding = "ASSETS"
 
 # Staging environment
 [env.staging]
-name = "resume"
+name = "resume-staging"
 vars = { ENVIRONMENT = "staging" }
+routes = [
+  { pattern = "resume-staging.jclee.me", custom_domain = true }
+]
 [[env.staging.d1_databases]]
 binding = "DB"
 database_name = "resume-staging-db"

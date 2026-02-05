@@ -24,9 +24,20 @@ import {
   ApplicationWorkflow,
   ResumeSyncWorkflow,
   DailyReportWorkflow,
+  HealthCheckWorkflow,
+  BackupWorkflow,
+  CleanupWorkflow,
 } from './workflows/index.js';
 
-export { JobCrawlingWorkflow, ApplicationWorkflow, ResumeSyncWorkflow, DailyReportWorkflow };
+export {
+  JobCrawlingWorkflow,
+  ApplicationWorkflow,
+  ResumeSyncWorkflow,
+  DailyReportWorkflow,
+  HealthCheckWorkflow,
+  BackupWorkflow,
+  CleanupWorkflow,
+};
 
 export default {
   async fetch(request, env, ctx) {
