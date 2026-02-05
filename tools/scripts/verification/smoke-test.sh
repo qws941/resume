@@ -7,7 +7,6 @@
 #
 # Environments:
 #   production (default) - https://resume.jclee.me
-#   staging              - https://resume-staging.jclee.me
 #   local                - http://localhost:8787
 #
 # Exit codes:
@@ -34,7 +33,6 @@ WARN=0
 # Environment URLs
 declare -A URLS=(
     ["production"]="https://resume.jclee.me"
-    ["staging"]="https://resume-staging.jclee.me"
     ["local"]="http://localhost:8787"
 )
 
