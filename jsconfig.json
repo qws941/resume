@@ -11,7 +11,7 @@
     "strictFunctionTypes": true,
     "noImplicitAny": false,
     "noImplicitThis": true,
-    "noUnusedLocals": false,
+    "noUnusedLocals": true,
     "noUnusedParameters": false,
     "noFallthroughCasesInSwitch": true,
     "esModuleInterop": true,
