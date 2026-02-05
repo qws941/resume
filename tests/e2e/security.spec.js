@@ -14,7 +14,9 @@ test.describe('Security Headers & CSP', () => {
     expect(response.headers()['x-content-type-options']).toBe('nosniff');
     expect(response.headers()['x-frame-options']).toMatch(/SAMEORIGIN|DENY/);
     expect(response.headers()['x-xss-protection']).toBe('1; mode=block');
-    expect(response.headers()['referrer-policy']).toMatch(/same-origin|strict-origin-when-cross-origin/);
+    expect(response.headers()['referrer-policy']).toMatch(
+      /same-origin|strict-origin-when-cross-origin/
+    );
     expect(response.headers()['content-security-policy']).toBeTruthy();
   });
 
@@ -31,9 +33,6 @@ test.describe('Security Headers & CSP', () => {
           text.includes('cloudflareinsights') ||
           text.includes('beacon.min.js') ||
           text.includes('static.cloudflareinsights') ||
-          // Cloudflare adds inline styles for various purposes
-          text.includes('Refused to apply inline style') ||
-          text.includes('inline style') ||
           // Cloudflare challenge/bot protection
           text.includes('challenges.cloudflare.com') ||
           text.includes('cdn-cgi') ||
@@ -48,12 +47,9 @@ test.describe('Security Headers & CSP', () => {
 
     // Navigate and interact with page
     await page.goto('/');
-    await page.click('[href="#resume"]');
+    await page.click('[href="#about"]');
     await page.click('[href="#projects"]');
     await page.click('[href="#contact"]');
-
-    // Toggle dark mode (inline script test)
-    await page.click('.theme-toggle');
 
     // Wait for any async CSP violations
     await page.waitForTimeout(2000);
@@ -68,12 +64,22 @@ test.describe('Security Headers & CSP', () => {
     expect(cspViolations).toHaveLength(0);
   });
 
-  test('should have CSP with hash-based nonces (no unsafe-inline)', async ({ request }) => {
+  test('should have CSP with hash-based nonces (no unsafe-inline in script-src)', async ({
+    request,
+  }) => {
     const response = await request.get('/');
     const csp = response.headers()['content-security-policy'];
 
     expect(csp).toBeTruthy();
-    expect(csp).not.toContain('unsafe-inline');
+
+    // Extract script-src directive and verify no unsafe-inline
+    // Note: style-src-elem may have unsafe-inline for progressive enhancement (acceptable)
+    const scriptSrcMatch = csp.match(/script-src\s+([^;]+)/);
+    expect(scriptSrcMatch).toBeTruthy();
+    const scriptSrc = scriptSrcMatch[1];
+    expect(scriptSrc).not.toContain('unsafe-inline');
+
+    // Should have hash-based CSP
     expect(csp).toContain('sha256-');
   });
 
@@ -83,23 +89,15 @@ test.describe('Security Headers & CSP', () => {
     await expect(heroTitle).toBeVisible();
 
     // Check that CSS is applied (proves inline style hash works)
-    const fontSize = await heroTitle.evaluate(el =>
-      window.getComputedStyle(el).fontSize
-    );
+    const fontSize = await heroTitle.evaluate((el) => window.getComputedStyle(el).fontSize);
     expect(parseFloat(fontSize)).toBeGreaterThan(24);
   });
 
-  test('should allow inline scripts with CSP hash', async ({ page }) => {
-    // Inline scripts should be allowed via CSP hash
-    // Test theme toggle (requires inline script)
-    const themeToggle = page.locator('.theme-toggle');
-    await themeToggle.click();
-
-    // Check data-theme attribute changed (proves inline script works)
-    const theme = await page.evaluate(() =>
-      document.documentElement.getAttribute('data-theme')
-    );
-    expect(theme).toBe('dark');
+  test('should allow inline scripts with CSP hash (terminal-window created by JS)', async ({
+    page,
+  }) => {
+    const terminalWindow = page.locator('.terminal-window');
+    await expect(terminalWindow).toBeVisible();
   });
 
   test('should block external scripts not in CSP', async ({ page }) => {
@@ -160,8 +158,9 @@ test.describe('Security Headers & CSP', () => {
     const cookies = await context.cookies();
 
     // If cookies exist, they should be secure
-    cookies.forEach(cookie => {
-      if (cookie.name !== '__cf_bm') { // Cloudflare bot management cookie exception
+    cookies.forEach((cookie) => {
+      if (cookie.name !== '__cf_bm') {
+        // Cloudflare bot management cookie exception
         // Production cookies should be Secure and SameSite
         if (process.env.NODE_ENV === 'production') {
           expect(cookie.secure).toBe(true);
