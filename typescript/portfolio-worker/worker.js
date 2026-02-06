@@ -1,5 +1,5 @@
 // Cloudflare Worker - Auto-generated (IMPROVED VERSION)
-// Generated: 2026-02-06T12:32:21.076Z
+// Generated: 2026-02-06T12:52:48.386Z
 // Features: Template caching, JSDoc types, link helper, constants, rate limiting
 
 const INDEX_HTML = `<!doctype html><html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>이재철 - Infrastructure Engineer</title><meta name="description" content="이재철 - 인프라 엔지니어 | 금융·공공 분야 보안 인프라 및 관측성 설계·운영"><meta name="keywords" content="Infrastructure, Observability, Grafana, Prometheus, Loki, Splunk, 자동화, 인프라, 이재철"><meta name="author" content="이재철 (Jaecheol Lee)"><meta name="robots" content="index, follow"><meta name="google-site-verification" content="2a5f8c3b7d4e9a1f6c2b5e8d1a4f7c0b9e3d6a9f2c5"><script async src="https://www.googletagmanager.com/gtag/js?id=G-P9E8XY5K2L"></script><script>function gtag(){dataLayer.push(arguments)}window.dataLayer=window.dataLayer||[],gtag("js",new Date),gtag("config","G-P9E8XY5K2L",{page_path:window.location.pathname,language:"ko"})</script><link rel="canonical" href="https://resume.jclee.me"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="alternate" hreflang="ko-KR" href="https://resume.jclee.me"><link rel="alternate" hreflang="en-US" href="https://resume.jclee.me/en/"><link rel="alternate" hreflang="x-default" href="https://resume.jclee.me"><meta property="og:type" content="profile"><meta property="og:url" content="https://resume.jclee.me"><meta property="og:title" content="이재철 - Infrastructure Engineer"><meta property="og:description" content="인프라 엔지니어 | 금융·공공 분야 보안 인프라 및 관측성 설계·운영"><meta property="og:image" content="https://resume.jclee.me/og-image.webp"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:type" content="image/webp"><meta property="og:image:alt" content="Jaecheol Lee - Infrastructure Engineer Portfolio"><meta property="og:site_name" content="Jaecheol Lee Resume"><meta property="og:locale" content="ko_KR"><meta property="og:locale:alternate" content="en_US"><meta property="profile:first_name" content="Jaecheol"><meta property="profile:last_name" content="Lee"><meta property="profile:username" content="qws941"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:url" content="https://resume.jclee.me"><meta name="twitter:title" content="이재철 - Infrastructure Engineer"><meta name="twitter:description" content="인프라 엔지니어 | 금융·공공 분야 보안 인프라 및 관측성 설계·운영"><meta name="twitter:image" content="https://resume.jclee.me/og-image.webp"><meta name="twitter:creator" content="@qws941"><meta name="twitter:site" content="@qws941"><script type="application/ld+json">{
@@ -570,9 +570,9 @@ const metrics = {
   "requests_error": 0,
   "response_time_sum": 0,
   "vitals_received": 0,
-  "worker_start_time": 1770381141076,
+  "worker_start_time": 1770382368386,
   "version": "1.0.128",
-  "deployed_at": "2026-02-06T12:32:21.076Z"
+  "deployed_at": "2026-02-06T12:52:48.386Z"
 };
 
 // Histogram bucket boundaries (Prometheus standard)
@@ -755,10 +755,49 @@ function buildEcsDocument(message, level, labels, job) {
 }
 
 // ES Logger module-level state (inlined from lib/es-logger.js)
+const DEFAULT_TIMEOUT_MS = 5000;
 const BATCH_SIZE = 10;
 const BATCH_FLUSH_MS = 1000;
 let logQueue = [];
 let flushTimer = null;
+
+async function flushLogs(env, index) {
+  if (logQueue.length === 0) return;
+
+  const logs = logQueue.splice(0, logQueue.length);
+  const esUrl = env?.ELASTICSEARCH_URL;
+  const apiKey = env?.ELASTICSEARCH_API_KEY;
+
+  if (!esUrl || !apiKey) return;
+
+  const bulkBody =
+    logs
+      .map((doc) => {
+        const action = JSON.stringify({ index: { _index: index } });
+        const document = JSON.stringify(doc);
+        return `${action}\n${document}`;
+      })
+      .join('\n') + '\n';
+
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), DEFAULT_TIMEOUT_MS);
+
+  try {
+    await fetch(`${esUrl}/_bulk`, {
+      method: 'POST',
+      signal: controller.signal,
+      headers: {
+        'Content-Type': 'application/x-ndjson',
+        Authorization: `ApiKey ${apiKey}`,
+      },
+      body: bulkBody,
+    });
+  } catch (err) {
+    // Silently fail in worker - no logger dependency
+  } finally {
+    clearTimeout(timeoutId);
+  }
+}
 
 async function logToElasticsearch(env, message, level = 'INFO', labels = {}, options = {}) {
   const job = 'resume-worker';
@@ -1150,7 +1189,7 @@ export default {
         const health = {
           status: 'healthy',
           version: '1.0.128',
-          deployed_at: '2026-02-06T12:32:21.076Z',
+          deployed_at: '2026-02-06T12:52:48.386Z',
           uptime_seconds: uptime,
           metrics: {
             requests_total: metrics.requests_total,

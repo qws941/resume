@@ -394,10 +394,49 @@ function buildEcsDocument(message, level, labels, job) {
 }
 
 // ES Logger module-level state (inlined from lib/es-logger.js)
+const DEFAULT_TIMEOUT_MS = 5000;
 const BATCH_SIZE = 10;
 const BATCH_FLUSH_MS = 1000;
 let logQueue = [];
 let flushTimer = null;
+
+async function flushLogs(env, index) {
+  if (logQueue.length === 0) return;
+
+  const logs = logQueue.splice(0, logQueue.length);
+  const esUrl = env?.ELASTICSEARCH_URL;
+  const apiKey = env?.ELASTICSEARCH_API_KEY;
+
+  if (!esUrl || !apiKey) return;
+
+  const bulkBody =
+    logs
+      .map((doc) => {
+        const action = JSON.stringify({ index: { _index: index } });
+        const document = JSON.stringify(doc);
+        return \`\${action}\\n\${document}\`;
+      })
+      .join('\\n') + '\\n';
+
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), DEFAULT_TIMEOUT_MS);
+
+  try {
+    await fetch(\`\${esUrl}/_bulk\`, {
+      method: 'POST',
+      signal: controller.signal,
+      headers: {
+        'Content-Type': 'application/x-ndjson',
+        Authorization: \`ApiKey \${apiKey}\`,
+      },
+      body: bulkBody,
+    });
+  } catch (err) {
+    // Silently fail in worker - no logger dependency
+  } finally {
+    clearTimeout(timeoutId);
+  }
+}
 
 ${esLoggerModule.logToElasticsearch.toString()}
 
