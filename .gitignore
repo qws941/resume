@@ -120,3 +120,4 @@ DOCUMENTATION_INDEX.md
 .wrangler/
 .google_oath2.json
 .venv/
+.tmp/
