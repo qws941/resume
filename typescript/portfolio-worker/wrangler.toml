@@ -1,5 +1,5 @@
 name = "resume"
-main = "worker.js"
+main = "entry.js"
 compatibility_date = "2024-10-03"
 account_id = "a8d9c67f586acdd15eebcc65ca3aa5bb"
 
@@ -16,7 +16,68 @@ routes = [
 [env.production.assets]
 directory = "./assets"
 binding = "ASSETS"
+
+# Portfolio D1 Database
 [[env.production.d1_databases]]
 binding = "DB"
 database_name = "resume-prod-db"
 database_id = "6c723024-2527-490d-8ffd-38604b923166"
+
+# Job Dashboard D1 Database
+[[env.production.d1_databases]]
+binding = "JOB_DB"
+database_name = "job-dashboard-db"
+database_id = "c858dda6-b752-4e12-b60c-2886e9483cc7"
+
+# Job Dashboard KV Namespaces
+[[env.production.kv_namespaces]]
+binding = "SESSIONS"
+id = "2b81b9b02dc34f518d2ca9552804bfef"
+
+[[env.production.kv_namespaces]]
+binding = "RATE_LIMIT_KV"
+id = "fe51b0f1c2c44841b4895e8747cb408a"
+
+[[env.production.kv_namespaces]]
+binding = "NONCE_KV"
+id = "3e282b1b906c474aadcc947a06f0c1ad"
+
+# Job Dashboard Workflows
+[[env.production.workflows]]
+name = "job-crawling-workflow"
+binding = "JOB_CRAWLING_WORKFLOW"
+class_name = "JobCrawlingWorkflow"
+
+[[env.production.workflows]]
+name = "application-workflow"
+binding = "APPLICATION_WORKFLOW"
+class_name = "ApplicationWorkflow"
+
+[[env.production.workflows]]
+name = "resume-sync-workflow"
+binding = "RESUME_SYNC_WORKFLOW"
+class_name = "ResumeSyncWorkflow"
+
+[[env.production.workflows]]
+name = "daily-report-workflow"
+binding = "DAILY_REPORT_WORKFLOW"
+class_name = "DailyReportWorkflow"
+
+[[env.production.workflows]]
+name = "health-check-workflow"
+binding = "HEALTH_CHECK_WORKFLOW"
+class_name = "HealthCheckWorkflow"
+
+[[env.production.workflows]]
+name = "backup-workflow"
+binding = "BACKUP_WORKFLOW"
+class_name = "BackupWorkflow"
+
+[[env.production.workflows]]
+name = "cleanup-workflow"
+binding = "CLEANUP_WORKFLOW"
+class_name = "CleanupWorkflow"
+
+# Job Dashboard Cron Triggers
+[env.production.triggers]
+crons = ["0 0 * * 1-5", "0 9 * * *", "*/5 * * * *", "0 3 * * *", "0 4 * * SUN"]
