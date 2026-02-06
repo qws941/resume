@@ -13,9 +13,13 @@ module.exports = defineConfig({
   reporter: 'html',
 
   use: {
-    baseURL: process.env.CI
-      ? 'http://localhost:8787'
-      : process.env.PLAYWRIGHT_BASE_URL || 'https://resume.jclee.me',
+    // When SKIP_WEBSERVER is set, use PLAYWRIGHT_BASE_URL (for testing against production)
+    // Otherwise in CI, use local server; locally use env var or production
+    baseURL: process.env.SKIP_WEBSERVER
+      ? process.env.PLAYWRIGHT_BASE_URL || 'https://resume.jclee.me'
+      : process.env.CI
+        ? 'http://localhost:8787'
+        : process.env.PLAYWRIGHT_BASE_URL || 'https://resume.jclee.me',
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
   },
