@@ -213,18 +213,32 @@
         </div>
         <div class="terminal-body">
           <header class="site-header">
-            <nav class="minimal-nav">
-              <a href="/" class="nav-logo">~/jclee</a>
+            <nav class="minimal-nav" role="navigation" aria-label="Main navigation">
+              <a href="/" class="nav-logo" aria-label="Homepage">~/jclee</a>
               <div class="nav-links">
-                <a href="#about">about</a>
-                <a href="#resume">exp</a>
-                <a href="#projects">projects</a>
-                <a href="#contact">contact</a>
+                <a href="#about" class="nav-link" data-i18n-aria="nav.about">about</a>
+                <a href="#resume" class="nav-link" data-i18n-aria="nav.experience">exp</a>
+                <a href="#projects" class="nav-link" data-i18n-aria="nav.projects">projects</a>
+                <a href="#contact" class="nav-link" data-i18n-aria="nav.contact">contact</a>
               </div>
+              <button class="theme-toggle" aria-pressed="false" aria-label="Toggle theme">
+                <svg
+                  aria-hidden="true"
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                >
+                  <path
+                    d="M12 3a9 9 0 109 9c0-.46-.04-.92-.1-1.36a5.389 5.389 0 01-4.4 2.26 5.403 5.403 0 01-3.14-9.8c-.44-.06-.9-.1-1.36-.1z"
+                  />
+                </svg>
+                <span class="sr-only">Toggle between light and dark mode</span>
+              </button>
             </nav>
           </header>
 
-          <main id="main-content">
+          <main id="main-content" role="main">
             <section id="hero" class="section-hero hero--terminal">
               <div class="hero-content">
                 <div class="cmd-line">
@@ -277,21 +291,37 @@
               </div>
             </section>
 
-            <section id="resume" class="section-resume reveal">
+            <section
+              id="resume"
+              class="section-resume reveal"
+              role="region"
+              aria-labelledby="resume-heading"
+            >
+              <h2 id="resume-heading" class="sr-only">Work Experience</h2>
               <div class="section-cmd">
                 <span class="section-cmd__command">cat experience.log</span>
               </div>
               <ul class="resume-list">
                 <!-- RESUME_CARDS_PLACEHOLDER -->
               </ul>
-              <div class="resume-download">
-                <a href="<!-- RESUME_PDF_URL -->" class="link-subtle" download
+              <div class="hero-download" role="group" aria-label="Resume download options">
+                <a
+                  href="<!-- RESUME_PDF_URL -->"
+                  class="link-subtle"
+                  download
+                  aria-label="View Full Resume as PDF (opens in new tab)"
                   >View Full Resume (PDF)</a
                 >
               </div>
             </section>
 
-            <section id="projects" class="section-projects reveal">
+            <section
+              id="projects"
+              class="section-projects reveal"
+              role="region"
+              aria-labelledby="projects-heading"
+            >
+              <h2 id="projects-heading" class="sr-only">Projects</h2>
               <div class="section-cmd">
                 <span class="section-cmd__command">ls -la ~/projects/</span>
               </div>
@@ -309,17 +339,23 @@
               </ul>
             </section>
 
-            <section id="contact" class="section-contact reveal">
+            <section
+              id="contact"
+              class="section-contact reveal"
+              role="region"
+              aria-labelledby="contact-heading"
+            >
+              <h2 id="contact-heading" class="sr-only">Contact</h2>
               <div class="section-cmd">
                 <span class="section-cmd__command">cat contact.txt</span>
               </div>
-              <div class="contact-links">
+              <div class="contact-grid" role="list">
                 <!-- CONTACT_GRID_PLACEHOLDER -->
               </div>
             </section>
           </main>
 
-          <footer class="site-footer">
+          <footer class="site-footer" role="contentinfo">
             <div class="footer-content">
               <span class="terminal-prompt" style="font-size: var(--text-sm)">logout</span>
               <span style="color: var(--text-muted); margin-left: 1rem">Connection closed.</span>
@@ -394,6 +430,36 @@
           }
         }
         requestAnimationFrame(animate);
+      })();
+
+      // Theme Toggle with aria-pressed support
+      (function () {
+        var toggle = document.querySelector('.theme-toggle');
+        if (!toggle) return;
+
+        function setTheme(dark) {
+          document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+          toggle.setAttribute('aria-pressed', dark ? 'true' : 'false');
+        }
+
+        // Initialize from localStorage or system preference
+        var stored = localStorage.getItem('theme');
+        var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        var isDark = stored ? stored === 'dark' : prefersDark;
+        setTheme(isDark);
+
+        toggle.addEventListener('click', function () {
+          var currentlyDark = document.documentElement.getAttribute('data-theme') === 'dark';
+          setTheme(!currentlyDark);
+          localStorage.setItem('theme', !currentlyDark ? 'dark' : 'light');
+        });
+
+        toggle.addEventListener('keydown', function (e) {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            toggle.click();
+          }
+        });
       })();
 
       (function () {
