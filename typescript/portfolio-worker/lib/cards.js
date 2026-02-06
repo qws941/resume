@@ -192,11 +192,9 @@ function generateInfrastructureCards() {
  */
 function generateContactGrid(contactData) {
   return `
-    <div class="footer-links">
-        <a href="${escapeHtml(contactData.github)}" target="_blank" rel="noopener noreferrer" aria-label="View GitHub profile">GitHub</a>
-        <a href="mailto:${escapeHtml(contactData.email)}" aria-label="Send email to qws941@kakao.com">Email</a>
-        <a href="${escapeHtml(contactData.website)}" target="_blank" rel="noopener noreferrer" aria-label="Visit portfolio website">Website</a>
-    </div>
+        <a href="${escapeHtml(contactData.github)}" target="_blank" rel="noopener noreferrer" class="contact-item" role="listitem" aria-label="View GitHub profile (opens in new tab)">GitHub</a>
+        <a href="mailto:${escapeHtml(contactData.email)}" class="contact-item" role="listitem" aria-label="Send email to ${escapeHtml(contactData.email)}">Email</a>
+        <a href="${escapeHtml(contactData.website)}" target="_blank" rel="noopener noreferrer" class="contact-item" role="listitem" aria-label="Visit portfolio website (opens in new tab)">Website</a>
   `;
 }
 
