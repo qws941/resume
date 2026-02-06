@@ -381,6 +381,18 @@ ${metricsModule.generateHistogramLines.toString()}
 
 ${metricsModule.generateMetrics.toString()}
 
+function buildEcsDocument(message, level, labels, job) {
+  const now = new Date();
+  return {
+    '@timestamp': now.toISOString(),
+    message,
+    log: { level: level.toLowerCase() },
+    service: { name: job },
+    ecs: { version: '8.11' },
+    ...labels,
+  };
+}
+
 ${esLoggerModule.logToElasticsearch.toString()}
 
 const ipCache = new Map();
