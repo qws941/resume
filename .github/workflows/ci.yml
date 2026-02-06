@@ -276,13 +276,12 @@ jobs:
       - name: Install Playwright browsers
         run: npx playwright install --with-deps chromium
 
-      - name: Build portfolio for E2E
-        run: npm run build --workspace=typescript/portfolio-worker
-
-      - name: Run E2E tests
+      - name: Run E2E tests against production
         run: npm run test:e2e
         env:
           CI: true
+          SKIP_WEBSERVER: true
+          PLAYWRIGHT_BASE_URL: https://resume.jclee.me
 
       - name: Upload Playwright report
         if: always()
