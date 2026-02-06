@@ -265,6 +265,147 @@
 }
 
 /* --------------------------------------------------------------------------
+   CRT Flicker Effect
+   -------------------------------------------------------------------------- */
+@keyframes crt-flicker {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  3% {
+    opacity: 0.97;
+  }
+  6% {
+    opacity: 1;
+  }
+  9% {
+    opacity: 0.98;
+  }
+  12% {
+    opacity: 1;
+  }
+  92% {
+    opacity: 1;
+  }
+  94% {
+    opacity: 0.96;
+  }
+  96% {
+    opacity: 1;
+  }
+}
+
+.crt-flicker {
+  animation: crt-flicker 8s infinite;
+}
+
+/* --------------------------------------------------------------------------
+   Hover Glow Pulse
+   -------------------------------------------------------------------------- */
+@keyframes hover-glow-pulse {
+  0%,
+  100% {
+    box-shadow:
+      0 0 5px rgba(0, 240, 255, 0.3),
+      0 0 10px rgba(0, 240, 255, 0.2);
+  }
+  50% {
+    box-shadow:
+      0 0 15px rgba(0, 240, 255, 0.5),
+      0 0 30px rgba(0, 240, 255, 0.3);
+  }
+}
+
+.hover-glow:hover {
+  animation: hover-glow-pulse 1.5s ease-in-out infinite;
+}
+
+/* --------------------------------------------------------------------------
+   Text Shimmer Effect
+   -------------------------------------------------------------------------- */
+@keyframes text-shimmer {
+  0% {
+    background-position: -200% center;
+  }
+  100% {
+    background-position: 200% center;
+  }
+}
+
+.text-shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--cyber-cyan) 0%,
+    var(--cyber-magenta) 25%,
+    var(--cyber-cyan) 50%,
+    var(--cyber-magenta) 75%,
+    var(--cyber-cyan) 100%
+  );
+  background-size: 200% auto;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: text-shimmer 3s linear infinite;
+}
+
+/* --------------------------------------------------------------------------
+   Neon Border Glow
+   -------------------------------------------------------------------------- */
+@keyframes neon-border-pulse {
+  0%,
+  100% {
+    border-color: rgba(0, 240, 255, 0.3);
+    box-shadow: 0 0 5px rgba(0, 240, 255, 0.2);
+  }
+  50% {
+    border-color: rgba(0, 240, 255, 0.6);
+    box-shadow: 0 0 20px rgba(0, 240, 255, 0.4);
+  }
+}
+
+.neon-border-glow {
+  animation: neon-border-pulse 2s ease-in-out infinite;
+}
+
+/* --------------------------------------------------------------------------
+   Chromatic Aberration
+   -------------------------------------------------------------------------- */
+@keyframes chromatic-shift {
+  0%,
+  100% {
+    text-shadow:
+      -1px 0 rgba(255, 0, 255, 0),
+      1px 0 rgba(0, 240, 255, 0);
+  }
+  50% {
+    text-shadow:
+      -2px 0 rgba(255, 0, 255, 0.5),
+      2px 0 rgba(0, 240, 255, 0.5);
+  }
+}
+
+.chromatic-text:hover {
+  animation: chromatic-shift 0.3s ease-in-out;
+}
+
+/* --------------------------------------------------------------------------
+   Float Animation
+   -------------------------------------------------------------------------- */
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+.float-animation {
+  animation: float 3s ease-in-out infinite;
+}
+
+/* --------------------------------------------------------------------------
    Reduced Motion
    -------------------------------------------------------------------------- */
 @media (prefers-reduced-motion: reduce) {
@@ -276,7 +417,13 @@
   .cmd-cursor,
   .reveal,
   .reveal-stagger > *,
-  .pulse-glow {
+  .pulse-glow,
+  .crt-flicker,
+  .hover-glow:hover,
+  .text-shimmer,
+  .neon-border-glow,
+  .chromatic-text:hover,
+  .float-animation {
     animation: none !important;
     transition: none !important;
   }

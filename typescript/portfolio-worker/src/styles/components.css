@@ -6,13 +6,29 @@
    TERMINAL WINDOW FRAME
    ======================================== */
 .terminal-window {
-  background: var(--bg-primary);
+  background: var(--glass-bg, var(--bg-primary));
   border: 1px solid rgba(0, 240, 255, 0.3);
   border-radius: 8px;
   overflow: hidden;
   box-shadow:
-    0 0 40px rgba(0, 240, 255, 0.1),
-    0 0 80px rgba(0, 240, 255, 0.05);
+    0 0 40px rgba(0, 240, 255, 0.15),
+    0 0 80px rgba(0, 240, 255, 0.08),
+    0 25px 50px -12px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  backdrop-filter: var(--glass-blur, blur(12px));
+  -webkit-backdrop-filter: var(--glass-blur, blur(12px));
+  transition:
+    box-shadow 0.3s ease,
+    border-color 0.3s ease;
+}
+
+.terminal-window:hover {
+  border-color: rgba(0, 240, 255, 0.5);
+  box-shadow:
+    0 0 60px rgba(0, 240, 255, 0.2),
+    0 0 100px rgba(0, 240, 255, 0.1),
+    0 25px 50px -12px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
 .terminal-titlebar {
@@ -237,17 +253,48 @@
    CARDS - Terminal Style
    ======================================== */
 .card {
-  background: var(--bg-card);
+  background: var(--glass-bg, var(--bg-card));
   border: 1px solid rgba(0, 240, 255, 0.15);
   border-radius: 4px;
   padding: var(--space-4);
-  transition: all 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   font-family: var(--font-mono);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  position: relative;
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 4px;
+  padding: 1px;
+  background: linear-gradient(135deg, rgba(0, 240, 255, 0.2), transparent, rgba(255, 0, 255, 0.2));
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
 }
 
 .card:hover {
-  box-shadow: 0 0 15px rgba(0, 240, 255, 0.2);
+  transform: translateY(-2px);
+  box-shadow:
+    0 0 20px rgba(0, 240, 255, 0.25),
+    0 0 40px rgba(0, 240, 255, 0.1),
+    0 10px 30px -10px rgba(0, 0, 0, 0.5);
   border-color: var(--cyber-cyan);
+}
+
+.card:hover::before {
+  opacity: 1;
 }
 
 .card--terminal {
@@ -627,15 +674,37 @@
   padding: 0.5rem 1rem;
   font-family: var(--font-mono);
   font-size: var(--text-sm);
-  transition: all 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   cursor: pointer;
   display: inline-block;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn--neon::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--cyber-cyan);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: -1;
 }
 
 .btn--neon:hover {
-  background: var(--cyber-cyan);
   color: var(--bg-primary);
-  box-shadow: var(--glow-cyan);
+  box-shadow:
+    0 0 20px rgba(0, 240, 255, 0.5),
+    0 0 40px rgba(0, 240, 255, 0.3);
+  transform: translateY(-1px);
+}
+
+.btn--neon:hover::before {
+  opacity: 1;
+}
+
+.btn--neon:active {
+  transform: translateY(0);
 }
 
 /* ========================================

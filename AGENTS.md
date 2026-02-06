@@ -1,7 +1,7 @@
 # PROJECT KNOWLEDGE BASE
 
-**Generated:** 2026-02-05
-**Commit:** 3d9015d
+**Generated:** 2026-02-06
+**Commit:** 5914187
 **Branch:** master
 **Build System:** Bazel + npm (Google3-style hybrid)
 
@@ -148,17 +148,29 @@ Dashboard Worker: workers/src/index.js → Cloudflare Worker
 
 ## CI/CD PIPELINE
 
-**Manual Deployment (Primary):**
+**GitHub Actions** (`.github/workflows/ci.yml`):
+
+| Trigger                    | Action                                           |
+| -------------------------- | ------------------------------------------------ |
+| Push to `master`/`develop` | Build → Test → Deploy (production/staging)       |
+| PR to `master`             | Build → Test → Preview comments                  |
+| `workflow_dispatch`        | Manual deploy (portfolio, job-dashboard, or all) |
+
+**Deployed Targets:**
+
+- `portfolio-worker` → resume.jclee.me
+- `job-automation/workers` → job.jclee.me
+
+**Required Secrets:** `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`, `AUTH_SYNC_SECRET`, `ENCRYPTION_KEY`
+
+**Manual Deployment (Fallback):**
 
 ```bash
-# Deploy portfolio worker
 source ~/.env && cd typescript/portfolio-worker && \
   CLOUDFLARE_API_KEY="$CLOUDFLARE_API_KEY" \
   CLOUDFLARE_EMAIL="$CLOUDFLARE_EMAIL" \
   npx wrangler deploy --env production
 ```
-
-**Historical Note:** GitHub Actions configuration was removed. Some docs may reference old pipeline stages.
 
 ## TESTING
 
