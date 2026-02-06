@@ -393,6 +393,12 @@ function buildEcsDocument(message, level, labels, job) {
   };
 }
 
+// ES Logger module-level state (inlined from lib/es-logger.js)
+const BATCH_SIZE = 10;
+const BATCH_FLUSH_MS = 1000;
+let logQueue = [];
+let flushTimer = null;
+
 ${esLoggerModule.logToElasticsearch.toString()}
 
 const ipCache = new Map();
