@@ -15,12 +15,10 @@ test.describe('Progressive Web App (PWA)', () => {
   test('should have PWA meta tags', async ({ page }) => {
     // Theme color
     const themeColor = page.locator('meta[name="theme-color"]');
-    await expect(themeColor).toHaveAttribute('content', '#2563eb');
+    await expect(themeColor).toHaveAttribute('content', '#0c0c12');
 
     // Apple mobile web app
-    const appleCapable = page.locator(
-      'meta[name="apple-mobile-web-app-capable"]',
-    );
+    const appleCapable = page.locator('meta[name="apple-mobile-web-app-capable"]');
     await expect(appleCapable).toHaveAttribute('content', 'yes');
 
     const appleTitle = page.locator('meta[name="apple-mobile-web-app-title"]');
@@ -40,7 +38,7 @@ test.describe('Progressive Web App (PWA)', () => {
     expect(manifest.short_name).toBeTruthy();
     expect(manifest.start_url).toBe('/');
     expect(manifest.display).toBe('standalone');
-    expect(manifest.theme_color).toBe('#2563eb');
+    expect(manifest.theme_color).toBe('#0c0c12');
     expect(manifest.background_color).toBe('#0f0f23');
 
     // Check icons
@@ -108,9 +106,7 @@ test.describe('Progressive Web App (PWA)', () => {
           const regs = await navigator.serviceWorker.getRegistrations();
           if (regs.length > 0) {
             // Check if any registration has an active or installing worker
-            const hasWorker = regs.some(
-              (reg) => reg.active || reg.installing || reg.waiting,
-            );
+            const hasWorker = regs.some((reg) => reg.active || reg.installing || reg.waiting);
             if (hasWorker) {
               return {
                 registered: true,
@@ -151,10 +147,8 @@ test.describe('Progressive Web App (PWA)', () => {
       console.log(
         '  Console:',
         consoleMessages.filter(
-          (m) =>
-            m.text.toLowerCase().includes('service') ||
-            m.text.toLowerCase().includes('worker'),
-        ),
+          (m) => m.text.toLowerCase().includes('service') || m.text.toLowerCase().includes('worker')
+        )
       );
     }
 
@@ -163,9 +157,7 @@ test.describe('Progressive Web App (PWA)', () => {
     expect(result.registered).toBeTruthy();
   });
 
-  test.skip('should have Service Worker registration script', async ({
-    page,
-  }) => {
+  test.skip('should have Service Worker registration script', async ({ page }) => {
     // SKIP: Service Worker/PWA not yet implemented - see GitHub issue #42
     const pageContent = await page.content();
 
@@ -192,9 +184,7 @@ test.describe('Progressive Web App (PWA)', () => {
     expect(shortcutNames).toContain('Contact');
   });
 
-  test('manifest should have correct language settings', async ({
-    request,
-  }) => {
+  test('manifest should have correct language settings', async ({ request }) => {
     const response = await request.get('/manifest.json');
     const manifest = await response.json();
 
@@ -216,9 +206,7 @@ test.describe('Progressive Web App (PWA)', () => {
     expect(iconSizes).toContain('512x512');
   });
 
-  test('Service Worker should have Service-Worker-Allowed header', async ({
-    request,
-  }) => {
+  test('Service Worker should have Service-Worker-Allowed header', async ({ request }) => {
     const response = await request.get('/sw.js');
 
     const swAllowed = response.headers()['service-worker-allowed'];

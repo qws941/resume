@@ -121,6 +121,9 @@
 
     <link rel="manifest" href="/manifest.json" />
     <meta name="theme-color" content="#0c0c12" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="JC Lee Resume" />
     <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg" />
     <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png" />
     <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png" />
@@ -248,10 +251,16 @@
               </div>
             </section>
 
-            <section id="resume" class="section-resume reveal">
+            <section
+              id="resume"
+              class="section-resume reveal"
+              role="region"
+              aria-labelledby="resume-heading"
+            >
               <div class="section-cmd">
                 <span class="section-cmd__command">cat experience.log</span>
               </div>
+              <h2 id="resume-heading" class="sr-only">Work Experience</h2>
               <ul class="resume-list">
                 <!-- RESUME_CARDS_PLACEHOLDER -->
               </ul>
@@ -262,10 +271,16 @@
               </div>
             </section>
 
-            <section id="projects" class="section-projects reveal">
+            <section
+              id="projects"
+              class="section-projects reveal"
+              role="region"
+              aria-labelledby="projects-heading"
+            >
               <div class="section-cmd">
                 <span class="section-cmd__command">ls -la ~/projects/</span>
               </div>
+              <h2 id="projects-heading" class="sr-only">Projects</h2>
               <ul class="project-list">
                 <!-- PROJECT_CARDS_PLACEHOLDER -->
               </ul>
@@ -280,10 +295,16 @@
               </ul>
             </section>
 
-            <section id="contact" class="section-contact reveal">
+            <section
+              id="contact"
+              class="section-contact reveal"
+              role="region"
+              aria-labelledby="contact-heading"
+            >
               <div class="section-cmd">
                 <span class="section-cmd__command">cat contact.txt</span>
               </div>
+              <h2 id="contact-heading" class="sr-only">Contact</h2>
               <div class="contact-links card">
                 <!-- CONTACT_GRID_PLACEHOLDER -->
               </div>
