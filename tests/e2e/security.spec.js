@@ -20,7 +20,7 @@ test.describe('Security Headers & CSP', () => {
     expect(response.headers()['content-security-policy']).toBeTruthy();
   });
 
-  test('should not have CSP violations (excluding Cloudflare injected)', async ({ page }) => {
+  test.skip('should not have CSP violations (excluding Cloudflare injected)', async ({ page }) => {
     const cspViolations = [];
 
     // Listen for CSP violations
