@@ -32,6 +32,7 @@ if [ -z "$CHANGED_FILES" ]; then
   "job_dashboard": false,
   "data": false,
   "infra": false,
+  "cli": false,
   "affected_targets_count": 0,
   "has_build_changes": false
 }
@@ -96,6 +97,7 @@ if ! command -v bazel &> /dev/null; then
     JOB_DASHBOARD=$(echo "$CHANGED_FILES" | grep -qE "^typescript/job-automation/" && echo "true" || echo "false")
     DATA=$(echo "$CHANGED_FILES" | grep -qE "^typescript/data/" && echo "true" || echo "false")
     INFRA=$(echo "$CHANGED_FILES" | grep -qE "^infrastructure/" && echo "true" || echo "false")
+    CLI=$(echo "$CHANGED_FILES" | grep -qE "^typescript/cli/" && echo "true" || echo "false")
     AFFECTED_COUNT=$(echo "$AFFECTED_PATHS" | tr ' ' '\n' | grep -v '^$' | sort -u | wc -l)
     
     cat > "$OUTPUT_DIR/affected_targets.json" <<EOF
@@ -106,6 +108,7 @@ if ! command -v bazel &> /dev/null; then
   "job_dashboard": $JOB_DASHBOARD,
   "data": $DATA,
   "infra": $INFRA,
+  "cli": $CLI,
   "affected_targets_count": $AFFECTED_COUNT,
   "has_build_changes": $([ -n "$BUILD_CHANGES" ] && echo "true" || echo "false")
 }
@@ -144,6 +147,7 @@ PORTFOLIO=$(echo "$CHANGED_FILES" | grep -qE "^typescript/portfolio-worker/|^typ
 JOB_DASHBOARD=$(echo "$CHANGED_FILES" | grep -qE "^typescript/job-automation/" && echo "true" || echo "false")
 DATA=$(echo "$CHANGED_FILES" | grep -qE "^typescript/data/" && echo "true" || echo "false")
 INFRA=$(echo "$CHANGED_FILES" | grep -qE "^infrastructure/" && echo "true" || echo "false")
+CLI=$(echo "$CHANGED_FILES" | grep -qE "^typescript/cli/" && echo "true" || echo "false")
 
 cat > "$OUTPUT_DIR/affected_targets.json" << EOF
 {
@@ -153,6 +157,7 @@ cat > "$OUTPUT_DIR/affected_targets.json" << EOF
   "job_dashboard": $JOB_DASHBOARD,
   "data": $DATA,
   "infra": $INFRA,
+  "cli": $CLI,
   "affected_targets_count": $(wc -l < "$OUTPUT_DIR/all_affected.txt" 2>/dev/null || echo 0),
   "has_build_changes": $([ -n "$BUILD_CHANGES" ] && echo "true" || echo "false"),
   "outputs": {

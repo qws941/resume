@@ -13,6 +13,9 @@
 name: Maintenance
 
 on:
+  schedule:
+    # Weekly drift detection: Monday 6:00 UTC (15:00 KST)
+    - cron: '0 6 * * 1'
   workflow_dispatch:
     inputs:
       job:
@@ -27,7 +30,7 @@ on:
           - all
 
 env:
-  NODE_VERSION: '20'
+  NODE_VERSION: '22'
 
 jobs:
   # ===========================================================================
@@ -54,7 +57,7 @@ jobs:
         env:
           AUTH_SYNC_SECRET: ${{ secrets.AUTH_SYNC_SECRET }}
           ENCRYPTION_KEY: ${{ secrets.ENCRYPTION_KEY }}
-          JOB_DASHBOARD_URL: 'https://job.jclee.me'
+          JOB_DASHBOARD_URL: 'https://resume.jclee.me/job'
         run: |
           echo "=== Refreshing Auth Sessions ==="
 
@@ -106,7 +109,7 @@ jobs:
       - name: Sync profile data
         env:
           ADMIN_TOKEN: ${{ secrets.ADMIN_TOKEN }}
-          JOB_DASHBOARD_URL: 'https://job.jclee.me'
+          JOB_DASHBOARD_URL: 'https://resume.jclee.me/job'
         run: |
           echo "=== Syncing Profile Data ==="
 
@@ -143,7 +146,7 @@ jobs:
   drift-detection:
     name: Infrastructure Drift Detection
     runs-on: ubuntu-latest
-    if: inputs.job == 'drift-detection' || inputs.job == 'all'
+    if: inputs.job == 'drift-detection' || inputs.job == 'all' || github.event_name == 'schedule'
     env:
       TF_VERSION: '1.6.0'
       TF_WORKING_DIR: 'infrastructure/cloudflare'

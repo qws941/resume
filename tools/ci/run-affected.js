@@ -47,24 +47,30 @@ function main() {
     return;
   }
 
-  const testTargets = fs.readFileSync(TEST_TARGETS_FILE, 'utf8').split('\n').filter(Boolean);
-
+  // Derive affected workspaces from JSON flags or test_targets.txt
   const affectedWorkspaces = new Set();
 
-  testTargets.forEach((target) => {
-    // Extract package part from target (e.g. //typescript/job-automation:test -> //typescript/job-automation)
-    const packagePath = target.split(':')[0];
-
-    if (TARGET_TO_WORKSPACE[packagePath]) {
-      affectedWorkspaces.add(TARGET_TO_WORKSPACE[packagePath]);
-    } else {
-      // Try to find matching workspace by path prefix
-      const workspace = Object.values(TARGET_TO_WORKSPACE).find(
-        (ws) => packagePath.includes(ws) || (packagePath === '//tools' && ws === 'typescript/cli') // Map tools changes to CLI for now?
-      );
-      if (workspace) affectedWorkspaces.add(workspace);
-    }
-  });
+  if (fs.existsSync(TEST_TARGETS_FILE)) {
+    // Bazel mode: parse test targets file
+    const testTargets = fs.readFileSync(TEST_TARGETS_FILE, 'utf8').split('\n').filter(Boolean);
+    testTargets.forEach((target) => {
+      const packagePath = target.split(':')[0];
+      if (TARGET_TO_WORKSPACE[packagePath]) {
+        affectedWorkspaces.add(TARGET_TO_WORKSPACE[packagePath]);
+      } else {
+        const workspace = Object.values(TARGET_TO_WORKSPACE).find(
+          (ws) => packagePath.includes(ws) || (packagePath === '//tools' && ws === 'typescript/cli')
+        );
+        if (workspace) affectedWorkspaces.add(workspace);
+      }
+    });
+  } else {
+    // Path-based mode: derive workspaces from JSON boolean flags
+    if (analysis.portfolio) affectedWorkspaces.add('typescript/portfolio-worker');
+    if (analysis.job_dashboard) affectedWorkspaces.add('typescript/job-automation');
+    if (analysis.data) affectedWorkspaces.add('typescript/data');
+    if (analysis.cli) affectedWorkspaces.add('typescript/cli');
+  }
 
   // Special handling for data changes affecting portfolio-worker
   // (affected.sh logic handles this via bazel query, so test_targets should already contain portfolio-worker if data changed)
