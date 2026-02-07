@@ -398,7 +398,7 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           workingDirectory: typescript/portfolio-worker
-          command: deploy
+          command: deploy --env production
 
   # ===========================================================================
   # STAGE: STAGING DEPLOY (develop branch only)
