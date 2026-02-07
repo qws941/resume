@@ -1,0 +1,6 @@
+# Gitleaks configuration - allowlist for documentation files containing example API keys
+[allowlist]
+  paths = [
+    '''docs/.*''',
+    '''README\.md'''
+  ]

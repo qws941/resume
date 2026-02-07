@@ -22,7 +22,7 @@ test.describe('Visual Regression Tests', () => {
       await page.goto('/');
       await page.waitForLoadState('domcontentloaded');
 
-      const heroSection = page.locator('.hero');
+      const heroSection = page.locator('.section-hero');
       await expect(heroSection).toHaveScreenshot('desktop-hero.png', {
         maxDiffPixelRatio: 0.05,
       });
@@ -80,7 +80,7 @@ test.describe('Visual Regression Tests', () => {
       await page.goto('/');
       await page.waitForLoadState('domcontentloaded');
 
-      const heroSection = page.locator('.hero');
+      const heroSection = page.locator('.section-hero');
       await expect(heroSection).toHaveScreenshot('mobile-hero.png', {
         maxDiffPixelRatio: 0.05,
       });
@@ -90,7 +90,7 @@ test.describe('Visual Regression Tests', () => {
       await page.goto('/');
       await page.waitForLoadState('domcontentloaded');
 
-      const firstProjectCard = page.locator('.project-card').first();
+      const firstProjectCard = page.locator('.project-item').first();
       await expect(firstProjectCard).toHaveScreenshot('mobile-project-card.png', {
         maxDiffPixelRatio: 0.05,
       });
@@ -157,7 +157,7 @@ test.describe('Visual Regression Tests', () => {
       await page.goto('/');
       await page.waitForLoadState('domcontentloaded');
 
-      const projectCard = page.locator('.project-card').first();
+      const projectCard = page.locator('.project-item').first();
       await expect(projectCard).toHaveScreenshot('project-card.png', {
         maxDiffPixelRatio: 0.05,
       });

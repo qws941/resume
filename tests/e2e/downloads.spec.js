@@ -20,11 +20,11 @@ test.describe('Download Functionality', () => {
   test.describe('Resume Download Links', () => {
     test('should have main resume download buttons', async ({ page }) => {
       // Wait for download links to be rendered before checking
-      await page.waitForSelector('a[aria-label*="Download resume in PDF format"]');
+      await page.waitForSelector('a[aria-label*="Resume"][aria-label*="PDF"]');
 
       // Check for PDF download link in hero section (DOCX/MD removed)
       const pdfLink = page.getByRole('link', {
-        name: /download.*pdf.*format/i,
+        name: /resume.*pdf/i,
       });
 
       await expect(pdfLink).toBeVisible();
@@ -52,7 +52,8 @@ test.describe('Download Functionality', () => {
     });
   });
 
-  test.describe('Resume Cards Download Links', () => {
+  // Resume cards section removed in redesign - tests skipped
+  test.describe.skip('Resume Cards Download Links', () => {
     test('should have Nextrade complete PDF download', async ({ page }) => {
       // Highlighted card should have "Complete PDF" link
       const nextradeCard = page.locator('.doc-card-highlight');
@@ -117,7 +118,8 @@ test.describe('Download Functionality', () => {
     });
   });
 
-  test.describe('Download Link Accessibility', () => {
+  // Doc-links section removed in redesign - tests skipped
+  test.describe.skip('Download Link Accessibility', () => {
     test('should have role="group" on download link containers', async ({ page }) => {
       const downloadGroups = page
         .locator('[role="group"]')
