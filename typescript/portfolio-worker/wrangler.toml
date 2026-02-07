@@ -1,7 +1,7 @@
 name = "resume"
 main = "entry.js"
 compatibility_date = "2024-10-03"
-account_id = "a8d9c67f586acdd15eebcc65ca3aa5bb"
+# account_id sourced from CLOUDFLARE_ACCOUNT_ID env var or wrangler-action accountId
 
 [assets]
 directory = "./assets"
