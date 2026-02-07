@@ -115,6 +115,9 @@ jobs:
           echo "  - Data: $DATA"
           echo "  - Infrastructure: $INFRA"
 
+      - name: Ensure artifact directory exists
+        run: mkdir -p .affected && touch .affected/.keep
+
       - name: Upload affected analysis
         uses: actions/upload-artifact@v4
         with:
@@ -161,7 +164,7 @@ jobs:
 
           # Quality gate: Zero-tolerance ratchet (auto-set to current baseline)
           # To update: run ESLint locally, count warnings, update this number
-          ESLINT_WARNING_BASELINE=152
+          ESLINT_WARNING_BASELINE=138
           if [ "${WARNINGS:-0}" -gt "$ESLINT_WARNING_BASELINE" ]; then
             echo "❌ ESLint warnings increased (${WARNINGS} > ${ESLINT_WARNING_BASELINE}) - fix new warnings before merging"
             exit 1
@@ -546,7 +549,7 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           workingDirectory: typescript/portfolio-worker
-          command: rollback --message "Auto-rollback triggered by failed verification in run ${{ github.run_id }}"
+          command: rollback --env production --message "Auto-rollback triggered by failed verification in run ${{ github.run_id }}"
 
       - name: Notify rollback
         if: ${{ env.N8N_WEBHOOK_URL != '' }}

@@ -48,6 +48,7 @@ module.exports = [
       // Dependencies
       'node_modules/**',
       'wanted-mcp/node_modules/**',
+      'eslint-results.txt',
 
       // Build outputs
       'typescript/portfolio-worker/worker.js', // Generated file (NEVER EDIT)
@@ -67,15 +68,15 @@ module.exports = [
       'npm-debug.log*',
 
       // Temporary files
-      '.tmp/**',
-      'tmp/**',
+      '**/.tmp/**',
+      '**/tmp/**',
 
       // Legacy/archive
       'resumes/archive/**',
 
       // Wrangler
-      '.wrangler/**',
-      'web/.wrangler/**',
+      '**/.wrangler/**',
+      '**/web/.wrangler/**',
 
       // Test artifacts
       'playwright-report/**',
