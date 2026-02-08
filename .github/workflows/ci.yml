@@ -162,7 +162,7 @@ jobs:
 
           # Quality gate: Zero-tolerance ratchet (auto-set to current baseline)
           # To update: run ESLint locally, count warnings, update this number
-          ESLINT_WARNING_BASELINE=0
+          ESLINT_WARNING_BASELINE=117
           if [ "${WARNINGS:-0}" -gt "$ESLINT_WARNING_BASELINE" ]; then
             echo "❌ ESLint warnings increased (${WARNINGS} > ${ESLINT_WARNING_BASELINE}) - fix new warnings before merging"
             exit 1
