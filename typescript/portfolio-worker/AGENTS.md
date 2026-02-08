@@ -1,7 +1,7 @@
 # PORTFOLIO WORKER KNOWLEDGE BASE
 
-**Generated:** 2026-02-05
-**Commit:** d25808a
+**Generated:** 2026-02-08
+**Commit:** 5e25b78
 **Branch:** master
 
 ## OVERVIEW
@@ -23,9 +23,14 @@ portfolio-worker/
 │   ├── ab-testing.js        # Feature flag experiments
 │   └── templates.js         # HTML generation helpers
 ├── src/
-│   ├── job/             # Job dashboard integration (routes from /job/*)
-│   │   ├── styles.js    # Dashboard styles (DUPLICATED from workers/)
-│   │   └── resume-sync.js # Resume sync (DUPLICATED from workers/)
+│   ├── job/             # ⚠️ FULL MINI-APP (DUPLICATED from workers/)
+│   │   ├── index.js         # Job dashboard entry, router.js
+│   │   ├── handlers/        # 13 route handlers (auth, auto-apply, webhooks...)
+│   │   ├── middleware/       # cors, csrf, rate-limit
+│   │   ├── services/        # 6 services (auth, slack, wanted-client...)
+│   │   ├── utils/            # crypto, es-logger, validators
+│   │   ├── views/            # dashboard.js, scripts.js, styles.js
+│   │   └── workflows/        # 8 workflows (mirror of workers/src/workflows/)
 │   └── styles/          # Modular CSS (8 files)
 │       ├── animations.css   # Typing effects, glitch, fade
 │       ├── base.css         # Root variables, reset
@@ -103,6 +108,8 @@ Commands defined in `index.html` within `terminalCommands` object.
 - **Mobile-First**: Use responsive.css for breakpoints.
 
 ## ANTI-PATTERNS
+
+> **⚠️ CRITICAL DUPLICATION**: `src/job/` is a near-complete mirror of `typescript/job-automation/workers/src/`. 37 files duplicated across handlers, middleware, services, utils, views, and workflows. Edit the **workers/** source, then sync to portfolio `src/job/`. Never edit `src/job/` directly.
 
 | Anti-Pattern                 | Why                        | Do Instead                             |
 | ---------------------------- | -------------------------- | -------------------------------------- |

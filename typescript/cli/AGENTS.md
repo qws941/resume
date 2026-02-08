@@ -1,7 +1,7 @@
 # PROJECT KNOWLEDGE BASE: CLI
 
 **Generated:** 2026-02-08
-**Commit:** d25808a
+**Commit:** 5e25b78
 **Branch:** master
 
 ## OVERVIEW

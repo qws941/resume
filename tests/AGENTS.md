@@ -2,7 +2,7 @@
 
 **Reason:** Shared test suite
 **Generated:** 2026-02-08
-**Commit:** d25808a
+**Commit:** 5e25b78
 
 ## OVERVIEW
 
@@ -65,6 +65,7 @@ await page.goto('/', { waitUntil: 'domcontentloaded' });
 - **Global Pollution**: Integration tests must be idempotent and cleanup state.
 - **Blind Snapshots**: Verify diffs in UI mode before updating baselines.
 - **Side Effects**: Tests should not modify production data without explicit intent.
+- **Using `describe.skip` for Env-Dependent Tests**: Use runtime `test.skip()` with condition check instead (e.g., Sentry tests skip when `SENTRY_DSN` is unset).
 
 ## COMMANDS
 
