@@ -2,12 +2,7 @@ import { chromium } from 'playwright';
 import { readFileSync, existsSync } from 'fs';
 import { join } from 'path';
 import { homedir } from 'os';
-
-const PROJECT_ROOT = join(homedir(), 'dev/resume');
-const RESUME_DATA_PATH = join(
-  PROJECT_ROOT,
-  'typescript/data/resumes/master/resume_data.json',
-);
+import { getResumeMasterDataPath } from '../../src/shared/utils/paths.js';
 const SESSION_PATH = join(homedir(), '.opencode/data/saramin-session.json');
 
 const SARAMIN_URLS = {
@@ -28,9 +23,9 @@ function parseCookieString(cookieString, domain = '.saramin.co.kr') {
 
   return cookieString
     .split(';')
-    .map(pair => pair.trim())
-    .filter(pair => pair && pair.includes('='))
-    .map(pair => {
+    .map((pair) => pair.trim())
+    .filter((pair) => pair && pair.includes('='))
+    .map((pair) => {
       const [name, ...valueParts] = pair.split('=');
       return {
         name: name.trim(),
@@ -65,7 +60,7 @@ export class SaraminProfileSync {
 
     if (existsSync(SESSION_PATH)) {
       const session = JSON.parse(readFileSync(SESSION_PATH, 'utf-8'));
-      
+
       // Handle both formats: array or string
       let cookiesToAdd = [];
       if (session.cookies) {
@@ -76,7 +71,7 @@ export class SaraminProfileSync {
           // String format (from auth-persistent.js) - parse it
           cookiesToAdd = parseCookieString(session.cookies);
         }
-        
+
         if (cookiesToAdd.length > 0) {
           await context.addCookies(cookiesToAdd);
           console.log(`✅ Loaded ${cookiesToAdd.length} cookies from session`);
@@ -127,10 +122,9 @@ export class SaraminProfileSync {
       waitUntil: 'load',
     });
 
-    const resumeLinks = await this.page.$$eval(
-      'a[href*="/zf_user/"], a[href*="resume"]',
-      (links) => links.map((l) => l.href),
-    ).catch(() => []);
+    const resumeLinks = await this.page
+      .$$eval('a[href*="/zf_user/"], a[href*="resume"]', (links) => links.map((l) => l.href))
+      .catch(() => []);
 
     if (resumeLinks.length === 0) {
       return { error: 'No resumes found. Please create one manually first.' };
@@ -183,21 +177,21 @@ export class SaraminProfileSync {
 
   async fillPersonalInfo(personal) {
     const nameInput = await this.page.$(
-      'input[name="name"], input[id*="name"], input[placeholder*="이름"]',
+      'input[name="name"], input[id*="name"], input[placeholder*="이름"]'
     );
     if (nameInput) {
       await nameInput.fill(personal.name);
     }
 
     const emailInput = await this.page.$(
-      'input[name="email"], input[type="email"], input[placeholder*="이메일"]',
+      'input[name="email"], input[type="email"], input[placeholder*="이메일"]'
     );
     if (emailInput) {
       await emailInput.fill(personal.email);
     }
 
     const phoneInput = await this.page.$(
-      'input[name="phone"], input[name="mobile"], input[placeholder*="핸드폰"]',
+      'input[name="phone"], input[name="mobile"], input[placeholder*="핸드폰"]'
     );
     if (phoneInput) {
       await phoneInput.fill(personal.phone);
@@ -205,14 +199,12 @@ export class SaraminProfileSync {
   }
 
   async fillCareers(careers) {
-    const careerSection = await this.page.$(
-      '[class*="career"], [id*="career"], [class*="경력"]',
-    );
+    const careerSection = await this.page.$('[class*="career"], [id*="career"], [class*="경력"]');
     if (!careerSection) return;
 
     for (const career of careers.slice(0, 5)) {
       const addBtn = await this.page.$(
-        'button:has-text("추가"), a:has-text("경력 추가"), button[class*="add"]',
+        'button:has-text("추가"), a:has-text("경력 추가"), button[class*="add"]'
       );
       if (addBtn) {
         await addBtn.click();
@@ -220,7 +212,7 @@ export class SaraminProfileSync {
       }
 
       const companyInputs = await this.page.$$(
-        'input[name*="company"], input[placeholder*="회사"], input[placeholder*="기업명"]',
+        'input[name*="company"], input[placeholder*="회사"], input[placeholder*="기업명"]'
       );
       const lastCompany = companyInputs[companyInputs.length - 1];
       if (lastCompany) {
@@ -228,7 +220,7 @@ export class SaraminProfileSync {
       }
 
       const positionInputs = await this.page.$$(
-        'input[name*="position"], input[placeholder*="직책"], input[placeholder*="직급"]',
+        'input[name*="position"], input[placeholder*="직책"], input[placeholder*="직급"]'
       );
       const lastPosition = positionInputs[positionInputs.length - 1];
       if (lastPosition) {
@@ -239,14 +231,14 @@ export class SaraminProfileSync {
 
   async fillEducation(education) {
     const schoolInput = await this.page.$(
-      'input[name*="school"], input[placeholder*="학교"], input[placeholder*="학교명"]',
+      'input[name*="school"], input[placeholder*="학교"], input[placeholder*="학교명"]'
     );
     if (schoolInput) {
       await schoolInput.fill(education.school);
     }
 
     const majorInput = await this.page.$(
-      'input[name*="major"], input[placeholder*="전공"], input[placeholder*="전공명"]',
+      'input[name*="major"], input[placeholder*="전공"], input[placeholder*="전공명"]'
     );
     if (majorInput) {
       await majorInput.fill(education.major);
@@ -256,7 +248,7 @@ export class SaraminProfileSync {
   async fillCertifications(certifications) {
     for (const cert of certifications.slice(0, 6)) {
       const addBtn = await this.page.$(
-        'button:has-text("추가"), a:has-text("자격증"), button[class*="add"]',
+        'button:has-text("추가"), a:has-text("자격증"), button[class*="add"]'
       );
       if (addBtn) {
         await addBtn.click();
@@ -264,7 +256,7 @@ export class SaraminProfileSync {
       }
 
       const certInputs = await this.page.$$(
-        'input[name*="cert"], input[placeholder*="자격증"], input[placeholder*="자격증명"]',
+        'input[name*="cert"], input[placeholder*="자격증"], input[placeholder*="자격증명"]'
       );
       const lastCert = certInputs[certInputs.length - 1];
       if (lastCert) {
@@ -275,7 +267,7 @@ export class SaraminProfileSync {
 
   async saveResume() {
     const saveBtn = await this.page.$(
-      'button:has-text("저장"), button[type="submit"], button[class*="save"]',
+      'button:has-text("저장"), button[type="submit"], button[class*="save"]'
     );
     if (saveBtn) {
       await saveBtn.click();
@@ -291,6 +283,7 @@ export class SaraminProfileSync {
 }
 
 export async function syncToSaramin(options = {}) {
+  const RESUME_DATA_PATH = getResumeMasterDataPath();
   if (!existsSync(RESUME_DATA_PATH)) {
     return { error: `Source not found: ${RESUME_DATA_PATH}` };
   }

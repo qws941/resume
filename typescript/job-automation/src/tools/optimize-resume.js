@@ -4,19 +4,16 @@
 
 import { readFile, writeFile, mkdir } from 'fs/promises';
 import { join, dirname } from 'path';
-import { fileURLToPath } from 'url';
 import getJobDetailTool from './get-job-detail.js';
 import { analyzeJobPosting } from '../shared/services/matching/ai-matcher.js';
 import { optimizeResume } from '../shared/services/resume/optimizer.js';
+import { getResumeMasterMarkdownPath, getOptimizedResumesDir } from '../shared/utils/paths.js';
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
-const ROOT_DIR = join(__dirname, '../../../');
-const MASTER_RESUME_PATH = join(ROOT_DIR, 'resumes/master/resume_master.md');
+const MASTER_RESUME_PATH = getResumeMasterMarkdownPath();
 
 export const optimizeResumeTool = {
   name: 'wanted_optimize_resume',
-  description:
-    'Generate a personalized resume optimized for a specific job posting on Wanted.',
+  description: 'Generate a personalized resume optimized for a specific job posting on Wanted.',
   inputSchema: {
     type: 'object',
     properties: {
@@ -66,7 +63,7 @@ export const optimizeResumeTool = {
 
       // Save the optimized resume
       const companyName = job.company.name.replace(/[^\w가-힣]/g, '_');
-      const outputDir = join(ROOT_DIR, 'resumes/companies', companyName);
+      const outputDir = join(getOptimizedResumesDir(), companyName);
       const filename = `resume_optimized_${params.job_id}.md`;
       const outputPath = params.output_path || join(outputDir, filename);
 

@@ -119,10 +119,7 @@ async function main() {
           log('❌ resume_id is required', 'red');
           process.exit(1);
         }
-        log(
-          `📥 Importing resume ${resumeId}${dryRun ? ' (dry run)' : ''}...`,
-          'blue',
-        );
+        log(`📥 Importing resume ${resumeId}${dryRun ? ' (dry run)' : ''}...`, 'blue');
         result = await resumeSyncTool.execute({
           action: 'import',
           resume_id: resumeId,
@@ -149,10 +146,7 @@ async function main() {
           log('❌ resume_id is required', 'red');
           process.exit(1);
         }
-        log(
-          `🔄 Syncing resume ${resumeId}${dryRun ? ' (dry run)' : ''}...`,
-          'blue',
-        );
+        log(`🔄 Syncing resume ${resumeId}${dryRun ? ' (dry run)' : ''}...`, 'blue');
         result = await resumeSyncTool.execute({
           action: 'sync',
           resume_id: resumeId,
@@ -183,10 +177,7 @@ async function main() {
           process.exit(1);
         }
         const section = command.split(':')[1];
-        log(
-          `🔄 Syncing ${section} for ${resumeId}${dryRun ? ' (dry run)' : ''}...`,
-          'blue',
-        );
+        log(`🔄 Syncing ${section} for ${resumeId}${dryRun ? ' (dry run)' : ''}...`, 'blue');
         result = await resumeSyncTool.execute({
           action: `sync_${section}`,
           resume_id: resumeId,
@@ -224,9 +215,7 @@ async function main() {
         log('📁 Resume files:', 'blue');
         try {
           const { readdirSync } = await import('fs');
-          const files = readdirSync(DATA_DIR).filter((f) =>
-            f.endsWith('.json'),
-          );
+          const files = readdirSync(DATA_DIR).filter((f) => f.endsWith('.json'));
           if (files.length === 0) {
             log('   No resume files found. Run export first.', 'dim');
           } else {

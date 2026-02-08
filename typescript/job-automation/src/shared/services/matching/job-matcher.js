@@ -1,6 +1,5 @@
 import { readFileSync, existsSync } from 'fs';
-import { join } from 'path';
-import { homedir } from 'os';
+import { getResumeMasterMarkdownPath } from '../../utils/paths.js';
 
 const SKILL_CATEGORIES = {
   security: {
@@ -65,29 +64,11 @@ const SKILL_CATEGORIES = {
     weight: 1.2,
   },
   automation: {
-    keywords: [
-      '자동화',
-      'automation',
-      'python',
-      'shell',
-      'bash',
-      'powershell',
-      'scripting',
-      'api',
-    ],
+    keywords: ['자동화', 'automation', 'python', 'shell', 'bash', 'powershell', 'scripting', 'api'],
     weight: 1.1,
   },
   ai_ml: {
-    keywords: [
-      'ai',
-      'ml',
-      'machine learning',
-      'claude',
-      'gpt',
-      'llm',
-      'mcp',
-      'langchain',
-    ],
+    keywords: ['ai', 'ml', 'machine learning', 'claude', 'gpt', 'llm', 'mcp', 'langchain'],
     weight: 1.4,
   },
   finance: {
@@ -107,12 +88,7 @@ const SKILL_CATEGORIES = {
 };
 
 export function loadResume(resumePath) {
-  const basePath =
-    process.env.RESUME_BASE_PATH || join(homedir(), 'dev/resume');
-  const defaultPath = join(
-    basePath,
-    'typescript/data/resumes/master/resume_master.md',
-  );
+  const defaultPath = getResumeMasterMarkdownPath();
   const path = resumePath || defaultPath;
 
   if (!existsSync(path)) {
@@ -186,10 +162,7 @@ export function calculateMatchScore(job, resumeSkills, resumeExperience) {
     }
 
     if (categoryMatches > 0) {
-      const categoryScore = Math.min(
-        categoryMatches * 5 * categoryConfig.weight,
-        15,
-      );
+      const categoryScore = Math.min(categoryMatches * 5 * categoryConfig.weight, 15);
       score += categoryScore;
     }
     maxScore += 15;
@@ -214,20 +187,12 @@ export function calculateMatchScore(job, resumeSkills, resumeExperience) {
   }
   maxScore += 10;
 
-  if (
-    jobText.includes('금융') ||
-    jobText.includes('finance') ||
-    jobText.includes('fintech')
-  ) {
+  if (jobText.includes('금융') || jobText.includes('finance') || jobText.includes('fintech')) {
     score += 5;
     matchDetails.bonusPoints.push('금융권 경험 매칭');
   }
 
-  if (
-    jobText.includes('ai') ||
-    jobText.includes('자동화') ||
-    jobText.includes('automation')
-  ) {
+  if (jobText.includes('ai') || jobText.includes('자동화') || jobText.includes('automation')) {
     score += 3;
     matchDetails.bonusPoints.push('AI/자동화 경험 매칭');
   }
@@ -261,12 +226,7 @@ export function calculateMatchScore(job, resumeSkills, resumeExperience) {
 }
 
 export function filterAndRankJobs(jobs, options = {}) {
-  const {
-    resumePath,
-    minScore = 50,
-    maxResults = 20,
-    excludeCompanies = [],
-  } = options;
+  const { resumePath, minScore = 50, maxResults = 20, excludeCompanies = [] } = options;
 
   const resumeText = loadResume(resumePath);
   const resumeSkills = extractSkills(resumeText);
@@ -275,9 +235,7 @@ export function filterAndRankJobs(jobs, options = {}) {
   const scoredJobs = jobs
     .filter(
       (job) =>
-        !excludeCompanies.some((c) =>
-          (job.company || '').toLowerCase().includes(c.toLowerCase()),
-        ),
+        !excludeCompanies.some((c) => (job.company || '').toLowerCase().includes(c.toLowerCase()))
     )
     .map((job) => {
       const match = calculateMatchScore(job, resumeSkills, resumeExperience);
@@ -297,10 +255,7 @@ export function filterAndRankJobs(jobs, options = {}) {
     resumeAnalysis: {
       experience: resumeExperience,
       skillCategories: Array.from(resumeSkills.keys()),
-      totalSkills: Array.from(resumeSkills.values()).reduce(
-        (sum, s) => sum + s.count,
-        0,
-      ),
+      totalSkills: Array.from(resumeSkills.values()).reduce((sum, s) => sum + s.count, 0),
     },
   };
 }
@@ -320,9 +275,7 @@ export function prioritizeApplications(scoredJobs) {
 
     if (job.due_date) {
       const dueDate = new Date(job.due_date);
-      const daysLeft = Math.ceil(
-        (dueDate - new Date()) / (1000 * 60 * 60 * 24),
-      );
+      const daysLeft = Math.ceil((dueDate - new Date()) / (1000 * 60 * 60 * 24));
       if (daysLeft <= 7 && daysLeft > 0) {
         priority = 'high';
         reason.push(`마감 ${daysLeft}일 남음`);
