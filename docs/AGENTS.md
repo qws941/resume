@@ -2,7 +2,9 @@
 
 > Parent: [../AGENTS.md](../AGENTS.md)
 
-**Generated:** 2026-02-03
+**Generated:** 2026-02-08
+**Commit:** d25808a
+**Branch:** master
 
 ## OVERVIEW
 
@@ -22,13 +24,15 @@ docs/
 
 ## WHERE TO LOOK
 
-| Task                 | Location               | Notes                     |
-| -------------------- | ---------------------- | ------------------------- |
-| **Deployment Guide** | `guides/deployment.md` | Full CI/CD pipeline docs  |
-| **Workflow Setup**   | `guides/workflow-*.md` | n8n, automation setup     |
-| **Architecture**     | `architecture/`        | ADRs, system design       |
-| **Figma Tokens**     | `figma-tokens.json`    | Design system tokens      |
-| **Analysis Reports** | `analysis/`            | Code complexity, coverage |
+| Task                 | Location                               | Notes                           |
+| -------------------- | -------------------------------------- | ------------------------------- |
+| **Deployment Guide** | `guides/deployment.md`                 | Full CI/CD pipeline docs        |
+| **Workflow Setup**   | `guides/workflow-*.md`                 | n8n, automation setup           |
+| **Architecture**     | `architecture/`                        | ADRs, system design             |
+| **Figma Tokens**     | `figma-tokens.json`                    | Design system tokens            |
+| **Analysis Reports** | `analysis/`                            | Code complexity, coverage       |
+| **Requirements**     | `*.requirements.md`                    | Feature specification docs      |
+| **CF Workflows**     | `cloudflare-workflows-requirements.md` | Workflow requirements checklist |
 
 ## CONVENTIONS
 

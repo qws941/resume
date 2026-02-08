@@ -1,7 +1,7 @@
 # TOOLS KNOWLEDGE BASE
 
-**Generated:** 2026-02-05
-**Commit:** 3d9015d
+**Generated:** 2026-02-08
+**Commit:** d25808a
 **Branch:** master
 
 ## OVERVIEW
@@ -44,6 +44,7 @@ tools/
 | `scripts/deployment/quick-deploy.sh`        | Atomic deploy with rollback          |
 | `scripts/utils/sync-resume-data.js`         | Propagate SSoT changes               |
 | `scripts/verification/verify-deployment.sh` | 7-point health check                 |
+| `ci/run-affected.js`                        | Bazel→npm target bridge              |
 
 ## BUILD SCRIPTS (scripts/build/)
 

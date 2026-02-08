@@ -462,16 +462,29 @@ jobs:
         run: |
           echo "=== Verifying Portfolio Deployment ==="
 
-          # Health check
-          HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" "${{ env.PORTFOLIO_URL }}/health")
-          if [ "$HTTP_CODE" != "200" ]; then
-            echo "❌ Health check failed: HTTP $HTTP_CODE"
-            exit 1
-          fi
-          echo "✅ Health check passed"
+          # Wait for Cloudflare edge propagation
+          echo "⏳ Waiting 15s for edge propagation..."
+          sleep 15
+
+          # Health check with retry (3 attempts, 10s between retries)
+          MAX_RETRIES=3
+          RETRY_DELAY=10
+          for i in $(seq 1 $MAX_RETRIES); do
+            HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" -A "resume-ci/1.0" "${{ env.PORTFOLIO_URL }}/health")
+            if [ "$HTTP_CODE" = "200" ]; then
+              echo "✅ Health check passed (attempt $i)"
+              break
+            fi
+            if [ "$i" -eq "$MAX_RETRIES" ]; then
+              echo "❌ Health check failed after $MAX_RETRIES attempts: HTTP $HTTP_CODE"
+              exit 1
+            fi
+            echo "⚠️ Health check returned HTTP $HTTP_CODE (attempt $i/$MAX_RETRIES), retrying in ${RETRY_DELAY}s..."
+            sleep $RETRY_DELAY
+          done
 
           # Content verification
-          CONTENT=$(curl -s "${{ env.PORTFOLIO_URL }}")
+          CONTENT=$(curl -s -A "resume-ci/1.0" "${{ env.PORTFOLIO_URL }}")
           if ! echo "$CONTENT" | grep -q "Jaechang Lee"; then
             echo "❌ Content verification failed"
             exit 1
@@ -479,7 +492,7 @@ jobs:
           echo "✅ Content verification passed"
 
           # Security headers
-          HEADERS=$(curl -sI "${{ env.PORTFOLIO_URL }}")
+          HEADERS=$(curl -sI -A "resume-ci/1.0" "${{ env.PORTFOLIO_URL }}")
           if ! echo "$HEADERS" | grep -qi "content-security-policy"; then
             echo "⚠️ Missing CSP header"
           fi
@@ -511,12 +524,27 @@ jobs:
         if: ${{ needs.deploy-portfolio-staging.result == 'success' }}
         run: |
           echo "=== Verifying Portfolio Staging Deployment ==="
-          HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" "${{ env.STAGING_PORTFOLIO_URL }}/health")
-          if [ "$HTTP_CODE" != "200" ]; then
-            echo "❌ Staging health check failed: HTTP $HTTP_CODE"
-            exit 1
-          fi
-          echo "✅ Staging health check passed"
+
+          # Wait for Cloudflare edge propagation
+          echo "⏳ Waiting 15s for edge propagation..."
+          sleep 15
+
+          # Health check with retry
+          MAX_RETRIES=3
+          RETRY_DELAY=10
+          for i in $(seq 1 $MAX_RETRIES); do
+            HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" -A "resume-ci/1.0" "${{ env.STAGING_PORTFOLIO_URL }}/health")
+            if [ "$HTTP_CODE" = "200" ]; then
+              echo "✅ Staging health check passed (attempt $i)"
+              break
+            fi
+            if [ "$i" -eq "$MAX_RETRIES" ]; then
+              echo "❌ Staging health check failed after $MAX_RETRIES attempts: HTTP $HTTP_CODE"
+              exit 1
+            fi
+            echo "⚠️ Staging health check returned HTTP $HTTP_CODE (attempt $i/$MAX_RETRIES), retrying in ${RETRY_DELAY}s..."
+            sleep $RETRY_DELAY
+          done
 
       - name: Verify Job Dashboard Staging Health
         if: ${{ needs.deploy-portfolio-staging.result == 'success' }}

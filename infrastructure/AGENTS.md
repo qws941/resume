@@ -1,7 +1,7 @@
 # INFRASTRUCTURE KNOWLEDGE BASE
 
-**Generated:** 2026-02-05
-**Commit:** 3d9015d
+**Generated:** 2026-02-08
+**Commit:** d25808a
 **Branch:** master
 
 ## OVERVIEW
@@ -83,6 +83,7 @@ curl -s https://resume.jclee.me/metrics
 | ------------- | ---------- | ------------------------ |
 | DNS records   | Terraform  | `dns.tf` + GitHub PR     |
 | Worker routes | Terraform  | `workers.tf` + GitHub PR |
+| Job routes    | Terraform  | `resume.jclee.me/job/*`  |
 | Worker code   | Wrangler   | `npm run deploy`         |
 | KV namespaces | Wrangler   | Create only              |
 | D1 databases  | Wrangler   | Create only              |

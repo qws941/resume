@@ -1,12 +1,12 @@
 # JOB AUTOMATION KNOWLEDGE BASE
 
 **Generated:** 2026-02-05
-**Commit:** 3d9015d
+**Commit:** d25808a
 **Branch:** master
 
 ## OVERVIEW
 
-MCP Server + Cloudflare Worker for stealth job automation. Hexagonal architecture: `shared/services/` (business logic) and `shared/clients/` (adapters).
+MCP Server + Cloudflare Worker for stealth job automation. Hexagonal architecture: `shared/services/` (business logic) and `shared/clients/` (adapters). Dashboard now served at **resume.jclee.me/job/\*** (previously job.jclee.me).
 
 ## STRUCTURE
 
@@ -28,7 +28,11 @@ job-automation/
 │   │       └── wanted/          # Wanted.co.kr API client
 │   └── tools/                   # 9 MCP tool implementations
 ├── workers/                     # Dashboard Cloudflare Worker
-│   └── src/index.js             # Worker entry
+│   ├── src/
+│   │   ├── index.js             # Worker entry (strips /job prefix)
+│   │   ├── handlers/             # API route handlers
+│   │   └── workflows/            # 8 Cloudflare Workflows
+│   └── wrangler.toml            # Worker config + cron triggers
 ├── scripts/                     # 25 utility scripts
 │   ├── quick-login.js           # Current auth method
 │   └── extract-cookies-cdp.js   # Cookie extraction (recommended)
@@ -86,6 +90,19 @@ job-automation/
 | SNS API   | WORKING | Profile data (email, phone)                         |
 | Chaos API | WORKING | Resume structure (projects, experiences, education) |
 
+## CLOUDFLARE WORKFLOWS
+
+| Workflow            | File            | Schedule       | Purpose                     |
+| ------------------- | --------------- | -------------- | --------------------------- |
+| HealthCheckWorkflow | health-check.js | _/5 _ \* \* \* | 5-min uptime + Slack alerts |
+| BackupWorkflow      | backup.js       | 0 3 \* \* \*   | Daily D1→KV backup          |
+| CleanupWorkflow     | cleanup.js      | 0 4 \* \* 0    | Weekly cleanup              |
+| DailyReportWorkflow | daily-report.js | 0 9 \* \* \*   | Daily stats                 |
+| AuthRefreshWorkflow | auth-refresh.js | 0 0 \* \* 1-5  | Auth token refresh          |
+| ProfileSyncWorkflow | profile-sync.js | 0 2 \* \* 1    | Weekly profile sync         |
+| ResumeSyncWorkflow  | resume-sync.js  | 0 1 \* \* \*   | Daily resume sync           |
+| CacheWarmupWorkflow | cache-warmup.js | 0 6 \* \* \*   | Cache pre-warming           |
+
 ## CONVENTIONS
 
 - **Hexagonal Arch**: Business logic in `services/`, adapters in `clients/`.
@@ -97,16 +114,17 @@ job-automation/
 
 ## ANTI-PATTERNS
 
-| Anti-Pattern               | Why               | Do Instead                         |
-| -------------------------- | ----------------- | ---------------------------------- |
-| Naked Playwright/Puppeteer | Bot detection     | Extend `BaseCrawler`               |
-| Fixed User-Agent strings   | Fingerprinting    | Use randomized UA from BaseCrawler |
-| Aggressive polling         | Rate limits/bans  | Use jitter + backoff               |
-| Skills v2 API              | Server bugs       | Use Skills v1 with `text` field    |
-| Links API                  | 500 errors        | Skip until fixed                   |
-| Direct state in services   | Testing nightmare | Use SessionManager/DI              |
-| Cross-client imports       | Circular deps     | Each client isolated               |
-| Hardcoded credentials      | Security          | Use `.env` or Vault                |
+| Anti-Pattern                               | Why                                     | Do Instead                               |
+| ------------------------------------------ | --------------------------------------- | ---------------------------------------- |
+| Naked Playwright/Puppeteer                 | Bot detection                           | Extend `BaseCrawler`                     |
+| Fixed User-Agent strings                   | Fingerprinting                          | Use randomized UA from BaseCrawler       |
+| Aggressive polling                         | Rate limits/bans                        | Use jitter + backoff                     |
+| Skills v2 API                              | Server bugs                             | Use Skills v1 with `text` field          |
+| Links API                                  | 500 errors                              | Skip until fixed                         |
+| Direct state in services                   | Testing nightmare                       | Use SessionManager/DI                    |
+| Cross-client imports                       | Circular deps                           | Each client isolated                     |
+| Hardcoded credentials                      | Security                                | Use `.env` or Vault                      |
+| Duplicate workers/↔portfolio/src/job/ code | styles.js, resume-sync.js exist in both | Single source in workers/, copy on build |
 
 ## COMMANDS
 
@@ -133,6 +151,8 @@ npm test                 # Run tests
 
 | Binding         | Type | Purpose                |
 | --------------- | ---- | ---------------------- |
-| `DB`            | D1   | Application database   |
-| `SESSIONS`      | KV   | Session cookie storage |
+| `DB`            | D1   | job_dashboard          |
+| `SESSIONS`      | KV   | JOB_CACHE              |
 | `RATE_LIMIT_KV` | KV   | Rate limiting          |
+| `SCREENSHOTS`   | R2   | job-screenshots        |
+| `Workflows`     | -    | 8 registered workflows |
