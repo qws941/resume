@@ -3,7 +3,7 @@
 > Parent: [../AGENTS.md](../AGENTS.md)
 
 **Generated:** 2026-02-08
-**Commit:** d25808a
+**Commit:** 5e25b78
 **Branch:** master
 
 ## OVERVIEW
@@ -19,7 +19,9 @@ docs/
 ├── analysis/            # Code analysis, performance reports
 ├── reports/             # Generated reports, audits
 ├── planning/            # Project planning, roadmaps
-└── sessions/            # Development session notes
+├── sessions/            # Development session notes
+├── thoughts/            # AI session ledgers (ephemeral)
+└── _vendor/             # ⚠️ External methodology framework (NOT project code)
 ```
 
 ## WHERE TO LOOK
@@ -54,3 +56,4 @@ docs/
 - `figma-tokens.json` contains design system export from Figma
 - Session notes in `sessions/` are ephemeral; archive or delete after use
 - ADRs in `architecture/` follow standard ADR format (Status, Context, Decision, Consequences)
+- **⚠️ `_vendor/bmad/`**: Massive vendored BMAD methodology framework (agents, workflows, game dev). NOT project code. Do NOT modify, do NOT reference as project patterns. Ignore during code analysis.

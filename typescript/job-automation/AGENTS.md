@@ -1,7 +1,7 @@
 # JOB AUTOMATION KNOWLEDGE BASE
 
-**Generated:** 2026-02-05
-**Commit:** d25808a
+**Generated:** 2026-02-08
+**Commit:** 5e25b78
 **Branch:** master
 
 ## OVERVIEW
@@ -22,10 +22,13 @@ job-automation/
 │   │   ├── services/            # Pure business logic (10 services)
 │   │   │   ├── apply/           # ApplyOrchestrator, UnifiedApplySystem
 │   │   │   ├── session/         # SessionManager (cookie persistence)
-│   │   │   ├── matching/        # JobMatcher
+│   │   │   ├── matching/        # JobMatcher, AIMatcher
 │   │   │   └── slack/           # SlackService
-│   │   └── clients/             # Adapters (D1, Vault, Wanted API)
-│   │       └── wanted/          # Wanted.co.kr API client
+│   │   ├── clients/             # Adapters (D1, Vault, Wanted API)
+│   │   │   └── wanted/          # Wanted.co.kr API client
+│   │   ├── contracts/           # API/auth/session schemas
+│   │   ├── utils/paths.js       # getResumeBasePath (no hardcoded paths)
+│   │   └── validation/          # Input validators
 │   └── tools/                   # 9 MCP tool implementations
 ├── workers/                     # Dashboard Cloudflare Worker
 │   ├── src/
@@ -61,15 +64,16 @@ job-automation/
 
 ## CODE MAP
 
-| Class/Module         | Location                                | Purpose                     |
-| -------------------- | --------------------------------------- | --------------------------- |
-| `BaseCrawler`        | `src/crawlers/base-crawler.js`          | Stealth Puppeteer base      |
-| `UnifiedApplySystem` | `src/shared/services/apply/`            | Centralized job application |
-| `SessionManager`     | `src/shared/services/session/`          | Cookie persistence          |
-| `JobMatcher`         | `src/shared/services/matching/`         | Skill-to-job matching       |
-| `WantedClient`       | `src/shared/clients/wanted/`            | Wanted.co.kr API            |
-| `AutoApplier`        | `src/auto-apply/auto-applier.js`        | Playwright form submission  |
-| `ApplicationManager` | `src/auto-apply/application-manager.js` | Application status tracking |
+| Class/Module         | Location                                | Purpose                         |
+| -------------------- | --------------------------------------- | ------------------------------- |
+| `BaseCrawler`        | `src/crawlers/base-crawler.js`          | Stealth Puppeteer base          |
+| `UnifiedApplySystem` | `src/shared/services/apply/`            | Centralized job application     |
+| `SessionManager`     | `src/shared/services/session/`          | Cookie persistence              |
+| `JobMatcher`         | `src/shared/services/matching/`         | Skill-to-job matching           |
+| `WantedClient`       | `src/shared/clients/wanted/`            | Wanted.co.kr API                |
+| `AutoApplier`        | `src/auto-apply/auto-applier.js`        | Playwright form submission      |
+| `ApplicationManager` | `src/auto-apply/application-manager.js` | Application status tracking     |
+| `getResumeBasePath`  | `src/shared/utils/paths.js`             | Replaces hardcoded ~/dev/resume |
 
 ## PLATFORM CRAWLERS
 
@@ -124,6 +128,7 @@ job-automation/
 | Direct state in services                   | Testing nightmare                       | Use SessionManager/DI                    |
 | Cross-client imports                       | Circular deps                           | Each client isolated                     |
 | Hardcoded credentials                      | Security                                | Use `.env` or Vault                      |
+| Hardcoded `~/dev/resume` paths             | Breaks portability                      | Use `getResumeBasePath()` from paths.js  |
 | Duplicate workers/↔portfolio/src/job/ code | styles.js, resume-sync.js exist in both | Single source in workers/, copy on build |
 
 ## COMMANDS

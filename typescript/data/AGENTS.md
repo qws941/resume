@@ -1,7 +1,7 @@
 # AGENTS.md: SHARED DATA KNOWLEDGE BASE
 
 **Generated:** 2026-02-08
-**Commit:** d25808a
+**Commit:** 5e25b78
 **Branch:** master
 
 ## OVERVIEW
@@ -37,6 +37,7 @@ typescript/data/
 - **Synchronization**: Run `npm run sync:data` from root to propagate JSON changes to `apps/portfolio/data.json`.
 - **Versioning**: Released artifacts follow `resume_{type}_vX.Y.Z.pdf` naming in `master/`.
 - **Isolation**: Keep technical project documentation (e.g., Nextrade) strictly in `technical/{project}/`.
+- **Skills Format**: Skills in `resume_data.json` use `{name, level}` objects (not plain strings). All consumers (validators, cards, sync) must handle this structured format.
 
 ## ANTI-PATTERNS
 
