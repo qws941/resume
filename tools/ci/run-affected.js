@@ -19,7 +19,7 @@ function runCommand(command) {
   console.log(`> ${command}`);
   try {
     execSync(command, { stdio: 'inherit' });
-  } catch (_error) {
+  } catch {
     console.error(`Command failed: ${command}`);
     process.exit(1);
   }
@@ -93,7 +93,7 @@ function main() {
         } else {
           console.log(`Skipping ${workspace} (no test script)`);
         }
-      } catch (_e) {
+      } catch {
         console.warn(`Could not read package.json for ${workspace}`);
       }
     }

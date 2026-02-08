@@ -277,7 +277,7 @@ class AuthSync {
           waitUntil: 'domcontentloaded',
           timeout: 10000,
         });
-      } catch (_e) {
+      } catch {
         // Ignore navigation errors
       }
 
