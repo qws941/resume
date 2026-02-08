@@ -1,0 +1,50 @@
+# PR Auto-Labeler configuration
+# https://github.com/actions/labeler
+
+portfolio:
+  - changed-files:
+      - any-glob-to-any-file:
+          - typescript/portfolio-worker/**
+
+job-automation:
+  - changed-files:
+      - any-glob-to-any-file:
+          - typescript/job-automation/**
+
+cli:
+  - changed-files:
+      - any-glob-to-any-file:
+          - typescript/cli/**
+
+data:
+  - changed-files:
+      - any-glob-to-any-file:
+          - typescript/data/**
+
+ci:
+  - changed-files:
+      - any-glob-to-any-file:
+          - .github/**
+
+infrastructure:
+  - changed-files:
+      - any-glob-to-any-file:
+          - infrastructure/**
+
+tests:
+  - changed-files:
+      - any-glob-to-any-file:
+          - tests/**
+
+docs:
+  - changed-files:
+      - any-glob-to-any-file:
+          - docs/**
+          - '**/*.md'
+
+build:
+  - changed-files:
+      - any-glob-to-any-file:
+          - BUILD.bazel
+          - MODULE.bazel
+          - tools/**
