@@ -3,8 +3,7 @@
  * @module cards
  */
 
-const { CONFIG, TEMPLATE_CACHE } = require('./config');
-const { generateLink } = require('./templates');
+const { TEMPLATE_CACHE } = require('./config');
 const { escapeHtml } = require('./utils');
 const logger = require('../logger');
 
