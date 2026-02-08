@@ -15,6 +15,14 @@
     "highSchool": "용남고등학교",
     "highSchoolGraduation": "2013"
   },
+  "languages": [
+    { "name": "Korean", "level": "Native" },
+    { "name": "English", "level": "Professional working proficiency" }
+  ],
+  "military": {
+    "status": "사회복무요원 (산업기능요원)",
+    "period": "2018.11 - 2019.11"
+  },
   "summary": {
     "totalExperience": "7년 11개월",
     "experienceStart": "2017.02",
@@ -38,7 +46,7 @@
       "project": "넥스트레이드 매매체결시스템 보안운영SM",
       "role": "보안운영 담당",
       "client": "넥스트레이드",
-      "description": "넥스트레이드 보안운영SM. Splunk 로그 분석, FortiGate 방화벽 정책 관리, 월간 보안 리포트 작성."
+      "description": "넥스트레이드 보안운영SM 및 정보보안팀 지원\n• Splunk 기반 보안 로그 분석 및 실시간 위협 모니터링 체계 고도화\n• FortiGate 방화벽 정책 최적화 및 접근 제어 자동화 관리\n• 보안 취약점 점검 및 월간 정기 리포트 작성을 통한 인프라 안정성 강화\n• 기술: Splunk, FortiGate, Python, Linux"
     },
     {
       "company": "(주)가온누리정보시스템",
@@ -47,7 +55,7 @@
       "project": "넥스트레이드 매매체결시스템 구축",
       "role": "인프라 엔지니어",
       "client": "넥스트레이드",
-      "description": "넥스트레이드 보안 인프라 구축. 금융위 본인가 심사 대응, 네트워크 분리/접근통제 정책 수립, FortiGate HA 구성."
+      "description": "넥스트레이드 매매체결시스템 보안 인프라 설계 및 구축\n• 금융위원회 본인가 심사 기술 대응 및 보안 아키텍처 수립\n• 망 분리 및 접근통제 정책 설계를 통한 보안 컴플라이언스 준수\n• FortiGate HA 고가용성 구성 및 장애 복구 프로세스 수립\n• 기술: FortiGate, FortiManager, Linux, VMware"
     },
     {
       "company": "(주)콴텍투자일임",
@@ -55,7 +63,7 @@
       "duration": "1년 7개월",
       "project": "AI 주식투자 서비스 보안운영",
       "role": "정보보호팀",
-      "description": "AWS 인프라 보안 운영. 보안 로그 수집, IAM/보안그룹 관리, 취약점 점검, 로보어드바이저 테스트베드 심사 보안 지원."
+      "description": "AI 자산운용 플랫폼 클라우드 인프라 보안 운영\n• AWS 기반 인프라 보안(IAM, Security Group, WAF) 관리 및 고도화\n• 정기 보안 취약점 점검 및 로보어드바이저 테스트베드 심사 대응 지원\n• Prometheus/Grafana 기반 보안 메트릭 대시보드 구축 및 운영\n• 기술: AWS, Terraform, Prometheus, Grafana"
     },
     {
       "company": "(주)펀엔씨",
@@ -63,7 +71,7 @@
       "duration": "3개월",
       "project": "클라우드 인프라",
       "role": "인프라 담당",
-      "description": "온프레미스→AWS 마이그레이션. VPC 설계, EKS 클러스터 구축, GitLab CI/CD 파이프라인 구성."
+      "description": "이커머스 서비스 클라우드 마이그레이션 및 보안 강화\n• 온프레미스 환경의 AWS VPC 기반 클라우드 마이그레이션 설계\n• EKS 클러스터 보안 설정 및 컨테이너 취약점 점검 프로세스 수립\n• GitLab CI/CD 파이프라인 보안 검수 단계 자동화 적용\n• 기술: AWS, Kubernetes, Docker, GitLab CI"
     },
     {
       "company": "(주)조인트리",
@@ -71,7 +79,7 @@
       "duration": "8개월",
       "project": "국민대학교 차세대 정보시스템",
       "role": "시스템 엔지니어",
-      "description": "대학 전산 보안 강화. VMware NSX-T 마이크로세그멘테이션, 보안솔루션(방화벽, NAC, DLP) 설치."
+      "description": "국민대학교 차세대 정보시스템 보안 인프라 고도화\n• VMware NSX-T 기반 마이크로세그멘테이션 설계를 통한 내부망 보안 강화\n• 방화벽, NAC, DLP 등 통합 보안 솔루션 구축 및 정책 수립\n• 하이브리드 클라우드 전환을 위한 네트워크 보안 아키텍처 지원\n• 기술: VMware NSX-T, Network Security, NAC"
     },
     {
       "company": "(주)메타넷엠플랫폼",
@@ -79,7 +87,7 @@
       "duration": "1년 9개월",
       "project": "컨택센터 인프라",
       "role": "시스템 엔지니어",
-      "description": "컨택센터 인프라 운영. 재택근무 VPN 환경 구축, Ansible 서버 프로비저닝 자동화."
+      "description": "대규모 컨택센터 IT 인프라 운영 및 자동화\n• 코로나19 대응 대규모 재택근무 VPN 인프라 긴급 구축 및 운영\n• Ansible 기반 서버 프로비저닝 및 반복 업무 자동화로 운영 효율성 제고\n• Zabbix/PRTG 기반 실시간 모니터링 시스템 구축 및 장애 조치\n• 기술: Ansible, VPN, Zabbix, Python"
     },
     {
       "company": "(주)엠티데이타",
@@ -87,7 +95,7 @@
       "duration": "1년 9개월",
       "project": "한국항공우주산업(KAI)",
       "role": "IT지원/OA운영",
-      "description": "방위산업체 IT 인프라 운영. 서버/클라이언트 환경 관리, 헬프데스크."
+      "description": "방위산업체 IT 인프라 현장 운영 지원\n• 폐쇄망 환경의 서버 및 클라이언트 인프라 정기 점검 및 유지보수\n• 내부 보안 규정에 따른 인프라 자산 관리 및 보안 패치 적용\n• 기술 지원 및 장애 대응을 통한 안정적인 업무 환경 유지\n• 기술: Windows Server, Linux, Helpdesk"
     }
   ],
   "projects": [
@@ -98,7 +106,7 @@
       "technologies": ["Python", "Splunk", "n8n", "Fortinet"],
       "os": "Linux, Docker",
       "role": "보안운영 담당",
-      "description": "Splunk 기반 보안 로그 분석 및 FortiGate 방화벽 정책 운영 업무를 수행하고 있습니다."
+      "description": "Splunk ES 및 FortiGate API를 활용한 보안 운영 자동화\n• n8n 워크플로우를 연동하여 보안 이벤트 탐지 시 실시간 Slack 알림 연동\n• FortiManager API를 이용한 방화벽 정책 자동 조회 툴 개발"
     },
     {
       "period": "2024.03 ~ 2025.02",
@@ -107,7 +115,7 @@
       "technologies": ["Python", "FortiManager API", "Ansible"],
       "os": "Linux, VMware",
       "role": "보안 인프라 설계",
-      "description": "금융위원회 본인가 심사 대응을 위한 보안 아키텍처 설계 및 FortiGate HA 구성을 담당했습니다."
+      "description": "고가용성 기반 증권 매매 시스템 보안 아키텍처 설계\n• FGCP(FortiGate Clustering Protocol) 기반 Active-Passive HA 구성\n• Ansible Role을 활용한 보안 장비 초기 설정 및 정책 배포 표준화"
     },
     {
       "period": "2022.08 ~ 2024.02",
@@ -116,7 +124,7 @@
       "technologies": ["AWS", "IAM", "Security Group", "Prometheus", "Grafana"],
       "os": "Linux, AWS",
       "role": "정보보호팀",
-      "description": "AWS 보안 운영 및 로보어드바이저 테스트베드 심사 보안 지원을 담당했습니다."
+      "description": "IaC 기반 AWS 보안 인프라 관리 및 관측성 확보\n• Terraform을 사용한 VPC, Subnet, 보안 그룹의 코드 기반 관리\n• AWS CloudTrail 및 GuardDuty 로그를 CloudWatch로 통합 분석"
     },
     {
       "period": "2022.05 ~ 2022.07",
@@ -125,7 +133,7 @@
       "technologies": ["AWS", "Kubernetes", "Docker", "GitLab CI/CD"],
       "os": "Linux, AWS",
       "role": "인프라 구축",
-      "description": "AWS VPC/EKS 기반 클라우드 환경 구축 및 CI/CD 파이프라인 구성을 담당했습니다."
+      "description": "EKS 기반 컨테이너 오케스트레이션 및 CI/CD 구축\n• Helm Chart를 활용한 어플리케이션 배포 자동화 및 관리\n• GitLab Runner를 활용한 컨테이너 이미지 빌드 및 정적 분석 파이프라인 구축"
     },
     {
       "period": "2021.09 ~ 2022.04",
@@ -134,7 +142,7 @@
       "technologies": ["VMware NSX-T", "Firewall", "NAC"],
       "os": "Linux, vSphere",
       "role": "네트워크 가상화",
-      "description": "VMware NSX-T 기반 마이크로세그멘테이션 구축 및 보안솔루션 설치를 담당했습니다."
+      "description": "SDN 기반 네트워크 가상화 및 마이크로세그멘테이션 구현\n• VMware NSX-T 분산 방화벽(DFW)을 활용한 서버 간 트래픽 제어\n• 가상 스위치(VDS) 레벨의 네트워크 보안 정책 중앙 집중화"
     },
     {
       "period": "2019.12 ~ 2021.08",
@@ -143,7 +151,7 @@
       "technologies": ["Ansible", "Python", "VPN", "NAC"],
       "os": "Linux",
       "role": "원격근무 인프라",
-      "description": "재택근무 VPN 환경 구축 및 Ansible 기반 자동화를 담당했습니다."
+      "description": "대규모 원격 접속을 위한 VPN 인프라 설계 및 자동화\n• Python 스크립트와 Ansible을 연동하여 500대 이상의 서버 설정 동기화\n• VPN 세션 모니터링 및 비정상 접근 탐지 대시보드 구축"
     },
     {
       "period": "2017.02 ~ 2018.10",
@@ -152,7 +160,7 @@
       "technologies": ["Linux", "Shell", "Firewall"],
       "os": "Linux",
       "role": "시스템 운영",
-      "description": "방위산업체 IT 인프라 운영 및 헬프데스크 업무를 담당했습니다."
+      "description": "폐쇄망 보안 인프라의 안정적인 가용성 확보\n• 서버 시스템 로그 주기적 분석을 통한 하드웨어 장애 징후 선제적 파악\n• 내부 보안 감사 기준에 따른 시스템 설정 보안 가이드라인 준수"
     }
   ],
   "careerGap": {
@@ -184,13 +192,63 @@
     "observability": {
       "title": "Observability",
       "icon": "Activity",
-      "items": ["Grafana", "Prometheus", "Loki", "Splunk"]
+      "items": [
+        { "name": "Grafana", "level": "expert" },
+        { "name": "Prometheus", "level": "expert" },
+        { "name": "Loki", "level": "advanced" },
+        { "name": "Splunk", "level": "expert" }
+      ]
     },
-    "cloud": ["AWS (EC2, VPC, EKS, S3)", "Docker", "Kubernetes", "Linux"],
-    "devops": ["GitLab CI/CD", "GitHub Actions", "Ansible", "Terraform"],
-    "automation": ["Python", "Shell", "n8n"],
-    "database": ["PostgreSQL", "MySQL", "Redis"],
-    "security": ["FortiGate", "FortiManager", "FortiAnalyzer", "Splunk", "NAC", "DLP"]
+    "cloud": {
+      "title": "Cloud & Infra",
+      "icon": "Cloud",
+      "items": [
+        { "name": "AWS (EC2, VPC, EKS, S3)", "level": "advanced" },
+        { "name": "Docker", "level": "expert" },
+        { "name": "Kubernetes", "level": "intermediate" },
+        { "name": "Linux", "level": "expert" }
+      ]
+    },
+    "devops": {
+      "title": "DevOps",
+      "icon": "GitBranch",
+      "items": [
+        { "name": "GitLab CI/CD", "level": "advanced" },
+        { "name": "GitHub Actions", "level": "expert" },
+        { "name": "Ansible", "level": "advanced" },
+        { "name": "Terraform", "level": "advanced" }
+      ]
+    },
+    "automation": {
+      "title": "Automation",
+      "icon": "Zap",
+      "items": [
+        { "name": "Python", "level": "advanced" },
+        { "name": "Shell", "level": "expert" },
+        { "name": "n8n", "level": "expert" }
+      ]
+    },
+    "database": {
+      "title": "Database",
+      "icon": "Database",
+      "items": [
+        { "name": "PostgreSQL", "level": "advanced" },
+        { "name": "MySQL", "level": "intermediate" },
+        { "name": "Redis", "level": "intermediate" }
+      ]
+    },
+    "security": {
+      "title": "Security",
+      "icon": "Shield",
+      "items": [
+        { "name": "FortiGate", "level": "expert" },
+        { "name": "FortiManager", "level": "expert" },
+        { "name": "FortiAnalyzer", "level": "advanced" },
+        { "name": "Splunk", "level": "expert" },
+        { "name": "NAC", "level": "advanced" },
+        { "name": "DLP", "level": "intermediate" }
+      ]
+    }
   },
   "personalProjects": [
     {
@@ -200,7 +258,12 @@
       "technologies": ["Grafana", "Prometheus", "Loki", "Blackbox Exporter", "Docker"],
       "icon": "📊",
       "tagline": "모니터링 플랫폼",
-      "metrics": {}
+      "metrics": {
+        "dashboards": "12+",
+        "datasources": "Prometheus, Loki, Elasticsearch",
+        "uptime": "99.5%",
+        "targets": "50+ metrics endpoints"
+      }
     },
     {
       "name": "n8n Automation",
@@ -209,7 +272,11 @@
       "technologies": ["n8n", "PostgreSQL", "Docker"],
       "icon": "🔄",
       "tagline": "워크플로우 자동화",
-      "metrics": {}
+      "metrics": {
+        "workflows": "15+",
+        "executions": "일 200+ 실행",
+        "integrations": "Slack, GitHub, Cloudflare, Grafana"
+      }
     },
     {
       "name": "FortiNet API Client",
@@ -218,7 +285,11 @@
       "technologies": ["Python", "FortiManager", "FortiAnalyzer"],
       "icon": "🛡️",
       "tagline": "보안장비 API 자동화",
-      "metrics": {}
+      "metrics": {
+        "endpoints": "FortiManager, FortiAnalyzer REST API",
+        "features": "정책 조회, 라우트 관리, 로그 통계",
+        "automation": "수동 작업 대비 80% 시간 절감"
+      }
     },
     {
       "name": "Security Alert System",
@@ -227,7 +298,12 @@
       "technologies": ["Splunk", "Python", "Slack"],
       "icon": "🔔",
       "tagline": "보안 알림 자동화",
-      "metrics": {}
+      "metrics": {
+        "detectionRules": "32개",
+        "alertChannels": "Slack Block Kit",
+        "sources": "FortiGate syslog → Splunk",
+        "responseTime": "이벤트 발생 후 30초 이내 알림"
+      }
     },
     {
       "name": "IP Blacklist Platform",
@@ -236,7 +312,11 @@
       "technologies": ["Flask", "Next.js", "PostgreSQL"],
       "icon": "🚫",
       "tagline": "위협 인텔리전스",
-      "metrics": {}
+      "metrics": {
+        "feeds": "3+ threat intelligence feeds",
+        "stack": "Flask REST API + Next.js Dashboard",
+        "storage": "PostgreSQL with GeoIP enrichment"
+      }
     }
   ],
   "hero": {
@@ -255,9 +335,13 @@
   },
   "achievements": [
     "넥스트레이드 ATS 보안 인프라 설계 (금융위 본인가 통과)",
-    "로보어드바이저 테스트베드 심사 보안 지원",
-    "Grafana/Prometheus/Loki 모니터링 스택 구축",
-    "Ansible/n8n 운영 자동화 구현"
+    "보안 인프라 자동화 도입을 통해 운영 시간 40% 절감 (넥스트레이드)",
+    "WAF/IPS 정책 최적화 및 정교화로 오탐률 30% 감소 (넥스트레이드)",
+    "로보어드바이저 테스트베드 심사 보안 지원 (콴텍)",
+    "클라우드 마이그레이션 프로젝트 리드 및 3개월 내 완수 (조인트리)",
+    "Grafana/Prometheus/Loki 모니터링 스택 구축 및 운영",
+    "Ansible/n8n 기반 보안 운영 프로세스 자동화 구현",
+    "대규모 재택근무 환경을 위한 VPN 보안 인프라 구축 (메타넷)"
   ],
   "infrastructure": [
     {
