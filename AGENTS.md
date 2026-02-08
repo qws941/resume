@@ -1,7 +1,7 @@
 # PROJECT KNOWLEDGE BASE
 
-**Generated:** 2026-02-06
-**Commit:** 5914187
+**Generated:** 2026-02-08
+**Commit:** d25808a
 **Branch:** master
 **Build System:** Bazel + npm (Google3-style hybrid)
 
@@ -9,11 +9,11 @@
 
 Google3-style monorepo (TypeScript/Cloudflare Workers) for Resume Portfolio & Job Automation.
 
-| Application      | Domain          | Technology          | Purpose                  |
-| ---------------- | --------------- | ------------------- | ------------------------ |
-| portfolio-worker | resume.jclee.me | Cloudflare Worker   | Edge-deployed portfolio  |
-| job-automation   | job.jclee.me    | MCP Server + Worker | Stealth job application  |
-| resume-cli       | (local)         | Commander.js        | Deployment orchestration |
+| Application      | Domain              | Technology          | Purpose                    |
+| ---------------- | ------------------- | ------------------- | -------------------------- |
+| portfolio-worker | resume.jclee.me     | Cloudflare Worker   | Edge-deployed portfolio    |
+| job-automation   | resume.jclee.me/job | MCP Server + Worker | Job application automation |
+| resume-cli       | (local)             | Commander.js        | Deployment orchestration   |
 
 **Key Principles:**
 
@@ -35,8 +35,10 @@ resume/
 │   │   │   ├── shared/            # Cross-cutting services
 │   │   │   └── tools/             # MCP tool implementations
 │   │   └── workers/               # Dashboard Cloudflare Worker
+│   │       └── src/workflows/     # Cloudflare Workflow definitions
 │   └── portfolio-worker/          # Edge portfolio worker
 │       ├── lib/                   # Stateless modules (security-headers.js)
+│       ├── src/job/               # Job-related modules
 │       └── src/styles/            # Modular CSS (animations, components)
 ├── tools/                         # Build, deploy, CI scripts
 │   ├── scripts/build/             # npm script wrappers
@@ -45,6 +47,7 @@ resume/
 ├── infrastructure/                # Grafana/Elasticsearch/Prometheus/n8n
 ├── third_party/                   # npm deps (One Version Rule)
 ├── docs/                          # Documentation hub
+├── SECURITY_WARNING.md            # Exposed API key warnings
 ├── BUILD.bazel                    # Root build aliases
 ├── MODULE.bazel                   # Bzlmod configuration
 └── OWNERS                         # Root code owners
@@ -52,13 +55,13 @@ resume/
 
 ## ENTRY POINTS
 
-| Component        | Entry Point                                       | Notes                     |
-| ---------------- | ------------------------------------------------- | ------------------------- |
-| MCP Server       | `typescript/job-automation/src/index.js`          | Fastify + MCP tools       |
-| Portfolio Build  | `typescript/portfolio-worker/generate-worker.js`  | HTML → Worker compiler    |
-| Dashboard Worker | `typescript/job-automation/workers/src/index.js`  | Cloudflare Worker entry   |
-| CLI Tool         | `typescript/cli/bin/run.js`                       | `resume-cli` Commander.js |
-| Resume Data      | `typescript/data/resumes/master/resume_data.json` | Canonical SSoT            |
+| Component        | Entry Point                                       | Notes                        |
+| ---------------- | ------------------------------------------------- | ---------------------------- |
+| MCP Server       | `typescript/job-automation/src/index.js`          | Fastify + MCP tools          |
+| Portfolio Build  | `typescript/portfolio-worker/generate-worker.js`  | HTML → Worker compiler       |
+| Dashboard Worker | `typescript/job-automation/workers/src/index.js`  | resume.jclee.me/job/\* entry |
+| CLI Tool         | `typescript/cli/bin/run.js`                       | `resume-cli` Commander.js    |
+| Resume Data      | `typescript/data/resumes/master/resume_data.json` | Canonical SSoT               |
 
 ## CODE MAP
 
@@ -72,6 +75,7 @@ resume/
 | `security-headers.js` | `typescript/portfolio-worker/lib/security-headers.js`    | CSP baseline, HSTS          |
 | `sync-resume-data.js` | `tools/scripts/utils/sync-resume-data.js`                | SSoT propagation script     |
 | `terminalCommands`    | `typescript/portfolio-worker/index.html`                 | Interactive CLI commands    |
+| `Workflows`           | `typescript/job-automation/workers/src/workflows/`       | 8 Cloudflare Workflows      |
 
 ## BAZEL TARGETS
 
@@ -102,24 +106,29 @@ npm run sync:data     # Propagate SSoT changes
 
 ## ANTI-PATTERNS
 
-| Anti-Pattern                   | Why                        | Do Instead                          |
-| ------------------------------ | -------------------------- | ----------------------------------- |
-| Edit `worker.js` directly      | Regenerated on build       | Edit `generate-worker.js` or HTML   |
-| `trim()` before CSP hash       | Whitespace affects SHA-256 | Hash exact source string            |
-| Naked Puppeteer/Playwright     | Bot detection              | Use `BaseCrawler` with stealth      |
-| Cross-client imports           | Circular dependencies      | Each client isolated in own dir     |
-| Hardcode secrets               | Security violation         | Use `.env` or `wrangler secret`     |
-| Skip OWNERS review             | Breaks code ownership      | Get OWNERS approval                 |
-| Edit resume in multiple places | Data inconsistency         | Edit only `resume_data.json` (SSoT) |
-| Duplicate shared code          | workers/ vs shared/ drift  | Keep business logic in shared/      |
+| Anti-Pattern                   | Why                                     | Do Instead                                  |
+| ------------------------------ | --------------------------------------- | ------------------------------------------- |
+| Edit `worker.js` directly      | Regenerated on build                    | Edit `generate-worker.js` or HTML           |
+| `trim()` before CSP hash       | Whitespace affects SHA-256              | Hash exact source string                    |
+| Naked Puppeteer/Playwright     | Bot detection                           | Use `BaseCrawler` with stealth              |
+| Cross-client imports           | Circular dependencies                   | Each client isolated in own dir             |
+| Hardcode secrets               | Security violation                      | Use `.env` or `wrangler secret`             |
+| Skip OWNERS review             | Breaks code ownership                   | Get OWNERS approval                         |
+| Edit resume in multiple places | Data inconsistency                      | Edit only `resume_data.json` (SSoT)         |
+| Duplicate shared code          | workers/ vs shared/ drift               | Keep business logic in shared/              |
+| Duplicate shared↔workers code  | styles.js, resume-sync.js exist in both | Consolidate to shared/, import from workers |
+| Ignore SECURITY_WARNING.md     | Contains 6 exposed API keys             | Read and act on warnings                    |
 
 ## REFACTORING CANDIDATES
 
-| File                 | Lines | Issue            | Recommended Fix                    |
-| -------------------- | ----- | ---------------- | ---------------------------------- |
-| `webhooks.js`        | 1129  | God Object       | Split into handlers/ by event type |
-| `resume-sync.js`     | 955   | 450-line switch  | Command pattern                    |
-| `generate-worker.js` | 1156  | Monolithic build | Extract CSP/routing modules        |
+| File                 | Lines | Issue              | Recommended Fix                      |
+| -------------------- | ----- | ------------------ | ------------------------------------ |
+| `webhooks.js`        | 1129  | God Object         | Split into handlers/ by event type   |
+| `resume-sync.js`     | 955   | 450-line switch    | Command pattern                      |
+| `generate-worker.js` | 1156  | Monolithic build   | Extract CSP/routing modules          |
+| `worker.js`          | 1534  | Generated monolith | Modularize generate-worker.js output |
+| `dashboard.html`     | 1386  | Inline everything  | Extract JS/CSS into separate files   |
+| `profile-sync.js`    | 1039  | Complex sync logic | Split into validators + transformers |
 
 ## BUILD PIPELINE
 
@@ -143,23 +152,41 @@ MCP Server: src/index.js → Fastify HTTP + MCP tools
     └── Services: UnifiedApplySystem → SessionManager → Clients
 
 Dashboard Worker: workers/src/index.js → Cloudflare Worker
-    └── job.jclee.me (analytics dashboard)
+    ├── resume.jclee.me/job/* (strips /job prefix internally)
+    ├── Bindings: D1 (job_dashboard), KV (JOB_CACHE), R2 (job-screenshots)
+    └── 8 Cloudflare Workflows (see CLOUDFLARE WORKFLOWS section)
 ```
+
+## CLOUDFLARE WORKFLOWS
+
+| Workflow            | File                      | Schedule       | Purpose                                |
+| ------------------- | ------------------------- | -------------- | -------------------------------------- |
+| HealthCheckWorkflow | workflows/health-check.js | _/5 _ \* \* \* | 5-min uptime monitoring + Slack alerts |
+| BackupWorkflow      | workflows/backup.js       | 0 3 \* \* \*   | Daily D1 → KV backup, 7-day retention  |
+| CleanupWorkflow     | workflows/cleanup.js      | 0 4 \* \* 0    | Weekly expired session/log cleanup     |
+| DailyReportWorkflow | workflows/daily-report.js | 0 9 \* \* \*   | Daily job stats aggregation            |
+| AuthRefreshWorkflow | workflows/auth-refresh.js | 0 0 \* \* 1-5  | Weekday auth token refresh             |
+| ProfileSyncWorkflow | workflows/profile-sync.js | 0 2 \* \* 1    | Weekly profile sync from SSoT          |
+| ResumeSyncWorkflow  | workflows/resume-sync.js  | 0 1 \* \* \*   | Daily resume data propagation          |
+| CacheWarmupWorkflow | workflows/cache-warmup.js | 0 6 \* \* \*   | Daily cache pre-warming                |
 
 ## CI/CD PIPELINE
 
 **GitHub Actions** (`.github/workflows/ci.yml`):
 
-| Trigger                    | Action                                           |
-| -------------------------- | ------------------------------------------------ |
-| Push to `master`/`develop` | Build → Test → Deploy (production/staging)       |
-| PR to `master`             | Build → Test → Preview comments                  |
-| `workflow_dispatch`        | Manual deploy (portfolio, job-dashboard, or all) |
+| Trigger               | Action                                           |
+| --------------------- | ------------------------------------------------ |
+| Push to `master`      | Build → Test → Deploy (production)               |
+| Push to `develop`     | Build → Test → Deploy (staging)                  |
+| Deploy/verify failure | Auto-rollback via wrangler rollback              |
+| PR opened/updated     | Ephemeral preview worker (resume-pr-{N})         |
+| PR to `master`        | Build → Test → Preview comments                  |
+| `workflow_dispatch`   | Manual deploy (portfolio, job-dashboard, or all) |
 
 **Deployed Targets:**
 
 - `portfolio-worker` → resume.jclee.me
-- `job-automation/workers` → job.jclee.me
+- `job-automation/workers` → resume.jclee.me/job/\*
 
 **Required Secrets:** `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`, `AUTH_SYNC_SECRET`, `ENCRYPTION_KEY`
 
@@ -199,7 +226,7 @@ source ~/.env && cd typescript/portfolio-worker && \
 ### Code Style
 
 - ESM modules (`type: "module"` in package.json)
-- No ESLint/Prettier configs (scripts exist, configs missing)
+- ESLint flat config (`eslint.config.cjs`), no Prettier
 - JSDoc for public APIs
 
 ### Scripts
@@ -209,27 +236,31 @@ source ~/.env && cd typescript/portfolio-worker && \
 
 ## FILES
 
-| File           | Purpose                            |
-| -------------- | ---------------------------------- |
-| `MODULE.bazel` | Bzlmod deps (rules_shell)          |
-| `WORKSPACE`    | Legacy Bazel compat                |
-| `.bazelrc`     | Build configurations               |
-| `BUILD.bazel`  | Package build rules (root aliases) |
-| `OWNERS`       | Root code ownership                |
-| `package.json` | npm workspaces root                |
+| File                  | Purpose                                   |
+| --------------------- | ----------------------------------------- |
+| `MODULE.bazel`        | Bzlmod deps (rules_shell)                 |
+| `WORKSPACE`           | Legacy Bazel compat                       |
+| `.bazelrc`            | Build configurations                      |
+| `BUILD.bazel`         | Package build rules (root aliases)        |
+| `OWNERS`              | Root code ownership                       |
+| `package.json`        | npm workspaces root                       |
+| `eslint.config.cjs`   | ESLint flat config (138-warning baseline) |
+| `SECURITY_WARNING.md` | Exposed API key warnings                  |
 
 ## AGENTS.MD HIERARCHY
 
 Subdirectory AGENTS.md files provide domain-specific context:
 
-| Path                                    | Focus                                       |
-| --------------------------------------- | ------------------------------------------- |
-| `typescript/cli/AGENTS.md`              | CLI tool usage, Wrangler wrapper            |
-| `typescript/data/AGENTS.md`             | SSoT schema, sync process                   |
-| `typescript/job-automation/AGENTS.md`   | MCP server, crawlers, workers               |
-| `typescript/portfolio-worker/AGENTS.md` | Terminal UI, CLI, build pipeline, CSP       |
-| `tests/AGENTS.md`                       | Test patterns, coverage reqs, wait strategy |
-| `tools/AGENTS.md`                       | Build scripts, CI utilities                 |
-| `infrastructure/AGENTS.md`              | Observability stack (Grafana)               |
+| Path                                          | Focus                                       |
+| --------------------------------------------- | ------------------------------------------- |
+| `typescript/cli/AGENTS.md`                    | CLI tool usage, Wrangler wrapper            |
+| `typescript/data/AGENTS.md`                   | SSoT schema, sync process                   |
+| `typescript/job-automation/AGENTS.md`         | MCP server, crawlers, workers               |
+| `typescript/job-automation/workers/AGENTS.md` | Dashboard worker, workflows, D1/KV bindings |
+| `typescript/portfolio-worker/AGENTS.md`       | Terminal UI, CLI, build pipeline, CSP       |
+| `tests/AGENTS.md`                             | Test patterns, coverage reqs, wait strategy |
+| `tools/AGENTS.md`                             | Build scripts, CI utilities                 |
+| `infrastructure/AGENTS.md`                    | Observability stack (Grafana)               |
+| `docs/AGENTS.md`                              | Documentation hub, requirements specs       |
 
 See subdirectory AGENTS.md for deeper context on each component.

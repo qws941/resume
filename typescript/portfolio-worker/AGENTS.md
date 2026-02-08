@@ -1,7 +1,7 @@
 # PORTFOLIO WORKER KNOWLEDGE BASE
 
 **Generated:** 2026-02-05
-**Commit:** 3d9015d
+**Commit:** d25808a
 **Branch:** master
 
 ## OVERVIEW
@@ -22,15 +22,19 @@ portfolio-worker/
 │   ├── metrics.js           # Prometheus metrics
 │   ├── ab-testing.js        # Feature flag experiments
 │   └── templates.js         # HTML generation helpers
-└── src/styles/          # Modular CSS (8 files)
-    ├── animations.css   # Typing effects, glitch, fade
-    ├── base.css         # Root variables, reset
-    ├── cli.css          # CLI input/output styles
-    ├── components.css   # Cards, buttons, sections
-    ├── layout.css       # Grid, flex, positioning
-    ├── responsive.css   # Mobile breakpoints
-    ├── terminal.css     # Terminal window chrome
-    └── typography.css   # Fonts, text styles
+├── src/
+│   ├── job/             # Job dashboard integration (routes from /job/*)
+│   │   ├── styles.js    # Dashboard styles (DUPLICATED from workers/)
+│   │   └── resume-sync.js # Resume sync (DUPLICATED from workers/)
+│   └── styles/          # Modular CSS (8 files)
+│       ├── animations.css   # Typing effects, glitch, fade
+│       ├── base.css         # Root variables, reset
+│       ├── cli.css          # CLI input/output styles
+│       ├── components.css   # Cards, buttons, sections
+│       ├── layout.css       # Grid, flex, positioning
+│       ├── responsive.css   # Mobile breakpoints
+│       ├── terminal.css     # Terminal window chrome
+│       └── typography.css   # Fonts, text styles
 ```
 
 ## BUILD PIPELINE
@@ -100,13 +104,14 @@ Commands defined in `index.html` within `terminalCommands` object.
 
 ## ANTI-PATTERNS
 
-| Anti-Pattern                 | Why                        | Do Instead                    |
-| ---------------------------- | -------------------------- | ----------------------------- |
-| Edit `worker.js` directly    | Regenerated on build       | Edit `index.html`             |
-| `trim()` before CSP hash     | Whitespace affects SHA-256 | Hash exact source string      |
-| Runtime `fetch()` for assets | Adds latency               | Inline at build time          |
-| Hardcode colors in HTML      | Style drift                | Use CSS variables in base.css |
-| Skip CSP regeneration        | Security violation         | Always run generate-worker.js |
+| Anti-Pattern                 | Why                        | Do Instead                             |
+| ---------------------------- | -------------------------- | -------------------------------------- |
+| Edit `worker.js` directly    | Regenerated on build       | Edit `index.html`                      |
+| `trim()` before CSP hash     | Whitespace affects SHA-256 | Hash exact source string               |
+| Runtime `fetch()` for assets | Adds latency               | Inline at build time                   |
+| Hardcode colors in HTML      | Style drift                | Use CSS variables in base.css          |
+| Skip CSP regeneration        | Security violation         | Always run generate-worker.js          |
+| Edit src/job/ files directly | Duplicated from workers/   | Edit workers/ source, sync to src/job/ |
 
 ## COMMANDS
 
