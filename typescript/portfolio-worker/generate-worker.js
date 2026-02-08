@@ -86,8 +86,6 @@ const _GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID || '';
 
 // Cloudflare API Config - MUST be set via environment variables or Cloudflare Worker bindings
 // SECURITY: Never hardcode API keys in source code
-const CF_API_KEY_DEFAULT = process.env.CF_API_KEY || '';
-const CF_EMAIL_DEFAULT = process.env.CF_EMAIL || '';
 const _N8N_WEBHOOK_BASE = process.env.N8N_WEBHOOK_BASE || 'https://n8n.jclee.me/webhook';
 
 // ========================================
