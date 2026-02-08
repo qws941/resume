@@ -295,43 +295,235 @@
       "description": "Skills grouped by category",
       "properties": {
         "cloud": {
-          "type": "array",
-          "items": { "type": "string" },
+          "anyOf": [
+            { "type": "array", "items": { "type": "string" } },
+            {
+              "type": "object",
+              "properties": {
+                "title": { "type": "string" },
+                "icon": { "type": "string" },
+                "items": {
+                  "type": "array",
+                  "items": {
+                    "anyOf": [
+                      { "type": "string" },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "name": { "type": "string" },
+                          "level": { "type": "string" }
+                        },
+                        "required": ["name"]
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          ],
           "description": "Cloud and infrastructure skills"
         },
         "devops": {
-          "type": "array",
-          "items": { "type": "string" },
+          "anyOf": [
+            { "type": "array", "items": { "type": "string" } },
+            {
+              "type": "object",
+              "properties": {
+                "title": { "type": "string" },
+                "icon": { "type": "string" },
+                "items": {
+                  "type": "array",
+                  "items": {
+                    "anyOf": [
+                      { "type": "string" },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "name": { "type": "string" },
+                          "level": { "type": "string" }
+                        },
+                        "required": ["name"]
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          ],
           "description": "DevOps and CI/CD skills"
         },
         "automation": {
-          "type": "array",
-          "items": { "type": "string" },
+          "anyOf": [
+            { "type": "array", "items": { "type": "string" } },
+            {
+              "type": "object",
+              "properties": {
+                "title": { "type": "string" },
+                "icon": { "type": "string" },
+                "items": {
+                  "type": "array",
+                  "items": {
+                    "anyOf": [
+                      { "type": "string" },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "name": { "type": "string" },
+                          "level": { "type": "string" }
+                        },
+                        "required": ["name"]
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          ],
           "description": "Automation and scripting skills"
         },
         "database": {
-          "type": "array",
-          "items": { "type": "string" },
+          "anyOf": [
+            { "type": "array", "items": { "type": "string" } },
+            {
+              "type": "object",
+              "properties": {
+                "title": { "type": "string" },
+                "icon": { "type": "string" },
+                "items": {
+                  "type": "array",
+                  "items": {
+                    "anyOf": [
+                      { "type": "string" },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "name": { "type": "string" },
+                          "level": { "type": "string" }
+                        },
+                        "required": ["name"]
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          ],
           "description": "Database skills"
         },
         "programming": {
-          "type": "array",
-          "items": { "type": "string" },
+          "anyOf": [
+            { "type": "array", "items": { "type": "string" } },
+            {
+              "type": "object",
+              "properties": {
+                "title": { "type": "string" },
+                "icon": { "type": "string" },
+                "items": {
+                  "type": "array",
+                  "items": {
+                    "anyOf": [
+                      { "type": "string" },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "name": { "type": "string" },
+                          "level": { "type": "string" }
+                        },
+                        "required": ["name"]
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          ],
           "description": "Programming languages"
         },
         "monitoring": {
-          "type": "array",
-          "items": { "type": "string" },
+          "anyOf": [
+            { "type": "array", "items": { "type": "string" } },
+            {
+              "type": "object",
+              "properties": {
+                "title": { "type": "string" },
+                "icon": { "type": "string" },
+                "items": {
+                  "type": "array",
+                  "items": {
+                    "anyOf": [
+                      { "type": "string" },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "name": { "type": "string" },
+                          "level": { "type": "string" }
+                        },
+                        "required": ["name"]
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          ],
           "description": "Monitoring and observability tools"
         },
         "security": {
-          "type": "array",
-          "items": { "type": "string" },
+          "anyOf": [
+            { "type": "array", "items": { "type": "string" } },
+            {
+              "type": "object",
+              "properties": {
+                "title": { "type": "string" },
+                "icon": { "type": "string" },
+                "items": {
+                  "type": "array",
+                  "items": {
+                    "anyOf": [
+                      { "type": "string" },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "name": { "type": "string" },
+                          "level": { "type": "string" }
+                        },
+                        "required": ["name"]
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          ],
           "description": "Security tools and practices"
         },
         "compliance": {
-          "type": "array",
-          "items": { "type": "string" },
+          "anyOf": [
+            { "type": "array", "items": { "type": "string" } },
+            {
+              "type": "object",
+              "properties": {
+                "title": { "type": "string" },
+                "icon": { "type": "string" },
+                "items": {
+                  "type": "array",
+                  "items": {
+                    "anyOf": [
+                      { "type": "string" },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "name": { "type": "string" },
+                          "level": { "type": "string" }
+                        },
+                        "required": ["name"]
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          ],
           "description": "Compliance and certification knowledge"
         }
       },

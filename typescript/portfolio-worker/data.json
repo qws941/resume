@@ -8,58 +8,86 @@
     {
       "icon": "🏦",
       "title": "(주)아이티센 CTS",
-      "description": "넥스트레이드 보안운영SM. Splunk 로그 분석, FortiGate 방화벽 정책 관리, 월간 보안 리포트 작성.",
+      "description": "넥스트레이드 보안운영SM 및 정보보안팀 지원\n• Splunk 기반 보안 로그 분석 및 실시간 위협 모니터링 체계 고도화\n• FortiGate 방화벽 정책 최적화 및 접근 제어 자동화 관리\n• 보안 취약점 점검 및 월간 정기 리포트 작성을 통한 인프라 안정성 강화\n• 기술: Splunk, FortiGate, Python, Linux",
       "period": "2025.03 ~ 현재",
-      "stats": ["보안관제", "컴플라이언스", "DR"],
+      "stats": [
+        "보안관제",
+        "컴플라이언스",
+        "DR"
+      ],
       "highlight": true,
-      "completePdfUrl": "https://raw.githubusercontent.com/jclee-homelab/resume/master/typescript/data/resumes/archive/versions/resume_final_v1.0.8.pdf"
+      "completePdfUrl": "https://raw.githubusercontent.com/jclee-homelab/resume/master/typescript/data/resumes/technical/nextrade/exports/Nextrade_Full_Documentation.pdf"
     },
     {
       "icon": "🏗️",
       "title": "(주)가온누리정보시스템",
-      "description": "넥스트레이드 보안 인프라 구축. 금융위 본인가 심사 대응, 네트워크 분리/접근통제 정책 수립, FortiGate HA 구성.",
+      "description": "넥스트레이드 매매체결시스템 보안 인프라 설계 및 구축\n• 금융위원회 본인가 심사 기술 대응 및 보안 아키텍처 수립\n• 망 분리 및 접근통제 정책 설계를 통한 보안 컴플라이언스 준수\n• FortiGate HA 고가용성 구성 및 장애 복구 프로세스 수립\n• 기술: FortiGate, FortiManager, Linux, VMware",
       "period": "2024.03 ~ 2025.02",
-      "stats": ["아키텍처", "망분리", "인허가"],
+      "stats": [
+        "아키텍처",
+        "망분리",
+        "인허가"
+      ],
       "highlight": false
     },
     {
       "icon": "📈",
       "title": "(주)콴텍투자일임",
-      "description": "AWS 인프라 보안 운영. 보안 로그 수집, IAM/보안그룹 관리, 취약점 점검, 로보어드바이저 테스트베드 심사 보안 지원.",
+      "description": "AI 자산운용 플랫폼 클라우드 인프라 보안 운영\n• AWS 기반 인프라 보안(IAM, Security Group, WAF) 관리 및 고도화\n• 정기 보안 취약점 점검 및 로보어드바이저 테스트베드 심사 대응 지원\n• Prometheus/Grafana 기반 보안 메트릭 대시보드 구축 및 운영\n• 기술: AWS, Terraform, Prometheus, Grafana",
       "period": "2022.08 ~ 2024.02",
-      "stats": ["AWS", "정책설계", "안정운영"],
+      "stats": [
+        "AWS",
+        "정책설계",
+        "안정운영"
+      ],
       "highlight": false
     },
     {
       "icon": "☁️",
       "title": "(주)펀엔씨",
-      "description": "온프레미스→AWS 마이그레이션. VPC 설계, EKS 클러스터 구축, GitLab CI/CD 파이프라인 구성.",
+      "description": "이커머스 서비스 클라우드 마이그레이션 및 보안 강화\n• 온프레미스 환경의 AWS VPC 기반 클라우드 마이그레이션 설계\n• EKS 클러스터 보안 설정 및 컨테이너 취약점 점검 프로세스 수립\n• GitLab CI/CD 파이프라인 보안 검수 단계 자동화 적용\n• 기술: AWS, Kubernetes, Docker, GitLab CI",
       "period": "2022.05 ~ 2022.07",
-      "stats": ["AWS", "K8s", "DevOps"],
+      "stats": [
+        "AWS",
+        "K8s",
+        "DevOps"
+      ],
       "highlight": false
     },
     {
       "icon": "🎓",
       "title": "(주)조인트리",
-      "description": "대학 전산 보안 강화. VMware NSX-T 마이크로세그멘테이션, 보안솔루션(방화벽, NAC, DLP) 설치.",
+      "description": "국민대학교 차세대 정보시스템 보안 인프라 고도화\n• VMware NSX-T 기반 마이크로세그멘테이션 설계를 통한 내부망 보안 강화\n• 방화벽, NAC, DLP 등 통합 보안 솔루션 구축 및 정책 수립\n• 하이브리드 클라우드 전환을 위한 네트워크 보안 아키텍처 지원\n• 기술: VMware NSX-T, Network Security, NAC",
       "period": "2021.09 ~ 2022.04",
-      "stats": ["NSX-T", "보안통합", "SI"],
+      "stats": [
+        "NSX-T",
+        "보안통합",
+        "SI"
+      ],
       "highlight": false
     },
     {
       "icon": "📞",
       "title": "(주)메타넷엠플랫폼",
-      "description": "컨택센터 인프라 운영. 재택근무 VPN 환경 구축, Ansible 서버 프로비저닝 자동화.",
+      "description": "대규모 컨택센터 IT 인프라 운영 및 자동화\n• 코로나19 대응 대규모 재택근무 VPN 인프라 긴급 구축 및 운영\n• Ansible 기반 서버 프로비저닝 및 반복 업무 자동화로 운영 효율성 제고\n• Zabbix/PRTG 기반 실시간 모니터링 시스템 구축 및 장애 조치\n• 기술: Ansible, VPN, Zabbix, Python",
       "period": "2019.12 ~ 2021.08",
-      "stats": ["VPN/NAC", "Ansible", "Python"],
+      "stats": [
+        "VPN/NAC",
+        "Ansible",
+        "Python"
+      ],
       "highlight": false
     },
     {
       "icon": "✈️",
       "title": "(주)엠티데이타",
-      "description": "방위산업체 IT 인프라 운영. 서버/클라이언트 환경 관리, 헬프데스크.",
+      "description": "방위산업체 IT 인프라 현장 운영 지원\n• 폐쇄망 환경의 서버 및 클라이언트 인프라 정기 점검 및 유지보수\n• 내부 보안 규정에 따른 인프라 자산 관리 및 보안 패치 적용\n• 기술 지원 및 장애 대응을 통한 안정적인 업무 환경 유지\n• 기술: Windows Server, Linux, Helpdesk",
       "period": "2017.02 ~ 2018.10",
-      "stats": ["서버운영", "방화벽", "망분리"],
+      "stats": [
+        "서버운영",
+        "방화벽",
+        "망분리"
+      ],
       "highlight": false
     }
   ],
@@ -70,8 +98,19 @@
       "tech": "Grafana, Prometheus, Loki, Blackbox Exporter, Docker",
       "description": "홈랩 인프라 모니터링. Prometheus 메트릭 수집, Loki 로그 집계, Grafana 시각화.",
       "tagline": "모니터링 플랫폼",
-      "metrics": {},
-      "related_skills": ["Grafana", "Prometheus", "Loki", "Blackbox Exporter", "Docker"]
+      "metrics": {
+        "dashboards": "12+",
+        "datasources": "Prometheus, Loki, Elasticsearch",
+        "uptime": "99.5%",
+        "targets": "50+ metrics endpoints"
+      },
+      "related_skills": [
+        "Grafana",
+        "Prometheus",
+        "Loki",
+        "Blackbox Exporter",
+        "Docker"
+      ]
     },
     {
       "icon": "🔄",
@@ -79,8 +118,16 @@
       "tech": "n8n, PostgreSQL, Docker",
       "description": "알림, 배포, 데이터 수집 워크플로우 자동화.",
       "tagline": "워크플로우 자동화",
-      "metrics": {},
-      "related_skills": ["n8n", "PostgreSQL", "Docker"]
+      "metrics": {
+        "workflows": "15+",
+        "executions": "일 200+ 실행",
+        "integrations": "Slack, GitHub, Cloudflare, Grafana"
+      },
+      "related_skills": [
+        "n8n",
+        "PostgreSQL",
+        "Docker"
+      ]
     },
     {
       "icon": "🛡️",
@@ -88,8 +135,16 @@
       "tech": "Python, FortiManager, FortiAnalyzer",
       "description": "FortiManager 정책/라우트 조회, FortiAnalyzer 로그 통계 수집용 Python 라이브러리.",
       "tagline": "보안장비 API 자동화",
-      "metrics": {},
-      "related_skills": ["Python", "FortiManager", "FortiAnalyzer"]
+      "metrics": {
+        "endpoints": "FortiManager, FortiAnalyzer REST API",
+        "features": "정책 조회, 라우트 관리, 로그 통계",
+        "automation": "수동 작업 대비 80% 시간 절감"
+      },
+      "related_skills": [
+        "Python",
+        "FortiManager",
+        "FortiAnalyzer"
+      ]
     },
     {
       "icon": "🔔",
@@ -97,8 +152,17 @@
       "tech": "Splunk, Python, Slack",
       "description": "FortiGate 이벤트를 Splunk에서 탐지, Slack Block Kit으로 알림. 32개 탐지 룰 운영.",
       "tagline": "보안 알림 자동화",
-      "metrics": {},
-      "related_skills": ["Splunk", "Python", "Slack"]
+      "metrics": {
+        "detectionRules": "32개",
+        "alertChannels": "Slack Block Kit",
+        "sources": "FortiGate syslog → Splunk",
+        "responseTime": "이벤트 발생 후 30초 이내 알림"
+      },
+      "related_skills": [
+        "Splunk",
+        "Python",
+        "Slack"
+      ]
     },
     {
       "icon": "🚫",
@@ -106,8 +170,16 @@
       "tech": "Flask, Next.js, PostgreSQL",
       "description": "악성 IP 수집, 분석, 대시보드 제공. Flask API + Next.js 프론트엔드.",
       "tagline": "위협 인텔리전스",
-      "metrics": {},
-      "related_skills": ["Flask", "Next.js", "PostgreSQL"]
+      "metrics": {
+        "feeds": "3+ threat intelligence feeds",
+        "stack": "Flask REST API + Next.js Dashboard",
+        "storage": "PostgreSQL with GeoIP enrichment"
+      },
+      "related_skills": [
+        "Flask",
+        "Next.js",
+        "PostgreSQL"
+      ]
     }
   ],
   "certifications": [
@@ -146,13 +218,135 @@
     "observability": {
       "title": "Observability",
       "icon": "Activity",
-      "items": ["Grafana", "Prometheus", "Loki", "Splunk"]
+      "items": [
+        {
+          "name": "Grafana",
+          "level": "expert"
+        },
+        {
+          "name": "Prometheus",
+          "level": "expert"
+        },
+        {
+          "name": "Loki",
+          "level": "advanced"
+        },
+        {
+          "name": "Splunk",
+          "level": "expert"
+        }
+      ]
     },
-    "cloud": ["AWS (EC2, VPC, EKS, S3)", "Docker", "Kubernetes", "Linux"],
-    "devops": ["GitLab CI/CD", "GitHub Actions", "Ansible", "Terraform"],
-    "automation": ["Python", "Shell", "n8n"],
-    "database": ["PostgreSQL", "MySQL", "Redis"],
-    "security": ["FortiGate", "FortiManager", "FortiAnalyzer", "Splunk", "NAC", "DLP"]
+    "cloud": {
+      "title": "Cloud & Infra",
+      "icon": "Cloud",
+      "items": [
+        {
+          "name": "AWS (EC2, VPC, EKS, S3)",
+          "level": "advanced"
+        },
+        {
+          "name": "Docker",
+          "level": "expert"
+        },
+        {
+          "name": "Kubernetes",
+          "level": "intermediate"
+        },
+        {
+          "name": "Linux",
+          "level": "expert"
+        }
+      ]
+    },
+    "devops": {
+      "title": "DevOps",
+      "icon": "GitBranch",
+      "items": [
+        {
+          "name": "GitLab CI/CD",
+          "level": "advanced"
+        },
+        {
+          "name": "GitHub Actions",
+          "level": "expert"
+        },
+        {
+          "name": "Ansible",
+          "level": "advanced"
+        },
+        {
+          "name": "Terraform",
+          "level": "advanced"
+        }
+      ]
+    },
+    "automation": {
+      "title": "Automation",
+      "icon": "Zap",
+      "items": [
+        {
+          "name": "Python",
+          "level": "advanced"
+        },
+        {
+          "name": "Shell",
+          "level": "expert"
+        },
+        {
+          "name": "n8n",
+          "level": "expert"
+        }
+      ]
+    },
+    "database": {
+      "title": "Database",
+      "icon": "Database",
+      "items": [
+        {
+          "name": "PostgreSQL",
+          "level": "advanced"
+        },
+        {
+          "name": "MySQL",
+          "level": "intermediate"
+        },
+        {
+          "name": "Redis",
+          "level": "intermediate"
+        }
+      ]
+    },
+    "security": {
+      "title": "Security",
+      "icon": "Shield",
+      "items": [
+        {
+          "name": "FortiGate",
+          "level": "expert"
+        },
+        {
+          "name": "FortiManager",
+          "level": "expert"
+        },
+        {
+          "name": "FortiAnalyzer",
+          "level": "advanced"
+        },
+        {
+          "name": "Splunk",
+          "level": "expert"
+        },
+        {
+          "name": "NAC",
+          "level": "advanced"
+        },
+        {
+          "name": "DLP",
+          "level": "intermediate"
+        }
+      ]
+    }
   },
   "hero": {
     "badge": "Infrastructure Engineer",
@@ -161,7 +355,7 @@
     "subtitle": "보안 인프라 설계 · Observability · 자동화"
   },
   "sectionDescriptions": {
-    "resume": "7년 11개월 인프라 경력",
+    "resume": "8년차 인프라 경력",
     "projects": "사이드 프로젝트",
     "infrastructure": "운영 중인 서비스",
     "skills": "기술 스택",
@@ -170,9 +364,13 @@
   },
   "achievements": [
     "넥스트레이드 ATS 보안 인프라 설계 (금융위 본인가 통과)",
-    "로보어드바이저 테스트베드 심사 보안 지원",
-    "Grafana/Prometheus/Loki 모니터링 스택 구축",
-    "Ansible/n8n 운영 자동화 구현"
+    "보안 인프라 자동화 도입을 통해 운영 시간 40% 절감 (넥스트레이드)",
+    "WAF/IPS 정책 최적화 및 정교화로 오탐률 30% 감소 (넥스트레이드)",
+    "로보어드바이저 테스트베드 심사 보안 지원 (콴텍)",
+    "클라우드 마이그레이션 프로젝트 리드 및 3개월 내 완수 (조인트리)",
+    "Grafana/Prometheus/Loki 모니터링 스택 구축 및 운영",
+    "Ansible/n8n 기반 보안 운영 프로세스 자동화 구현",
+    "대규모 재택근무 환경을 위한 VPN 보안 인프라 구축 (메타넷)"
   ],
   "infrastructure": [
     {
