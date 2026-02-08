@@ -90,19 +90,30 @@ function validateData(data) {
     // 2. Object format: skills.category = { title: "...", icon: "...", items: [...] }
     Object.entries(data.skills).forEach(([cat, value]) => {
       if (Array.isArray(value)) {
-        // Simple array format - all items must be strings
-        if (value.length > 0 && !value.every((item) => typeof item === 'string')) {
-          errors.push(`skills.${cat} array items must be strings`);
+        // Simple array format - all items must be strings or {name, level} objects
+        if (
+          value.length > 0 &&
+          !value.every(
+            (item) =>
+              typeof item === 'string' ||
+              (typeof item === 'object' && item !== null && typeof item.name === 'string')
+          )
+        ) {
+          errors.push(`skills.${cat} array items must be strings or {name, level} objects`);
         }
       } else if (typeof value === 'object' && value !== null) {
-        // Object format - must have items array with strings
+        // Object format - must have items array
         if (!Array.isArray(value.items)) {
           errors.push(`skills.${cat}.items must be an array`);
         } else if (
           value.items.length > 0 &&
-          !value.items.every((item) => typeof item === 'string')
+          !value.items.every(
+            (item) =>
+              typeof item === 'string' ||
+              (typeof item === 'object' && item !== null && typeof item.name === 'string')
+          )
         ) {
-          errors.push(`skills.${cat}.items must contain only strings`);
+          errors.push(`skills.${cat}.items must contain strings or {name, level} objects`);
         }
       } else {
         errors.push(`skills.${cat} must be an array or object with items`);
