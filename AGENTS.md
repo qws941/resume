@@ -1,7 +1,7 @@
 # PROJECT KNOWLEDGE BASE
 
 **Generated:** 2026-02-08
-**Commit:** d25808a
+**Commit:** 5e25b78
 **Branch:** master
 **Build System:** Bazel + npm (Google3-style hybrid)
 
@@ -65,17 +65,18 @@ resume/
 
 ## CODE MAP
 
-| Component             | Location                                                 | Purpose                     |
-| --------------------- | -------------------------------------------------------- | --------------------------- |
-| `BaseCrawler`         | `typescript/job-automation/src/crawlers/base-crawler.js` | Anti-bot stealth base class |
-| `UnifiedApplySystem`  | `typescript/job-automation/src/shared/services/apply/`   | Centralized job application |
-| `SessionManager`      | `typescript/job-automation/src/shared/services/session/` | Session persistence         |
-| `WantedClient`        | `typescript/job-automation/src/shared/clients/wanted/`   | Wanted.co.kr API client     |
-| `generate-worker.js`  | `typescript/portfolio-worker/generate-worker.js`         | HTML → worker.js compiler   |
-| `security-headers.js` | `typescript/portfolio-worker/lib/security-headers.js`    | CSP baseline, HSTS          |
-| `sync-resume-data.js` | `tools/scripts/utils/sync-resume-data.js`                | SSoT propagation script     |
-| `terminalCommands`    | `typescript/portfolio-worker/index.html`                 | Interactive CLI commands    |
-| `Workflows`           | `typescript/job-automation/workers/src/workflows/`       | 8 Cloudflare Workflows      |
+| Component             | Location                                                 | Purpose                               |
+| --------------------- | -------------------------------------------------------- | ------------------------------------- |
+| `BaseCrawler`         | `typescript/job-automation/src/crawlers/base-crawler.js` | Anti-bot stealth base class           |
+| `UnifiedApplySystem`  | `typescript/job-automation/src/shared/services/apply/`   | Centralized job application           |
+| `SessionManager`      | `typescript/job-automation/src/shared/services/session/` | Session persistence                   |
+| `WantedClient`        | `typescript/job-automation/src/shared/clients/wanted/`   | Wanted.co.kr API client               |
+| `generate-worker.js`  | `typescript/portfolio-worker/generate-worker.js`         | HTML → worker.js compiler             |
+| `security-headers.js` | `typescript/portfolio-worker/lib/security-headers.js`    | CSP baseline, HSTS                    |
+| `sync-resume-data.js` | `tools/scripts/utils/sync-resume-data.js`                | SSoT propagation script               |
+| `getResumeBasePath`   | `typescript/job-automation/src/shared/utils/paths.js`    | Replaces hardcoded ~/dev/resume paths |
+| `terminalCommands`    | `typescript/portfolio-worker/index.html`                 | Interactive CLI commands              |
+| `Workflows`           | `typescript/job-automation/workers/src/workflows/`       | 8 Cloudflare Workflows                |
 
 ## BAZEL TARGETS
 
@@ -106,29 +107,30 @@ npm run sync:data     # Propagate SSoT changes
 
 ## ANTI-PATTERNS
 
-| Anti-Pattern                   | Why                                     | Do Instead                                  |
-| ------------------------------ | --------------------------------------- | ------------------------------------------- |
-| Edit `worker.js` directly      | Regenerated on build                    | Edit `generate-worker.js` or HTML           |
-| `trim()` before CSP hash       | Whitespace affects SHA-256              | Hash exact source string                    |
-| Naked Puppeteer/Playwright     | Bot detection                           | Use `BaseCrawler` with stealth              |
-| Cross-client imports           | Circular dependencies                   | Each client isolated in own dir             |
-| Hardcode secrets               | Security violation                      | Use `.env` or `wrangler secret`             |
-| Skip OWNERS review             | Breaks code ownership                   | Get OWNERS approval                         |
-| Edit resume in multiple places | Data inconsistency                      | Edit only `resume_data.json` (SSoT)         |
-| Duplicate shared code          | workers/ vs shared/ drift               | Keep business logic in shared/              |
-| Duplicate shared↔workers code  | styles.js, resume-sync.js exist in both | Consolidate to shared/, import from workers |
-| Ignore SECURITY_WARNING.md     | Contains 6 exposed API keys             | Read and act on warnings                    |
+| Anti-Pattern                   | Why                                                | Do Instead                                                    |
+| ------------------------------ | -------------------------------------------------- | ------------------------------------------------------------- |
+| Edit `worker.js` directly      | Regenerated on build                               | Edit `generate-worker.js` or HTML                             |
+| `trim()` before CSP hash       | Whitespace affects SHA-256                         | Hash exact source string                                      |
+| Naked Puppeteer/Playwright     | Bot detection                                      | Use `BaseCrawler` with stealth                                |
+| Cross-client imports           | Circular dependencies                              | Each client isolated in own dir                               |
+| Hardcode secrets               | Security violation                                 | Use `.env` or `wrangler secret`                               |
+| Skip OWNERS review             | Breaks code ownership                              | Get OWNERS approval                                           |
+| Edit resume in multiple places | Data inconsistency                                 | Edit only `resume_data.json` (SSoT)                           |
+| Duplicate shared code          | workers/ vs shared/ drift                          | Keep business logic in shared/                                |
+| Duplicate shared↔workers code  | portfolio/src/job/ mirrors workers/src/ (37 files) | Consolidate: single source in workers/, import from portfolio |
+| Ignore SECURITY_WARNING.md     | Contains 6 exposed API keys                        | Read and act on warnings                                      |
 
 ## REFACTORING CANDIDATES
 
-| File                 | Lines | Issue              | Recommended Fix                      |
-| -------------------- | ----- | ------------------ | ------------------------------------ |
-| `webhooks.js`        | 1129  | God Object         | Split into handlers/ by event type   |
-| `resume-sync.js`     | 955   | 450-line switch    | Command pattern                      |
-| `generate-worker.js` | 1156  | Monolithic build   | Extract CSP/routing modules          |
-| `worker.js`          | 1534  | Generated monolith | Modularize generate-worker.js output |
-| `dashboard.html`     | 1386  | Inline everything  | Extract JS/CSS into separate files   |
-| `profile-sync.js`    | 1039  | Complex sync logic | Split into validators + transformers |
+| File                   | Lines    | Issue                       | Recommended Fix                      |
+| ---------------------- | -------- | --------------------------- | ------------------------------------ |
+| `webhooks.js`          | 1129     | God Object                  | Split into handlers/ by event type   |
+| `resume-sync.js`       | 955      | 450-line switch             | Command pattern                      |
+| `generate-worker.js`   | 1041     | Monolithic build            | Extract CSP/routing modules          |
+| `worker.js`            | 1534     | Generated monolith          | Modularize generate-worker.js output |
+| `dashboard.html`       | 1386     | Inline everything           | Extract JS/CSS into separate files   |
+| `profile-sync.js`      | 966      | Complex sync logic          | Split into validators + transformers |
+| `src/job/` (portfolio) | 37 files | Full mirror of workers/src/ | Deduplicate: single source, import   |
 
 ## BUILD PIPELINE
 
@@ -172,21 +174,54 @@ Dashboard Worker: workers/src/index.js → Cloudflare Worker
 
 ## CI/CD PIPELINE
 
-**GitHub Actions** (`.github/workflows/ci.yml`):
+**GitHub Actions** (`.github/workflows/ci.yml` v2.0):
 
-| Trigger               | Action                                           |
-| --------------------- | ------------------------------------------------ |
-| Push to `master`      | Build → Test → Deploy (production)               |
-| Push to `develop`     | Build → Test → Deploy (staging)                  |
-| Deploy/verify failure | Auto-rollback via wrangler rollback              |
-| PR opened/updated     | Ephemeral preview worker (resume-pr-{N})         |
-| PR to `master`        | Build → Test → Preview comments                  |
-| `workflow_dispatch`   | Manual deploy (portfolio, job-dashboard, or all) |
+| Trigger               | Action                                                          |
+| --------------------- | --------------------------------------------------------------- |
+| Push to `master`      | Analyze → Lint/Test → Build → Deploy → Verify                   |
+| Push to `develop`     | Analyze → Lint/Test (no deploy)                                 |
+| Deploy/verify failure | Auto-rollback via `wrangler rollback`                           |
+| PR opened/updated     | Ephemeral preview worker (`resume-pr-{N}`)                      |
+| PR to `master`        | Analyze → Lint/Test → Build → Preview comment                   |
+| `workflow_dispatch`   | Manual deploy with `force_deploy`/`dry_run`/`skip_tests` inputs |
 
-**Deployed Targets:**
+**Pipeline Architecture (13 jobs):**
 
-- `portfolio-worker` → resume.jclee.me
-- `job-automation/workers` → resume.jclee.me/job/\*
+```
+analyze → lint ──────────────────┐
+        → typecheck ─────────────┤
+        → test-unit ─────────────┤→ build → deploy → verify → notify
+        → test-e2e ──────────────┤              ↓ (on failure)
+        → security-scan ─────────┘          rollback
+```
+
+| Job               | Purpose                                                     |
+| ----------------- | ----------------------------------------------------------- |
+| `analyze`         | Affected target detection via `affected.sh`                 |
+| `lint`            | ESLint flat config                                          |
+| `typecheck`       | TypeScript type checking                                    |
+| `test-unit`       | Jest unit tests (skippable via `skip_tests`)                |
+| `test-e2e`        | Playwright E2E (skippable, browser cached ~500MB)           |
+| `security-scan`   | npm audit + secret detection                                |
+| `build`           | `generate-worker.js` → `worker.js` (strict gate)            |
+| `deploy`          | `wrangler deploy --env production` + GitHub Deployments API |
+| `verify`          | CF API age check + HTTP health (`/` and `/job/health`)      |
+| `rollback`        | `wrangler rollback` on deploy/verify failure                |
+| `notify`          | Slack notification on deploy outcome                        |
+| `deploy-preview`  | PR ephemeral worker (`resume-pr-{N}`)                       |
+| `cleanup-preview` | Cleanup preview workers on PR close                         |
+
+**Key Design Decisions:**
+
+- **Composite Action** (`.github/actions/setup/action.yml`): Eliminates 6x Node/npm setup duplication
+- **Strict Deploy Gate**: `success()` (not `always()&&!failure()&&!cancelled()`) with `force_deploy` bypass
+- **Separated Concurrency**: PR gets `pr-{N}` (cancel-in-progress), deploy gets `deploy-production` (queue)
+- **Playwright Cache**: Browser binaries cached via composite action (~500MB/run savings)
+- **Verify Strategy**: CF API worker age as primary check; HTTP health as warning-only (Bot Fight Mode blocks CI IPs)
+
+**Deployed Target:**
+
+- Single worker "resume" → `resume.jclee.me` (serves both portfolio and `/job/*` dashboard)
 
 **Required Secrets:** `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`, `AUTH_SYNC_SECRET`, `ENCRYPTION_KEY`
 
@@ -244,7 +279,7 @@ source ~/.env && cd typescript/portfolio-worker && \
 | `BUILD.bazel`         | Package build rules (root aliases)        |
 | `OWNERS`              | Root code ownership                       |
 | `package.json`        | npm workspaces root                       |
-| `eslint.config.cjs`   | ESLint flat config (138-warning baseline) |
+| `eslint.config.cjs`   | ESLint flat config (117-warning baseline) |
 | `SECURITY_WARNING.md` | Exposed API key warnings                  |
 
 ## AGENTS.MD HIERARCHY
@@ -261,6 +296,7 @@ Subdirectory AGENTS.md files provide domain-specific context:
 | `tests/AGENTS.md`                             | Test patterns, coverage reqs, wait strategy |
 | `tools/AGENTS.md`                             | Build scripts, CI utilities                 |
 | `infrastructure/AGENTS.md`                    | Observability stack (Grafana)               |
-| `docs/AGENTS.md`                              | Documentation hub, requirements specs       |
+| `docs/AGENTS.md`                              | Documentation hub, \_vendor/bmad warning    |
+| `third_party/AGENTS.md`                       | npm deps, One Version Rule                  |
 
 See subdirectory AGENTS.md for deeper context on each component.

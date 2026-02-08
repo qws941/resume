@@ -1,5 +1,5 @@
 # =============================================================================
-# RESUME MONOREPO - GITHUB ACTIONS CI/CD PIPELINE
+# RESUME MONOREPO - CI/CD PIPELINE v2.0
 # =============================================================================
 # Production URLs:
 #   - Portfolio: https://resume.jclee.me
@@ -21,6 +21,16 @@ on:
     types: [opened, synchronize, reopened, closed]
   workflow_dispatch:
     inputs:
+      force_deploy:
+        description: 'Force deploy (bypass test/lint failures)'
+        required: false
+        default: false
+        type: boolean
+      dry_run:
+        description: 'Dry run (skip actual deployment)'
+        required: false
+        default: false
+        type: boolean
       skip_tests:
         description: 'Skip tests (emergency deploy only)'
         required: false
@@ -37,10 +47,11 @@ permissions:
   contents: read
   actions: read
   pull-requests: write
+  deployments: write
 
-# Prevent concurrent deployments to same environment
+# PR: cancel-in-progress | Deploy: queue (no cancel)
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: ${{ github.event_name == 'pull_request' && format('pr-{0}', github.event.pull_request.number) || format('deploy-{0}', github.ref) }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
@@ -48,14 +59,14 @@ jobs:
   # STAGE: ANALYZE - Affected Target Analysis
   # ===========================================================================
   analyze:
-    name: Analyze Affected Targets
+    name: Analyze
     runs-on: ubuntu-latest
     outputs:
       portfolio_affected: ${{ steps.affected.outputs.portfolio }}
       job_dashboard_affected: ${{ steps.affected.outputs.job_dashboard }}
       data_affected: ${{ steps.affected.outputs.data }}
       infra_affected: ${{ steps.affected.outputs.infra }}
-      cli_affected: ${{ steps.affected.outputs.cli }}
+      should_deploy: ${{ steps.deploy-decision.outputs.should_deploy }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -67,13 +78,8 @@ jobs:
         run: |
           chmod +x tools/ci/affected.sh
 
-          # Determine correct base ref:
-          # - Push events: use github.event.before (commit before push)
-          # - PR events: use origin/{target_branch}
-          # - workflow_dispatch: use HEAD~1 (deploy previous commit changes)
           if [ "${{ github.event_name }}" = "push" ]; then
             BASE_REF="${{ github.event.before }}"
-            # Handle initial push or force push (before might be all zeros)
             if [ "$BASE_REF" = "0000000000000000000000000000000000000000" ]; then
               BASE_REF="HEAD~1"
             fi
@@ -86,16 +92,13 @@ jobs:
           echo "Using base ref: $BASE_REF"
           ./tools/ci/affected.sh "$BASE_REF"
 
-          # Parse affected targets
           if [ -f .affected/affected_targets.json ]; then
             PORTFOLIO=$(jq -r '.portfolio // false' .affected/affected_targets.json)
             JOB_DASHBOARD=$(jq -r '.job_dashboard // false' .affected/affected_targets.json)
             DATA=$(jq -r '.data // false' .affected/affected_targets.json)
             INFRA=$(jq -r '.infra // false' .affected/affected_targets.json)
           else
-            # Fallback: check changed files manually
             CHANGED_FILES=$(git diff --name-only "$BASE_REF"...HEAD 2>/dev/null || git diff --name-only HEAD~1)
-            
             PORTFOLIO=$(echo "$CHANGED_FILES" | grep -q "typescript/portfolio-worker\|typescript/data" && echo "true" || echo "false")
             JOB_DASHBOARD=$(echo "$CHANGED_FILES" | grep -q "typescript/job-automation" && echo "true" || echo "false")
             DATA=$(echo "$CHANGED_FILES" | grep -q "typescript/data" && echo "true" || echo "false")
@@ -112,6 +115,17 @@ jobs:
           echo "  - Job Dashboard: $JOB_DASHBOARD"
           echo "  - Data: $DATA"
           echo "  - Infrastructure: $INFRA"
+
+      - name: Deploy decision
+        id: deploy-decision
+        run: |
+          if [ "$GITHUB_REF" = "refs/heads/master" ] && [ "${{ github.event_name }}" != "pull_request" ]; then
+            echo "should_deploy=true" >> $GITHUB_OUTPUT
+            echo "🚀 Deploy: YES (master push/dispatch)"
+          else
+            echo "should_deploy=false" >> $GITHUB_OUTPUT
+            echo "⏭️ Deploy: NO (PR or non-master)"
+          fi
 
       - name: Ensure artifact directory exists
         run: mkdir -p .affected && touch .affected/.keep
@@ -135,14 +149,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm ci --prefer-offline --no-audit
+      - name: Setup
+        uses: ./.github/actions/setup
 
       - name: Run ESLint
         run: |
@@ -154,14 +162,12 @@ jobs:
 
           echo "Lint: ${ERRORS:-0} errors, ${WARNINGS:-0} warnings"
 
-          # Quality gate: Errors = fail
           if [ "${ERRORS:-0}" -gt "0" ]; then
             echo "❌ ESLint found errors - failing"
             exit 1
           fi
 
           # Quality gate: Zero-tolerance ratchet (auto-set to current baseline)
-          # To update: run ESLint locally, count warnings, update this number
           ESLINT_WARNING_BASELINE=117
           if [ "${WARNINGS:-0}" -gt "$ESLINT_WARNING_BASELINE" ]; then
             echo "❌ ESLint warnings increased (${WARNINGS} > ${ESLINT_WARNING_BASELINE}) - fix new warnings before merging"
@@ -188,14 +194,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm ci --prefer-offline --no-audit
+      - name: Setup
+        uses: ./.github/actions/setup
 
       - name: Download affected analysis
         uses: actions/download-artifact@v4
@@ -221,14 +221,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm ci --prefer-offline --no-audit
+      - name: Setup
+        uses: ./.github/actions/setup
 
       - name: Download affected analysis
         uses: actions/download-artifact@v4
@@ -259,17 +253,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - name: Setup
+        uses: ./.github/actions/setup
         with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm ci --prefer-offline --no-audit
-
-      - name: Install Playwright browsers
-        run: npx playwright install --with-deps chromium
+          install-playwright: 'true'
 
       - name: Sync resume data
         run: npm run sync:data
@@ -282,7 +269,6 @@ jobs:
         run: npm run test:e2e
         env:
           CI: true
-          # Uses local dev server via playwright.config.js webServer
 
       - name: Upload Playwright report
         if: always()
@@ -309,17 +295,10 @@ jobs:
           sudo mv gitleaks /usr/local/bin/
 
       - name: Run gitleaks
-        run: |
-          gitleaks detect --source . --config .gitleaks.toml --verbose --no-git
+        run: gitleaks detect --source . --config .gitleaks.toml --verbose --no-git
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm ci --prefer-offline --no-audit
+      - name: Setup
+        uses: ./.github/actions/setup
 
       - name: Run npm audit
         run: npm audit --audit-level=high || echo "::warning::npm audit found vulnerabilities"
@@ -327,23 +306,20 @@ jobs:
   # ===========================================================================
   # STAGE: BUILD
   # ===========================================================================
-  build-portfolio:
-    name: Build Portfolio Worker
+  build:
+    name: Build
     runs-on: ubuntu-latest
-    needs: [lint, typecheck, test-unit]
-    if: ${{ always() && !failure() && !cancelled() }}
+    needs: [lint, typecheck, test-unit, test-e2e]
+    # Strict gate: all upstream must succeed (skipped tests OK), force_deploy overrides
+    if: >-
+      !cancelled() &&
+      (!failure() || inputs.force_deploy == true)
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm ci --prefer-offline --no-audit
+      - name: Setup
+        uses: ./.github/actions/setup
 
       - name: Sync resume data
         run: npm run sync:data
@@ -362,30 +338,45 @@ jobs:
   # ===========================================================================
   # STAGE: DEPLOY
   # ===========================================================================
-  deploy-portfolio:
-    name: Deploy Portfolio
+  deploy:
+    name: Deploy
     runs-on: ubuntu-latest
-    needs: [build-portfolio, test-e2e, security-scan]
-    if: ${{ always() && !failure() && !cancelled() && github.ref == 'refs/heads/master' }}
+    needs: [analyze, build, security-scan]
+    if: >-
+      !cancelled() &&
+      needs.build.result == 'success' &&
+      needs.analyze.outputs.should_deploy == 'true' &&
+      !inputs.dry_run &&
+      (needs.security-scan.result != 'failure' || inputs.force_deploy == true)
     timeout-minutes: 15
     concurrency:
       group: deploy-production
       cancel-in-progress: false
     environment:
-      name: production/portfolio
+      name: production
       url: ${{ env.PORTFOLIO_URL }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
+      - name: Setup
+        uses: ./.github/actions/setup
 
-      - name: Install dependencies
-        run: npm ci --prefer-offline --no-audit
+      - name: Create GitHub Deployment
+        id: deployment
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const deployment = await github.rest.repos.createDeployment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: context.sha,
+              environment: 'production',
+              auto_merge: false,
+              required_contexts: [],
+              description: `Deploy ${context.sha.substring(0, 7)} to production`
+            });
+            core.setOutput('id', deployment.data.id);
 
       - name: Download build artifacts
         uses: actions/download-artifact@v4
@@ -394,6 +385,7 @@ jobs:
           path: typescript/portfolio-worker/
 
       - name: Deploy to Cloudflare Workers
+        id: wrangler-deploy
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
@@ -401,62 +393,73 @@ jobs:
           workingDirectory: typescript/portfolio-worker
           command: deploy --env production
 
+      - name: Update Deployment Status
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const deploymentId = ${{ steps.deployment.outputs.id }};
+            if (!deploymentId) return;
+            const state = '${{ steps.wrangler-deploy.outcome }}' === 'success' ? 'success' : 'failure';
+            await github.rest.repos.createDeploymentStatus({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              deployment_id: deploymentId,
+              state: state,
+              environment_url: '${{ env.PORTFOLIO_URL }}',
+              log_url: `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`
+            });
+
   # ===========================================================================
   # STAGE: VERIFY
   # ===========================================================================
-  verify-deployment:
-    name: Verify Deployment
+  verify:
+    name: Verify
     runs-on: ubuntu-latest
-    needs: [deploy-portfolio]
-    if: ${{ always() && needs.deploy-portfolio.result == 'success' }}
+    needs: [deploy]
+    if: ${{ needs.deploy.result == 'success' }}
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Verify Portfolio Health
-        if: ${{ needs.deploy-portfolio.result == 'success' }}
+      - name: Verify via Cloudflare API
         run: |
-          echo "=== Verifying Portfolio Deployment ==="
-
-          # Primary: Cloudflare API deployment verification
-          # (immune to Bot Fight Mode that blocks CI datacenter IPs)
-          echo "🔍 Checking deployment via Cloudflare API..."
+          echo "=== Primary: Cloudflare API Verification ==="
           DEPLOY_RESPONSE=$(curl -s -H "Authorization: Bearer ${{ secrets.CLOUDFLARE_API_TOKEN }}" \
             "https://api.cloudflare.com/client/v4/accounts/${{ secrets.CLOUDFLARE_ACCOUNT_ID }}/workers/scripts/resume/deployments")
 
           DEPLOY_SUCCESS=$(echo "$DEPLOY_RESPONSE" | jq -r '.success')
-          if [ "$DEPLOY_SUCCESS" = "true" ]; then
-            LATEST_CREATED=$(echo "$DEPLOY_RESPONSE" | jq -r '.result.deployments[0].created_on // "unknown"')
-            echo "   Latest deployment: $LATEST_CREATED"
-
-            # Verify deployment is recent (within last 10 minutes)
-            if [ "$LATEST_CREATED" != "unknown" ]; then
-              DEPLOY_EPOCH=$(date -d "$LATEST_CREATED" +%s 2>/dev/null || echo "0")
-              NOW_EPOCH=$(date +%s)
-              AGE_SECONDS=$((NOW_EPOCH - DEPLOY_EPOCH))
-              if [ "$AGE_SECONDS" -gt 600 ]; then
-                echo "❌ Latest deployment is ${AGE_SECONDS}s old (>600s) - deploy may not have propagated"
-                exit 1
-              fi
-              echo "✅ Deployment verified via Cloudflare API (age: ${AGE_SECONDS}s)"
-            else
-              echo "⚠️ Could not parse deployment timestamp, skipping age check"
-            fi
-          else
+          if [ "$DEPLOY_SUCCESS" != "true" ]; then
             echo "❌ Cloudflare API verification failed"
             echo "$DEPLOY_RESPONSE" | jq '.' 2>/dev/null || echo "$DEPLOY_RESPONSE"
             exit 1
           fi
 
-          # Secondary: HTTP health check (warning-only, Bot Fight Mode blocks CI IPs)
-          echo ""
-          echo "🌐 HTTP health check (informational)..."
-          HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" -A "resume-ci/1.0" "${{ env.PORTFOLIO_URL }}/health" || true)
-          if [ "$HTTP_CODE" = "200" ]; then
-            echo "✅ HTTP health check passed"
+          LATEST_CREATED=$(echo "$DEPLOY_RESPONSE" | jq -r '.result.deployments[0].created_on // "unknown"')
+          echo "   Latest deployment: $LATEST_CREATED"
+
+          if [ "$LATEST_CREATED" != "unknown" ]; then
+            DEPLOY_EPOCH=$(date -d "$LATEST_CREATED" +%s 2>/dev/null || echo "0")
+            NOW_EPOCH=$(date +%s)
+            AGE_SECONDS=$((NOW_EPOCH - DEPLOY_EPOCH))
+            if [ "$AGE_SECONDS" -gt 600 ]; then
+              echo "❌ Latest deployment is ${AGE_SECONDS}s old (>600s) - deploy may not have propagated"
+              exit 1
+            fi
+            echo "✅ Deployment verified via Cloudflare API (age: ${AGE_SECONDS}s)"
           else
-            echo "⚠️ HTTP health check returned $HTTP_CODE (expected - Cloudflare Bot Fight Mode blocks CI IPs)"
+            echo "⚠️ Could not parse deployment timestamp, skipping age check"
           fi
+
+      - name: Verify Portfolio HTTP (informational)
+        run: |
+          echo "=== Portfolio HTTP Health Check ==="
+          for i in 1 2 3; do
+            HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" -A "resume-ci/1.0" "${{ env.PORTFOLIO_URL }}/health" || true)
+            if [ "$HTTP_CODE" = "200" ]; then
+              echo "✅ Portfolio HTTP health check passed"
+              break
+            fi
+            echo "⚠️ Attempt $i: HTTP $HTTP_CODE (Bot Fight Mode may block CI IPs)"
+            [ "$i" -lt 3 ] && sleep 5
+          done
 
           # Content verification (warning-only)
           CONTENT=$(curl -s -A "resume-ci/1.0" "${{ env.PORTFOLIO_URL }}" || true)
@@ -466,7 +469,21 @@ jobs:
             echo "⚠️ Content verification skipped (Bot Fight Mode)"
           fi
 
-          # Security headers (warning-only)
+      - name: Verify Job Dashboard HTTP (informational)
+        run: |
+          echo "=== Job Dashboard HTTP Health Check ==="
+          for i in 1 2 3; do
+            HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" "${{ env.JOB_DASHBOARD_URL }}/health" || true)
+            if [ "$HTTP_CODE" = "200" ]; then
+              echo "✅ Job Dashboard health check passed"
+              break
+            fi
+            echo "⚠️ Attempt $i: HTTP $HTTP_CODE"
+            [ "$i" -lt 3 ] && sleep 5
+          done
+
+      - name: Verify Security Headers (informational)
+        run: |
           HEADERS=$(curl -sI -A "resume-ci/1.0" "${{ env.PORTFOLIO_URL }}" || true)
           if ! echo "$HEADERS" | grep -qi "content-security-policy"; then
             echo "⚠️ Missing CSP header"
@@ -476,29 +493,16 @@ jobs:
           fi
           echo "✅ Verification completed"
 
-      - name: Verify Job Dashboard Health
-        if: ${{ needs.deploy-portfolio.result == 'success' }}
-        run: |
-          echo "=== Verifying Job Dashboard Deployment ==="
-
-          # Health check (job dashboard is now part of portfolio worker)
-          HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" "${{ env.JOB_DASHBOARD_URL }}/health")
-          if [ "$HTTP_CODE" != "200" ]; then
-            echo "⚠️ Job Dashboard health check returned HTTP $HTTP_CODE"
-          else
-            echo "✅ Job Dashboard health check passed"
-          fi
-
   # ===========================================================================
-  # STAGE: AUTO-ROLLBACK (on verify failure)
+  # STAGE: ROLLBACK (on verify failure)
   # ===========================================================================
-  rollback-portfolio:
-    name: Rollback Portfolio
+  rollback:
+    name: Rollback
     runs-on: ubuntu-latest
-    needs: [verify-deployment]
-    if: ${{ always() && needs.verify-deployment.result == 'failure' }}
+    needs: [verify]
+    if: ${{ always() && needs.verify.result == 'failure' }}
     environment:
-      name: production/portfolio
+      name: production
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -511,10 +515,10 @@ jobs:
           workingDirectory: typescript/portfolio-worker
           command: rollback --env production --message "Auto-rollback triggered by failed verification in run ${{ github.run_id }}"
 
-      - name: Verify rollback health
+      - name: Verify rollback
         run: |
-          echo "=== Verifying rollback health ==="
-          sleep 10  # Wait for rollback to propagate
+          echo "=== Verifying rollback ==="
+          sleep 10
 
           DEPLOY_RESPONSE=$(curl -s -H "Authorization: Bearer ${{ secrets.CLOUDFLARE_API_TOKEN }}" \
             "https://api.cloudflare.com/client/v4/accounts/${{ secrets.CLOUDFLARE_ACCOUNT_ID }}/workers/scripts/resume/deployments")
@@ -552,16 +556,16 @@ jobs:
   notify:
     name: Notify
     runs-on: ubuntu-latest
-    needs: [verify-deployment, rollback-portfolio]
+    needs: [verify, rollback]
     if: always()
     steps:
       - name: Determine status
         id: status
         run: |
-          if [ "${{ needs.verify-deployment.result }}" == "success" ]; then
+          if [ "${{ needs.verify.result }}" == "success" ]; then
             echo "status=success" >> $GITHUB_OUTPUT
             echo "emoji=✅" >> $GITHUB_OUTPUT
-          elif [ "${{ needs.verify-deployment.result }}" == "skipped" ]; then
+          elif [ "${{ needs.verify.result }}" == "skipped" ]; then
             echo "status=skipped" >> $GITHUB_OUTPUT
             echo "emoji=⏭️" >> $GITHUB_OUTPUT
           else
@@ -609,21 +613,18 @@ jobs:
   deploy-preview:
     name: Deploy PR Preview
     runs-on: ubuntu-latest
-    needs: [build-portfolio]
-    if: ${{ github.event_name == 'pull_request' && github.event.action != 'closed' }}
+    needs: [build]
+    if: >-
+      github.event_name == 'pull_request' &&
+      github.event.action != 'closed' &&
+      needs.build.result == 'success'
     timeout-minutes: 15
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm ci --prefer-offline --no-audit
+      - name: Setup
+        uses: ./.github/actions/setup
 
       - name: Download build artifacts
         uses: actions/download-artifact@v4
@@ -653,8 +654,8 @@ jobs:
               issue_number: prNumber
             });
 
-            const botComment = comments.data.find(comment => 
-              comment.user.type === 'Bot' && 
+            const botComment = comments.data.find(comment =>
+              comment.user.type === 'Bot' &&
               comment.body.includes('Preview Deployment')
             );
 
