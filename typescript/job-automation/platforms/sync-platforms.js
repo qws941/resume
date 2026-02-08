@@ -3,15 +3,7 @@
 import { readFileSync, existsSync } from 'fs';
 import { join } from 'path';
 import { homedir } from 'os';
-import { fileURLToPath } from 'url';
-import { dirname } from 'path';
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
-const PROJECT_ROOT = join(homedir(), 'dev/resume');
-const RESUME_DATA_PATH = join(
-  PROJECT_ROOT,
-  'typescript/data/resumes/master/resume_data.json',
-);
+import { getResumeMasterDataPath } from '../src/shared/utils/paths.js';
 
 const PLATFORMS = ['wanted', 'jobkorea', 'remember'];
 
@@ -28,6 +20,7 @@ async function main() {
     process.exit(0);
   }
 
+  const RESUME_DATA_PATH = getResumeMasterDataPath();
   if (!existsSync(RESUME_DATA_PATH)) {
     console.error(`Error: Source not found: ${RESUME_DATA_PATH}`);
     process.exit(1);
@@ -100,14 +93,10 @@ async function checkStatus(platforms) {
       if (status.authenticated) {
         console.log('✅ Authenticated');
         if (status.resumes) {
-          status.resumes.forEach((r) =>
-            console.log(`      └─ Resume: ${r.title || r.id}`),
-          );
+          status.resumes.forEach((r) => console.log(`      └─ Resume: ${r.title || r.id}`));
         }
       } else {
-        console.log(
-          `❌ Not authenticated (${status.error || status.note || 'unknown'})`,
-        );
+        console.log(`❌ Not authenticated (${status.error || status.note || 'unknown'})`);
       }
     } catch (e) {
       console.log(`❌ Error: ${e.message}`);
@@ -126,8 +115,7 @@ async function getPlatformStatus(platform) {
         const resumes = await api.getResumeList();
         return {
           authenticated: true,
-          resumes:
-            resumes.resumes?.map((r) => ({ id: r.id, title: r.title })) || [],
+          resumes: resumes.resumes?.map((r) => ({ id: r.id, title: r.title })) || [],
         };
       } catch (e) {
         return { authenticated: false, error: e.message };
@@ -136,10 +124,7 @@ async function getPlatformStatus(platform) {
 
     case 'jobkorea':
     case 'remember': {
-      const sessionPath = join(
-        homedir(),
-        `.OpenCode/data/${platform}-session.json`,
-      );
+      const sessionPath = join(homedir(), `.OpenCode/data/${platform}-session.json`);
       const hasSession = existsSync(sessionPath);
       return {
         authenticated: hasSession,
@@ -155,9 +140,7 @@ async function getPlatformStatus(platform) {
 }
 
 async function syncPlatforms(sourceData, platforms, options) {
-  console.log(
-    `🚀 Syncing to platforms${options.dry_run ? ' (DRY RUN)' : ''}...\n`,
-  );
+  console.log(`🚀 Syncing to platforms${options.dry_run ? ' (DRY RUN)' : ''}...\n`);
 
   for (const platform of platforms) {
     console.log(`\n📤 ${platform.toUpperCase()}`);
@@ -172,16 +155,14 @@ async function syncPlatforms(sourceData, platforms, options) {
       } else if (result.dry_run) {
         console.log('   📋 Would update:');
         console.log(
-          `      ${JSON.stringify(result.would_update || result.would_sync, null, 2).replace(/\n/g, '\n      ')}`,
+          `      ${JSON.stringify(result.would_update || result.would_sync, null, 2).replace(/\n/g, '\n      ')}`
         );
       } else {
         if (result.updated?.length > 0) {
           console.log(`   ✅ Updated: ${result.updated.join(', ')}`);
         }
         if (result.errors?.length > 0) {
-          result.errors.forEach((e) =>
-            console.log(`   ⚠️  ${e.section}: ${e.error}`),
-          );
+          result.errors.forEach((e) => console.log(`   ⚠️  ${e.section}: ${e.error}`));
         }
       }
     } catch (e) {
@@ -205,9 +186,7 @@ async function syncToPlatform(sourceData, platform, options) {
           would_update: {
             headline: `${sourceData.current.position} | ${sourceData.summary.totalExperience}`,
             careers: sourceData.careers.length,
-            skills:
-              sourceData.skills.security.length +
-              sourceData.skills.cloud.length,
+            skills: sourceData.skills.security.length + sourceData.skills.cloud.length,
           },
         };
       }
@@ -226,14 +205,12 @@ async function syncToPlatform(sourceData, platform, options) {
     }
 
     case 'jobkorea': {
-      const { syncToJobKorea } =
-        await import('./jobkorea/jobkorea-profile-sync.js');
+      const { syncToJobKorea } = await import('./jobkorea/jobkorea-profile-sync.js');
       return await syncToJobKorea({ ...options, headless: false });
     }
 
     case 'remember': {
-      const { syncToRemember } =
-        await import('./remember/remember-profile-sync.js');
+      const { syncToRemember } = await import('./remember/remember-profile-sync.js');
       return await syncToRemember({ ...options, headless: false });
     }
 
@@ -250,9 +227,7 @@ async function previewSync(sourceData, platforms) {
     console.log('   ─────────────────');
 
     const mapped = mapToPlatform(sourceData, platform);
-    console.log(
-      `   ${JSON.stringify(mapped, null, 2).replace(/\n/g, '\n   ')}`,
-    );
+    console.log(`   ${JSON.stringify(mapped, null, 2).replace(/\n/g, '\n   ')}`);
   }
 }
 
