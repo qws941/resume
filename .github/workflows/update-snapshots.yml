@@ -34,12 +34,6 @@ jobs:
       - name: Build portfolio
         run: npm run build
 
-      - name: Start local server
-        run: |
-          npm run start --workspace=typescript/portfolio-worker -- --port 8787 &
-          sleep 5
-          curl -s http://localhost:8787/health || echo "Server health check"
-
       - name: Update visual snapshots
         run: npx playwright test visual --update-snapshots
         env:
