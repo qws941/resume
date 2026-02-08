@@ -136,7 +136,7 @@ async function runPlatform(platformKey, reset = false) {
             log('Login successful! State saved for future runs.', 'success', platformKey);
             break;
           }
-        } catch (_e) {
+        } catch {
           // Navigation might fail, continue waiting
         }
 

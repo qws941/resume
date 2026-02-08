@@ -237,7 +237,7 @@ test.describe('Focus Indicators', () => {
               break;
             }
           }
-        } catch (_e) {}
+        } catch {}
         if (focusVisibleRuleExists) break;
       }
 
