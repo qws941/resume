@@ -28,7 +28,7 @@ function generateResumeCards(resumeData, dataHash) {
             <h3 class="resume-title">${escapeHtml(item.title)}</h3>
             <span class="resume-period">${escapeHtml(item.period)}</span>
           </div>
-          <p class="resume-description">${escapeHtml(item.description)}</p>
+          <p class="resume-description">${escapeHtml(item.description).replace(/\n/g, '<br>')}</p>
           ${
             item.stats && item.stats.length > 0
               ? `<div class="resume-tags">
@@ -75,7 +75,7 @@ function generateProjectCards(projectsData, dataHash) {
                      ${titleElement}
                  </h3>
              </div>
-             <p class="project-description">${escapeHtml(project.description)}</p>
+             <p class="project-description">${escapeHtml(project.description).replace(/\n/g, '<br>')}</p>
              <div class="project-tech">
                  ${escapeHtml(project.tech)}
              </div>
@@ -140,7 +140,7 @@ function generateSkillsList(skillsData, dataHash) {
         <span class="htop-pct">${config.level}%</span>
         <span class="htop-items">${skills
           .slice(0, 4)
-          .map((s) => escapeHtml(s))
+          .map((s) => escapeHtml(typeof s === 'string' ? s : s.name))
           .join(', ')}</span>
       </li>`;
     })

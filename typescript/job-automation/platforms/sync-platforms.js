@@ -186,7 +186,9 @@ async function syncToPlatform(sourceData, platform, options) {
           would_update: {
             headline: `${sourceData.current.position} | ${sourceData.summary.totalExperience}`,
             careers: sourceData.careers.length,
-            skills: sourceData.skills.security.length + sourceData.skills.cloud.length,
+            skills:
+              (sourceData.skills.security?.items || sourceData.skills.security || []).length +
+              (sourceData.skills.cloud?.items || sourceData.skills.cloud || []).length,
           },
         };
       }

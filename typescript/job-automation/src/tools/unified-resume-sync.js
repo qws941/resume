@@ -4,10 +4,7 @@ import { homedir } from 'os';
 import { SessionManager } from './auth.js';
 
 const PROJECT_ROOT = join(homedir(), 'dev/resume');
-const RESUME_DATA_PATH = join(
-  PROJECT_ROOT,
-  'typescript/data/resumes/master/resume_data.json',
-);
+const RESUME_DATA_PATH = join(PROJECT_ROOT, 'typescript/data/resumes/master/resume_data.json');
 
 export const unifiedResumeSyncTool = {
   name: 'unified_resume_sync',
@@ -49,11 +46,7 @@ export const unifiedResumeSyncTool = {
   },
 
   async execute(params) {
-    const {
-      action,
-      platforms = ['wanted', 'jobkorea', 'remember'],
-      dry_run = false,
-    } = params;
+    const { action, platforms = ['wanted', 'jobkorea', 'remember'], dry_run = false } = params;
 
     if (!existsSync(RESUME_DATA_PATH)) {
       return { success: false, error: `Source not found: ${RESUME_DATA_PATH}` };
@@ -177,7 +170,7 @@ function compareWantedData(source, remote) {
   for (let i = 0; i < localCareers.length; i++) {
     const local = localCareers[i];
     const remoteMatch = remoteCareers.find((r) =>
-      r.company?.name?.includes(local.company?.replace(/[()주]/g, '')),
+      r.company?.name?.includes(local.company?.replace(/[()주]/g, ''))
     );
 
     if (!remoteMatch) {
@@ -221,9 +214,7 @@ function mapToWantedFormat(source) {
       company_name: c.company,
       title: c.role,
       start_time: parseDate(c.period.split(' ~ ')[0]),
-      end_time: c.period.includes('현재')
-        ? null
-        : parseDate(c.period.split(' ~ ')[1]),
+      end_time: c.period.includes('현재') ? null : parseDate(c.period.split(' ~ ')[1]),
       served: !c.period.includes('현재'),
       projects: [{ title: c.project, description: c.description }],
     })),
@@ -237,9 +228,10 @@ function mapToWantedFormat(source) {
         status: source.education.status === '재학중' ? 'ENROLLED' : 'GRADUATED',
       },
     ],
-    skills: source.skills.security
-      .concat(source.skills.cloud)
-      .concat(source.skills.automation)
+    skills: (source.skills.security?.items || source.skills.security || [])
+      .concat(source.skills.cloud?.items || source.skills.cloud || [])
+      .concat(source.skills.automation?.items || source.skills.automation || [])
+      .map((s) => (typeof s === 'string' ? s : s.name))
       .slice(0, 20),
   };
 }
