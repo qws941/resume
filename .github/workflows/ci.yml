@@ -15,7 +15,7 @@ name: CI/CD Pipeline
 
 on:
   push:
-    branches: [master, develop]
+    branches: [master]
   pull_request:
     branches: [master]
     types: [opened, synchronize, reopened, closed]
@@ -32,8 +32,6 @@ env:
   PLAYWRIGHT_VERSION: '1.58.1'
   PORTFOLIO_URL: 'https://resume.jclee.me'
   JOB_DASHBOARD_URL: 'https://resume.jclee.me/job'
-  STAGING_PORTFOLIO_URL: 'https://resume-staging.jclee.me'
-  STAGING_JOB_URL: 'https://resume.jclee.me/job-staging'
 
 permissions:
   contents: read
@@ -164,7 +162,7 @@ jobs:
 
           # Quality gate: Zero-tolerance ratchet (auto-set to current baseline)
           # To update: run ESLint locally, count warnings, update this number
-          ESLINT_WARNING_BASELINE=138
+          ESLINT_WARNING_BASELINE=0
           if [ "${WARNINGS:-0}" -gt "$ESLINT_WARNING_BASELINE" ]; then
             echo "❌ ESLint warnings increased (${WARNINGS} > ${ESLINT_WARNING_BASELINE}) - fix new warnings before merging"
             exit 1
@@ -404,48 +402,6 @@ jobs:
           command: deploy --env production
 
   # ===========================================================================
-  # STAGE: STAGING DEPLOY (develop branch only)
-  # ===========================================================================
-  deploy-portfolio-staging:
-    name: Deploy Portfolio to Staging
-    runs-on: ubuntu-latest
-    concurrency:
-      group: deploy-staging
-      cancel-in-progress: false
-    needs: [build-portfolio, test-e2e, security-scan]
-    if: ${{ always() && !failure() && !cancelled() && github.ref == 'refs/heads/develop' }}
-    timeout-minutes: 15
-    environment:
-      name: staging/portfolio
-      url: ${{ env.STAGING_PORTFOLIO_URL }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm ci --prefer-offline --no-audit
-
-      - name: Download build artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: portfolio-worker
-          path: typescript/portfolio-worker/
-
-      - name: Deploy to Cloudflare Workers (Staging)
-        uses: cloudflare/wrangler-action@v3
-        with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          workingDirectory: typescript/portfolio-worker
-          command: deploy --env staging
-
-  # ===========================================================================
   # STAGE: VERIFY
   # ===========================================================================
   verify-deployment:
@@ -471,8 +427,21 @@ jobs:
           DEPLOY_SUCCESS=$(echo "$DEPLOY_RESPONSE" | jq -r '.success')
           if [ "$DEPLOY_SUCCESS" = "true" ]; then
             LATEST_CREATED=$(echo "$DEPLOY_RESPONSE" | jq -r '.result.deployments[0].created_on // "unknown"')
-            echo "✅ Deployment verified via Cloudflare API"
             echo "   Latest deployment: $LATEST_CREATED"
+
+            # Verify deployment is recent (within last 10 minutes)
+            if [ "$LATEST_CREATED" != "unknown" ]; then
+              DEPLOY_EPOCH=$(date -d "$LATEST_CREATED" +%s 2>/dev/null || echo "0")
+              NOW_EPOCH=$(date +%s)
+              AGE_SECONDS=$((NOW_EPOCH - DEPLOY_EPOCH))
+              if [ "$AGE_SECONDS" -gt 600 ]; then
+                echo "❌ Latest deployment is ${AGE_SECONDS}s old (>600s) - deploy may not have propagated"
+                exit 1
+              fi
+              echo "✅ Deployment verified via Cloudflare API (age: ${AGE_SECONDS}s)"
+            else
+              echo "⚠️ Could not parse deployment timestamp, skipping age check"
+            fi
           else
             echo "❌ Cloudflare API verification failed"
             echo "$DEPLOY_RESPONSE" | jq '.' 2>/dev/null || echo "$DEPLOY_RESPONSE"
@@ -520,54 +489,6 @@ jobs:
             echo "✅ Job Dashboard health check passed"
           fi
 
-  verify-staging:
-    name: Verify Staging Deployment
-    runs-on: ubuntu-latest
-    needs: [deploy-portfolio-staging]
-    if: ${{ always() && needs.deploy-portfolio-staging.result == 'success' }}
-    steps:
-      - name: Verify Portfolio Staging Health
-        if: ${{ needs.deploy-portfolio-staging.result == 'success' }}
-        run: |
-          echo "=== Verifying Portfolio Staging Deployment ==="
-
-          # Primary: Cloudflare API deployment verification
-          echo "🔍 Checking staging deployment via Cloudflare API..."
-          DEPLOY_RESPONSE=$(curl -s -H "Authorization: Bearer ${{ secrets.CLOUDFLARE_API_TOKEN }}" \
-            "https://api.cloudflare.com/client/v4/accounts/${{ secrets.CLOUDFLARE_ACCOUNT_ID }}/workers/scripts/resume-staging/deployments")
-
-          DEPLOY_SUCCESS=$(echo "$DEPLOY_RESPONSE" | jq -r '.success')
-          if [ "$DEPLOY_SUCCESS" = "true" ]; then
-            LATEST_CREATED=$(echo "$DEPLOY_RESPONSE" | jq -r '.result.deployments[0].created_on // "unknown"')
-            echo "✅ Staging deployment verified via Cloudflare API"
-            echo "   Latest deployment: $LATEST_CREATED"
-          else
-            echo "❌ Staging Cloudflare API verification failed"
-            echo "$DEPLOY_RESPONSE" | jq '.' 2>/dev/null || echo "$DEPLOY_RESPONSE"
-            exit 1
-          fi
-
-          # Secondary: HTTP health check (warning-only)
-          echo ""
-          echo "🌐 Staging HTTP health check (informational)..."
-          HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" -A "resume-ci/1.0" "${{ env.STAGING_PORTFOLIO_URL }}/health" || true)
-          if [ "$HTTP_CODE" = "200" ]; then
-            echo "✅ Staging HTTP health check passed"
-          else
-            echo "⚠️ Staging HTTP returned $HTTP_CODE (expected - Bot Fight Mode)"
-          fi
-
-      - name: Verify Job Dashboard Staging Health
-        if: ${{ needs.deploy-portfolio-staging.result == 'success' }}
-        run: |
-          echo "=== Verifying Job Dashboard Staging Deployment ==="
-          HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" "${{ env.STAGING_JOB_URL }}/health")
-          if [ "$HTTP_CODE" != "200" ]; then
-            echo "⚠️ Job Dashboard staging health check returned HTTP $HTTP_CODE"
-          else
-            echo "✅ Job Dashboard staging health check passed"
-          fi
-
   # ===========================================================================
   # STAGE: AUTO-ROLLBACK (on verify failure)
   # ===========================================================================
@@ -589,6 +510,24 @@ jobs:
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           workingDirectory: typescript/portfolio-worker
           command: rollback --env production --message "Auto-rollback triggered by failed verification in run ${{ github.run_id }}"
+
+      - name: Verify rollback health
+        run: |
+          echo "=== Verifying rollback health ==="
+          sleep 10  # Wait for rollback to propagate
+
+          DEPLOY_RESPONSE=$(curl -s -H "Authorization: Bearer ${{ secrets.CLOUDFLARE_API_TOKEN }}" \
+            "https://api.cloudflare.com/client/v4/accounts/${{ secrets.CLOUDFLARE_ACCOUNT_ID }}/workers/scripts/resume/deployments")
+
+          DEPLOY_SUCCESS=$(echo "$DEPLOY_RESPONSE" | jq -r '.success')
+          if [ "$DEPLOY_SUCCESS" = "true" ]; then
+            LATEST_CREATED=$(echo "$DEPLOY_RESPONSE" | jq -r '.result.deployments[0].created_on // "unknown"')
+            echo "✅ Rollback confirmed - active deployment: $LATEST_CREATED"
+          else
+            echo "❌ Rollback verification failed - manual intervention required"
+            echo "$DEPLOY_RESPONSE" | jq '.' 2>/dev/null || echo "$DEPLOY_RESPONSE"
+            exit 1
+          fi
 
       - name: Notify rollback
         if: ${{ env.N8N_WEBHOOK_URL != '' }}
