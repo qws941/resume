@@ -29,42 +29,35 @@ async function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-async function findAndClick(page, selectors, description) {
-  for (const selector of selectors) {
+async function _findAndClick(_page, _selectors, _description) {
+  for (const selector of _selectors) {
     try {
-      const element = await page.$(selector);
+      const element = await _page.$(selector);
       if (element) {
         await element.click();
-        console.log(`✅ Clicked ${description}: ${selector}`);
+        console.log(`✅ Clicked ${_description}: ${selector}`);
         return true;
       }
-    } catch (e) {}
+    } catch (_e) {}
   }
 
   // Try text-based search
-  const textPatterns = [
-    '이메일',
-    'Email',
-    '이메일로 로그인',
-    'Sign in with email',
-  ];
+  const textPatterns = ['이메일', 'Email', '이메일로 로그인', 'Sign in with email'];
   for (const text of textPatterns) {
     try {
-      const element = await page.evaluateHandle((text) => {
-        const elements = [
-          ...document.querySelectorAll('button, a, span, div[role=button]'),
-        ];
+      const element = await _page.evaluateHandle((text) => {
+        const elements = [...document.querySelectorAll('button, a, span, div[role=button]')];
         return elements.find((el) => el.textContent?.includes(text));
       }, text);
       if (element) {
         await element.click();
-        console.log(`✅ Clicked ${description} with text: ${text}`);
+        console.log(`✅ Clicked ${_description} with text: ${text}`);
         return true;
       }
-    } catch (e) {}
+    } catch (_e) {}
   }
 
-  console.log(`⚠️ Could not find ${description}, continuing...`);
+  console.log(`⚠️ Could not find ${_description}, continuing...`);
   return false;
 }
 
@@ -75,22 +68,20 @@ async function findAndType(page, selectors, value, description) {
       await page.type(selector, value, { delay: 50 });
       console.log(`✅ Typed in ${description}: ${selector}`);
       return true;
-    } catch (e) {}
+    } catch (_e) {}
   }
 
   // Try input by type
   try {
     const input = await page.evaluateHandle(() => {
-      return document.querySelector(
-        'input[type=email], input[type=text]:not([type=password])',
-      );
+      return document.querySelector('input[type=email], input[type=text]:not([type=password])');
     });
     if (input) {
       await input.type(value, { delay: 50 });
       console.log(`✅ Typed in ${description} (generic input)`);
       return true;
     }
-  } catch (e) {}
+  } catch (_e) {}
 
   throw new Error(`Could not find ${description}`);
 }
@@ -113,7 +104,7 @@ async function main() {
     const page = await browser.newPage();
     await page.setViewport({ width: 1280, height: 800 });
     await page.setUserAgent(
-      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
+      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36'
     );
 
     // Navigate to login page
@@ -131,9 +122,7 @@ async function main() {
     const emailBtnClicked = await page.evaluate(() => {
       const buttons = [...document.querySelectorAll('button')];
       const emailBtn = buttons.find(
-        (b) =>
-          b.textContent?.toLowerCase().includes('email') ||
-          b.textContent?.includes('이메일'),
+        (b) => b.textContent?.toLowerCase().includes('email') || b.textContent?.includes('이메일')
       );
       if (emailBtn) {
         emailBtn.click();
@@ -166,7 +155,7 @@ async function main() {
         'input:not([type=password])',
       ],
       EMAIL,
-      'email input',
+      'email input'
     );
 
     await sleep(500);
@@ -201,18 +190,13 @@ async function main() {
 
     const cookies = await page.cookies();
     const hasAuthCookie = cookies.some(
-      (c) =>
-        c.name.includes('WWW_') ||
-        c.name.includes('_wid') ||
-        c.name === 'connect.sid',
+      (c) => c.name.includes('WWW_') || c.name.includes('_wid') || c.name === 'connect.sid'
     );
 
     if (!hasAuthCookie && currentUrl.includes('login')) {
       console.log('❌ Login may have failed - checking for errors...');
       const errorText = await page.evaluate(() => {
-        const error = document.querySelector(
-          '[class*="error"], [class*="Error"], .error-message',
-        );
+        const error = document.querySelector('[class*="error"], [class*="Error"], .error-message');
         return error?.textContent || null;
       });
       if (errorText) {
@@ -264,9 +248,7 @@ async function main() {
         console.log(`⚠️ Sync error: ${e.message}`);
       }
     } else {
-      console.log(
-        '⚠️ AUTH_SYNC_SECRET or JOB_WORKER_URL not set, skipping sync',
-      );
+      console.log('⚠️ AUTH_SYNC_SECRET or JOB_WORKER_URL not set, skipping sync');
     }
 
     console.log('\n🎉 Login successful!');

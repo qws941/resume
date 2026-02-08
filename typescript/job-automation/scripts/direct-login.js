@@ -18,10 +18,7 @@ const PASSWORD = process.env.WANTED_PASSWORD;
 if (!PASSWORD) {
   throw new Error('WANTED_PASSWORD environment variable is not set');
 }
-const SESSION_FILE = path.join(
-  process.env.HOME,
-  '.opencode/data/sessions.json',
-);
+const SESSION_FILE = path.join(process.env.HOME, '.opencode/data/sessions.json');
 const SCREENSHOT_DIR = '/tmp';
 
 async function sleep(ms) {
@@ -118,15 +115,13 @@ async function loginDirect() {
           (b) =>
             b.textContent.includes('이메일') ||
             b.textContent.includes('Email') ||
-            b.textContent.toLowerCase().includes('email'),
+            b.textContent.toLowerCase().includes('email')
         );
         if (emailBtn) emailBtn.click();
       });
       await sleep(1500);
-    } catch (e) {
-      console.log(
-        'ℹ️ Email button not found, checking for email input directly...',
-      );
+    } catch (_e) {
+      console.log('ℹ️ Email button not found, checking for email input directly...');
     }
 
     // 3. Enter Email
@@ -156,10 +151,7 @@ async function loginDirect() {
     console.log('📍 Current URL:', currentUrl);
 
     // Handle potential 2FA or CAPTCHA
-    if (
-      currentUrl.includes('captcha') ||
-      (await page.$('iframe[src*="recaptcha"]'))
-    ) {
+    if (currentUrl.includes('captcha') || (await page.$('iframe[src*="recaptcha"]'))) {
       console.warn('⚠️ CAPTCHA detected! Attempting to wait or solve...');
       await sleep(10000);
     }
@@ -182,8 +174,7 @@ async function loginDirect() {
     console.log('🍪 Extracting cookies...');
     const cookies = await page.cookies();
     const wantedCookies = cookies.filter(
-      (c) =>
-        c.domain.includes('wanted.co.kr') || c.domain.includes('wanted.jobs'),
+      (c) => c.domain.includes('wanted.co.kr') || c.domain.includes('wanted.jobs')
     );
 
     // 6. Extract access token from localStorage/sessionStorage/cookies
@@ -217,7 +208,7 @@ async function loginDirect() {
         try {
           const token = source();
           if (token) return token;
-        } catch (e) {}
+        } catch (_e) {}
       }
       return null;
     });
@@ -237,9 +228,7 @@ async function loginDirect() {
             foundToken = authHeader.replace('Bearer ', '');
           }
           const cookieHeader = headers['cookie'] || '';
-          const tokenMatch = cookieHeader.match(
-            /WWW_ONEID_ACCESS_TOKEN=([^;]+)/,
-          );
+          const tokenMatch = cookieHeader.match(/WWW_ONEID_ACCESS_TOKEN=([^;]+)/);
           if (tokenMatch) {
             foundToken = tokenMatch[1];
           }
@@ -251,7 +240,7 @@ async function loginDirect() {
             waitUntil: 'networkidle0',
             timeout: 10000,
           });
-        } catch (e) {}
+        } catch (_e) {}
 
         page.off('request', handler);
         await sleep(1000);
@@ -259,9 +248,7 @@ async function loginDirect() {
       });
 
       if (tokenFromNetwork) {
-        console.log(
-          `✅ Found token from network: ${tokenFromNetwork.substring(0, 10)}...`,
-        );
+        console.log(`✅ Found token from network: ${tokenFromNetwork.substring(0, 10)}...`);
       }
     }
 
@@ -280,12 +267,9 @@ async function loginDirect() {
     } else {
       throw new Error('No Wanted cookies found');
     }
-  } catch (error) {
-    console.error('❌ Error:', error.message);
-    await page.screenshot({
-      path: path.join(SCREENSHOT_DIR, 'wanted-direct-login-error.png'),
-    });
-    throw error;
+  } catch (_error) {
+    console.error('❌ Error:', _error.message);
+    await page.screenshot({ path: '/tmp/wanted-v4-error.png' });
   } finally {
     await browser.close();
   }
