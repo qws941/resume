@@ -449,6 +449,7 @@ jobs:
           fi
 
       - name: Verify Portfolio HTTP (informational)
+        continue-on-error: true
         run: |
           echo "=== Portfolio HTTP Health Check ==="
           for i in 1 2 3; do
@@ -470,6 +471,7 @@ jobs:
           fi
 
       - name: Verify Job Dashboard HTTP (informational)
+        continue-on-error: true
         run: |
           echo "=== Job Dashboard HTTP Health Check ==="
           for i in 1 2 3; do
@@ -481,8 +483,10 @@ jobs:
             echo "⚠️ Attempt $i: HTTP $HTTP_CODE"
             [ "$i" -lt 3 ] && sleep 5
           done
+          echo "ℹ️ Job Dashboard HTTP checks are informational only (Bot Fight Mode may block CI IPs)"
 
       - name: Verify Security Headers (informational)
+        continue-on-error: true
         run: |
           HEADERS=$(curl -sI -A "resume-ci/1.0" "${{ env.PORTFOLIO_URL }}" || true)
           if ! echo "$HEADERS" | grep -qi "content-security-policy"; then
