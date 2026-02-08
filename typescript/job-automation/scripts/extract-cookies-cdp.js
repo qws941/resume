@@ -4,16 +4,16 @@
  * Requires Chrome running with: google-chrome --remote-debugging-port=9222
  */
 import WebSocket from 'ws';
-import {SessionManager} from '../src/shared/services/session/index.js';
+import { SessionManager } from '../src/shared/services/session/index.js';
 
 const CHROME_DEBUG_PORT = process.env.CHROME_DEBUG_PORT || 9222;
 
 const PLATFORMS = {
-  wanted: {domains: ['.wanted.co.kr', 'wanted.co.kr']},
-  jobkorea: {domains: ['.jobkorea.co.kr', 'jobkorea.co.kr']},
-  remember: {domains: ['.rememberapp.co.kr', 'rememberapp.co.kr']},
-  saramin: {domains: ['.saramin.co.kr', 'saramin.co.kr']},
-  linkedin: {domains: ['.linkedin.com', 'linkedin.com']},
+  wanted: { domains: ['.wanted.co.kr', 'wanted.co.kr'] },
+  jobkorea: { domains: ['.jobkorea.co.kr', 'jobkorea.co.kr'] },
+  remember: { domains: ['.rememberapp.co.kr', 'rememberapp.co.kr'] },
+  saramin: { domains: ['.saramin.co.kr', 'saramin.co.kr'] },
+  linkedin: { domains: ['.linkedin.com', 'linkedin.com'] },
 };
 
 async function getWebSocketUrl() {
@@ -27,7 +27,7 @@ async function sendCDPCommand(ws, method, params = {}) {
   return new Promise((resolve, reject) => {
     const id = Date.now();
     const timeout = setTimeout(() => reject(new Error('CDP timeout')), 5000);
-    
+
     const handler = (data) => {
       const msg = JSON.parse(data.toString());
       if (msg.id === id) {
@@ -37,21 +37,21 @@ async function sendCDPCommand(ws, method, params = {}) {
         else resolve(msg.result);
       }
     };
-    
+
     ws.on('message', handler);
-    ws.send(JSON.stringify({id, method, params}));
+    ws.send(JSON.stringify({ id, method, params }));
   });
 }
 
 async function extractCookies(platforms) {
   console.log('\n🔐 Extracting cookies via Chrome DevTools Protocol\n');
-  
+
   // Connect to Chrome
   let wsUrl;
   try {
     wsUrl = await getWebSocketUrl();
     console.log('✓ Connected to Chrome DevTools');
-  } catch (e) {
+  } catch (_e) {
     console.error('✗ Chrome DevTools not available');
     console.log('\nStart Chrome with remote debugging:');
     console.log(`  google-chrome --remote-debugging-port=${CHROME_DEBUG_PORT}\n`);
@@ -66,7 +66,7 @@ async function extractCookies(platforms) {
 
   try {
     // Get all cookies
-    const {cookies} = await sendCDPCommand(ws, 'Network.getAllCookies');
+    const { cookies } = await sendCDPCommand(ws, 'Network.getAllCookies');
     console.log(`✓ Retrieved ${cookies.length} total cookies\n`);
 
     // Filter and save by platform
@@ -77,8 +77,8 @@ async function extractCookies(platforms) {
         continue;
       }
 
-      const platformCookies = cookies.filter(c => 
-        platform.domains.some(d => c.domain.includes(d.replace('.', '')))
+      const platformCookies = cookies.filter((c) =>
+        platform.domains.some((d) => c.domain.includes(d.replace('.', '')))
       );
 
       if (platformCookies.length === 0) {
@@ -87,15 +87,13 @@ async function extractCookies(platforms) {
       }
 
       // Find auth cookie
-      const authCookie = platformCookies.find(c => 
-        c.name.includes('TOKEN') || 
-        c.name.includes('session') || 
-        c.name.includes('auth')
+      const authCookie = platformCookies.find(
+        (c) => c.name.includes('TOKEN') || c.name.includes('session') || c.name.includes('auth')
       );
 
       const session = {
         platform: platformKey,
-        cookies: platformCookies.map(c => ({
+        cookies: platformCookies.map((c) => ({
           name: c.name,
           value: c.value,
           domain: c.domain,
@@ -105,13 +103,13 @@ async function extractCookies(platforms) {
           secure: c.secure,
           sameSite: c.sameSite,
         })),
-        cookieString: platformCookies.map(c => `${c.name}=${c.value}`).join('; '),
+        cookieString: platformCookies.map((c) => `${c.name}=${c.value}`).join('; '),
         extractedAt: new Date().toISOString(),
         expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
       };
 
       SessionManager.save(platformKey, session);
-      
+
       console.log(`✓ ${platformKey}: Saved ${platformCookies.length} cookies`);
       if (authCookie) {
         console.log(`  Auth: ${authCookie.name}`);
@@ -127,7 +125,7 @@ async function extractCookies(platforms) {
 // Parse args
 const args = process.argv.slice(2);
 const platforms = args.length > 0 ? args : Object.keys(PLATFORMS);
-extractCookies(platforms).catch(e => {
+extractCookies(platforms).catch((e) => {
   console.error('Error:', e.message);
   process.exit(1);
 });
