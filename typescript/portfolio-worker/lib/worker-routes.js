@@ -12,34 +12,96 @@
  */
 function generateFetchAndRateLimit() {
   return `
+// --- Rate Limiting Helpers ---
+let lastCleanupTime = Date.now();
+
+function getRateLimitPolicy(pathname) {
+  if (pathname.startsWith('/api/')) return 'api';
+  if (pathname === '/health') return 'health';
+  if (pathname === '/metrics') return 'metrics';
+  if (pathname === '/' || pathname === '/en' || pathname === '/en/') return 'page';
+  return 'static';
+}
+
+function checkRateLimit(clientIp, pathname, isAuthenticated) {
+  const policyName = getRateLimitPolicy(pathname);
+  const policy = RATE_LIMIT_CONFIG.policies[policyName];
+  if (!policy) return { allowed: true, policy: null };
+
+  const now = Date.now();
+  const key = clientIp + ':' + policyName;
+  const maxRequests = isAuthenticated
+    ? Math.floor(policy.maxRequests * (RATE_LIMIT_CONFIG.authMultiplier || 1))
+    : policy.maxRequests;
+  const clientData = ipCache.get(key) || { count: 0, startTime: now };
+
+  if (now - clientData.startTime > policy.windowSize) {
+    clientData.count = 1;
+    clientData.startTime = now;
+  } else {
+    clientData.count++;
+  }
+  ipCache.set(key, clientData);
+
+  const remaining = Math.max(0, maxRequests - clientData.count);
+  const resetAt = Math.ceil((clientData.startTime + policy.windowSize) / 1000);
+  const retryAfter = remaining === 0
+    ? Math.max(1, Math.ceil((clientData.startTime + policy.windowSize - now) / 1000))
+    : 0;
+
+  // Periodic stale entry cleanup
+  if (now - lastCleanupTime > (RATE_LIMIT_CONFIG.cleanupIntervalMs || 300000)) {
+    lastCleanupTime = now;
+    for (const [k, v] of ipCache) {
+      if (now - v.startTime > 600000) ipCache.delete(k);
+    }
+  }
+
+  return { allowed: clientData.count <= maxRequests, policy: policyName, limit: maxRequests, remaining, resetAt, retryAfter };
+}
+
 export default {
   async fetch(request, env, ctx) {
     const startTime = Date.now();
     const url = new URL(request.url);
-    const clientIp = request.headers.get('cf-connecting-ip') || 'unknown';
+    const clientIp = request.headers.get('cf-connecting-ip') || request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown';
 
     metrics.requests_total++;
 
-    // Apply Rate Limiting to sensitive endpoints
-    if (url.pathname.startsWith('/api/') || url.pathname === '/health' || url.pathname === '/metrics') {
-      const now = Date.now();
-      const clientData = ipCache.get(clientIp) || { count: 0, startTime: now };
+    // Lightweight auth check for rate limit differentiation (not a security gate)
+    let isAuthenticated = false;
+    try {
+      isAuthenticated = (request.headers.get('cookie') || '').includes('dashboard_session=');
+    } catch {}
 
-      if (now - clientData.startTime > RATE_LIMIT_CONFIG.windowSize) {
-        clientData.count = 1;
-        clientData.startTime = now;
-      } else {
-        clientData.count++;
-      }
+    // Apply rate limiting with per-route policies
+    const rlInfo = checkRateLimit(clientIp, url.pathname, isAuthenticated);
 
-      ipCache.set(clientIp, clientData);
+    // Build rate limit headers (added to all responses via SECURITY_HEADERS shadow)
+    const rateLimitHeaders = rlInfo.policy ? {
+      'X-RateLimit-Limit': String(rlInfo.limit),
+      'X-RateLimit-Remaining': String(rlInfo.remaining),
+      'X-RateLimit-Reset': String(rlInfo.resetAt),
+      'X-RateLimit-Policy': rlInfo.policy,
+    } : {};
 
-      if (clientData.count > RATE_LIMIT_CONFIG.maxRequests) {
-        return new Response(JSON.stringify({ error: 'Too Many Requests' }), {
-          status: 429,
-          headers: { ...SECURITY_HEADERS, 'Content-Type': 'application/json' }
-        });
-      }
+    // Shadow module-level BASE_SECURITY_HEADERS with per-request headers
+    const SECURITY_HEADERS = { ...BASE_SECURITY_HEADERS, ...rateLimitHeaders };
+
+    if (!rlInfo.allowed) {
+      metrics.requests_error++;
+      return new Response(JSON.stringify({
+        error: 'Too Many Requests',
+        retryAfter: rlInfo.retryAfter,
+        policy: rlInfo.policy,
+      }), {
+        status: 429,
+        headers: {
+          ...SECURITY_HEADERS,
+          'Content-Type': 'application/json',
+          'Retry-After': String(rlInfo.retryAfter),
+        }
+      });
     }
 
     try {`;

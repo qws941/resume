@@ -110,7 +110,17 @@ async function runWorkerBuild({ baseDir, version, allowedEmails, logger }) {
     version,
     deployed_at: deployedAt,
   };
-  const rateLimitConfig = { windowSize: 60 * 1000, maxRequests: 30 };
+  const rateLimitConfig = {
+    policies: {
+      api: { windowSize: 60 * 1000, maxRequests: 30 },
+      health: { windowSize: 60 * 1000, maxRequests: 20 },
+      metrics: { windowSize: 60 * 1000, maxRequests: 20 },
+      page: { windowSize: 60 * 1000, maxRequests: 120 },
+      static: { windowSize: 60 * 1000, maxRequests: 200 },
+    },
+    authMultiplier: 3,
+    cleanupIntervalMs: 5 * 60 * 1000,
+  };
 
   const { workerSizeKB } = buildAndWriteWorker({
     baseDir,

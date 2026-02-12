@@ -48,7 +48,7 @@ const OG_IMAGE_EN_BASE64 = '${opts.ogImageEnBase64}';
 const RESUME_PDF_BASE64 = '${opts.resumePdfBase64}';
 
 // Security headers
-const SECURITY_HEADERS = ${opts.securityHeadersJson};
+const BASE_SECURITY_HEADERS = ${opts.securityHeadersJson};
 
 // Metrics
 const metrics = ${opts.metricsJson};
