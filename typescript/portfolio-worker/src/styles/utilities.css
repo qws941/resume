@@ -57,7 +57,7 @@ button:focus-visible {
     --border-color: #000000;
   }
 
-  [data-theme="dark"] {
+  [data-theme='dark'] {
     --text-primary: #ffffff;
     --text-secondary: #f0f0f0;
     --bg-primary: #000000;
@@ -259,12 +259,12 @@ button:focus-visible {
   -webkit-backdrop-filter: blur(8px);
 }
 
-[data-theme="dark"] .glass {
+[data-theme='dark'] .glass {
   background: oklch(0.15 0.01 250 / 0.7);
   border-color: oklch(1 0 0 / 0.08);
 }
 
-[data-theme="dark"] .glass-card {
+[data-theme='dark'] .glass-card {
   background: oklch(0.18 0.01 250 / 0.6);
   border-color: oklch(1 0 0 / 0.06);
   box-shadow:
@@ -272,12 +272,12 @@ button:focus-visible {
     inset 0 1px 0 oklch(1 0 0 / 0.05);
 }
 
-[data-theme="dark"] .glass-nav {
+[data-theme='dark'] .glass-nav {
   background: oklch(0.13 0.005 250 / 0.8);
   border-bottom-color: oklch(1 0 0 / 0.05);
 }
 
-[data-theme="dark"] .glass-subtle {
+[data-theme='dark'] .glass-subtle {
   background: oklch(0.15 0.01 250 / 0.4);
 }
 
@@ -286,11 +286,32 @@ button:focus-visible {
 }
 
 .noise-texture::before {
-  content: "";
+  content: '';
   position: absolute;
   inset: 0;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
   opacity: 0.03;
   pointer-events: none;
   border-radius: inherit;
+}
+
+/* ── CSP: Externalized inline styles (Issue #80) ── */
+
+.terminal-header-spacer {
+  width: 52px;
+}
+
+.footer-prompt-sm {
+  font-size: var(--text-sm);
+}
+
+.footer-message {
+  color: var(--text-muted);
+  margin-left: 1rem;
+}
+
+.snake-info {
+  color: #0f0;
+  font-size: 12px;
+  margin-top: 5px;
 }

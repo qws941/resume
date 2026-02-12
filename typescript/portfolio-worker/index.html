@@ -198,7 +198,7 @@
             <span class="terminal-btn terminal-btn--maximize"></span>
           </div>
           <span class="terminal-title">jclee@resume:~</span>
-          <div style="width: 52px"></div>
+          <div class="terminal-header-spacer"></div>
         </div>
         <div class="terminal-body">
           <header class="site-header">
@@ -445,8 +445,8 @@
 
           <footer class="site-footer" role="contentinfo">
             <div class="footer-content">
-              <span class="terminal-prompt" style="font-size: var(--text-sm)">logout</span>
-              <span style="color: var(--text-muted); margin-left: 1rem">Connection closed.</span>
+              <span class="terminal-prompt footer-prompt-sm">logout</span>
+              <span class="footer-message">Connection closed.</span>
             </div>
           </footer>
 
@@ -931,7 +931,7 @@
           var gameDiv = document.createElement('div');
           gameDiv.id = 'snake-game';
           gameDiv.innerHTML =
-            '<canvas id="snake-canvas" width="200" height="200"></canvas><div style="color:#0f0;font-size:12px;margin-top:5px">Score: <span id="snake-score">0</span> | WASD to move | Q to quit</div>';
+            '<canvas id="snake-canvas" width="200" height="200"></canvas><div class="snake-info">Score: <span id="snake-score">0</span> | WASD to move | Q to quit</div>';
           gameDiv.style.cssText =
             'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#000;border:2px solid #0f0;padding:10px;z-index:9999;font-family:monospace';
           document.body.appendChild(gameDiv);
