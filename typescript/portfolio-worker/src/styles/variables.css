@@ -52,6 +52,11 @@
   --border-secondary: #3f3f5a;
   --border-hover: var(--cyber-cyan);
 
+  /* Variable aliases (referenced by components) */
+  --neon-green: var(--cyber-green);
+  --border-color: var(--border-primary);
+  --card-bg: var(--bg-card);
+
   /* ----------------------------------------
      ENHANCED NEON PALETTE
      ---------------------------------------- */
@@ -203,4 +208,109 @@
   --z-sticky: 200;
   --z-nav: 1000;
   --z-modal: 2000;
+
+  /* CLI background */
+  --cli-bg: rgba(12, 12, 18, 0.95);
+}
+
+/* ============================================
+   LIGHT THEME OVERRIDES
+   ============================================ */
+[data-theme='light'] {
+  /* Backgrounds */
+  --bg-primary: #f5f5f0;
+  --bg-secondary: #eaeae5;
+  --bg-card: #ffffff;
+  --bg-tertiary: #e0e0db;
+  --bg-inverse: #1a1a2e;
+
+  /* Neon → Professional accents (WCAG AA on #f5f5f0) */
+  --cyber-cyan: #0077aa;
+  --cyber-magenta: #aa0077;
+  --cyber-green: #007744;
+
+  /* Text */
+  --text-primary: #1a1a2e;
+  --text-secondary: #4a4a5a;
+  --text-muted: #6a6a7a;
+  --text-inverse: #f5f5f0;
+
+  /* Reduced glows → subtle shadows */
+  --glow-cyan: 0 0 8px rgba(0, 119, 170, 0.2);
+  --glow-magenta: 0 0 8px rgba(170, 0, 119, 0.2);
+
+  /* Semantic accents */
+  --color-accent: var(--cyber-cyan);
+  --color-accent-light: #0088bb;
+  --color-accent-dark: #006699;
+  --color-accent-subtle: rgba(0, 119, 170, 0.1);
+
+  --color-accent-secondary: var(--cyber-magenta);
+  --color-accent-secondary-light: #cc0088;
+  --color-accent-secondary-dark: #880066;
+  --color-accent-secondary-subtle: rgba(170, 0, 119, 0.1);
+
+  --color-accent-tertiary: var(--cyber-green);
+  --color-accent-tertiary-light: #009955;
+  --color-accent-tertiary-dark: #006633;
+  --color-accent-tertiary-subtle: rgba(0, 119, 68, 0.1);
+
+  --color-success: #007744;
+  --color-warning: #b8860b;
+  --color-error: #cc0033;
+
+  --border-primary: #d4d4d0;
+  --border-secondary: #c0c0bc;
+  --border-hover: var(--cyber-cyan);
+
+  --neon-green: var(--cyber-green);
+  --border-color: var(--border-primary);
+  --card-bg: var(--bg-card);
+
+  /* Enhanced palette — subdued */
+  --cyber-cyan-bright: #0088bb;
+  --cyber-cyan-dim: #005577;
+  --cyber-magenta-bright: #cc0088;
+  --cyber-magenta-dim: #880066;
+  --cyber-green-bright: #009955;
+  --cyber-green-dim: #006633;
+  --cyber-yellow: #b8860b;
+  --cyber-orange: #cc5500;
+  --cyber-red: #cc0033;
+
+  /* Shadows — lighter */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.05);
+
+  --shadow-glow: var(--glow-cyan);
+  --shadow-glow-secondary: var(--glow-magenta);
+  --shadow-glow-tertiary: 0 0 8px rgba(0, 119, 68, 0.2);
+
+  --glow-cyan-subtle: 0 0 6px rgba(0, 119, 170, 0.15);
+  --glow-cyan-intense: 0 0 10px rgba(0, 119, 170, 0.3);
+  --glow-cyan-mega: 0 0 10px rgba(0, 119, 170, 0.4), 0 0 20px rgba(0, 119, 170, 0.2);
+  --glow-magenta-subtle: 0 0 6px rgba(170, 0, 119, 0.15);
+  --glow-magenta-intense: 0 0 10px rgba(170, 0, 119, 0.3);
+  --glow-green-intense: 0 0 10px rgba(0, 119, 68, 0.3);
+
+  /* Glassmorphism — light variant */
+  --glass-bg: rgba(255, 255, 255, 0.7);
+  --glass-bg-hover: rgba(255, 255, 255, 0.85);
+  --glass-border: rgba(0, 119, 170, 0.15);
+  --glass-border-hover: rgba(0, 119, 170, 0.35);
+
+  --gradient-hero-light: linear-gradient(135deg, #f5f5f0 0%, #eaeae5 100%);
+  --gradient-hero-dark: linear-gradient(135deg, #f5f5f0 0%, #eaeae5 100%);
+  --gradient-accent: linear-gradient(135deg, var(--cyber-cyan) 0%, var(--cyber-magenta) 100%);
+  --gradient-glow: radial-gradient(ellipse at center, rgba(0, 119, 170, 0.08) 0%, transparent 70%);
+
+  --gradient-cyber-1: linear-gradient(135deg, var(--cyber-cyan) 0%, var(--cyber-green) 100%);
+  --gradient-cyber-2: linear-gradient(135deg, var(--cyber-magenta) 0%, var(--cyber-cyan) 100%);
+  --gradient-cyber-3: linear-gradient(180deg, rgba(0, 119, 170, 0.05) 0%, transparent 50%);
+  --gradient-vignette: none;
+  --gradient-scanline: none;
+
+  /* CLI background */
+  --cli-bg: rgba(245, 245, 240, 0.95);
 }

@@ -115,6 +115,14 @@ body::after {
 }
 
 /* ========================================
+   LIGHT THEME: DISABLE CRT EFFECTS
+   ======================================== */
+[data-theme='light'] body::before,
+[data-theme='light'] body::after {
+  opacity: 0;
+}
+
+/* ========================================
    CURSOR BLINK ANIMATION
    ======================================== */
 @keyframes blink {

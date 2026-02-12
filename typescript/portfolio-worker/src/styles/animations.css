@@ -406,6 +406,59 @@
 }
 
 /* --------------------------------------------------------------------------
+   Light Theme - Disable cyberpunk effects
+   -------------------------------------------------------------------------- */
+[data-theme='light'] #matrix-bg {
+  display: none;
+}
+
+[data-theme='light'] .crt-overlay {
+  display: none;
+}
+
+[data-theme='light'] .crt-flicker {
+  animation: none;
+}
+
+[data-theme='light'] .glow-cyan {
+  text-shadow: none;
+}
+
+[data-theme='light'] .glow-green {
+  text-shadow: none;
+}
+
+[data-theme='light'] .pulse-glow {
+  animation: none;
+  filter: none;
+}
+
+[data-theme='light'] .hover-glow:hover {
+  animation: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme='light'] .neon-border-glow {
+  animation: none;
+  border-color: var(--border-primary);
+  box-shadow: none;
+}
+
+[data-theme='light'] .chromatic-text:hover {
+  animation: none;
+  text-shadow: none;
+}
+
+[data-theme='light'] .glitch::before,
+[data-theme='light'] .glitch::after {
+  display: none;
+}
+
+[data-theme='light'] .glitch {
+  animation: none;
+}
+
+/* --------------------------------------------------------------------------
    Reduced Motion
    -------------------------------------------------------------------------- */
 @media (prefers-reduced-motion: reduce) {

@@ -1,7 +1,17 @@
 <!doctype html>
-<html lang="ko">
+<html lang="ko" data-theme="dark">
   <head>
     <meta charset="UTF-8" />
+    <script>
+      (function () {
+        var t = localStorage.getItem('theme');
+        if (!t) t = 'dark';
+        if (t === 'auto') {
+          t = window.matchMedia('(prefers-color-scheme:light)').matches ? 'light' : 'dark';
+        }
+        document.documentElement.setAttribute('data-theme', t);
+      })();
+    </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>이재철 - Infrastructure Engineer</title>
     <meta
@@ -904,7 +914,7 @@
             '  <span class="cmd-name">skills</span>     - Show tech stack\\n' +
             '  <span class="cmd-name">chat</span>       - Ask resume questions\\n' +
             '  <span class="cmd-name">contact</span>    - Contact information\\n' +
-            '  <span class="cmd-name">theme</span>      - Switch terminal theme\\n' +
+            '  <span class="cmd-name">theme</span>      - Toggle theme [dark|light|auto]\\n' +
             '  <span class="cmd-name">clear</span>      - Clear terminal' +
             '</div>'
           );
@@ -912,18 +922,20 @@
 
         theme: function (arg) {
           var root = document.documentElement;
-          var themes = {
-            dark: { bg: '#0c0c12', text: '#00ff88', accent: '#0ff' },
-            light: { bg: '#f0f0f0', text: '#006644', accent: '#0088cc' },
-            hacker: { bg: '#000', text: '#0f0', accent: '#0f0' },
-          };
-          var name = arg || 'hacker';
-          var t = themes[name];
-          if (!t) return 'Unknown theme. Available: dark, light, hacker';
-          root.style.setProperty('--bg-base', t.bg);
-          root.style.setProperty('--cyber-green', t.text);
-          root.style.setProperty('--cyber-cyan', t.accent);
-          return 'Theme switched to ' + name;
+          var current = root.getAttribute('data-theme') || 'dark';
+          if (!arg) {
+            arg = current === 'dark' ? 'light' : 'dark';
+          }
+          if (arg !== 'dark' && arg !== 'light' && arg !== 'auto') {
+            return 'Usage: theme [dark|light|auto]. Current: ' + current;
+          }
+          localStorage.setItem('theme', arg);
+          var applied = arg;
+          if (arg === 'auto') {
+            applied = window.matchMedia('(prefers-color-scheme:light)').matches ? 'light' : 'dark';
+          }
+          root.setAttribute('data-theme', applied);
+          return 'Theme: ' + arg + (arg === 'auto' ? ' (detected: ' + applied + ')' : '');
         },
 
         snake: function () {
@@ -1022,7 +1034,7 @@
       (function () {
         var cmdStyle = document.createElement('style');
         cmdStyle.textContent =
-          '.neofetch-output{color:#00ff88;line-height:1.3}.nf-logo{color:#0ff}.nf-label{color:#ff0088}.nf-colors{color:#f00}.nf-colors.c2{color:#ff0}.nf-colors.c3{color:#0f0}.nf-colors.c4{color:#0ff}.nf-colors.c5{color:#00f}.nf-colors.c6{color:#f0f}.nf-colors.c7{color:#fff}.sudo-output{color:#00ff88}.sudo-success{color:#0f0;font-weight:bold;margin:0.5rem 0}.sudo-msg{color:#0ff;margin-left:1rem}.rm-output{color:#ff8800}.rm-success{color:#00ff88;font-weight:bold}.rm-hint{color:#666}.coffee-art{color:#c4a000}.coffee-msg{color:#00ff88}.matrix-msg{color:#00ff88}.help-output{white-space:pre-wrap}.cmd-name{color:#0ff}.help-hint{color:#666}.cli-container{position:fixed;bottom:0;left:0;right:0;background:rgba(12,12,18,0.95);border-top:1px solid #00ff88;padding:1rem;font-family:monospace;z-index:1000;max-height:40vh;overflow-y:auto}.cli-output{margin-bottom:0.5rem;color:#00ff88;font-size:0.9rem;max-height:30vh;overflow-y:auto}.cli-input-line{display:flex;align-items:center}.cli-prompt{color:#00ff88;margin-right:0.5rem;flex-shrink:0}.cli-input{flex:1;background:transparent;border:none;color:#0ff;font-family:monospace;font-size:1rem;outline:none;caret-color:#0ff}.cli-input::placeholder{color:#444}.cli-entry{margin-bottom:0.5rem}.cli-cmd{color:#0ff}.cli-result{margin-left:1rem;white-space:pre-wrap}';
+          '.neofetch-output{color:var(--cyber-green);line-height:1.3}.nf-logo{color:var(--cyber-cyan)}.nf-label{color:var(--cyber-magenta)}.nf-colors{color:#f00}.nf-colors.c2{color:#ff0}.nf-colors.c3{color:#0f0}.nf-colors.c4{color:#0ff}.nf-colors.c5{color:#00f}.nf-colors.c6{color:#f0f}.nf-colors.c7{color:#fff}.sudo-output{color:var(--cyber-green)}.sudo-success{color:var(--color-success);font-weight:bold;margin:0.5rem 0}.sudo-msg{color:var(--cyber-cyan);margin-left:1rem}.rm-output{color:var(--color-warning)}.rm-success{color:var(--cyber-green);font-weight:bold}.rm-hint{color:var(--text-muted)}.coffee-art{color:#c4a000}.coffee-msg{color:var(--cyber-green)}.matrix-msg{color:var(--cyber-green)}.help-output{white-space:pre-wrap}.cmd-name{color:var(--cyber-cyan)}.help-hint{color:var(--text-muted)}.cli-container{position:fixed;bottom:0;left:0;right:0;background:var(--cli-bg);border-top:1px solid var(--cyber-green);padding:1rem;font-family:monospace;z-index:1000;max-height:40vh;overflow-y:auto}.cli-output{margin-bottom:0.5rem;color:var(--cyber-green);font-size:0.9rem;max-height:30vh;overflow-y:auto}.cli-input-line{display:flex;align-items:center}.cli-prompt{color:var(--cyber-green);margin-right:0.5rem;flex-shrink:0}.cli-input{flex:1;background:transparent;border:none;color:var(--cyber-cyan);font-family:monospace;font-size:1rem;outline:none;caret-color:var(--cyber-cyan)}.cli-input::placeholder{color:var(--text-muted)}.cli-entry{margin-bottom:0.5rem}.cli-cmd{color:var(--cyber-cyan)}.cli-result{margin-left:1rem;white-space:pre-wrap}';
         document.head.appendChild(cmdStyle);
       })();
 
