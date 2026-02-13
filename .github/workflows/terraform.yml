@@ -36,6 +36,11 @@ on:
         options:
           - plan
           - apply
+          - destroy
+      confirm_destroy:
+        description: 'Type DESTROY to confirm resource destruction (required for destroy action)'
+        required: false
+        type: string
       target:
         description: 'Target resource (optional, e.g., cloudflare_worker_script.resume)'
         required: false
@@ -123,7 +128,7 @@ jobs:
         working-directory: ${{ env.TF_WORKING_DIR }}
 
       - name: Upload Plan
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@v6
         with:
           name: terraform-plan
           path: |
@@ -215,5 +220,55 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "Infrastructure changes have been applied." >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Commit:** \`${{ github.sha }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "**Actor:** @${{ github.actor }}" >> $GITHUB_STEP_SUMMARY
+
+  # ===========================================================================
+  # TERRAFORM DESTROY
+  # ===========================================================================
+  destroy:
+    name: Terraform Destroy
+    runs-on: ubuntu-latest
+    needs: [plan]
+    if: |
+      github.event_name == 'workflow_dispatch' &&
+      inputs.action == 'destroy' &&
+      inputs.confirm_destroy == 'DESTROY'
+    environment:
+      name: production/infrastructure
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ env.TF_VERSION }}
+          terraform_wrapper: false
+
+      - name: Terraform Init
+        run: terraform init
+        working-directory: ${{ env.TF_WORKING_DIR }}
+
+      - name: Terraform Destroy
+        run: |
+          TARGET_ARG=""
+          if [ -n "${{ inputs.target }}" ]; then
+            TARGET_ARG="-target=${{ inputs.target }}"
+          fi
+          terraform destroy -auto-approve $TARGET_ARG
+        working-directory: ${{ env.TF_WORKING_DIR }}
+
+      - name: Post Destroy Summary
+        run: |
+          echo "## Terraform Destroy Complete ⚠️" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Infrastructure resources have been destroyed." >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          if [ -n "${{ inputs.target }}" ]; then
+            echo "**Target:** \`${{ inputs.target }}\`" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "**Target:** All resources" >> $GITHUB_STEP_SUMMARY
+          fi
           echo "**Commit:** \`${{ github.sha }}\`" >> $GITHUB_STEP_SUMMARY
           echo "**Actor:** @${{ github.actor }}" >> $GITHUB_STEP_SUMMARY

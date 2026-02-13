@@ -36,6 +36,11 @@ on:
         required: false
         default: false
         type: boolean
+      skip_security_gate:
+        description: 'Skip security scan gate (bypass gitleaks/audit failures)'
+        required: false
+        default: false
+        type: boolean
 
 env:
   NODE_VERSION: '22'
@@ -68,7 +73,7 @@ jobs:
       should_deploy: ${{ steps.deploy-decision.outputs.should_deploy }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
@@ -130,7 +135,7 @@ jobs:
         run: mkdir -p .affected && touch .affected/.keep
 
       - name: Upload affected analysis
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: affected-targets
           path: .affected/
@@ -146,7 +151,7 @@ jobs:
     needs: [analyze]
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup
         uses: ./.github/actions/setup
@@ -167,7 +172,12 @@ jobs:
           fi
 
           # Quality gate: Zero-tolerance ratchet (auto-set to current baseline)
-          ESLINT_WARNING_BASELINE=120
+          if [ -f ".eslint-warning-baseline" ]; then
+            ESLINT_WARNING_BASELINE=$(cat .eslint-warning-baseline | tr -d '[:space:]')
+          else
+            echo "::warning::No .eslint-warning-baseline file found, using default of 120"
+            ESLINT_WARNING_BASELINE=120
+          fi
           if [ "${WARNINGS:-0}" -gt "$ESLINT_WARNING_BASELINE" ]; then
             echo "❌ ESLint warnings increased (${WARNINGS} > ${ESLINT_WARNING_BASELINE}) - fix new warnings before merging"
             exit 1
@@ -179,7 +189,7 @@ jobs:
 
       - name: Upload lint results
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: eslint-results
           path: eslint-results.txt
@@ -191,13 +201,13 @@ jobs:
     needs: [analyze]
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup
         uses: ./.github/actions/setup
 
       - name: Download affected analysis
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           name: affected-targets
           path: .affected/
@@ -218,13 +228,13 @@ jobs:
     if: ${{ !inputs.skip_tests }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup
         uses: ./.github/actions/setup
 
       - name: Download affected analysis
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           name: affected-targets
           path: .affected/
@@ -236,7 +246,7 @@ jobs:
           node tools/ci/run-affected.js test:coverage || npm test
 
       - name: Upload coverage
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: coverage-report
           path: coverage/
@@ -250,7 +260,7 @@ jobs:
     if: ${{ !inputs.skip_tests }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup
         uses: ./.github/actions/setup
@@ -274,7 +284,7 @@ jobs:
 
       - name: Upload Playwright report
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: playwright-report
           path: playwright-report/
@@ -287,13 +297,16 @@ jobs:
     needs: [analyze]
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
       - name: Install gitleaks
+        env:
+          # https://github.com/gitleaks/gitleaks/releases — update manually
+          GITLEAKS_VERSION: '8.30.0'
         run: |
-          curl -sSfL https://github.com/gitleaks/gitleaks/releases/download/v8.18.4/gitleaks_8.18.4_linux_x64.tar.gz | tar xz
+          curl -sSfL https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz | tar xz
           sudo mv gitleaks /usr/local/bin/
 
       - name: Run gitleaks
@@ -318,7 +331,7 @@ jobs:
       (!failure() || inputs.force_deploy == true)
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup
         uses: ./.github/actions/setup
@@ -331,7 +344,7 @@ jobs:
         working-directory: typescript/portfolio-worker
 
       - name: Upload build artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: portfolio-worker
           path: typescript/portfolio-worker/worker.js
@@ -349,7 +362,7 @@ jobs:
       needs.build.result == 'success' &&
       needs.analyze.outputs.should_deploy == 'true' &&
       !inputs.dry_run &&
-      (needs.security-scan.result != 'failure' || inputs.force_deploy == true)
+      (needs.security-scan.result != 'failure' || inputs.skip_security_gate == true)
     timeout-minutes: 15
     concurrency:
       group: deploy-production
@@ -359,14 +372,14 @@ jobs:
       url: ${{ env.PORTFOLIO_URL }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup
         uses: ./.github/actions/setup
 
       - name: Create GitHub Deployment
         id: deployment
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             const deployment = await github.rest.repos.createDeployment({
@@ -381,7 +394,7 @@ jobs:
             core.setOutput('id', deployment.data.id);
 
       - name: Download build artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           name: portfolio-worker
           path: typescript/portfolio-worker/
@@ -397,7 +410,7 @@ jobs:
 
       - name: Update Deployment Status
         if: always()
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             const deploymentId = ${{ steps.deployment.outputs.id }};
@@ -415,6 +428,8 @@ jobs:
   # ===========================================================================
   # STAGE: VERIFY
   # ===========================================================================
+  # Lightweight smoke test (CF API age + HTTP). For comprehensive 5-check
+  # verification matrix, see: .github/workflows/verify.yml
   verify:
     name: Verify
     runs-on: ubuntu-latest
@@ -511,7 +526,7 @@ jobs:
       name: production
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Rollback to previous version
         uses: cloudflare/wrangler-action@v3
@@ -620,6 +635,9 @@ jobs:
     name: Deploy PR Preview
     runs-on: ubuntu-latest
     needs: [build]
+    concurrency:
+      group: pr-preview-${{ github.event.pull_request.number }}
+      cancel-in-progress: false
     if: >-
       github.event_name == 'pull_request' &&
       github.event.action != 'closed' &&
@@ -627,13 +645,13 @@ jobs:
     timeout-minutes: 15
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup
         uses: ./.github/actions/setup
 
       - name: Download build artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           name: portfolio-worker
           path: typescript/portfolio-worker/
@@ -648,7 +666,7 @@ jobs:
           command: deploy --name resume-pr-${{ github.event.pull_request.number }}
 
       - name: Post Preview URL Comment
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             const prNumber = context.payload.pull_request.number;
@@ -694,10 +712,13 @@ jobs:
   cleanup-preview:
     name: Cleanup PR Preview
     runs-on: ubuntu-latest
+    concurrency:
+      group: pr-preview-${{ github.event.pull_request.number }}
+      cancel-in-progress: false
     if: ${{ github.event_name == 'pull_request' && github.event.action == 'closed' }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Delete Preview Worker
         uses: cloudflare/wrangler-action@v3
@@ -708,7 +729,7 @@ jobs:
           command: delete --name resume-pr-${{ github.event.pull_request.number }} --force
 
       - name: Post Cleanup Comment
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             const prNumber = context.payload.pull_request.number;

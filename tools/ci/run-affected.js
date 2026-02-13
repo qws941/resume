@@ -26,6 +26,12 @@ function runCommand(command) {
 }
 
 function main() {
+  if (!fs.existsSync('package.json')) {
+    console.error(`Error: package.json not found in ${process.cwd()}`);
+    console.error('run-affected.js must be executed from the project root.');
+    process.exit(1);
+  }
+
   const task = process.argv[2] || 'test'; // 'test' or 'lint' or 'typecheck'
 
   if (!fs.existsSync(AFFECTED_JSON)) {

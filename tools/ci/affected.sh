@@ -1,8 +1,15 @@
 #!/bin/bash
 # =============================================================================
-# AFFECTED TARGETS ANALYSIS
+# AFFECTED TARGETS ANALYSIS — Dual-Mode
 # =============================================================================
-# Analyzes changed files and finds affected Bazel targets
+# Determines which build targets are affected by recent changes.
+#
+# Two execution modes:
+#   CI MODE    — Path-based heuristic analysis (Bazel not installed in CI)
+#                Maps changed file paths to workspace targets.
+#   LOCAL MODE — Full Bazel reverse-dependency query (bazel rdeps).
+#                Precise but requires a working Bazel installation.
+#
 # Usage: ./tools/ci/affected.sh [base_branch]
 
 set -euo pipefail
@@ -57,6 +64,7 @@ if [ -n "$BUILD_CHANGES" ]; then
     echo ""
 fi
 
+# --- CI MODE ---
 # Check if Bazel is available
 if ! command -v bazel &> /dev/null; then
     echo "Bazel not found, using path-based analysis"
@@ -117,6 +125,7 @@ EOF
     exit 0
 fi
 
+# --- LOCAL MODE ---
 # Bazel query for affected targets
 echo "=== Running Bazel Query ==="
 

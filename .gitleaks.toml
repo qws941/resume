@@ -1,6 +1,17 @@
 # Gitleaks configuration - allowlist for documentation files containing example API keys
 [allowlist]
+  description = "Documentation and known false-positive patterns"
   paths = [
-    '''docs/.*''',
-    '''README\.md'''
+    '''docs/architecture/.*\.md''',
+    '''docs/api/.*\.md''',
+    '''docs/guides/.*\.md''',
+    '''README\.md''',
+    '''typescript/.*/README\.md''',
+  ]
+  regexes = [
+    '''your_\w+''',
+    '''example[_-]\w+''',
+    '''REPLACE[_-]WITH[_-]\w+''',
+    '''sk[_-]test[_-]\w+''',
+    '''xxxx+''',
   ]

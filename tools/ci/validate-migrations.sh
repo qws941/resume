@@ -17,15 +17,15 @@ if [ ! -d "$MIGRATIONS_DIR" ]; then
 fi
 
 # Collect all .sql files (up and down)
-SQL_FILES=$(find "$MIGRATIONS_DIR" -name '*.sql' -type f | sort)
+mapfile -t SQL_FILES < <(find "$MIGRATIONS_DIR" -name '*.sql' -type f | sort)
 
-if [ -z "$SQL_FILES" ]; then
+if [ ${#SQL_FILES[@]} -eq 0 ]; then
   echo "⚠️  No migration files found in $MIGRATIONS_DIR"
   exit 0
 fi
 
 # Validate naming convention: NNNN_description.sql or NNNN_description.down.sql
-for file in $SQL_FILES; do
+for file in "${SQL_FILES[@]}"; do
   basename=$(basename "$file")
 
   if ! echo "$basename" | grep -qE '^[0-9]{4}_[a-z][a-z0-9_]*\.(down\.)?sql$'; then
@@ -70,9 +70,9 @@ for file in $SQL_FILES; do
 done
 
 # Validate migration sequence has no gaps
-UP_FILES=$(find "$MIGRATIONS_DIR" -name '*.sql' ! -name '*.down.sql' -type f | sort)
+mapfile -t UP_FILES < <(find "$MIGRATIONS_DIR" -name '*.sql' ! -name '*.down.sql' -type f | sort)
 PREV_NUM=-1
-for file in $UP_FILES; do
+for file in "${UP_FILES[@]}"; do
   NUM=$(basename "$file" | grep -oE '^[0-9]+')
   NUM=$((10#$NUM))  # Force decimal interpretation
   if [ "$PREV_NUM" -ge 0 ] && [ "$NUM" -ne $((PREV_NUM + 1)) ]; then
@@ -86,7 +86,7 @@ if [ "$ERRORS" -gt 0 ]; then
   echo "❌ Validation failed with $ERRORS error(s)"
   exit 1
 else
-  TOTAL=$(echo "$SQL_FILES" | wc -l)
+  TOTAL=${#SQL_FILES[@]}
   echo "✅ All $TOTAL migration files validated successfully"
   exit 0
 fi
