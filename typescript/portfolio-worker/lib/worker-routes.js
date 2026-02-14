@@ -18,16 +18,21 @@ export default {
     const url = new URL(request.url);
     const clientIp = request.headers.get('cf-connecting-ip') || 'unknown';
 
-    const preflightResponse = createPreflightResponse(request, url.pathname);
-    if (preflightResponse) {
-      return preflightResponse;
-    }
-
     metrics.requests_total++;
 
     const rateLimitStatus = checkRateLimit(clientIp, url.pathname);
     const rateLimitHeaders = getRateLimitHeaders(rateLimitStatus);
     const corsHeaders = getCorsHeaders(request, url.pathname);
+
+    const preflightResponse = createPreflightResponse(request, url.pathname);
+    if (preflightResponse) {
+      const preflightHeaders = new Headers(preflightResponse.headers);
+      Object.entries(rateLimitHeaders).forEach(([name, value]) => preflightHeaders.set(name, value));
+      return new Response(preflightResponse.body, {
+        status: preflightResponse.status,
+        headers: preflightHeaders,
+      });
+    }
 
     if (!rateLimitStatus.allowed) {
         return new Response(JSON.stringify({ error: 'Too Many Requests' }), {
@@ -55,7 +60,14 @@ function generatePageRoutes() {
       if (url.pathname.startsWith('/assets/') && env.ASSETS) {
         const assetPath = url.pathname.replace('/assets/', '/');
         const assetUrl = new URL(assetPath, request.url);
-        return env.ASSETS.fetch(new Request(assetUrl, request));
+        const assetResponse = await env.ASSETS.fetch(new Request(assetUrl, request));
+        const headers = new Headers(assetResponse.headers);
+        Object.entries(rateLimitHeaders).forEach(([name, value]) => headers.set(name, value));
+        return new Response(assetResponse.body, {
+          status: assetResponse.status,
+          statusText: assetResponse.statusText,
+          headers,
+        });
       }
 
        // Routing
