@@ -18,28 +18,28 @@ export default {
     const url = new URL(request.url);
     const clientIp = request.headers.get('cf-connecting-ip') || 'unknown';
 
+    const preflightResponse = createPreflightResponse(request, url.pathname);
+    if (preflightResponse) {
+      return preflightResponse;
+    }
+
     metrics.requests_total++;
 
-    // Apply Rate Limiting to sensitive endpoints
-    if (url.pathname.startsWith('/api/') || url.pathname === '/health' || url.pathname === '/metrics') {
-      const now = Date.now();
-      const clientData = ipCache.get(clientIp) || { count: 0, startTime: now };
+    const rateLimitStatus = checkRateLimit(clientIp, url.pathname);
+    const rateLimitHeaders = getRateLimitHeaders(rateLimitStatus);
+    const corsHeaders = getCorsHeaders(request, url.pathname);
 
-      if (now - clientData.startTime > RATE_LIMIT_CONFIG.windowSize) {
-        clientData.count = 1;
-        clientData.startTime = now;
-      } else {
-        clientData.count++;
-      }
-
-      ipCache.set(clientIp, clientData);
-
-      if (clientData.count > RATE_LIMIT_CONFIG.maxRequests) {
+    if (!rateLimitStatus.allowed) {
         return new Response(JSON.stringify({ error: 'Too Many Requests' }), {
           status: 429,
-          headers: { ...SECURITY_HEADERS, 'Content-Type': 'application/json' }
+          headers: {
+            ...SECURITY_HEADERS,
+            ...rateLimitHeaders,
+            ...corsHeaders,
+            'Content-Type': 'application/json',
+            'Retry-After': getRetryAfterSeconds(rateLimitStatus.resetAt),
+          }
         });
-      }
     }
 
     try {`;
@@ -61,7 +61,12 @@ function generatePageRoutes() {
        // Routing
 
       if (url.pathname === '/') {
-        const response = new Response(INDEX_HTML, { headers: SECURITY_HEADERS });
+        const response = new Response(INDEX_HTML, {
+          headers: {
+            ...SECURITY_HEADERS,
+            ...rateLimitHeaders
+          }
+        });
         metrics.requests_success++;
         metrics.response_time_sum += (Date.now() - startTime);
 
@@ -75,7 +80,12 @@ function generatePageRoutes() {
 
       // English version route
       if (url.pathname === '/en/' || url.pathname === '/en') {
-        const response = new Response(INDEX_EN_HTML, { headers: SECURITY_HEADERS });
+        const response = new Response(INDEX_EN_HTML, {
+          headers: {
+            ...SECURITY_HEADERS,
+            ...rateLimitHeaders
+          }
+        });
         metrics.requests_success++;
         metrics.response_time_sum += (Date.now() - startTime);
 
@@ -99,6 +109,7 @@ function generateStaticRoutes() {
         return new Response(MANIFEST_JSON, {
           headers: {
             ...SECURITY_HEADERS,
+            ...rateLimitHeaders,
             'Content-Type': 'application/json'
           }
         });
@@ -109,6 +120,7 @@ function generateStaticRoutes() {
         return new Response(SERVICE_WORKER, {
           headers: {
             ...SECURITY_HEADERS,
+            ...rateLimitHeaders,
             'Content-Type': 'application/javascript',
             'Cache-Control': 'max-age=0, must-revalidate',
             'Service-Worker-Allowed': '/'
@@ -121,6 +133,7 @@ function generateStaticRoutes() {
         return new Response(MAIN_JS, {
           headers: {
             ...SECURITY_HEADERS,
+            ...rateLimitHeaders,
             'Content-Type': 'application/javascript'
           }
         });
@@ -175,6 +188,7 @@ function generateHealthRoute(opts) {
         return new Response(JSON.stringify(health, null, 2), {
           headers: {
             ...SECURITY_HEADERS,
+            ...rateLimitHeaders,
             'Content-Type': 'application/json',
             'Cache-Control': 'no-cache, no-store, must-revalidate'
           }
@@ -193,6 +207,7 @@ function generateMetricsRoute() {
         return new Response(generateMetrics(metrics), {
           headers: {
             ...SECURITY_HEADERS,
+            ...rateLimitHeaders,
             'Content-Type': 'text/plain; version=0.0.4; charset=utf-8',
             'Cache-Control': 'no-cache, no-store, must-revalidate'
           }
@@ -211,6 +226,7 @@ function generateSeoRoutes() {
         return new Response(ROBOTS_TXT, {
           headers: {
             ...SECURITY_HEADERS,
+            ...rateLimitHeaders,
             'Content-Type': 'text/plain'
           }
         });
@@ -221,6 +237,7 @@ function generateSeoRoutes() {
         return new Response(SITEMAP_XML, {
           headers: {
             ...SECURITY_HEADERS,
+            ...rateLimitHeaders,
             'Content-Type': 'application/xml'
           }
         });
@@ -232,6 +249,7 @@ function generateSeoRoutes() {
         return new Response(imageBuffer, {
           headers: {
             ...SECURITY_HEADERS,
+            ...rateLimitHeaders,
             'Content-Type': 'image/webp',
             'Cache-Control': 'public, max-age=31536000, immutable'
           }
@@ -244,6 +262,7 @@ function generateSeoRoutes() {
         return new Response(imageBuffer, {
           headers: {
             ...SECURITY_HEADERS,
+            ...rateLimitHeaders,
             'Content-Type': 'image/webp',
             'Cache-Control': 'public, max-age=31536000, immutable'
           }
@@ -256,6 +275,7 @@ function generateSeoRoutes() {
         return new Response(pdfBuffer, {
           headers: {
             ...SECURITY_HEADERS,
+            ...rateLimitHeaders,
             'Content-Type': 'application/pdf',
             'Content-Disposition': 'inline; filename="resume_jclee.pdf"',
             'Cache-Control': 'public, max-age=86400'
@@ -276,6 +296,7 @@ function generate404() {
         status: 404,
         headers: {
           ...SECURITY_HEADERS,
+          ...rateLimitHeaders,
           'Content-Type': 'text/plain',
           'Cache-Control': 'no-cache, no-store, must-revalidate'
         }
@@ -321,6 +342,7 @@ function generateErrorHandler(opts) {
         status: 500,
         headers: {
           ...SECURITY_HEADERS,
+          ...rateLimitHeaders,
           'Content-Type': 'text/plain',
           'Cache-Control': 'no-cache, no-store, must-revalidate'
         }
