@@ -50,6 +50,12 @@ const RESUME_PDF_BASE64 = '${opts.resumePdfBase64}';
 // Security headers
 const SECURITY_HEADERS = ${opts.securityHeadersJson};
 
+const CACHE_POLICIES = {
+  html: { 'Cache-Control': 'public, max-age=300, s-maxage=3600, stale-while-revalidate=86400' },
+  static: { 'Cache-Control': 'public, max-age=31536000, immutable' },
+  api: { 'Cache-Control': 'no-store, no-cache, must-revalidate' },
+};
+
 // Metrics
 const metrics = ${opts.metricsJson};
 

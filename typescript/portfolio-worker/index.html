@@ -1428,12 +1428,6 @@
           Sentry.setUser({ id: 'anonymous' });
         };
         document.head.appendChild(s);
-        var cf = document.createElement('script');
-        cf.src = 'https://static.cloudflareinsights.com/beacon.min.js';
-        cf.async = true;
-        // SRI note: Cloudflare beacon script is version-rotated by provider, fixed hash is not stable.
-        cf.dataset.cfBeacon = '{"token":"8c92c40a4f374cde9c3b7f8a1e9b5c2d"}';
-        document.head.appendChild(cf);
       })();
     </script>
   </body>

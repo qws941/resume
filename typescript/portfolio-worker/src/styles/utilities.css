@@ -296,6 +296,67 @@ button:focus-visible {
 }
 
 @media print {
+  @page {
+    margin: 14mm;
+  }
+
+  html,
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+  }
+
+  #matrix-bg,
+  .crt-overlay,
+  .cursor,
+  .cmd-cursor,
+  .cli-input-line,
+  #terminal-input,
+  .terminal-titlebar,
+  .skip-link,
+  .theme-toggle,
+  .nav-links,
+  .back-to-top {
+    display: none !important;
+  }
+
+  .terminal-window,
+  .terminal-body,
+  .container,
+  .container-narrow,
+  main {
+    background: #ffffff !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    color: #000000 !important;
+    max-width: 100% !important;
+    padding: 0 !important;
+  }
+
+  .cli-container,
+  .cli-output {
+    position: static !important;
+    max-height: none !important;
+    overflow: visible !important;
+    border: 0 !important;
+    padding: 0 !important;
+    color: #000000 !important;
+  }
+
+  a,
+  .cmd-output,
+  .section-cmd,
+  .resume-description,
+  .project-description,
+  .about-list li,
+  .status-name,
+  .status-state {
+    color: #000000 !important;
+    text-shadow: none !important;
+  }
+}
+
+@media print {
   body::before,
   body::after,
   #matrix-bg,

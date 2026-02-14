@@ -62,6 +62,7 @@ function generatePageRoutes() {
         const assetUrl = new URL(assetPath, request.url);
         const assetResponse = await env.ASSETS.fetch(new Request(assetUrl, request));
         const headers = new Headers(assetResponse.headers);
+        Object.entries(CACHE_POLICIES.static).forEach(([name, value]) => headers.set(name, value));
         Object.entries(rateLimitHeaders).forEach(([name, value]) => headers.set(name, value));
         return new Response(assetResponse.body, {
           status: assetResponse.status,
@@ -76,6 +77,7 @@ function generatePageRoutes() {
         const response = new Response(INDEX_HTML, {
           headers: {
             ...SECURITY_HEADERS,
+            ...CACHE_POLICIES.html,
             ...rateLimitHeaders
           }
         });
@@ -95,6 +97,7 @@ function generatePageRoutes() {
         const response = new Response(INDEX_EN_HTML, {
           headers: {
             ...SECURITY_HEADERS,
+            ...CACHE_POLICIES.html,
             ...rateLimitHeaders
           }
         });
@@ -121,6 +124,7 @@ function generateStaticRoutes() {
         return new Response(MANIFEST_JSON, {
           headers: {
             ...SECURITY_HEADERS,
+            ...CACHE_POLICIES.static,
             ...rateLimitHeaders,
             'Content-Type': 'application/json'
           }
@@ -132,9 +136,9 @@ function generateStaticRoutes() {
         return new Response(SERVICE_WORKER, {
           headers: {
             ...SECURITY_HEADERS,
+            ...CACHE_POLICIES.static,
             ...rateLimitHeaders,
             'Content-Type': 'application/javascript',
-            'Cache-Control': 'max-age=0, must-revalidate',
             'Service-Worker-Allowed': '/'
           }
         });
@@ -145,6 +149,7 @@ function generateStaticRoutes() {
         return new Response(MAIN_JS, {
           headers: {
             ...SECURITY_HEADERS,
+            ...CACHE_POLICIES.static,
             ...rateLimitHeaders,
             'Content-Type': 'application/javascript'
           }
@@ -202,7 +207,7 @@ function generateHealthRoute(opts) {
             ...SECURITY_HEADERS,
             ...rateLimitHeaders,
             'Content-Type': 'application/json',
-            'Cache-Control': 'no-cache, no-store, must-revalidate'
+            ...CACHE_POLICIES.api
           }
         });
       }`;
@@ -221,7 +226,7 @@ function generateMetricsRoute() {
             ...SECURITY_HEADERS,
             ...rateLimitHeaders,
             'Content-Type': 'text/plain; version=0.0.4; charset=utf-8',
-            'Cache-Control': 'no-cache, no-store, must-revalidate'
+            ...CACHE_POLICIES.api
           }
         });
       }`;
@@ -238,6 +243,7 @@ function generateSeoRoutes() {
         return new Response(ROBOTS_TXT, {
           headers: {
             ...SECURITY_HEADERS,
+            ...CACHE_POLICIES.static,
             ...rateLimitHeaders,
             'Content-Type': 'text/plain'
           }
@@ -249,6 +255,7 @@ function generateSeoRoutes() {
         return new Response(SITEMAP_XML, {
           headers: {
             ...SECURITY_HEADERS,
+            ...CACHE_POLICIES.static,
             ...rateLimitHeaders,
             'Content-Type': 'application/xml'
           }
@@ -261,9 +268,9 @@ function generateSeoRoutes() {
         return new Response(imageBuffer, {
           headers: {
             ...SECURITY_HEADERS,
+            ...CACHE_POLICIES.static,
             ...rateLimitHeaders,
             'Content-Type': 'image/webp',
-            'Cache-Control': 'public, max-age=31536000, immutable'
           }
         });
       }
@@ -274,9 +281,9 @@ function generateSeoRoutes() {
         return new Response(imageBuffer, {
           headers: {
             ...SECURITY_HEADERS,
+            ...CACHE_POLICIES.static,
             ...rateLimitHeaders,
             'Content-Type': 'image/webp',
-            'Cache-Control': 'public, max-age=31536000, immutable'
           }
         });
       }
@@ -287,10 +294,10 @@ function generateSeoRoutes() {
         return new Response(pdfBuffer, {
           headers: {
             ...SECURITY_HEADERS,
+            ...CACHE_POLICIES.static,
             ...rateLimitHeaders,
             'Content-Type': 'application/pdf',
-            'Content-Disposition': 'inline; filename="resume_jclee.pdf"',
-            'Cache-Control': 'public, max-age=86400'
+            'Content-Disposition': 'inline; filename="resume_jclee.pdf"'
           }
         });
       }`;
@@ -310,7 +317,7 @@ function generate404() {
           ...SECURITY_HEADERS,
           ...rateLimitHeaders,
           'Content-Type': 'text/plain',
-          'Cache-Control': 'no-cache, no-store, must-revalidate'
+          ...CACHE_POLICIES.api
         }
       });`;
 }
@@ -356,7 +363,7 @@ function generateErrorHandler(opts) {
           ...SECURITY_HEADERS,
           ...rateLimitHeaders,
           'Content-Type': 'text/plain',
-          'Cache-Control': 'no-cache, no-store, must-revalidate'
+          ...CACHE_POLICIES.api
         }
       });
     }
