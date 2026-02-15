@@ -179,4 +179,46 @@ describe('i18n Module', () => {
       expect(enTrans['aria.viewProject']).toBeDefined();
     });
   });
+
+  describe('detectLanguage - userLanguage fallback', () => {
+    it('should use navigator.userLanguage when navigator.language is undefined', () => {
+      const origNavigator = global.navigator;
+      Object.defineProperty(global, 'navigator', {
+        value: { userLanguage: 'ko-KR' },
+        writable: true,
+        configurable: true,
+      });
+
+      try {
+        const result = detectLanguage();
+        expect(result).toBe('ko');
+      } finally {
+        Object.defineProperty(global, 'navigator', {
+          value: origNavigator,
+          writable: true,
+          configurable: true,
+        });
+      }
+    });
+
+    it('should use navigator.userLanguage when navigator.language is empty string', () => {
+      const origNavigator = global.navigator;
+      Object.defineProperty(global, 'navigator', {
+        value: { language: '', userLanguage: 'en-US' },
+        writable: true,
+        configurable: true,
+      });
+
+      try {
+        const result = detectLanguage();
+        expect(result).toBe('en');
+      } finally {
+        Object.defineProperty(global, 'navigator', {
+          value: origNavigator,
+          writable: true,
+          configurable: true,
+        });
+      }
+    });
+  });
 });
