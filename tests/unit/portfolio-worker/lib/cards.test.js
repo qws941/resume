@@ -717,6 +717,166 @@ describe('Cards Module', () => {
     });
   });
 
+  describe('generateProjectCards - stars/forks/language branches', () => {
+    test('should render stars, forks, and language in meta line', () => {
+      TEMPLATE_CACHE.dataHash = null;
+      TEMPLATE_CACHE.projectCardsHtml = null;
+      const projectData = [
+        {
+          title: 'Popular Project',
+          tech: 'TypeScript',
+          description: 'A popular project',
+          liveUrl: 'https://example.com',
+          stars: 42,
+          forks: 7,
+          language: 'JavaScript',
+        },
+      ];
+      const html = generateProjectCards(projectData, 'stars-forks-lang-hash');
+      expect(html).toContain('42');
+      expect(html).toContain('7');
+      expect(html).toContain('JavaScript');
+      expect(html).toContain('project-meta');
+    });
+
+    test('should render only stars when forks and language are absent', () => {
+      TEMPLATE_CACHE.dataHash = null;
+      TEMPLATE_CACHE.projectCardsHtml = null;
+      const projectData = [
+        {
+          title: 'Stars Only',
+          tech: 'Go',
+          description: 'Stars only project',
+          stars: 100,
+        },
+      ];
+      const html = generateProjectCards(projectData, 'stars-only-hash');
+      expect(html).toContain('100');
+      expect(html).toContain('project-meta');
+    });
+
+    test('should not render meta line for NaN/Infinity stars and forks', () => {
+      TEMPLATE_CACHE.dataHash = null;
+      TEMPLATE_CACHE.projectCardsHtml = null;
+      const projectData = [
+        {
+          title: 'Bad Numbers',
+          tech: 'Rust',
+          description: 'Invalid numbers',
+          stars: NaN,
+          forks: Infinity,
+        },
+      ];
+      const html = generateProjectCards(projectData, 'nan-infinity-hash');
+      expect(html).not.toContain('project-meta');
+    });
+
+    test('should render only language when stars and forks are absent', () => {
+      TEMPLATE_CACHE.dataHash = null;
+      TEMPLATE_CACHE.projectCardsHtml = null;
+      const projectData = [
+        {
+          title: 'Lang Only',
+          tech: 'Python',
+          description: 'Language only project',
+          language: 'Python',
+        },
+      ];
+      const html = generateProjectCards(projectData, 'lang-only-hash');
+      expect(html).toContain('Python');
+      expect(html).toContain('project-meta');
+    });
+
+    test('should render githubUrl link without demoUrl', () => {
+      TEMPLATE_CACHE.dataHash = null;
+      TEMPLATE_CACHE.projectCardsHtml = null;
+      const projectData = [
+        {
+          title: 'GitHub Only',
+          tech: 'Node.js',
+          description: 'Only GitHub link',
+          githubUrl: 'https://github.com/test/repo',
+        },
+      ];
+      const html = generateProjectCards(projectData, 'github-only-hash');
+      expect(html).toContain('href="https://github.com/test/repo"');
+      expect(html).toContain('GitHub');
+    });
+
+    test('should render demoUrl link without githubUrl', () => {
+      TEMPLATE_CACHE.dataHash = null;
+      TEMPLATE_CACHE.projectCardsHtml = null;
+      const projectData = [
+        {
+          title: 'Demo Only',
+          tech: 'React',
+          description: 'Only demo link',
+          demoUrl: 'https://demo.example.com',
+        },
+      ];
+      const html = generateProjectCards(projectData, 'demo-only-hash');
+      expect(html).toContain('href="https://demo.example.com"');
+      expect(html).toContain('Demo');
+    });
+
+    test('should render both githubUrl and demoUrl links', () => {
+      TEMPLATE_CACHE.dataHash = null;
+      TEMPLATE_CACHE.projectCardsHtml = null;
+      const projectData = [
+        {
+          title: 'Both Links',
+          tech: 'Vue',
+          description: 'Both links project',
+          githubUrl: 'https://github.com/test/both',
+          demoUrl: 'https://demo.example.com/both',
+        },
+      ];
+      const html = generateProjectCards(projectData, 'both-links-hash');
+      expect(html).toContain('GitHub');
+      expect(html).toContain('Demo');
+    });
+  });
+
+  describe('generateSkillsList - edge cases', () => {
+    const { generateSkillsList } = require('../../../../typescript/portfolio-worker/lib/cards');
+
+    beforeEach(() => {
+      TEMPLATE_CACHE.skillsHtml = null;
+      TEMPLATE_CACHE.dataHash = null;
+    });
+
+    test('should handle skill item with no name property', () => {
+      const skillsData = {
+        devops: {
+          items: [{ proficiency: 80 }],
+        },
+      };
+      const html = generateSkillsList(skillsData, 'no-name-hash');
+      expect(html).toContain('Unknown');
+    });
+
+    test('should handle NaN proficiency', () => {
+      const skillsData = {
+        devops: {
+          items: [{ name: 'Docker', proficiency: NaN }],
+        },
+      };
+      const html = generateSkillsList(skillsData, 'nan-prof-hash');
+      expect(html).toContain('Docker');
+    });
+
+    test('should return empty string for empty items array in object format', () => {
+      const skillsData = {
+        devops: {
+          items: [],
+        },
+      };
+      const html = generateSkillsList(skillsData, 'empty-items-hash');
+      // Empty items means skills.length === 0, returns ''
+      expect(html).not.toContain('devops');
+    });
+  });
+
   describe('generateResumeCards - metrics', () => {
     test('should render metrics line with valid key-value pairs', () => {
       TEMPLATE_CACHE.dataHash = null;
@@ -752,6 +912,22 @@ describe('Cards Module', () => {
       expect(html).not.toContain('empty=');
       expect(html).not.toContain('nullVal');
       expect(html).not.toContain('undefVal');
+    });
+
+    test('should filter out metrics entries with empty string key', () => {
+      TEMPLATE_CACHE.dataHash = null;
+      TEMPLATE_CACHE.resumeCardsHtml = null;
+      const resumeData = [
+        {
+          title: 'Engineer',
+          period: '2020-2024',
+          description: 'Test',
+          metrics: { '': 'should-be-hidden', validKey: '100%' },
+        },
+      ];
+      const html = generateResumeCards(resumeData);
+      expect(html).toContain('validKey=100%');
+      expect(html).not.toContain('should-be-hidden');
     });
 
     test('should not render metrics div when metrics is not an object', () => {

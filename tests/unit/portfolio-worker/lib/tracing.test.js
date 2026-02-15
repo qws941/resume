@@ -364,6 +364,53 @@ describe('tracing', () => {
     });
   });
 
+  describe('crypto exists but getRandomValues is absent', () => {
+    it('falls back to Math.random when crypto has no getRandomValues', () => {
+      const origCrypto = global.crypto;
+      // crypto object exists but getRandomValues is undefined
+      global.crypto = { randomUUID: () => 'fake-uuid' };
+
+      try {
+        jest.resetModules();
+        const tracingFallback = require('../../../../typescript/portfolio-worker/lib/tracing');
+        const traceId = tracingFallback.generateTraceId();
+        const spanId = tracingFallback.generateSpanId();
+
+        expect(traceId).toMatch(/^[0-9a-f]{32}$/);
+        expect(spanId).toMatch(/^[0-9a-f]{16}$/);
+      } finally {
+        global.crypto = origCrypto;
+      }
+    });
+  });
+
+  describe('propagateTraceContext - empty tracestate', () => {
+    it('does not set tracestate header when tracestate is empty string', () => {
+      const request = {
+        method: 'GET',
+        headers: new Headers({
+          traceparent: '00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01',
+        }),
+      };
+
+      const result = propagateTraceContext(request);
+      // tracestate should be empty string from resolveContextFromHeaders
+      expect(result.tracestate).toBe('');
+      // Empty tracestate should NOT be set as a header
+      expect(result.headers.get('tracestate')).toBeNull();
+    });
+
+    it('does not set tracestate header when tracestate is null', () => {
+      const request = {
+        method: 'GET',
+        headers: new Headers(),
+      };
+
+      const result = propagateTraceContext(request);
+      expect(result.headers.get('tracestate')).toBeNull();
+    });
+  });
+
   describe('Math.random fallback', () => {
     it('should generate valid trace IDs when crypto.getRandomValues is unavailable', () => {
       const origCrypto = global.crypto;

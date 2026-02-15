@@ -282,4 +282,113 @@ describe('es-logger', () => {
       consoleSpy.mockRestore();
     });
   });
+
+  describe('flushLogs early return when credentials missing', () => {
+    let loggerMod;
+
+    beforeEach(() => {
+      jest.resetModules();
+      jest.mock('../../../../typescript/portfolio-worker/logger', () => ({
+        warn: jest.fn(),
+        log: jest.fn(),
+        debug: jest.fn(),
+        error: jest.fn(),
+      }));
+      global.fetch = jest.fn(() => Promise.resolve({ ok: true }));
+      loggerMod = require('../../../../typescript/portfolio-worker/lib/es-logger');
+    });
+
+    it('returns early in flushLogs when ELASTICSEARCH_URL is missing', async () => {
+      // Queue with valid credentials
+      const validEnv = {
+        ELASTICSEARCH_URL: 'https://es.example.com',
+        ELASTICSEARCH_API_KEY: 'test-api-key',
+      };
+      await loggerMod.logToElasticsearch(validEnv, 'queued msg');
+      // Flush with missing URL — triggers L34 early return
+      await loggerMod.flush({});
+      // fetch should NOT be called for the flush (only potentially for batch auto-flush)
+      // The key is that flush({}) does not throw
+    });
+
+    it('returns early in flushLogs when ELASTICSEARCH_API_KEY is missing', async () => {
+      const validEnv = {
+        ELASTICSEARCH_URL: 'https://es.example.com',
+        ELASTICSEARCH_API_KEY: 'test-api-key',
+      };
+      await loggerMod.logToElasticsearch(validEnv, 'queued msg');
+      await loggerMod.flush({ ELASTICSEARCH_URL: 'https://es.example.com' });
+      // Should not throw
+    });
+  });
+
+  describe('flush timer deduplication', () => {
+    const mockEnv = {
+      ELASTICSEARCH_URL: 'https://es.example.com',
+      ELASTICSEARCH_API_KEY: 'test-api-key',
+      ES_BATCH_MODE: 'true',
+    };
+
+    let loggerMod;
+
+    beforeEach(() => {
+      jest.resetModules();
+      jest.mock('../../../../typescript/portfolio-worker/logger', () => ({
+        warn: jest.fn(),
+        log: jest.fn(),
+        debug: jest.fn(),
+        error: jest.fn(),
+      }));
+      global.fetch = jest.fn(() => Promise.resolve({ ok: true }));
+      loggerMod = require('../../../../typescript/portfolio-worker/lib/es-logger');
+    });
+
+    it('does not create a second timer when one already exists', async () => {
+      const timeoutSpy = jest.spyOn(global, 'setTimeout');
+
+      await loggerMod.logToElasticsearch(mockEnv, 'first queued message');
+      await loggerMod.logToElasticsearch(mockEnv, 'second queued message');
+
+      expect(timeoutSpy).toHaveBeenCalledTimes(1);
+      timeoutSpy.mockRestore();
+    });
+  });
+
+  describe('flushLogs inner catch', () => {
+    const mockEnv = {
+      ELASTICSEARCH_URL: 'https://es.example.com',
+      ELASTICSEARCH_API_KEY: 'test-api-key',
+    };
+
+    let loggerMod;
+    let loggerMock;
+
+    beforeEach(() => {
+      jest.resetModules();
+      jest.mock('../../../../typescript/portfolio-worker/logger', () => ({
+        warn: jest.fn(),
+        log: jest.fn(),
+        debug: jest.fn(),
+        error: jest.fn(),
+      }));
+      global.fetch = jest.fn().mockRejectedValue(new Error('bulk unavailable'));
+      loggerMod = require('../../../../typescript/portfolio-worker/lib/es-logger');
+      loggerMock = require('../../../../typescript/portfolio-worker/logger');
+    });
+
+    it('silently catches when console.error throws during bulk flush failure', async () => {
+      const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {
+        throw new Error('console write failed');
+      });
+
+      try {
+        await loggerMod.logToElasticsearch(mockEnv, 'queued before failing flush');
+        await loggerMod.flush(mockEnv);
+      } finally {
+        consoleSpy.mockRestore();
+      }
+
+      expect(loggerMock.warn).toHaveBeenCalledWith('ES bulk flush failed:', 'bulk unavailable');
+    });
+  });
 });
