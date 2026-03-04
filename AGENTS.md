@@ -1,7 +1,7 @@
 # PROJECT KNOWLEDGE BASE
 
-**Generated:** 2026-03-02
-**Commit:** d2a27b6
+**Generated:** 2026-03-04
+**Commit:** 05a787b
 **Branch:** master
 
 ## OVERVIEW
@@ -37,7 +37,7 @@ Personal resume management system with multi-format output. Layer-based npm work
 ├── ta/                         # Python PPTX analysis scripts
 ├── third_party/                # Bazel dependency coordination
 ├── .github/
-│   ├── workflows/              # 19 CI/CD workflows
+│   ├── workflows/              # 20 CI/CD workflows
 │   └── actions/setup/          # Composite setup action (Node 22 + npm ci)
 ├── package.json                # Root workspace config (v1.0.128)
 ├── wrangler.jsonc              # Unified worker config (resume.jclee.me + /job/*)
@@ -68,6 +68,7 @@ Personal resume management system with multi-format output. Layer-based npm work
 | Post-deploy verification  | `.github/workflows/verify.yml`      | Portfolio health checks                  |
 | Worker config             | `wrangler.jsonc`                    | Unified: routes, D1/KV/Queue bindings    |
 | Worker config (env)       | `apps/portfolio/wrangler.toml`      | Production env overrides, workflows      |
+| Resume sync automation  | `apps/job-server/src/tools/`          | Wanted/JobKorea sync, `wanted-resume-sync.yml` |
 
 ## WORKSPACES
 
@@ -125,7 +126,7 @@ ELK ingest is inlined in `release.yml` (not a reusable workflow) because `workfl
 
 ### Repo-Specific Workflows
 
-`ci`, `codeql`, `maintenance`, `release`, `terraform`, `update-snapshots`, `verify`
+`auto-issue-on-failure`, `auto-sync`, `auto-update`, `ci`, `codeql`, `maintenance`, `release`, `terraform`, `update-snapshots`, `verify`, `wanted-resume-sync`
 
 ## CONVENTIONS
 
